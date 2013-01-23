@@ -1,0 +1,211 @@
+a	adjv
+Adj	adjv
+adj.	adjv
+adj	adjv
+ADJ	adjv
+ADJECTIVE	adjv
+Adjective	adjv
+Adjectives	adjv
+adjectives	adjv
+adji	adjv:adji
+adjv	adjv
+ADV	advb
+Adv	advb
+Adv.	advb
+adv.	advb
+adv	advb
+advb	advb
+ADVERB	advb
+Adverb	advb
+AFF	affx
+Aff	affx
+aff.	affx
+affix	affx
+afx	affx
+affx	affx
+agg.	adjv
+art.	detr:art.
+Aux.	auxv
+auxv	auxv
+avv.	advb
+bnd pfx	affx:bnd pfx
+bnd sfx	affx:bnd sfx
+c	conj
+card	detr:card
+cnj	conj
+cnjadv	conj:cnjadv
+cnjcoo	conj:cnjcoo
+cnjsub	conj:cnjsub
+cong.	conj
+Conj	conj
+conj	conj
+conj.	conj
+Conj.	conj
+CONJ	conj
+Conjunction	conj
+coord.	conj:coord.
+dem	detr:dem
+dem.	detr:dem.
+DEM	detr:DEM
+Demonstrative	detr:Demonstrative
+Det	detr
+det	detr
+det.	detr
+Determ.	detr
+Determiner	detr
+detr	detr
+disc	misc:disc
+epn	pron:epn
+exc	ijec:exc
+EXCL	ijec:EXCL
+Excl	ijec:Excl
+frac	detr:frac
+ijec	ijec
+inj	ijec
+INSTR	advb:INSTR
+INTER	ijec
+inter	ijec
+inter.	ijec
+Interj	ijec
+interj	ijec
+interj.	ijec
+interjec.	ijec
+Interjection	ijec
+INTJ	ijec
+intj.	ijec
+intr	verb:intr
+intr.	verb:intr.
+INTRJCT	ijec
+IV	verb:IV
+LOC	advb:LOC
+misc	misc
+MOD	advb:MOD
+n	noun
+N	noun
+n.	noun
+n:	noun
+na.	noun:na.
+NAME	name
+name	name
+ni.	noun:ni.
+n.idiom.	noun:n.idiom.
+n.loc.	noun:n.loc.
+n.manner.	noun:n.manner.
+n. manner.	noun:n.manner.
+nm	noun:m
+noun	noun
+NOUN	noun
+Noun	noun
+Nouns	noun
+nouns	noun
+np	name
+N Próprio.	name
+n.qual.	noun:n.qual.
+n. qual.	noun:n.qual.
+n.quant.	noun:n.quant.
+n. quant.	noun:n.quant.
+n.time.	noun:n.time.
+ntr	verb:ntr
+Num	detr:Num
+num	detr:num
+NUM	detr:NUM
+num.	detr:num.
+Numeral	detr:Numeral
+ord	detr:ord
+P	prep
+pcl	:pcl
+phr: v	verb:phr
+pn.	pron
+pos	pron:pos
+Posp.	post
+POST	post
+Post	post
+post	post
+pp	prep
+pp.	prep
+pr	prep
+preadv	prep:preadv
+prefix	affx:prefix
+prep	prep
+prep.	prep
+Preposition	prep
+prn	pron
+Pro	pron
+pro	pron
+PRO	pron
+pro.	pron
+pron	pron
+pron.	pron
+Pron.	pron
+Pron. Ab.	pron
+Pron. Acus.	pron
+Pron. Corref.	pron
+Pron. Ergativo.	pron
+Pron. Imp.	pron
+Pron. Independente.	pron
+Pron.Pess.	pron:personal
+Pronoun	pron
+prop. n.	name
+prop	n.	name
+prop n.	name
+prop.n.	name
+Proper Noun	name
+quant	detr:quant
+Quantifier	detr:Quantifier
+QT	detr:QT
+rel	conj:rel
+RFLX PRO	pron:RFLX
+s	noun
+sbd.	conj:sbd.
+sf.	noun:sf.
+sm.	noun:sm.
+spn	pron:spn
+Suf.	affx:suffix
+suffix	affx:suffix
+svin.	verb:svin.
+TEMP	advb:TEMP
+tr	verb:tr
+tr.	verb:tr.
+TV	verb:TV
+v.	verb
+v. aux.	auxv
+v	verb
+V	verb
+V INCORP	verb:INCORP
+va.	auxv
+VAux.	auxv
+VCit.	verb
+vbser	verb:vbser
+vbhaver	verb:vbhaver
+vblex	verb
+vbmod	verb:vbmod
+vc	verb:vc
+verb	verb
+VERB	verb
+Verb	verb
+Verbs	verb
+verbs	verb
+Vi	verb:Vi
+vi	verb:vi
+vi.	verb:vi.
+v.i.	verb:v.i.
+v.impers.	verb:v.impers.
+vin.	verb:vin.
+Vint.	verb:vi
+vr.	verb:vr.
+Vt	verb:Vt
+vt	verb:vt
+vt.	verb:vt.
+v.t.	verb:v.t.
+vtr	verb:vtr.
+vtr.	verb:vtr.
+Vtran.	verb:vt
+vtrm.	verb:vtrm.
+V-INTR	verb:INTR
+v:it	verb:it
+v: itr	verb:itr
+v:tr	verb:tr
+v: tr	verb:tr
+v:itr	verb:itr
+V-TR	verb:TR
+v:tr	verb:tr
