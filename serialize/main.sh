@@ -1,7 +1,7 @@
 # Converts a tab-delimited approver file for uploading to PanLex.
 
-# Find the path to the perl executable.
-PERL=`which perl`
+# The path to the perl executable.
+PERL=/usr/bin/perl
 
 $PERL -C63 -w apostrophe.pl 'aaa-bbb-Author' 0 '1:gyd-000' '3:nny-000' '5:eng-000'
 # Converts a tab-delimited approver file’s apostrophes.
