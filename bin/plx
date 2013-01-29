@@ -22,10 +22,7 @@ if (exists &$cmd_sub) {
 sub cmd_fetch {
     my ($approver) = @_;
     
-    if (!$approver) {
-        print STDERR "You need to specify an approver.\n";
-        return;    
-    }
+    print(STDERR "You need to specify an approver.\n"), return unless $approver;
     check_env(qw/PANLEX_SOURCEDIR PANLEX_USER/);
     
     $approver =~ s/:/-/g;
@@ -40,39 +37,27 @@ sub cmd_fetch {
 sub cmd_which {
     my ($approver) = @_;
 
-    if (!$approver) {
-        print STDERR "You need to specify an approver.\n";
-        return;    
-    }
+    print(STDERR "You need to specify an approver.\n"), return unless $approver;
     check_env(qw/PANLEX_SOURCEDIR/);
 
     $approver =~ s/:/-/g;
     foreach my $dir (qw/queued used/) {
         my $local_dir = catdir($ENV{PANLEX_SOURCEDIR}, $dir, $approver);
-        if (-d $local_dir) {
-            print $local_dir, "\n";
-            return;
-        }
+        print ($local_dir, "\n"), return if -d $local_dir;
     }
 }
 
 sub cmd_cp {
     my ($tool) = @_;
 
-    if (!$tool) {
-        print STDERR "You need to specify an approver.\n";
-        return;    
-    }
+    print(STDERR "You need to specify a tool.\n"), return unless $tool;
     check_env(qw/PANLEX_TOOLDIR/);
 
     $tool .= '.pl' unless $tool =~ /\./;
 
     foreach my $dir ('serialize', catdir('serialize', 'subroutines'), 'tabularize') {
         my $file = catfile($ENV{PANLEX_TOOLDIR}, $dir, $tool);
-        if (-e $file) {
-            copy $file, curdir();
-            return;
-        }
+        copy($file, curdir()), return if -e $file;
     }
     
     print STDERR "could not find panlex tool $tool\n";
