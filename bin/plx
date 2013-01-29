@@ -37,6 +37,25 @@ sub cmd_fetch {
     }
 }
 
+sub cmd_which {
+    my ($approver) = @_;
+
+    if (!$approver) {
+        print STDERR "You need to specify an approver.\n";
+        return;    
+    }
+    check_env(qw/PANLEX_SOURCEDIR/);
+
+    $approver =~ s/:/-/g;
+    foreach my $dir (qw/queued used/) {
+        my $local_dir = catdir($ENV{PANLEX_SOURCEDIR}, $dir, $approver);
+        if (-d $local_dir) {
+            print $local_dir, "\n";
+            return;
+        }
+    }
+}
+
 sub cmd_cp {
     my ($tool) = @_;
 
@@ -69,6 +88,8 @@ cp <tool>
     copy panlex tool into the current directory
 fetch <approver>
     fetches an approver directory from panlex.net
+which <approver>
+    returns the local directory for an approver
     
 EOF
 }
