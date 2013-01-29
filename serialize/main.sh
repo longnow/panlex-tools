@@ -1,29 +1,21 @@
 # Converts a tab-delimited approver file for uploading to PanLex.
 
-# The directory containing serialize scripts. If unset here, it will be set 
-# from PANLEXDIR if possible, otherwise to the current directory.
-#SERIALIZEDIR=.
-
 # The basename of the approver file.
 BASENAME='aaa-bbb-Author'
 
-# The path to the perl executable.
-PERL=/usr/bin/perl
+# The directory containing serialize scripts. If unset here, it will be set 
+# from PANLEX_TOOLDIR if possible, otherwise to the current directory.
+#SERIALIZEDIR=.
 
-# Perl options.
-PERLOPT='-C63 -w'
+# The path to the perl executable.
+#PANLEX_PERL=/opt/bin/perl
 
 ### DO NOT MODIFY SECTION BELOW ###
 
-# Allow override of defaults in local panlexrc.
-if [[ -f ~/.panlexrc ]]; then
-    . ~/.panlexrc
-fi
+PERLCMD="${PANLEX_PERL-/usr/bin/perl} ${PANLEX_PERLOPT--C63 -w}"
 
-PERLCMD="$PERL $PERLOPT"
-
-if [[ -z $SERIALIZEDIR && -d $PANLEXDIR ]]; then
-    SERIALIZEDIR="$PANLEXDIR/serialize/subroutines"
+if [[ -z $SERIALIZEDIR && -d $PANLEX_TOOLDIR ]]; then
+    SERIALIZEDIR="$PANLEX_TOOLDIR/serialize/subroutines"
 else
     SERIALIZEDIR=.
 fi
