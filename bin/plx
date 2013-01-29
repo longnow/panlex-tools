@@ -1,0 +1,96 @@
+#!/usr/bin/env perl
+
+use utf8;
+use strict;
+no strict 'refs';
+
+use File::Spec::Functions;
+use File::Copy qw/copy/;
+
+usage(), exit(0) unless @ARGV;
+
+my $cmd = shift @ARGV;
+my $cmd_sub = 'cmd_'.$cmd;
+
+if (exists &$cmd_sub) {
+    &$cmd_sub(@ARGV);
+} else {
+    print STDERR "Unknown command: $cmd\n\n";
+    usage();
+}
+
+sub cmd_fetch {
+    my ($approver) = @_;
+    
+    if (!$approver) {
+        print STDERR "You need to specify an approver.\n";
+        return;    
+    }
+    check_env(qw/PANLEX_SOURCEDIR PANLEX_USER/);
+    
+    $approver =~ s/:/-/g;
+    foreach my $dir (qw/queued used/) {
+        my $local_dir = catdir($ENV{PANLEX_SOURCEDIR}, $dir);
+        -d $local_dir || mkdir($local_dir);
+        my $exitval = shell_cmd("scp -BCpr kamholz\@panlex.net:/var/www/html/panlex/sources/$dir/$approver " . catdir($local_dir, $approver));
+        last if $exitval == 0;
+    }
+}
+
+sub cmd_cp {
+    my ($tool) = @_;
+
+    if (!$tool) {
+        print STDERR "You need to specify an approver.\n";
+        return;    
+    }
+    check_env(qw/PANLEX_TOOLDIR/);
+
+    $tool .= '.pl' unless $tool =~ /\./;
+
+    foreach my $dir ('serialize', catdir('serialize', 'subroutines'), 'tabularize') {
+        my $file = catfile($ENV{PANLEX_TOOLDIR}, $dir, $tool);
+        if (-e $file) {
+            copy $file, curdir();
+            return;
+        }
+    }
+    
+    print STDERR "could not find panlex tool $tool\n";
+}
+
+sub usage {
+    print STDERR <<EOF;
+Usage: $0 <command> [options]
+
+Commands:
+
+cp <tool>
+    copy panlex tool into the current directory
+fetch <approver>
+    fetches an approver directory from panlex.net
+    
+EOF
+}
+
+sub check_env {
+    my %error;
+    
+    foreach my $var (grep { !defined $ENV{$_} } @_) {
+        print STDERR "The environment variable $var must be set to execute this command.\n";
+        $error{$var} = 1;
+    }
+    
+    foreach my $dir (grep { /DIR$/ && ! -d $ENV{$_} && !$error{$_} } @_) {
+        print STDERR "The environment variable $dir ($ENV{$dir}) must be set to a valid directory to execute this command.\n";
+        $error{$dir} = 1;
+    }
+    
+    keys %error > 0 && exit(0);
+}
+
+sub shell_cmd {
+    my ($cmd) = @_;
+    print $cmd, "\n";
+    return system $cmd;
+}
