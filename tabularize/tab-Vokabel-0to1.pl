@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl -w
 
 # tab-html-0to1.pl
 # Tabularizes an html file.
