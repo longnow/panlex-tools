@@ -29,7 +29,7 @@ sub cmd_fetch {
     foreach my $dir (qw/queued used/) {
         my $local_dir = catdir($ENV{PANLEX_SOURCEDIR}, $dir);
         -d $local_dir || mkdir($local_dir);
-        my $exitval = shell_cmd("scp -BCpr kamholz\@panlex.net:/var/www/html/panlex/sources/$dir/$approver " . catdir($local_dir, $approver));
+        my $exitval = shell_cmd("scp -BCpr panlex.net:/opt/panlex/sources/$dir/$approver " . catdir($local_dir, $approver));
         last if $exitval == 0;
     }
 }
