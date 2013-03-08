@@ -169,8 +169,6 @@ my @TOOLS = (
 
 ### DO NOT MODIFY BELOW THIS LINE ###
 
-my @CMD = split ' ', "$PERL $PERLOPT";
-
 my $DIR;
 if (-d $PANLEX_TOOLDIR) {
     $DIR = catfile($PANLEX_TOOLDIR,'serialize');
