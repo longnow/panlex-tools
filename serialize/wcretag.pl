@@ -1,17 +1,10 @@
 # Retags word classifications in a tab-delimited source file.
 # Arguments:
-#	0: base of the filename.
-#	1: version of the input file.
-#	2. input file's wc tag before its content.
-#	3. input file's wc tag after its content.
-#	4: output file's word-classification tag.
-#	5: metadatum tag.
-#	6+: columns containing word classifications.
-
-# This script must be an argument to a command calling Perl, e.g.:
-# /usr/bin/perl -C63 -w wcretag.pl 'ces-epo-Procházka' 2 '⫷wc:' '⫸' '⫷wc⫸' '⫷md:gram⫸' 1 2
-# The -C63 switch ensures that argument 2 is treated as UTF8-encoded. If it is used within the
-# script, it is “too late”.
+#	0: input file's wc tag before its content.
+#	1: input file's wc tag after its content.
+#	2: output file's word-classification tag.
+#	3: metadatum tag.
+#	4+: columns containing word classifications.
 
 use warnings 'FATAL', 'all';
 # Make every warning fatal.

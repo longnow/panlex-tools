@@ -1,14 +1,7 @@
 # Splits multi-meaning lines of a tagged source file, eliminating any duplicate output lines.
 # Arguments:
-#	0: base of the filename.
-#	1: version of the file.
-#	2: meaning-delimitation tag.
-#	3: number (0-based) of the column that may contain multiple meanings.
-
-# This script must be an argument to a command calling Perl, e.g.:
-# /usr/bin/perl -C63 -w mnsplit.pl 'ces-epo-Procházka' 2 '⫷mn⫸' 0
-# The -C63 switch ensures that argument 2 is treated as UTF8-encoded. If it is used within the
-# script, it is “too late”.
+#	0: meaning-delimitation tag.
+#	1: number (0-based) of the column that may contain multiple meanings.
 
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
@@ -19,73 +12,60 @@ use strict;
 use utf8;
 # Make Perl interpret the script and standard files as UTF-8 rather than bytes.
 
-open DICIN, '<:utf8', "$ARGV[0]-$ARGV[1].txt";
-# Open the input file for reading.
+sub mnsplit {
+    my ($in, $out, $mndelim, $mncol) = @_;
+    my %line;
+    
+    while (<$in>) {
+    # For each line of the input file:
 
-open DICOUT, '>:utf8', ("$ARGV[0]-" . ($ARGV[1] + 1) . '.txt');
-# Create or truncate the output file and open it for writing.
+    	chomp;
+    	# Delete its trailing newline.
 
-my (@col, @line, %line, $line, $mn);
+    	my @col = (split /\t/, $_, -1);
+    	# Identify its columns.
 
-while (<DICIN>) {
-# For each line of the input file:
+    	if ((index $col[$mncol], $mndelim) < 0) {
+    	# If the potentially multimeaning column is one-meaning:
 
-	chomp;
-	# Delete its trailing newline.
+    		unless (exists $line{$_}) {
+    		# If the line isn't a duplicate:
 
-	@col = (split /\t/, $_, -1);
-	# Identify its columns.
+    			$line{$_} = '';
+    			# Add it to the table of output lines.
 
-	if ((index $col[$ARGV[3]], $ARGV[2]) < 0) {
-	# If the potentially multimeaning column is one-meaning:
+    			print $out $_, "\n";
+    			# Output it.
+    		}
+    	}
 
-		unless (exists $line{$_}) {
-		# If the line isn't a duplicate:
+    	else {
+    	# Otherwise, i.e. if the column is multimeaning:
 
-			$line{$_} = '';
-			# Add it to the table of output lines.
+    		foreach my $mn (split /$mndelim/, $col[$mncol]) {
+    		# For each of its meaning segments:
 
-			print DICOUT "$_\n";
-			# Output it.
+    			my @line = @col;
+    			# Identify its line's columns, with the multimeaning column unchanged.
 
-		}
+    			$line[$mncol] = $mn;
+    			# Replace the multimeaning column with the meaning segment.
 
-	}
+    			my $ln = (join "\t", @line);
+    			# Identify the meaning's line.
 
-	else {
-	# Otherwise, i.e. if the column is multimeaning:
+    			unless (exists $line{$ln}) {
+    			# If it isn't a duplicate:
 
-		foreach $mn (split /$ARGV[2]/, $col[$ARGV[3]]) {
-		# For each of its meaning segments:
+    				$line{$ln} = '';
+    				# Add it to the table of output lines.
 
-			@line = @col;
-			# Identify its line's columns, with the multimeaning column unchanged.
-
-			$line[$ARGV[3]] = $mn;
-			# Replace the multimeaning column with the meaning segment.
-
-			$line = (join "\t", @line);
-			# Identify the meaning's line.
-
-			unless (exists $line{$line}) {
-			# If it isn't a duplicate:
-
-				$line{$line} = '';
-				# Add it to the table of output lines.
-
-				print DICOUT "$line\n";
-				# Output it.
-
-			}
-
-		}
-
-	}
-
+    				print $out $ln, "\n";
+    				# Output it.
+    			}
+    		}
+    	}
+    }
 }
 
-close DICIN;
-# Close the input file.
-
-close DICOUT;
-# Close the output file.
+[\&mnsplit];

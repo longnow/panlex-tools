@@ -1,30 +1,23 @@
 # Normalizes expressions in a tagged source file.
 # Arguments:
-#	0: base of the filename.
-#	1: version of the input file.
-#	2: tag specification (regular expression).
-#	3: expression tag.
-#	4: column containing expressions to be normalized.
-#	5: minimum score (0 or more) a proposed expression must have in order to be accepted
+#	0: tag specification (regular expression).
+#	1: expression tag.
+#	2: column containing expressions to be normalized.
+#	3: minimum score (0 or more) a proposed expression must have in order to be accepted
 #		outright as an expression. Every proposed expression with a lower (or no) score is
 #		to be replaced with the highest-scoring expression sharing its language variety and
 #		degradation, if any such expression has a higher score than it.
-#	6: minimum score a proposed expression that is not accepted outright as an expression,
+#	4: minimum score a proposed expression that is not accepted outright as an expression,
 #		or its replacement, must have in order to be accepted as an expression.
-#	7: variety UID of expressions to be normalized.
-#	8: tag of pre-normalized expression.
-#	9: if proposed expressions not accepted as expressions and not having replacements accepted
+#	5: variety UID of expressions to be normalized.
+#	6: tag of pre-normalized expression.
+#	7: if proposed expressions not accepted as expressions and not having replacements accepted
 #		as expressions are to be converted to definitions, definition tag, or blank if they
 #		are to be converted to pre-normalized expressions.
-#	10: regular expression matching the synonym delimiter if each proposed expression containing
+#	8: regular expression matching the synonym delimiter if each proposed expression containing
 #		such a delimiter is to be treated as a list of synonymous proposed expressions and
 #		they are to be normalized if and only if all expressions in the list are
 #		normalizable, or blank if not.
-
-# This script must be an argument to a command calling Perl, e.g.:
-# /usr/bin/perl -C63 -w normalize.pl 'aaa-bbb-Author' 2 '⫷[a-z:]+⫸' '⫷ex⫸' 1 5 10 'epo-000' '⫷exp⫸' '⫷df⫸' ', '
-# The -C63 switch ensures that argument 2 is treated as UTF8-encoded. If it is used within the
-# script, it is “too late”.
 
 use warnings 'FATAL', 'all';
 # Make every warning fatal.

@@ -1,16 +1,8 @@
 # Converts a normally tagged source file to a simple-text bilingual source file,
 # eliminating duplicates.
 # Arguments:
-#	0: base of the filename.
-#	1: version of the input file.
-#	2: version of the output file.
-#	3: variety UID of column 0.
-#	4: variety UID of column 1.
-
-# This script must be an argument to a command calling Perl, e.g.:
-# /usr/bin/perl -C63 -w simple-2.pl 'epo-hun-Wüster' '5' 'final' 'epo-000' 'hun-000'
-# The -C63 switch ensures that argument 2 is treated as UTF8-encoded. If it is used within the
-# script, it is “too late”.
+#	0: variety UID of column 0.
+#	1: variety UID of column 1.
 
 use warnings 'FATAL', 'all';
 # Make every warning fatal.

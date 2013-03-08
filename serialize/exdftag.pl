@@ -1,25 +1,18 @@
 # Splits definitional expressions into reduced expressions and definitions in a source file with
 # already-tagged expressions and tags the added definitions.
 # Arguments:
-#	0: base of the filename.
-#	1: version of the input file.
-#	2: expression tag in file.
-#	3: regular expression matching any post-tag character.
-#	4: regular expression matching any post-tag character that is not a space.
-#	5: regular expression matching a definitional part of an expression.
-#	6: definition tag to be used on definitions.
-#	7: maximum character count permitted in an expression, or blank if none.
-#	8: maximum word count permitted in an expression, or blank if none.
-#	9: regular expression matching any substring forcing an expression to be
+#	0: expression tag in file.
+#	1: regular expression matching any post-tag character.
+#	2: regular expression matching any post-tag character that is not a space.
+#	3: regular expression matching a definitional part of an expression.
+#	4: definition tag to be used on definitions.
+#	5: maximum character count permitted in an expression, or blank if none.
+#	6: maximum word count permitted in an expression, or blank if none.
+#	7: regular expression matching any substring forcing an expression to be
 #		reclassified as a definition, or blank if none.
-#	10: regular expression matching a preposed annotation not to be counted,
+#	8: regular expression matching a preposed annotation not to be counted,
 #		or blank if none.
-#	11+: columns containing expressions that may contain definitional parts.
-
-# This script must be an argument to a command calling Perl, e.g.:
-# /usr/bin/perl -C63 -w exdftag.pl 'aaa-bbb-Author' 5 '⫷ex⫸' '[^⫷]' '[^⫷ ]' '(?:\([^()]+\)|（[^（）]+）)' '⫷df⫸' 25 3 '[/;?!]' '«[^«»]+»' 2
-# The -C63 switch ensures that argument 2 is treated as UTF8-encoded. If it is used within the
-# script, it is “too late”.
+#	9+: columns containing expressions that may contain definitional parts.
 
 use warnings 'FATAL', 'all';
 # Make every warning fatal.

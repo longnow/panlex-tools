@@ -1,14 +1,7 @@
-# Tags meaning identifiers in a tab-delimited source file.
+# Tags meaning identifiers.
 # Arguments:
-#	0: base of the filename.
-#	1: version of the input file.
-#	2: column containing meaning identifiers.
-#	3: meaning-identifier tag.
-
-# This script must be an argument to a command calling Perl, e.g.:
-# /usr/bin/perl -C63 -w extag.pl 'ces-epo-Procházka' '2' '0' '⫷mi⫸'
-# The -C63 switch ensures that argument 2 is treated as UTF8-encoded. If it is used within the
-# script, it is “too late”.
+#	0: column that contains meaning identifiers.
+#	1: meaning-identifier tag.
 
 use warnings 'FATAL', 'all';
 # Make every warning fatal.

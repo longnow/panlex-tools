@@ -1,19 +1,11 @@
 # Converts a standard tagged source file to a full-text varilingual source file.
 # Arguments:
-#	0: base of the filename.
-#	1: version of the input file.
-#	2: version of the output file.
-#	3: word classification to annotate all expressions as that have no tagged wc,
+#	0: word classification to annotate all expressions as that have no tagged wc,
 #		or blank if none.
-#	4: minimum count (2 or more) of definitions and expressions per entry.
-#	5: minimum count (1 or more) of expressions per entry.
-#	6+: specifications (column index and variety UID, colon-delimited) of columns
+#	1: minimum count (2 or more) of definitions and expressions per entry.
+#	2: minimum count (1 or more) of expressions per entry.
+#	3+: specifications (column index and variety UID, colon-delimited) of columns
 #		containing tags (ex, df, dm) requiring variety specifications.
-
-# This script must be an argument to a command calling Perl, e.g.:
-# /usr/bin/perl -C63 -w out-full-0.pl 'epo-hun-Wüster' 5 'final' 'noun' '0:epo-000' '1:hun-000'
-# The -C63 switch ensures that argument 2 is treated as UTF8-encoded. If it is used within the
-# script, it is “too late”.
 
 use warnings 'FATAL', 'all';
 # Make every warning fatal.

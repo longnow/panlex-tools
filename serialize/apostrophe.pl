@@ -1,14 +1,7 @@
 # Converts a tab-delimited source file's apostrophes.
 # Arguments:
-#	0: base of the filename.
-#	1: version of the file.
-#	2+: specifications (column index and variety UID, colon-delimited) of columns
+#	0+: specifications (column index and variety UID, colon-delimited) of columns
 #		possibly requiring apostrophe normalization.
-
-# This script must be an argument to a command calling Perl, e.g.:
-# /usr/bin/perl -C63 -w apostrophe.pl 'aaa-bbb-Author' 3 '1:eng-000' '2:fra-000'
-# The -C63 switch ensures that argument 2 is treated as UTF8-encoded. If it is used within the
-# script, it is “too late”.
 
 use warnings 'FATAL', 'all';
 # Make every warning fatal.

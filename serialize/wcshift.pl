@@ -1,20 +1,12 @@
 # Replaces prepended word class specifications with post-ex wc tags in a
-# tab-delimited source file and deletes word class specifications
-# prepended to definitions.
+# tab-delimited source file.
 # Arguments:
-#	0: base of the filename.
-#	1: version of the input file.
-#	2: column containing word class specifications.
-#	3: start of word-class specification.
-#	4: end of word-class specification.
-#	5: word-classification tag.
-#	6: expression tag.
-#	7: regular expression matching any post-tag character.
-
-# This script must be an argument to a command calling Perl, e.g.:
-# /usr/bin/perl -C63 -w wcshift.pl 'art-eng-Ingsve' 7 2 '«wc:' '»' '⫷wc⫸' '⫷ex⫸' '[^⫷]'
-# The -C63 switch ensures that argument 2 is treated as UTF8-encoded. If it is used within the
-# script, it is “too late”.
+#	0: column containing prepended word class specifications.
+#	1: start of word-class specification.
+#	2: end of word-class specification.
+#	3: word-classification tag.
+#	4: expression tag.
+#	5: regular expression matching any post-tag character.
 
 use warnings 'FATAL', 'all';
 # Make every warning fatal.

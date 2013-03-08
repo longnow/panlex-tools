@@ -1,15 +1,8 @@
 # Tags domain expressions in a tab-delimited source file.
 # Arguments:
-#	0: base of the filename.
-#	1: version of the input file.
-#	2: domain-expression tag.
-#	3: inter-expression delimiter, or blank if none.
-#	4+: columns containing domain expressions.
-
-# This script must be an argument to a command calling Perl, e.g.:
-# /usr/bin/perl -C63 -w dmtag.pl 'aaa-bbb-Author' 2 '⫷dm⫸' '‣' 3 4
-# The -C63 switch ensures that argument 2 is treated as UTF8-encoded. If it is used within the
-# script, it is “too late”.
+#	0: domain-expression tag.
+#	1: inter-expression delimiter, or blank if none.
+#	2+: columns containing domain expressions.
 
 use warnings 'FATAL', 'all';
 # Make every warning fatal.

@@ -1,14 +1,7 @@
 # Tags all column-based definitions in a tab-delimited source file.
 # Arguments:
-#	0: base of the filename.
-#	1: version of the input file.
-#	2: definition tag.
-#	3+: columns containing definitions.
-
-# This script must be an argument to a command calling Perl, e.g.:
-# /usr/bin/perl -C63 -w dftag.pl 'aaa-bbb-Author' 2 '⫷df⫸' 1 2
-# The -C63 switch ensures that argument 2 is treated as UTF8-encoded. If it is used within the
-# script, it is “too late”.
+#	0: definition tag.
+#	1+: columns containing definitions.
 
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
