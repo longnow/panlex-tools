@@ -130,7 +130,7 @@ my @TOOLS = (
 #		they are to be normalized if and only if all expressions in the list are
 #		normalizable, or blank if not.
 
-#'out-simple-0'   => [ '0:tgl-000', '1:deu-000' ],
+#'out-simple-0'   => [ '0:rus-000', '1:eng-000' ],
 # Converts a normally tagged source file to a simple-text varilingual source file,
 # eliminating duplicates.
 # Arguments:
@@ -144,7 +144,7 @@ my @TOOLS = (
 #	0: variety UID of column 0.
 #	1: variety UID of column 1.
 
-#'out-full-0'   => [ '', 2, 2, '0:eng-000', '1:haa-000' ],
+#'out-full-0'   => [ '', 2, 2, '0:rus-000', '1:eng-000' ],
 # Converts a standard tagged source file to a full-text varilingual source file.
 # Arguments:
 #	0: word classification to annotate all expressions as that have no tagged wc,
@@ -154,7 +154,7 @@ my @TOOLS = (
 #	3+: specifications (column index and variety UID, colon-delimited) of columns
 #		containing tags (ex, df, dm) requiring variety specifications.
 
-#'out-full-2'   => [ '', 2, 1, '0:art-259', '2:eng-000' ],
+#'out-full-2'   => [ '', 2, 1, '0:rus-259', '1:eng-000' ],
 # Converts a standard tagged source file to a full-text bilingual source file, eliminating duplicates.
 # Arguments:
 #	0: word classification to annotate all expressions as that have no tagged wc, or blank if none.
@@ -180,6 +180,8 @@ if (-d $PANLEX_TOOLDIR) {
 
 die "odd number of items in \@TOOLS" unless @TOOLS % 2 == 0;
 
+print "\n";
+
 for (my $i = 0; $i < @TOOLS; $i += 2) {
     my ($tool,$args) = @TOOLS[$i, $i+1];
     my $tool_path = catfile($DIR, $tool . '.pl');
@@ -192,9 +194,11 @@ for (my $i = 0; $i < @TOOLS; $i += 2) {
     my $output = "$BASENAME-$VERSION.txt";
     open my $out, '>:utf8', "$BASENAME-$VERSION.txt" or die $!;
     
-    print "$tool $input => $output\n";
+    printf "%-12s %s => %s\n", $tool, $input, $output;
     &$sub($in, $out, @$args);
 
     close $in;
     close $out;
 }
+
+print "\n";
