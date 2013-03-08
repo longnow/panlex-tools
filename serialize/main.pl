@@ -11,17 +11,9 @@ my $BASENAME = 'aaa-bbb-Author';
 # The initial version to use.
 my $VERSION = 0;
 
-# The directory containing serialize scripts. If unset here, will look next in 
-# env var PANLEX_TOOLDIR, otherwise use the current directory.
-my $SERIALIZEDIR;
-
-# The path to the perl executable. If unset here, will look next in env var
-# PANLEX_PERL, otherwise use the system default.
-my $PERL;
-
-# Perl commandline options. If unset here, will look next in env var
-# PANLEX_PERLOPT, otherwise use the default of '-C63 -w'. 
-my $PERLOPT;
+# The panlex-tools directory containing the serialize scripts. If unset here, 
+# will look next in env var PANLEX_TOOLDIR, otherwise use the current directory.
+my $PANLEX_TOOLDIR;
 
 my @TOOLS = (
     
@@ -177,29 +169,32 @@ my @TOOLS = (
 
 ### DO NOT MODIFY BELOW THIS LINE ###
 
-$PERL ||= $ENV{PANLEX_PERL} || 'perl';
-
-$PERLOPT ||= $ENV{PANLEX_PERLOPT} || '-C63 -w';
-
 my @CMD = split ' ', "$PERL $PERLOPT";
 
-$SERIALIZEDIR ||= 
-    (-d $ENV{PANLEX_TOOLDIR} ? catfile($ENV{PANLEX_TOOLDIR},'serialize') : getcwd);
+my $DIR;
+if (-d $PANLEX_TOOLDIR) {
+    $DIR = catfile($PANLEX_TOOLDIR,'serialize');
+} elsif (-d $ENV{PANLEX_TOOLDIR}) {
+    $DIR = catfile($ENV{PANLEX_TOOLDIR},'serialize');
+} else {
+    $DIR = getcwd;
+}
 
 die "odd number of items in \@TOOLS" unless @TOOLS % 2 == 0;
 
 for (my $i = 0; $i < @TOOLS; $i += 2) {
     my ($tool,$args) = @TOOLS[$i, $i+1];
-    my $tool_path = catfile($SERIALIZEDIR, $tool . '.pl');
+    my $tool_path = catfile($DIR, $tool . '.pl');
 
     my ($sub, $final) = @{require $tool_path};
-    open my $in, '<:utf8', "$BASENAME-$VERSION.txt" or die $!;
-    print "input: $BASENAME-$VERSION.txt\n";
+    my $input = "$BASENAME-$VERSION.txt";
+    open my $in, '<:utf8', $input  or die $!;
     
     $VERSION = $final ? 'final' : $VERSION+1;
+    my $output = "$BASENAME-$VERSION.txt";
     open my $out, '>:utf8', "$BASENAME-$VERSION.txt" or die $!;
-    print "output: $BASENAME-$VERSION.txt\n";
     
+    print "$tool $input => $output\n";
     &$sub($in, $out, @$args);
 
     close $in;
