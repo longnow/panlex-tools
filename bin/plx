@@ -55,7 +55,7 @@ sub cmd_cp {
 
     $tool .= '.pl' unless $tool =~ /\./;
 
-    foreach my $dir ('serialize', catdir('serialize', 'subroutines'), 'tabularize') {
+    foreach my $dir ('serialize', 'tabularize') {
         my $file = catfile($ENV{PANLEX_TOOLDIR}, $dir, $tool);
         copy($file, curdir()), return if -e $file;
     }
