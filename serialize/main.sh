@@ -1,3 +1,4 @@
+#!/bin/sh
 # Converts a tab-delimited approver file for uploading to PanLex.
 
 # The basename of the approver file.
