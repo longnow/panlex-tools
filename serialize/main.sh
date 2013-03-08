@@ -24,7 +24,7 @@ fi
 ### DO NOT MODIFY SECTION ABOVE ###
 
 $PERLCMD $SERIALIZEDIR/apostrophe.pl $BASENAME 0 '1:gyd-000' '3:nny-000' '5:eng-000'
-# Converts a tab-delimited approver file’s apostrophes.
+# Converts a tab-delimited approver file's apostrophes.
 # Arguments:
 #	0: base of the filename.
 #	1: version of the file.
@@ -83,9 +83,9 @@ $PERLCMD $SERIALIZEDIR/wcretag.pl $BASENAME 2 '⫷wc:' '⫸' '⫷wc⫸' '⫷md:g
 # Arguments:
 #	0: base of the filename.
 #	1: version of the input file.
-#	2. input file’s wc tag before its content.
-#	3. input file’s wc tag after its content.
-#	4: output file’s word-classification tag.
+#	2. input file's wc tag before its content.
+#	3. input file's wc tag after its content.
+#	4: output file's word-classification tag.
 #	5: metadatum tag.
 #	6+: columns containing word classifications.
 

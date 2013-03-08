@@ -15,10 +15,10 @@ my $fnbase = 'sbe-spa-eng-Morse';
 # Identify the filename base.
 
 my $ver = 2;
-# Identify the input file’s version.
+# Identify the input file's version.
 
 my $lcs = 'sbe';
-# Identify the source variety’s lc per the input file.
+# Identify the source variety's lc per the input file.
 
 #######################################################
 

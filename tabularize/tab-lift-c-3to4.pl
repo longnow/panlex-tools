@@ -18,7 +18,7 @@ my $fnbase = 'ttv-eng-T';
 # Identify the filename base.
 
 my $ver = 3;
-# Identify the input file’s version.
+# Identify the input file's version.
 
 #######################################################
 

@@ -34,7 +34,7 @@ while (<DICIN>) {
 	# Identify its columns.
 
 	($col[$ARGV[2]] = "$ARGV[3]$col[$ARGV[2]]") if (length $col[$ARGV[2]]);
-	# Prefix a meaning-identifier tag to the meaning-identifier column’s content,
+	# Prefix a meaning-identifier tag to the meaning-identifier column's content,
 	# if not blank.
 
 	print DICOUT (join "\t", @col);

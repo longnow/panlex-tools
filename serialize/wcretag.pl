@@ -2,9 +2,9 @@
 # Arguments:
 #	0: base of the filename.
 #	1: version of the input file.
-#	2. input file’s wc tag before its content.
-#	3. input file’s wc tag after its content.
-#	4: output file’s word-classification tag.
+#	2. input file's wc tag before its content.
+#	3. input file's wc tag after its content.
+#	4: output file's word-classification tag.
 #	5: metadatum tag.
 #	6+: columns containing word classifications.
 
@@ -63,7 +63,7 @@ while (<DICIN>) {
 		# As long as any remains unretagged:
 
 			if (exists $wc{$1}) {
-			# If the first one’s content is convertible:
+			# If the first one's content is convertible:
 
 				@wcmd = (split /:/, $wc{$1});
 				# Identify the wc and the md values of its conversion.
@@ -100,7 +100,7 @@ while (<DICIN>) {
 			}
 
 			else {
-			# Otherwise, i.e. if the first one’s content is not convertible:
+			# Otherwise, i.e. if the first one's content is not convertible:
 
 				$md = $1;
 				# Identify it.

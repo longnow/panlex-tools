@@ -15,7 +15,7 @@ my $fnbase = 'ibb-eng-Brunett';
 # Identify the filename base.
 
 my $ver = 1;
-# Identify the input file’s version.
+# Identify the input file's version.
 
 #######################################################
 

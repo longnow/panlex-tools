@@ -70,10 +70,10 @@ my $lentag = (length $ARGV[3]);
 # Identify the length of the expression tag.
 
 my @lcvc = (split /-/, $ARGV[7]);
-# Identify the variety’s lc and vc.
+# Identify the variety's lc and vc.
 
 my $lv = (&QV ("lv ('$lcvc[0]', $lcvc[1])"));
-# Identify the variety’s ID.
+# Identify the variety's ID.
 
 my $done = 0;
 # Initialize the count of processed lines as 0.
@@ -144,7 +144,7 @@ $dbh->do (
 		. 'group by tttd.tt'
 	. ') as tbl where tttd.tt = tbl.tt'
 );
-# Add the proposed expressions’ scores, if any, to the table.
+# Add the proposed expressions' scores, if any, to the table.
 
 foreach $exok (&QCs ("tt from tttd where uqsum >= $ARGV[5]")) {
 # For each proposed expression that has a score and whose score is sufficient for
@@ -169,13 +169,13 @@ $dbh->do (
 	. 'group by tttd.td, ex.tt'
 );
 # Create a temporary database table containing the texts of the expressions in the
-# variety that have those degradations and the sums of those expressions’ approvers’
+# variety that have those degradations and the sums of those expressions' approvers'
 # qualities.
 
 $dbh->do (
 	'create temporary table tdmax as select td, max (uqsum) as uqmax from ttcand group by td'
 );
-# Create a temporary database table containing the maximum quality sum of each degradation’s
+# Create a temporary database table containing the maximum quality sum of each degradation's
 # expressions, if any, in the variety.
 
 foreach $exok (&QCs (
@@ -194,7 +194,7 @@ $dbh->do (
 	'delete from tttd using tdmax '
 	. "where tttd.td = tdmax.td and uqsum = uqmax and uqsum >= $ARGV[6]"
 );
-# Delete those expressions’ records from the database table.
+# Delete those expressions' records from the database table.
 
 $dbh->do (
 	'update tttd set td = ttcand.tt, uqsum = uqmax from ttcand, tdmax '
@@ -247,7 +247,7 @@ foreach $line (@line) {
 			# If it is tagged as an expression:
 
 				$allok = 1;
-				# Initialize the list’s elements as all classifiable as
+				# Initialize the list's elements as all classifiable as
 				# expressions.
 
 				foreach $ex (@ex = (&PsList ($seg[$i], $lentag, $ARGV[10]))) {
@@ -315,7 +315,7 @@ foreach $line (@line) {
 				# as expressions with or without replacement:
 
 					$seg[$i] = (join "$ARGV[10]", @ex);
-					# Identify the concatenation of the list’s elements, with
+					# Identify the concatenation of the list's elements, with
 					# the specified delimiter if any, i.e. the original item
 					# without its expression tag.
 
@@ -456,10 +456,10 @@ sub QV {
 	# Identify the array of values in the first row resulting from the specified query.
 
 	if (@ret && (defined $ret[0])) {
-	# If the array isn’t empty and its first element is defined:
+	# If the array isn't empty and its first element is defined:
 
 		return $ret[0];
-		# Return that element’s value.
+		# Return that element's value.
 
 	}
 

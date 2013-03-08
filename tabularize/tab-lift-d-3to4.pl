@@ -15,7 +15,7 @@ my $fnbase = 'wic-eng-Rood';
 # Identify the filename base.
 
 my $ver = 3;
-# Identify the input file’s version.
+# Identify the input file's version.
 
 #######################################################
 
@@ -54,7 +54,7 @@ while (<DICIN>) {
 	# As long as the line contains any expression list, delete it and:
 
 		$col[$lv{$1}] .= (((length $col[$lv{$1}]) ? '‣' : '') . $2);
-		# Add it to its variety’s output column.
+		# Add it to its variety's output column.
 
 	}
 

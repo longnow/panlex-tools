@@ -5,7 +5,7 @@
 #	1: delimiting non-meta character.
 
 use utf8;
-# Make Perl interpret the script as UTF-8. Calling script’s invocation of
+# Make Perl interpret the script as UTF-8. Calling script's invocation of
 # this pragma does not apply to this script, which is imported with a
 # “require” statement, i.e. via an “eval `cat dedup.pl`” mechanism.
 

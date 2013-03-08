@@ -19,7 +19,7 @@ my $fnbase = 'aaa-bbb-Author';
 # Identify the filename base.
 
 my $ver = 0;
-# Identify the input file’s version.
+# Identify the input file's version.
 
 #######################################################
 
@@ -44,7 +44,7 @@ while (<DICIN>) {
 	# If it is an entry:
 
 		unless (exists $st{"$1•$2•$3•$4"}) {
-		# If it isn’t a duplicate:
+		# If it isn't a duplicate:
 
 			$st{"$1•$2•$3•$4"} = '';
 			# Add it to the table of entries.

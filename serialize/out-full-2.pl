@@ -66,13 +66,13 @@ while (<DICIN>) {
 			# If it is variety-specific:
 
 			$col[$i] =~ s/⫷ex⫸/⫷ex:$col{$i}⫸/g;
-			# Insert the column’s variety UID into each expression tag in it.
+			# Insert the column's variety UID into each expression tag in it.
 
 			$col[$i] =~ s/⫷df⫸/⫷df:$col{$i}⫸/g;
-			# Insert the column’s variety UID into each definition tag in it.
+			# Insert the column's variety UID into each definition tag in it.
 
 			$col[$i] =~ s/⫷dm⫸/⫷dm:$col{$i}⫸/g;
-			# Insert the column’s variety UID into each domain tag in it.
+			# Insert the column's variety UID into each domain tag in it.
 
 		}
 

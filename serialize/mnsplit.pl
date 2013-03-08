@@ -40,7 +40,7 @@ while (<DICIN>) {
 	# If the potentially multimeaning column is one-meaning:
 
 		unless (exists $line{$_}) {
-		# If the line isn’t a duplicate:
+		# If the line isn't a duplicate:
 
 			$line{$_} = '';
 			# Add it to the table of output lines.
@@ -59,16 +59,16 @@ while (<DICIN>) {
 		# For each of its meaning segments:
 
 			@line = @col;
-			# Identify its line’s columns, with the multimeaning column unchanged.
+			# Identify its line's columns, with the multimeaning column unchanged.
 
 			$line[$ARGV[3]] = $mn;
 			# Replace the multimeaning column with the meaning segment.
 
 			$line = (join "\t", @line);
-			# Identify the meaning’s line.
+			# Identify the meaning's line.
 
 			unless (exists $line{$line}) {
-			# If it isn’t a duplicate:
+			# If it isn't a duplicate:
 
 				$line{$line} = '';
 				# Add it to the table of output lines.

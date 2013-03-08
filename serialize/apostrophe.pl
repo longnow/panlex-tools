@@ -1,4 +1,4 @@
-# Converts a tab-delimited approver file’s apostrophes.
+# Converts a tab-delimited approver file's apostrophes.
 # Arguments:
 #	0: base of the filename.
 #	1: version of the file.
@@ -66,7 +66,7 @@ $dbh->do (
 # Add U+02bb data to it.
 
 $dbh->do (
-	"update apostemp set best = '’' from cp "
+	"update apostemp set best = ''' from cp "
 	. 'where cp.lv = apostemp.lv and rq and not ma and not mtc'
 );
 $dbh->do (
@@ -94,7 +94,7 @@ foreach $i (2 .. $#ARGV) {
 	# Add its column index to the list of indices of columns to be processed.
 
 	@lcvc = ($collcvc[1] =~ /^([a-z]{3})-(\d{3})$/);
-	# Identify the variety’s lc and vc.
+	# Identify the variety's lc and vc.
 
 	$lv = ($dbh->selectrow_array ("select * from lv ('$lcvc[0]', $lcvc[1])"))[0];
 	# Identify its lv.
@@ -106,7 +106,7 @@ foreach $i (2 .. $#ARGV) {
 	# If there is one:
 
 		$apos{$collcvc[0]} = $best;
-		# Add the index of the column and its variety’s normative apostrophe to the table
+		# Add the index of the column and its variety's normative apostrophe to the table
 		# of normative apostrophes.
 
 	}
@@ -129,7 +129,7 @@ while (<DICIN>) {
 			# If it contains any apostrophes:
 
 				if (exists $apos{$pcol[$i]}) {
-				# If its variety’s apostrophes are convertible:
+				# If its variety's apostrophes are convertible:
 
 					$col[$pcol[$i]] =~ s/'/$apos{$pcol[$i]}/g;
 					# Convert them.
@@ -137,7 +137,7 @@ while (<DICIN>) {
 				}
 
 				else {
-				# Otherwise, i.e. if its variety’s apostrophes are not convertible:
+				# Otherwise, i.e. if its variety's apostrophes are not convertible:
 
 					$noncon{$pcol[$i]} = '';
 					# Add the column to the table of columns containing nonconvertible

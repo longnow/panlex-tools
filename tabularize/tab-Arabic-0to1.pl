@@ -19,7 +19,7 @@ my $fnbase = 'aaa-bbb-Author';
 # Identify the filename base.
 
 my $ver = 0;
-# Identify the input file’s version.
+# Identify the input file's version.
 
 #######################################################
 

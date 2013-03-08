@@ -15,7 +15,7 @@ my $fnbase = 'byv-eng-M';
 # Identify the filename base.
 
 my $ver = 4;
-# Identify the input file’s version.
+# Identify the input file's version.
 
 #######################################################
 
@@ -36,7 +36,7 @@ while (<DICIN>) {
 	@col = (split /\t/, $_, -1);
 	# Identify its columns.
 
-	$col[1] =~ s/’/'/g;
+	$col[1] =~ s/'/'/g;
 	# Convert all right single quotation marks in column 1 to apostrophes.
 
 	$col[2] =~ s/^None$//;

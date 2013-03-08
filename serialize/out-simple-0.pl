@@ -59,7 +59,7 @@ while (<DICIN>) {
 			# If it is an expression column:
 
 			$col[$i] =~ s/⫷ex⫸/⫷ex:$col{$i}⫸/g;
-			# Insert the column’s variety UID into each expression tag in it.
+			# Insert the column's variety UID into each expression tag in it.
 
 		}
 

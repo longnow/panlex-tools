@@ -41,7 +41,7 @@ while (<DICIN>) {
 		# If there is an inter-expression delimiter:
 
 			$col[$ARGV[$i]] =~ s/(^|$ARGV[3])(?!$|$ARGV[3])/$ARGV[2]/g;
-			# Prefix each element of the column’s value with a domain-expression tag.
+			# Prefix each element of the column's value with a domain-expression tag.
 
 		}
 
@@ -49,7 +49,7 @@ while (<DICIN>) {
 		# Otherwise, i.e. if there is no inter-expression delimiter:
 
 			$col[$ARGV[$i]] = "$ARGV[2]$col[$ARGV[$i]]";
-			# Prefix the column’s value with a domain-expression tag.
+			# Prefix the column's value with a domain-expression tag.
 
 		}
 

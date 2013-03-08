@@ -15,7 +15,7 @@ my $fnbase = 'wic-eng-Rood';
 # Identify the filename base.
 
 my $ver = 2;
-# Identify the input file’s version.
+# Identify the input file's version.
 
 #######################################################
 
