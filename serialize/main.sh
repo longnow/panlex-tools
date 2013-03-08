@@ -12,7 +12,7 @@ BASENAME='aaa-bbb-Author'
 
 ### DO NOT MODIFY SECTION BELOW ###
 
-PERLCMD="${PANLEX_PERL-/usr/bin/perl} ${PANLEX_PERLOPT--C63 -w}"
+PERLCMD="${PANLEX_PERL-perl} ${PANLEX_PERLOPT--C63 -w}"
 
 if [[ -z $SERIALIZEDIR && -d $PANLEX_TOOLDIR ]]; then
     SERIALIZEDIR="$PANLEX_TOOLDIR/serialize/subroutines"
