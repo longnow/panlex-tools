@@ -22,7 +22,7 @@ if (exists &$cmd_sub) {
 sub cmd_fetch {
     my ($approver) = @_;
     
-    print(STDERR "You need to specify an approver.\n"), return unless $approver;
+    print(STDERR "You need to specify an approver label.\n"), return unless $approver;
     check_env(qw/PANLEX_SOURCEDIR PANLEX_USER/);
     
     $approver =~ s/:/-/g;

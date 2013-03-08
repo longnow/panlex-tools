@@ -1,8 +1,7 @@
 #!/usr/bin/env perl -w
 
-# tab-html-0to1.pl
-# Tabularizes an html file.
-# Requires adaptation to the structure of each file.
+# tab-Vokabel-0to1.pl
+# Tabularizes a Vokabeltrainer html file.
 
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
