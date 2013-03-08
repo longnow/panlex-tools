@@ -11,50 +11,40 @@ use strict;
 # Require strict checking of variable references, etc.
 
 use utf8;
-# Make Perl interpret the script and standard files as UTF-8 rather than bytes.
+# Make Perl interpret the script as UTF-8 rather than bytes.
 
-open DICIN, '<:utf8', "$ARGV[0]-$ARGV[1].txt";
-# Open the input file for reading.
+sub dmtag {
+    my ($in, $out, $dmtag, $exdelim, @dmcols) = @_;
+    
+    while (<$in>) {
+    # For each line of the input file:
 
-open DICOUT, '>:utf8', ("$ARGV[0]-" . ($ARGV[1] + 1) . '.txt');
-# Create or truncate the output file and open it for writing.
+    	my @col = (split /\t/, $_, -1);
+    	# Identify its columns.
 
-my (@col, $i);
+    	foreach my $i (@dmcols) {
+    	# For each domain-expression column:
 
-while (<DICIN>) {
-# For each line of the input file:
+    		if (length $exdelim) {
+    		# If there is an inter-expression delimiter:
 
-	@col = (split /\t/, $_, -1);
-	# Identify its columns.
+    			$col[$i] =~ s/(^|$exdelim)(?!$|$exdelim)/$dmtag/g;
+    			# Prefix each element of the column's value with a domain-expression tag.
+    		}
 
-	foreach $i (4 .. $#ARGV) {
-	# For each domain-expression column:
+    		else {
+    		# Otherwise, i.e. if there is no inter-expression delimiter:
 
-		if (length $ARGV[3]) {
-		# If there is an inter-expression delimiter:
+    			$col[$i] = "$dmtag$col[$i]";
+    			# Prefix the column's value with a domain-expression tag.
 
-			$col[$ARGV[$i]] =~ s/(^|$ARGV[3])(?!$|$ARGV[3])/$ARGV[2]/g;
-			# Prefix each element of the column's value with a domain-expression tag.
+    		}
 
-		}
+    	}
 
-		else {
-		# Otherwise, i.e. if there is no inter-expression delimiter:
-
-			$col[$ARGV[$i]] = "$ARGV[2]$col[$ARGV[$i]]";
-			# Prefix the column's value with a domain-expression tag.
-
-		}
-
-	}
-
-	print DICOUT (join "\t", @col);
-	# Output the line.
-
+    	print $out join ("\t", @col);
+    	# Output the line.
+    }    
 }
 
-close DICIN;
-# Close the input file.
-
-close DICOUT;
-# Close the output file.
+[\&dmtag];

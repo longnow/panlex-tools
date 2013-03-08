@@ -22,15 +22,15 @@ my $VERSION = 0;
 
 #######################################################
 
-open DICIN, '<:encoding(utf8)', "$BASENAME-$VERSION.html";
+open $in, '<:encoding(utf8)', "$BASENAME-$VERSION.html";
 # Open the input file for reading.
 
-open DICOUT, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
+open $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
 # Create or truncate the output file and open it for writing.
 
 my @seg;
 
-while (<DICIN>) {
+while (<$in>) {
 # For each line of the input file:
 
 	if ((index $_, '<tr><td class="l1">') == 0) {
@@ -42,15 +42,15 @@ while (<DICIN>) {
 		@seg = m#^<tr><td class="l1">(.+?)</td><td class="l2">(.+?)</td></tr>#;
 		# Identify its segments.
 
-		(print DICOUT "$seg[0]\t$seg[1]\n") if @seg;
+		(print $out "$seg[0]\t$seg[1]\n") if @seg;
 		# Output them, if they exist.
 
 	}
 
 }
 
-close DICIN;
+close $in;
 # Close the input file.
 
-close DICOUT;
+close $out;
 # Close the output file.

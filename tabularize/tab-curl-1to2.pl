@@ -23,10 +23,10 @@ my $VERSION = 1;
 
 #######################################################
 
-open DICIN, '<:encoding(utf8)', "$BASENAME-$VERSION.txt";
+open $in, '<:encoding(utf8)', "$BASENAME-$VERSION.txt";
 # Open the input file for reading.
 
-open DICOUT, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
+open $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
 # Create or truncate the output file and open it for writing.
 
 my @seg;
@@ -37,7 +37,7 @@ my $eng = '';
 my $wc = '';
 # Initialize the prior wc as unknown.
 
-while (<DICIN>) {
+while (<$in>) {
 # For each line of the input file:
 
 	if ((index $_, '¶') == 0) {
@@ -84,15 +84,15 @@ while (<DICIN>) {
 
 		}
 
-		print DICOUT (join "\t", @seg[0, 2, 1, 3]);
+		print $out (join "\t", @seg[0, 2, 1, 3]);
 		# Output it, with the wc column shifted to apply to the rop-000 column.
 
 	}
 
 }
 
-close DICIN;
+close $in;
 # Close the input file.
 
-close DICOUT;
+close $out;
 # Close the output file.

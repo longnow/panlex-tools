@@ -23,15 +23,15 @@ my $VERSION = 0;
 
 #######################################################
 
-open DICIN, '<:encoding(utf8)', "$BASENAME-$VERSION.dix";
+open $in, '<:encoding(utf8)', "$BASENAME-$VERSION.dix";
 # Open the input file for reading.
 
-open DICOUT, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
+open $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
 # Create or truncate the output file and open it for writing.
 
 my %st;
 
-while (<DICIN>) {
+while (<$in>) {
 # For each line of the input file:
 
 	s#<b/># #g;
@@ -49,7 +49,7 @@ while (<DICIN>) {
 			$st{"$1•$2•$3•$4"} = '';
 			# Add it to the table of entries.
 
-			print DICOUT "$1\t$2\t$3\t$4\n";
+			print $out "$1\t$2\t$3\t$4\n";
 			# Output its columns.
 
 		}
@@ -58,8 +58,8 @@ while (<DICIN>) {
 
 }
 
-close DICIN;
+close $in;
 # Close the input file.
 
-close DICOUT;
+close $out;
 # Close the output file.

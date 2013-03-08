@@ -23,16 +23,16 @@ my $VERSION = 0;
 
 #######################################################
 
-open DICIN, '<:encoding(utf8)', "$BASENAME-$VERSION.html";
+open $in, '<:encoding(utf8)', "$BASENAME-$VERSION.html";
 # Open the input file for reading.
 
-open DICOUT, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
+open $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
 # Create or truncate the output file and open it for writing.
 
 my $state = 1;
 # Initialize the state as in-entry.
 
-while (<DICIN>) {
+while (<$in>) {
 # For each line of the input file:
 
 	chomp;
@@ -49,7 +49,7 @@ while (<DICIN>) {
 	elsif (m#^</tr#) {
 	# Otherwise, if it is the end of a row:
 
-		print DICOUT "\n";
+		print $out "\n";
 		# Output a newline.
 
 		$state = 0;
@@ -60,15 +60,15 @@ while (<DICIN>) {
 	elsif (($state == 1) && (m#^<div class=paragraph .+<b>([^<>]+)</b></span></div>$#)) {
 	# Otherwise, if the state is in-entry and the line is an entry line:
 
-		print DICOUT "\t$1";
+		print $out "\t$1";
 		# Output its expression, preceded by a tab.
 
 	}
 
 }
 
-close DICIN;
+close $in;
 # Close the input file.
 
-close DICOUT;
+close $out;
 # Close the output file.

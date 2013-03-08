@@ -23,15 +23,15 @@ my $VERSION = 1;
 
 #######################################################
 
-open DICIN, '<:encoding(utf8)', "$BASENAME-$VERSION.txt";
+open $in, '<:encoding(utf8)', "$BASENAME-$VERSION.txt";
 # Open the input file for reading.
 
-open DICOUT, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
+open $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
 # Create or truncate the output file and open it for writing.
 
 my (%all, $i, $key, @seg);
 
-while (<DICIN>) {
+while (<$in>) {
 # For each line of the input file:
 
 	chomp;
@@ -91,7 +91,7 @@ while (<DICIN>) {
 			$all{$key} = '';
 			# Add it to the table of concatenations.
 
-			print DICOUT (join "\t", @seg), "\n";
+			print $out (join "\t", @seg), "\n";
 			# Output the line.
 
 		}
@@ -100,10 +100,10 @@ while (<DICIN>) {
 
 }
 
-close DICIN;
+close $in;
 # Close the input file.
 
-close DICOUT;
+close $out;
 # Close the output file.
 
 # Trim

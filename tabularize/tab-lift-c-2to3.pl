@@ -22,13 +22,13 @@ my $lcs = 'sbe';
 
 #######################################################
 
-open DICIN, '<:encoding(utf8)', "$BASENAME-$VERSION.txt";
+open $in, '<:encoding(utf8)', "$BASENAME-$VERSION.txt";
 # Open the input file for reading.
 
-open DICOUT, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
+open $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
 # Create or truncate the output file and open it for writing.
 
-while (<DICIN>) {
+while (<$in>) {
 # For each line of the input file:
 
 	while (s%</text></form></lexical-unit><variant><form lang="$lcs"><text>([^<>]+)</text></form></variant>%‣$1</text></form></lexical-unit>%) {}
@@ -58,13 +58,13 @@ while (<DICIN>) {
 	s%</?definition>%%g;
 	# Delete all translation-enclosing tags in it.
 
-	print DICOUT;
+	print $out;
 	# Output it.
 
 }
 
-close DICIN;
+close $in;
 # Close the input file.
 
-close DICOUT;
+close $out;
 # Close the output file.

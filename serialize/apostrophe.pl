@@ -10,167 +10,161 @@ use strict;
 # Require strict checking of variable references, etc.
 
 use utf8;
-# Make Perl interpret the script and standard files as UTF-8 rather than bytes.
+# Make Perl interpret the script as UTF-8 rather than bytes.
 
 use DBI;
 # Import the general database-interface module. It imports DBD::Pg for PostgreSQL automatically.
 
-open DICIN, '<:utf8', "$ARGV[0]-$ARGV[1].txt";
-# Open the input file for reading.
+sub apostrophe {
+    my ($in, $out, @args) = @_;
+    
+    my $dbh = DBI->connect(
+    	"dbi:Pg:dbname=plx;host=uf.utilika.org;port=5432", '', '',
+    	{ (AutoCommit => 0), (pg_enable_utf8 => 1) }
+    );
+    # Specify & connect to the PostgreSQL 9.0.1 database “plx”, with AutoCommit off
+    # and the UTF-8 flag on (without which strings read from the database and split into
+    # characters are split into bytes rather than Unicode character values. DBI automatically
+    # issues a begin_work statement, requiring an explicit commit statement before the
+    # disconnection to avoid an automatic rollback. Username and password will be obtained
+    # from local (client) environment variables PGUSER and PGPASSWORD, respectively.
 
-open DICOUT, '>:utf8', ("$ARGV[0]-" . ($ARGV[1] + 1) . '.txt');
-# Create or truncate the output file and open it for writing.
+    $dbh->do (
+    	'create temporary table apostemp as '
+    	. "select lv, false as rq, false as ma, false as mtc, ''::text as best from lv order by lv"
+    );
+    # Create a temporary database table of apostrophe data.
 
-my $dbh = DBI->connect(
-	"dbi:Pg:dbname=plx;host=uf.utilika.org;port=5432", '', '',
-	{ (AutoCommit => 0), (pg_enable_utf8 => 1) }
-);
-# Specify & connect to the PostgreSQL 9.0.1 database “plx”, with AutoCommit off
-# and the UTF-8 flag on (without which strings read from the database and split into
-# characters are split into bytes rather than Unicode character values. DBI automatically
-# issues a begin_work statement, requiring an explicit commit statement before the
-# disconnection to avoid an automatic rollback. Username and password will be obtained
-# from local (client) environment variables PGUSER and PGPASSWORD, respectively.
+    $dbh->do (
+    	'update apostemp set rq = true from cp '
+    	. "where cp.lv = apostemp.lv and c0 <= '02019' and c1 >= '02019'"
+    );
+    # Add U+2019 data to it.
 
-my (%apos, $best, @col, @collcvc, $i, @lcvc, $lv, %noncon, @pcol);
+    $dbh->do (
+    	'update apostemp set ma = true from cp '
+    	. "where cp.lv = apostemp.lv and c0 <= '002bc' and c1 >= '002bc'"
+    );
+    # Add U+02bc data to it.
 
-$dbh->do (
-	'create temporary table apostemp as '
-	. "select lv, false as rq, false as ma, false as mtc, ''::text as best from lv order by lv"
-);
-# Create a temporary database table of apostrophe data.
+    $dbh->do (
+    	'update apostemp set mtc = true from cp '
+    	. "where cp.lv = apostemp.lv and c0 <= '002bb' and c1 >= '002bb'"
+    );
+    # Add U+02bb data to it.
 
-$dbh->do (
-	'update apostemp set rq = true from cp '
-	. "where cp.lv = apostemp.lv and c0 <= '02019' and c1 >= '02019'"
-);
-# Add U+2019 data to it.
+    $dbh->do (
+    	"update apostemp set best = ''' from cp "
+    	. 'where cp.lv = apostemp.lv and rq and not ma and not mtc'
+    );
+    $dbh->do (
+    	"update apostemp set best = 'ʼ' from cp "
+    	. 'where cp.lv = apostemp.lv and not rq and not mtc'
+    );
+    $dbh->do (
+    	"update apostemp set best = 'ʻ' from cp "
+    	. 'where cp.lv = apostemp.lv and not rq and not ma and mtc'
+    );
+    $dbh->do (
+    	"update apostemp set best = 'ʼ' "
+    	. 'where lv not in (select distinct lv from cp)'
+    );
+    # Add data on the best apostrophe to it, making it U+02bc for varieties without any data on
+    # editor-approved characters.
 
-$dbh->do (
-	'update apostemp set ma = true from cp '
-	. "where cp.lv = apostemp.lv and c0 <= '002bc' and c1 >= '002bc'"
-);
-# Add U+02bc data to it.
+    my (%apos, %noncon, @pcol);
 
-$dbh->do (
-	'update apostemp set mtc = true from cp '
-	. "where cp.lv = apostemp.lv and c0 <= '002bb' and c1 >= '002bb'"
-);
-# Add U+02bb data to it.
+    for (my $i = 0; $i < @args; $i++) {
+    # For each column to be processed:
 
-$dbh->do (
-	"update apostemp set best = ''' from cp "
-	. 'where cp.lv = apostemp.lv and rq and not ma and not mtc'
-);
-$dbh->do (
-	"update apostemp set best = 'ʼ' from cp "
-	. 'where cp.lv = apostemp.lv and not rq and not mtc'
-);
-$dbh->do (
-	"update apostemp set best = 'ʻ' from cp "
-	. 'where cp.lv = apostemp.lv and not rq and not ma and mtc'
-);
-$dbh->do (
-	"update apostemp set best = 'ʼ' "
-	. 'where lv not in (select distinct lv from cp)'
-);
-# Add data on the best apostrophe to it, making it U+02bc for varieties without any data on
-# editor-approved characters.
+    	my @collcvc = (split /:/, $args[$i]);
+    	# Identify its column index and variety UID.
 
-foreach $i (2 .. $#ARGV) {
-# For each column to be processed:
+    	$pcol[$i] = $collcvc[0];
+    	# Add its column index to the list of indices of columns to be processed.
 
-	@collcvc = (split /:/, $ARGV[$i]);
-	# Identify its column index and variety UID.
+    	my @lcvc = ($collcvc[1] =~ /^([a-z]{3})-(\d{3})$/);
+    	# Identify the variety's lc and vc.
 
-	$pcol[$i] = $collcvc[0];
-	# Add its column index to the list of indices of columns to be processed.
+    	my $lv = ($dbh->selectrow_array ("select * from lv ('$lcvc[0]', $lcvc[1])"))[0];
+    	# Identify its lv.
 
-	@lcvc = ($collcvc[1] =~ /^([a-z]{3})-(\d{3})$/);
-	# Identify the variety's lc and vc.
+    	my $best = ($dbh->selectrow_array ("select best from apostemp where lv = $lv"));
+    	# Identify the normative apostrophe of the variety.
 
-	$lv = ($dbh->selectrow_array ("select * from lv ('$lcvc[0]', $lcvc[1])"))[0];
-	# Identify its lv.
+    	if ((defined $best) && (length $best)) {
+    	# If there is one:
 
-	$best = ($dbh->selectrow_array ("select best from apostemp where lv = $lv"));
-	# Identify the normative apostrophe of the variety.
+    		$apos{$collcvc[0]} = $best;
+    		# Add the index of the column and its variety's normative apostrophe to the table
+    		# of normative apostrophes.
 
-	if ((defined $best) && (length $best)) {
-	# If there is one:
+    	}
 
-		$apos{$collcvc[0]} = $best;
-		# Add the index of the column and its variety's normative apostrophe to the table
-		# of normative apostrophes.
+    }
 
-	}
+    while (<$in>) {
+    # For each line of the input file:
+        
+    	if ((index $_, "'") > -1) {
+    	# If it contains any apostrophes:
 
+    		my @col = (split /\t/, $_, -1);
+    		# Identify its columns.
+
+            for (my $i = 0; $i < @args; $i++) {
+    		# For each column to be processed:
+
+    			if ((index $col[$pcol[$i]], "'") > -1) {
+    			# If it contains any apostrophes:
+
+    				if (exists $apos{$pcol[$i]}) {
+    				# If its variety's apostrophes are convertible:
+
+    					$col[$pcol[$i]] =~ s/'/$apos{$pcol[$i]}/g;
+    					# Convert them.
+
+    				}
+
+    				else {
+    				# Otherwise, i.e. if its variety's apostrophes are not convertible:
+
+    					$noncon{$pcol[$i]} = '';
+    					# Add the column to the table of columns containing nonconvertible
+    					# apostrophes, if not already in it.
+
+    				}
+
+    			}
+
+    		}
+
+    		$_ = (join "\t", @col);
+    		# Identify the modified line.
+
+    	}
+
+    	print $out;
+    	# Output the line.
+
+    }
+
+    if (keys %noncon) {
+    # If any column contained nonconvertible apostrophes:
+
+    	warn (
+    		'Could not convert apostrophes found in column(s) '
+    		. (join ', ', (sort {$a <=> $b} (keys %noncon))) . "\n"
+    	);
+    	# Report them.
+
+    }
+
+    $dbh->commit;
+    # Commit the database transaction.
+
+    $dbh->disconnect;
+    # Disconnect from the database.    
 }
 
-while (<DICIN>) {
-# For each line of the input file:
-
-	if ((index $_, "'") > -1) {
-	# If it contains any apostrophes:
-
-		@col = (split /\t/, $_, -1);
-		# Identify its columns.
-
-		foreach $i (2 .. $#ARGV) {
-		# For each column to be processed:
-
-			if ((index $col[$pcol[$i]], "'") > -1) {
-			# If it contains any apostrophes:
-
-				if (exists $apos{$pcol[$i]}) {
-				# If its variety's apostrophes are convertible:
-
-					$col[$pcol[$i]] =~ s/'/$apos{$pcol[$i]}/g;
-					# Convert them.
-
-				}
-
-				else {
-				# Otherwise, i.e. if its variety's apostrophes are not convertible:
-
-					$noncon{$pcol[$i]} = '';
-					# Add the column to the table of columns containing nonconvertible
-					# apostrophes, if not already in it.
-
-				}
-
-			}
-
-		}
-
-		$_ = (join "\t", @col);
-		# Identify the modified line.
-
-	}
-
-	print DICOUT;
-	# Output the line.
-
-}
-
-if (keys %noncon) {
-# If any column contained nonconvertible apostrophes:
-
-	warn (
-		'Could not convert apostrophes found in column(s) '
-		. (join ', ', (sort {$a <=> $b} (keys %noncon))) . "\n"
-	);
-	# Report them.
-
-}
-
-$dbh->commit;
-# Commit the database transaction.
-
-$dbh->disconnect;
-# Disconnect from the database.
-
-close DICIN;
-# Close the input file.
-
-close DICOUT;
-# Close the output file.
+[\&apostrophe];

@@ -26,7 +26,7 @@ use strict;
 # Require strict checking of variable references, etc.
 
 use utf8;
-# Make Perl interpret the script and standard files as UTF-8 rather than bytes.
+# Make Perl interpret the script as UTF-8 rather than bytes.
 
 use DBI;
 # Import the general database-interface module. It imports DBD::Pg for PostgreSQL automatically.
@@ -34,327 +34,312 @@ use DBI;
 use Unicode::Normalize;
 # Import the Unicode normalization module.
 
-binmode STDOUT, ':utf8';
-# Make Perl treat the standard output as encoded with UTF-8.
+sub normalize {
+    my ($in, $out, $re, $extag, $excol, $minscore, $minscore_repl, $lv, $prenormtag, $dftag, $syndelim) = @_;
+    
+    my $dbh = DBI->connect(
+    	"dbi:Pg:dbname=plx;host=uf.utilika.org;port=5432", '', '',
+    	{ (AutoCommit => 0), (pg_enable_utf8 => 1) }
+    );
+    # Specify & connect to the PostgreSQL 9.0.1 database “plx”, with AutoCommit off
+    # and the UTF-8 flag on (without which strings read from the database and split into
+    # characters are split into bytes rather than Unicode character values. DBI automatically
+    # issues a begin_work statement, requiring an explicit commit statement before the
+    # disconnection to avoid an automatic rollback. Username and password will be obtained
+    # from local (client) environment variables PGUSER and PGPASSWORD, respectively.
 
-open DICIN, '<:utf8', "$ARGV[0]-$ARGV[1].txt";
-# Open the input file for reading.
+    my ($allok, %ex, @ex, @line, @seg, @ttfm, %ttto, @ttto);
 
-open DICOUT, '>:utf8', ("$ARGV[0]-" . ($ARGV[1] + 1) . '.txt');
-# Create or truncate the output file and open it for writing.
+    my $lentag = (length $extag);
+    # Identify the length of the expression tag.
 
-my $dbh = DBI->connect(
-	"dbi:Pg:dbname=plx;host=uf.utilika.org;port=5432", '', '',
-	{ (AutoCommit => 0), (pg_enable_utf8 => 1) }
-);
-# Specify & connect to the PostgreSQL 9.0.1 database “plx”, with AutoCommit off
-# and the UTF-8 flag on (without which strings read from the database and split into
-# characters are split into bytes rather than Unicode character values. DBI automatically
-# issues a begin_work statement, requiring an explicit commit statement before the
-# disconnection to avoid an automatic rollback. Username and password will be obtained
-# from local (client) environment variables PGUSER and PGPASSWORD, respectively.
+    my @lcvc = (split /-/, $lv);
+    # Identify the variety's lc and vc.
 
-my (
-	$allok, @col, %ex, @ex, $ex, $exok, $i, @line, $line, @seg,
-	$tt, @ttfm, $ttfmto, @ttfmto, %ttto, @ttto
-);
+    $lv = QV ("lv ('$lcvc[0]', $lcvc[1])");
+    # Identify the variety's ID.
 
-my $lentag = (length $ARGV[3]);
-# Identify the length of the expression tag.
+    my $done = 0;
+    # Initialize the count of processed lines as 0.
 
-my @lcvc = (split /-/, $ARGV[7]);
-# Identify the variety's lc and vc.
+    push @line, <$in>;
+    # Identify a list of the lines of the input file.
 
-my $lv = (&QV ("lv ('$lcvc[0]', $lcvc[1])"));
-# Identify the variety's ID.
+    chomp @line;
+    # Delete their trailing newlines.
 
-my $done = 0;
-# Initialize the count of processed lines as 0.
+    foreach my $line (@line) {
+    # For each line:
 
-push @line, <DICIN>;
-# Identify a list of the lines of the input file.
+    	my @col = split /\t/, $line, -1;
+    	# Identify its columns.
 
-close DICIN;
-# Close the input file.
+    	if (length $col[$excol]) {
+    	# If the column containing proposed expressions is nonblank:
 
-chomp @line;
-# Delete their trailing newlines.
+    		my @seg = ($col[$excol] =~ /($re.+?(?=$re|$))/go);
+    		# Identify the tagged items, including tags, in it.
 
-foreach $line (@line) {
-# For each line:
+    		for (my $i = 0; $i < @seg; $i++) {
+    		# For each of them:
 
-	@col = (split /\t/, $line, -1);
-	# Identify its columns.
+    			if ((index $seg[$i], $extag) == 0) {
+    			# If it is tagged as an expression:
 
-	if (length $col[$ARGV[4]]) {
-	# If the column containing proposed expressions is nonblank:
+    				foreach my $ex (PsList ($seg[$i], $lentag, $syndelim)) {
+    				# For the expression, or for each expression if it is a pseudo-list:
 
-		@seg = ($col[$ARGV[4]] =~ /($ARGV[2].+?(?=$ARGV[2]|$))/go);
-		# Identify the tagged items, including tags, in it.
+    					$ex{$ex} = '';
+    					# Add it to the table of proposed expression texts, if not
+    					# already in it.
 
-		foreach $i (0 .. $#seg) {
-		# For each of them:
+    				}
 
-			if ((index $seg[$i], $ARGV[3]) == 0) {
-			# If it is tagged as an expression:
+    			}
 
-				foreach $ex (&PsList ($seg[$i], $lentag, $ARGV[10])) {
-				# For the expression, or for each expression if it is a pseudo-list:
+    		}
 
-					$ex{$ex} = '';
-					# Add it to the table of proposed expression texts, if not
-					# already in it.
+    	}
 
-				}
+    }
 
-			}
+    $dbh->do ("create temporary table tttd (tt text, td text, uqsum integer)");
+    # Create a temporary database table to contain the texts, degradations, and scores
+    # of the proposed expressions.
 
-		}
+    my $sth = ($dbh->prepare ("insert into tttd (tt) values (?)"));
+    # Prepare a statement to insert a text into it.
 
-	}
+    foreach my $tt (keys %ex) {
+    # For each proposed expression:
 
+    	$sth->execute ($tt);
+    	# Add its text to the table.
+
+    }
+
+    $dbh->do (
+    	'update tttd set uqsum = tbl.uqsum from ('
+    		. 'select tttd.tt, sum (uq) as uqsum from tttd, ex, exap, ap '
+    		. "where lv = $lv and ex.tt = tttd.tt and exap.ex = ex.ex and ap.ap = exap.ap "
+    		. 'group by tttd.tt'
+    	. ') as tbl where tttd.tt = tbl.tt'
+    );
+    # Add the proposed expressions' scores, if any, to the table.
+
+    foreach my $exok (QCs ("tt from tttd where uqsum >= $minscore")) {
+    # For each proposed expression that has a score and whose score is sufficient for
+    # outright acceptance as an expression:
+
+    	$ex{$exok} = 'exok';
+    	# Identify it as such.
+
+    }
+
+    $dbh->do ("delete from tttd where uqsum >= $minscore");
+    # Delete from the table the records of those expressions.
+
+    $dbh->do ("update tttd set td = td (tt)");
+    # Add to the table the degradations of the texts of the remaining proposed
+    # expressions.
+
+    $dbh->do (
+    	'create temporary table ttcand as '
+    	. 'select distinct tttd.td, ex.tt, sum (uq) as uqsum from tttd, ex, exap, ap '
+    	. "where lv = $lv and ex.td = tttd.td and exap.ex = ex.ex and ap.ap = exap.ap "
+    	. 'group by tttd.td, ex.tt'
+    );
+    # Create a temporary database table containing the texts of the expressions in the
+    # variety that have those degradations and the sums of those expressions' sources'
+    # qualities.
+
+    $dbh->do (
+    	'create temporary table tdmax as select td, max (uqsum) as uqmax from ttcand group by td'
+    );
+    # Create a temporary database table containing the maximum quality sum of each degradation's
+    # expressions, if any, in the variety.
+
+    foreach my $exok (QCs (
+    	'tttd.tt from tttd, tdmax '
+    	. "where tttd.td = tdmax.td and uqsum = uqmax and uqsum >= $minscore_repl"
+    )) {
+    # For each proposed expression that is a highest-scoring expression in the variety with
+    # its degradation and whose score is sufficient for acceptance as an expression:
+
+    	$ex{$exok} = 'exok';
+    	# Identify it as such.
+
+    }
+
+    $dbh->do (
+    	'delete from tttd using tdmax '
+    	. "where tttd.td = tdmax.td and uqsum = uqmax and uqsum >= $minscore_repl"
+    );
+    # Delete those expressions' records from the database table.
+
+    $dbh->do (
+    	'update tttd set td = ttcand.tt, uqsum = uqmax from ttcand, tdmax '
+    	. 'where tdmax.td = tttd.td and ttcand.td = tttd.td and ttcand.uqsum = uqmax'
+    );
+    # Replace the degradations in the table with the texts of the highest-scoring expressions
+    # having those degradations, if any, and replace the scores of the replaced expressions
+    # with the scores of their replacements.
+
+    my @ttfmtoref = (QRs ("tt, td from tttd where uqsum >= $minscore_repl"));
+    # Identify a list of references to replaced-replacer pairs for proposed
+    # expressions.
+
+    foreach my $ttfmto (@ttfmtoref) {
+    # For each of them:
+
+    	my @ttfmto = @$ttfmto;
+    	# Identify the referenced pair.
+
+    	push @ttfm, $ttfmto[0];
+    	push @ttto, $ttfmto[1];
+    	# Append its elements to the lists of replaced and replacing texts.
+    }
+
+    for (my $i = 0; $i < @ttfm; $i++) {
+    # For each of those replacements:
+
+    	$ttto{$ttfm[$i]} = $ttto[$i];
+    	# Add it to a table of replacements.
+
+    }
+
+    foreach my $line (@line) {
+    # For each line:
+
+    	my @col = (split /\t/, $line, -1);
+    	# Identify its columns.
+
+    	if (length $col[$excol]) {
+    	# If the column containing proposed expressions is nonblank:
+
+    		my @seg = ($col[$excol] =~ m/($re.+?(?=$re|$))/go);
+    		# Identify the tagged items, including tags, in it.
+
+    		for (my $i = 0; $i < @seg; $i++) {
+    		# For each item:
+
+    			if ((index $seg[$i], $extag) == 0) {
+    			# If it is tagged as an expression:
+
+    				$allok = 1;
+    				# Initialize the list's elements as all classifiable as
+    				# expressions.
+
+    				foreach my $ex (@ex = (PsList ($seg[$i], $lentag, $syndelim))) {
+    				# Identify the expression, or a list of the expressions in it if
+    				# it is a pseudo-list.
+
+    				# For each of them:
+
+    					unless (
+    						(exists $ex{$ex}) && ($ex{$ex} eq 'exok')
+    						|| (exists $ttto{$ex})
+    					) {
+    					# If it is not classifiable as an expression without
+    					# replacement or after being replaced:
+
+    						$allok = '';
+    						# Identify the list as containing at least 1
+    						# expression not classifiable as an expression.
+
+    						last;
+    						# Stop checking the expression(s) in the list.
+
+    					}
+
+    				}
+
+    				$seg[$i] = '';
+    				# Reinitialize the item as blank.
+
+    				if ($allok) {
+    				# If all elements of the list are classifiable as expressions with
+    				# or without replacement:
+
+    					foreach my $ex (@ex) {
+    					# For each of them:
+
+    						if ((exists $ex{$ex}) && ($ex{$ex} eq 'exok')) {
+    						# If it is classifiable as an expression without
+    						# replacement:
+
+    							$seg[$i] .= "$extag$ex";
+    							# Append it, with an expression tag, to the
+    							# item.
+
+    						}
+
+    						else {
+    						# Otherwise, i.e. if it is classifiable as an
+    						# expression only after replacement:
+
+    							$seg[$i] .=
+    								"$prenormtag$ex$extag$ttto{$ex}";
+    							# Append it, with a pre-normalized
+    							# expression tag, and its replacement, with
+    							# an expression tag, to the item.
+
+    						}
+
+    					}
+
+    				}
+
+    				else {
+    				# Otherwise, i.e. if not all elements of the list are classifiable
+    				# as expressions with or without replacement:
+
+    					$seg[$i] = (join "$syndelim", @ex);
+    					# Identify the concatenation of the list's elements, with
+    					# the specified delimiter if any, i.e. the original item
+    					# without its expression tag.
+
+    					if (length $dftag) {
+    					# If proposed expressions not classifiable as expressions
+    					# are to be converted to definitions:
+
+    						$seg[$i] = "$dftag$seg[$i]";
+    						# Prepend a definition tag to the concatenation.
+
+    					}
+
+    					else {
+    					# Otherwise, i.e. if such proposed expressions are not
+    					# to be converted to definitions:
+
+    						$seg[$i] = "$prenormtag$seg[$i]";
+    						# Prepend a pre-normalized expression tag to the
+    						# concatenation.
+
+    					}
+
+    				}
+
+    			}
+
+    		}
+
+    		$col[$excol] = (join '', @seg);
+    		# Identify the column with all expression reclassifications.
+
+    	}
+
+    	print $out join ("\t", @col), "\n";
+    	# Output the line.
+
+    }
+
+    $dbh->commit;
+    # Commit the database transaction.
+
+    $dbh->disconnect;
+    # Disconnect from the database.    
 }
-
-$dbh->do ("create temporary table tttd (tt text, td text, uqsum integer)");
-# Create a temporary database table to contain the texts, degradations, and scores
-# of the proposed expressions.
-
-my $sth = ($dbh->prepare ("insert into tttd (tt) values (?)"));
-# Prepare a statement to insert a text into it.
-
-foreach $tt (keys %ex) {
-# For each proposed expression:
-
-	$sth->execute ($tt);
-	# Add its text to the table.
-
-}
-
-$dbh->do (
-	'update tttd set uqsum = tbl.uqsum from ('
-		. 'select tttd.tt, sum (uq) as uqsum from tttd, ex, exap, ap '
-		. "where lv = $lv and ex.tt = tttd.tt and exap.ex = ex.ex and ap.ap = exap.ap "
-		. 'group by tttd.tt'
-	. ') as tbl where tttd.tt = tbl.tt'
-);
-# Add the proposed expressions' scores, if any, to the table.
-
-foreach $exok (&QCs ("tt from tttd where uqsum >= $ARGV[5]")) {
-# For each proposed expression that has a score and whose score is sufficient for
-# outright acceptance as an expression:
-
-	$ex{$exok} = 'exok';
-	# Identify it as such.
-
-}
-
-$dbh->do ("delete from tttd where uqsum >= $ARGV[5]");
-# Delete from the table the records of those expressions.
-
-$dbh->do ("update tttd set td = td (tt)");
-# Add to the table the degradations of the texts of the remaining proposed
-# expressions.
-
-$dbh->do (
-	'create temporary table ttcand as '
-	. 'select distinct tttd.td, ex.tt, sum (uq) as uqsum from tttd, ex, exap, ap '
-	. "where lv = $lv and ex.td = tttd.td and exap.ex = ex.ex and ap.ap = exap.ap "
-	. 'group by tttd.td, ex.tt'
-);
-# Create a temporary database table containing the texts of the expressions in the
-# variety that have those degradations and the sums of those expressions' sources'
-# qualities.
-
-$dbh->do (
-	'create temporary table tdmax as select td, max (uqsum) as uqmax from ttcand group by td'
-);
-# Create a temporary database table containing the maximum quality sum of each degradation's
-# expressions, if any, in the variety.
-
-foreach $exok (&QCs (
-	'tttd.tt from tttd, tdmax '
-	. "where tttd.td = tdmax.td and uqsum = uqmax and uqsum >= $ARGV[6]"
-)) {
-# For each proposed expression that is a highest-scoring expression in the variety with
-# its degradation and whose score is sufficient for acceptance as an expression:
-
-	$ex{$exok} = 'exok';
-	# Identify it as such.
-
-}
-
-$dbh->do (
-	'delete from tttd using tdmax '
-	. "where tttd.td = tdmax.td and uqsum = uqmax and uqsum >= $ARGV[6]"
-);
-# Delete those expressions' records from the database table.
-
-$dbh->do (
-	'update tttd set td = ttcand.tt, uqsum = uqmax from ttcand, tdmax '
-	. 'where tdmax.td = tttd.td and ttcand.td = tttd.td and ttcand.uqsum = uqmax'
-);
-# Replace the degradations in the table with the texts of the highest-scoring expressions
-# having those degradations, if any, and replace the scores of the replaced expressions
-# with the scores of their replacements.
-
-my @ttfmtoref = (&QRs ("tt, td from tttd where uqsum >= $ARGV[6]"));
-# Identify a list of references to replaced-replacer pairs for proposed
-# expressions.
-
-foreach $ttfmto (@ttfmtoref) {
-# For each of them:
-
-	@ttfmto = @$ttfmto;
-	# Identify the referenced pair.
-
-	push @ttfm, $ttfmto[0];
-	push @ttto, $ttfmto[1];
-	# Append its elements to the lists of replaced and replacing texts.
-
-}
-
-foreach $i (0 .. $#ttfm) {
-# For each of those replacements:
-
-	$ttto{$ttfm[$i]} = $ttto[$i];
-	# Add it to a table of replacements.
-
-}
-
-foreach $line (@line) {
-# For each line:
-
-	@col = (split /\t/, $line, -1);
-	# Identify its columns.
-
-	if (length $col[$ARGV[4]]) {
-	# If the column containing proposed expressions is nonblank:
-
-		@seg = ($col[$ARGV[4]] =~ m/($ARGV[2].+?(?=$ARGV[2]|$))/go);
-		# Identify the tagged items, including tags, in it.
-
-		foreach $i (0 .. $#seg) {
-		# For each item:
-
-			if ((index $seg[$i], $ARGV[3]) == 0) {
-			# If it is tagged as an expression:
-
-				$allok = 1;
-				# Initialize the list's elements as all classifiable as
-				# expressions.
-
-				foreach $ex (@ex = (&PsList ($seg[$i], $lentag, $ARGV[10]))) {
-				# Identify the expression, or a list of the expressions in it if
-				# it is a pseudo-list.
-
-				# For each of them:
-
-					unless (
-						(exists $ex{$ex}) && ($ex{$ex} eq 'exok')
-						|| (exists $ttto{$ex})
-					) {
-					# If it is not classifiable as an expression without
-					# replacement or after being replaced:
-
-						$allok = '';
-						# Identify the list as containing at least 1
-						# expression not classifiable as an expression.
-
-						last;
-						# Stop checking the expression(s) in the list.
-
-					}
-
-				}
-
-				$seg[$i] = '';
-				# Reinitialize the item as blank.
-
-				if ($allok) {
-				# If all elements of the list are classifiable as expressions with
-				# or without replacement:
-
-					foreach $ex (@ex) {
-					# For each of them:
-
-						if ((exists $ex{$ex}) && ($ex{$ex} eq 'exok')) {
-						# If it is classifiable as an expression without
-						# replacement:
-
-							$seg[$i] .= "$ARGV[3]$ex";
-							# Append it, with an expression tag, to the
-							# item.
-
-						}
-
-						else {
-						# Otherwise, i.e. if it is classifiable as an
-						# expression only after replacement:
-
-							$seg[$i] .=
-								"$ARGV[8]$ex$ARGV[3]$ttto{$ex}";
-							# Append it, with a pre-normalized
-							# expression tag, and its replacement, with
-							# an expression tag, to the item.
-
-						}
-
-					}
-
-				}
-
-				else {
-				# Otherwise, i.e. if not all elements of the list are classifiable
-				# as expressions with or without replacement:
-
-					$seg[$i] = (join "$ARGV[10]", @ex);
-					# Identify the concatenation of the list's elements, with
-					# the specified delimiter if any, i.e. the original item
-					# without its expression tag.
-
-					if (length $ARGV[9]) {
-					# If proposed expressions not classifiable as expressions
-					# are to be converted to definitions:
-
-						$seg[$i] = "$ARGV[9]$seg[$i]";
-						# Prepend a definition tag to the concatenation.
-
-					}
-
-					else {
-					# Otherwise, i.e. if such proposed expressions are not
-					# to be converted to definitions:
-
-						$seg[$i] = "$ARGV[8]$seg[$i]";
-						# Prepend a pre-normalized expression tag to the
-						# concatenation.
-
-					}
-
-				}
-
-			}
-
-		}
-
-		$col[$ARGV[4]] = (join '', @seg);
-		# Identify the column with all expression reclassifications.
-
-	}
-
-	print DICOUT ((join "\t", @col) . "\n");
-	# Output the line.
-
-}
-
-$dbh->commit;
-# Commit the database transaction.
-
-$dbh->disconnect;
-# Disconnect from the database.
-
-close DICOUT;
-# Close the output file.
 
 #### PsList
 # Return a list of items in the specified prefixed pseudo-list.
@@ -465,3 +450,5 @@ sub QV {
 	}
 
 }
+
+[\&normalize];

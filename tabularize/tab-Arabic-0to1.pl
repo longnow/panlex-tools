@@ -23,13 +23,13 @@ my $VERSION = 0;
 
 #######################################################
 
-open DICIN, '<:encoding(utf8)', "$BASENAME-$VERSION.txt";
+open $in, '<:encoding(utf8)', "$BASENAME-$VERSION.txt";
 # Open the input file for reading.
 
-open DICOUT, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
+open $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
 # Create or truncate the output file and open it for writing.
 
-my $all = (join '', <DICIN>);
+my $all = (join '', <$in>);
 # Identify a concatenation of all lines of the input file.
 
 $all =~ s/\n/ /g;
@@ -38,11 +38,11 @@ $all =~ s/\n/ /g;
 $all =~ s#<b><FONT color=darkblue>([^<>]+)</FONT>:</b> +.+?> ([^<>]+) +</span></p>#\n¶$1\t$2\n#g;
 # Convert all entries to columns.
 
-print DICOUT $all;
+print $out $all;
 # Output the concatenation.
 
-close DICIN;
+close $in;
 # Close the input file.
 
-close DICOUT;
+close $out;
 # Close the output file.

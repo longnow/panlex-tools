@@ -23,13 +23,13 @@ my $VERSION = 0;
 
 #######################################################
 
-open DICIN, '<:encoding(utf8)', "$BASENAME-$VERSION.xml";
+open $in, '<:encoding(utf8)', "$BASENAME-$VERSION.xml";
 # Open the input file for reading.
 
-open DICOUT, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
+open $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
 # Create or truncate the output file and open it for writing.
 
-my $all = (join '', <DICIN>);
+my $all = (join '', <$in>);
 # Identify the entire content of the input file.
 
 $all =~ s/\n */ /g;
@@ -66,11 +66,11 @@ $all =~ s/⫸[^⫷\n]+$/⫸/mg;
 $all =~ s/\n{2,}/\n/g;
 # Collapse all multiple newlines in it.
 
-print DICOUT $all;
+print $out $all;
 # Output it.
 
-close DICIN;
+close $in;
 # Close the input file.
 
-close DICOUT;
+close $out;
 # Close the output file.

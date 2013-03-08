@@ -10,43 +10,31 @@ use strict;
 # Require strict checking of variable references, etc.
 
 use utf8;
-# Make Perl interpret the script and standard files as UTF-8 rather than bytes.
+# Make Perl interpret the script as UTF-8 rather than bytes.
 
-open DICIN, '<:utf8', "$ARGV[0]-$ARGV[1].txt";
-# Open the input file for reading.
 
-open DICOUT, '>:utf8', ("$ARGV[0]-" . ($ARGV[1] + 1) . '.txt');
-# Create or truncate the output file and open it for writing.
+sub dftag {
+    my ($in, $out, $dftag, @dfcol) = @_;
+    
+    while (<$in>) {
+    # For each line of the input file:
 
-my (@col, $i);
+    	chomp;
+    	# Delete its trailing newline.
 
-my @dfcol = (@ARGV[3 .. $#ARGV]);
-# Identify a list of the definition columns.
+    	my @col = (split /\t/, $_, -1);
+    	# Identify its columns.
 
-while (<DICIN>) {
-# For each line of the input file:
+    	foreach my $i (@dfcol) {
+    	# For each definition column:
 
-	chomp;
-	# Delete its trailing newline.
+    		$col[$i] = "$dftag$col[$i]" if length $col[$i];
+    		# Prefix a definition tag to the column, if not blank.
+    	}
 
-	@col = (split /\t/, $_, -1);
-	# Identify its columns.
-
-	foreach $i (@dfcol) {
-	# For each definition column:
-
-		($col[$i] = "$ARGV[2]$col[$i]") if (length $col[$i]);
-		# Prefix a definition tag to the column, if not blank.
-
-	}
-
-	print DICOUT (join "\t", @col), "\n";
-	# Output the line.
-
+    	print $out join ("\t", @col), "\n";
+    	# Output the line.
+    }    
 }
 
-close DICIN;
-# Close the input file.
-
-close DICOUT;
-# Close the output file.
+[\&dftag];

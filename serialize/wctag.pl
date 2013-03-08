@@ -11,95 +11,92 @@ use strict;
 # Require strict checking of variable references, etc.
 
 use utf8;
-# Make Perl interpret the script and standard files as UTF-8 rather than bytes.
+# Make Perl interpret the script as UTF-8 rather than bytes.
 
-open WC, '<:utf8', 'wc.txt';
-# Open the wc file for reading.
+use FindBin;
+use File::Spec::Functions;
 
-open DICIN, '<:utf8', "$ARGV[0]-$ARGV[1].txt";
-# Open the input file for reading.
+sub wctag {
+    my ($in, $out, $wccol, $wctag, $mdtag) = @_;
+    
+    open my $wc, '<:utf8', catfile($FindBin::Bin, 'wc.txt') or die $!;
+    # Open the wc file for reading.
 
-open DICOUT, '>:utf8', ("$ARGV[0]-" . ($ARGV[1] + 1) . '.txt');
-# Create or truncate the output file and open it for writing.
+    my %wc;
 
-my (@col, %wc, @wcmd);
+    while (<$wc>) {
+    # For each line of the wc file:
 
-while (<WC>) {
-# For each line of the wc file:
+    	chomp;
+    	# Delete its trailing newline.
 
-	chomp;
-	# Delete its trailing newline.
+    	my @col = (split /\t/);
+    	# Identify its columns.
 
-	@col = (split /\t/);
-	# Identify its columns.
+    	$wc{$col[0]} = $col[1];
+    	# Add it to the table of wc conversions.
 
-	$wc{$col[0]} = $col[1];
-	# Add it to the table of wc conversions.
+    }	
 
-}	
+    while (<$in>) {
+    # For each line of the input file:
 
-while (<DICIN>) {
-# For each line of the input file:
+    	chomp;
+    	# Delete its trailing newline.
 
-	chomp;
-	# Delete its trailing newline.
+    	my @col = split /\t/, $_, -1;
+    	# Identify its columns.
 
-	@col = (split /\t/, $_, -1);
-	# Identify its columns.
+    	if (exists $wc{$col[$wccol]}) {
+    	# If the content of the column containing word classifications is a convertible one:
 
-	if (exists $wc{$col[$ARGV[2]]}) {
-	# If the content of the column containing word classifications is a convertible one:
+    		my @wcmd = (split /:/, $wc{$col[$wccol]});
+    		# Identify the wc and the md values of its conversion.
 
-		@wcmd = (split /:/, $wc{$col[$ARGV[2]]});
-		# Identify the wc and the md values of its conversion.
+    		if (@wcmd == 1) {
+    		# If there is no md value:
 
-		if (@wcmd == 1) {
-		# If there is no md value:
+    			$col[$wccol] = "$wctag$wcmd[0]";
+    			# Convert the wc to a tagged wc.
 
-			$col[$ARGV[2]] = "$ARGV[3]$wcmd[0]";
-			# Convert the wc to a tagged wc.
+    		}
 
-		}
+    		elsif (@wcmd == 2) {
+    		# Otherwise, if there is an md value:
 
-		elsif (@wcmd == 2) {
-		# Otherwise, if there is an md value:
+    			if (length $wcmd[0]) {
+    			# If there is a wc value:
 
-			if (length $wcmd[0]) {
-			# If there is a wc value:
+    				$col[$wccol] = "$wctag$wcmd[0]$mdtag$wcmd[1]";
+    				# Convert the wc to a wc and an md, each tagged.
 
-				$col[$ARGV[2]] = "$ARGV[3]$wcmd[0]$ARGV[4]$wcmd[1]";
-				# Convert the wc to a wc and an md, each tagged.
+    			}
 
-			}
+    			else {
+    			# Otherwise, i.e. if there is no wc value:
 
-			else {
-			# Otherwise, i.e. if there is no wc value:
+    				$col[$wccol] = "$mdtag$wcmd[1]";
+    				# Convert the wc to a tagged md.
 
-				$col[$ARGV[2]] = "$ARGV[4]$wcmd[1]";
-				# Convert the wc to a tagged md.
+    			}
 
-			}
+    		}
 
-		}
+    	}
 
-	}
+    	elsif (length $col[$wccol]) {
+    	# Otherwise, if the content of the column containing word classifications is
+    	# not blank:
 
-	elsif (length $col[$ARGV[2]]) {
-	# Otherwise, if the content of the column containing word classifications is
-	# not blank:
+    		$col[$wccol] = "$mdtag$col[$wccol]";
+    		# Convert the content to a tagged md.
 
-		$col[$ARGV[2]] = "$ARGV[4]$col[$ARGV[2]]";
-		# Convert the content to a tagged md.
+    	}
 
-	}
+    	print $out join("\t", @col), "\n";
+    	# Output the line.
 
-	print DICOUT ((join "\t", @col), "\n");
-	# Output the line.
-
+    }    
 }
 
-close DICIN;
-# Close the input file.
-
-close DICOUT;
-# Close the output file.
+[\&wctag];

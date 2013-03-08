@@ -21,99 +21,90 @@ use strict;
 # Require strict checking of variable references, etc.
 
 use utf8;
-# Make Perl interpret the script and standard files as UTF-8 rather than bytes.
+# Make Perl interpret the script as UTF-8 rather than bytes.
 
-open DICIN, '<:utf8', "$ARGV[0]-$ARGV[1].txt";
-# Open the input file for reading.
+sub exdftag {
+    my ($in, $out, $extag, $re_posttag, $re_posttagw, $re_df, $dftag, $tmc, $tmw, 
+        $re_dfsub, $re_pre, @exdfcol) = @_;
 
-open DICOUT, '>:utf8', ("$ARGV[0]-" . ($ARGV[1] + 1) . '.txt');
-# Create or truncate the output file and open it for writing.
+    $tmc++ if $tmc;
+    # Identify the character count of the shortest expression exceeding the maximum
+    # character count, or blank if none.
 
-my ($df, $ex, $exorig, $i, @seg);
+    while (<$in>) {
+    # For each line of the input file:
 
-my $tmc = ($ARGV[7] ? ($ARGV[7] + 1) : '');
-# Identify the character count of the shortest expression exceeding the maximum
-# character count, or blank if none.
+    	chomp;
+    	# Delete its trailing newline.
 
-my @exdfcol = (@ARGV[11 .. $#ARGV]);
-# Identify a list of the columns that may contain expressions with embedded definitions.
+    	my @seg = (split /\t/, $_, -1);
+    	# Identify its columns.
 
-while (<DICIN>) {
-# For each line of the input file:
+    	foreach my $i (@exdfcol) {
+    	# For each of them that may contain expressions with embedded definitions or
+    	# expressions classifiable as definitions:
 
-	chomp;
-	# Delete its trailing newline.
+    		if (length $re_df) {
+    		# If there is a criterion for definitional substrings:
 
-	@seg = (split /\t/, $_, -1);
-	# Identify its columns.
+    			while ($seg[$i] =~ /($extag$re_posttag*$re_df$re_posttag*)/o) {
+    			# As long as any expression in the column satisfies the criterion:
 
-	foreach $i (@exdfcol) {
-	# For each of them that may contain expressions with embedded definitions or
-	# expressions classifiable as definitions:
+    				my $df = $1;
+    				my $ex = $1;
+    				# Identify the expression and a definition identical to it.
 
-		if (length $ARGV[5]) {
-		# If there is a criterion for definitional substrings:
+    				$df =~ s/^$extag(?:$re_pre)?/$dftag/o;
+    				# In the definition, change the expression tag and any preposed annotation
+    				# to a definition tag.
 
-			while ($seg[$i] =~ /($ARGV[2]$ARGV[3]*$ARGV[5]$ARGV[3]*)/o) {
-			# As long as any expression in the column satisfies the criterion:
+    				$ex =~ s/$re_df//og;
+    				# In the expression, delete all definitional substrings.
 
-				$df = $ex = $1;
-				# Identify the expression and a definition identical to it.
+    				$ex =~ s/ {2,}/ /g;
+    				# In the expression, collapse any multiple spaces.
 
-				$df =~ s/^$ARGV[2](?:$ARGV[10])?/$ARGV[6]/o;
-				# In the definition, change the expression tag and any preposed annotation
-				# to a definition tag.
+    				$ex =~ s/^$extag(?:$re_pre)?\K | $//og;
+    				# In the expression, delete all initial and final spaces.
 
-				$ex =~ s/$ARGV[5]//og;
-				# In the expression, delete all definitional substrings.
+    				($ex = '') if (
+    					($ex eq $extag)
+    					|| (($tmc) && ($ex =~ /^$extag(?:$re_pre)?+.{$tmc}/o))
+    					|| (($tmw) && ($ex =~ /^(?:[^ ]+ ){$tmw}/o))
+    					|| ((length $re_dfsub) && ($ex =~ /^$extag(?:$re_pre)?$re_posttag*$re_dfsub/))
+    				);
+    				# If the expression has become blank, exceeds a maximum count, or contains
+    				# a prohibited character, delete the expression. (The possessive quantifier
+    				# prohibits including a preposed annotation in the count.)
 
-				$ex =~ s/ {2,}/ /g;
-				# In the expression, collapse any multiple spaces.
+    				$seg[$i] =~ s/$extag$re_posttag*$re_df$re_posttag*/$df$ex/o;
+    				# Replace the expression with the definition and the reduced expression.
 
-				$ex =~ s/^$ARGV[2](?:$ARGV[10])?\K | $//og;
-				# In the expression, delete all initial and final spaces.
+    			}
 
-				($ex = '') if (
-					($ex eq $ARGV[2])
-					|| (($ARGV[7]) && ($ex =~ /^$ARGV[2](?:$ARGV[10])?+.{$tmc}/o))
-					|| (($ARGV[8]) && ($ex =~ /^(?:[^ ]+ ){$ARGV[8]}/o))
-					|| ((length $ARGV[9]) && ($ex =~ /^$ARGV[2](?:$ARGV[10])?$ARGV[3]*$ARGV[9]/))
-				);
-				# If the expression has become blank, exceeds a maximum count, or contains
-				# a prohibited character, delete the expression. (The possessive quantifier
-				# prohibits including a preposed annotation in the count.)
+    		}
 
-				$seg[$i] =~ s/$ARGV[2]$ARGV[3]*$ARGV[5]$ARGV[3]*/$df$ex/o;
-				# Replace the expression with the definition and the reduced expression.
+    		($seg[$i] =~ s/$extag(?:$re_pre)?(${re_posttag}{$tmc,})/$dftag$1/og)
+    			if $tmc;
+    		# Convert every expression in the column that exceeds the maximum character
+    		# count, if there is one, to a definition, omitting any preposed annotation.
 
-			}
+    		($seg[$i] =~ s/$extag(?:$re_pre)?((?:$re_posttagw+ ){$tmw})/$dftag$1/og)
+    			if $tmw;
+    		# Convert every expression in the column that exceeds a maximum word count,
+    		# if there is one, to a definition, omitting any preposed annotation.
 
-		}
+    		($seg[$i] =~ s/$extag(?:$re_pre)?($re_posttag*(?:$re_dfsub))/$dftag$1/og)
+    			if (length $re_dfsub);
+    		# Convert every expression containing a prohibited character, if there is any,
+    		# to a definition, omitting any preposed annotation.
 
-		($seg[$i] =~ s/$ARGV[2](?:$ARGV[10])?(${ARGV[3]}{$tmc,})/$ARGV[6]$1/og)
-			if $tmc;
-		# Convert every expression in the column that exceeds the maximum character
-		# count, if there is one, to a definition, omitting any preposed annotation.
+    	}
 
-		($seg[$i] =~ s/$ARGV[2](?:$ARGV[10])?((?:$ARGV[4]+ ){$ARGV[8]})/$ARGV[6]$1/og)
-			if $ARGV[8];
-		# Convert every expression in the column that exceeds a maximum word count,
-		# if there is one, to a definition, omitting any preposed annotation.
+    	print $out join("\t", @seg), "\n";
+    	# Output the line.
 
-		($seg[$i] =~ s/$ARGV[2](?:$ARGV[10])?($ARGV[3]*(?:$ARGV[9]))/$ARGV[6]$1/og)
-			if (length $ARGV[9]);
-		# Convert every expression containing a prohibited character, if there is any,
-		# to a definition, omitting any preposed annotation.
-
-	}
-
-	print DICOUT ((join "\t", @seg) . "\n");
-	# Output the line.
-
+    }    
 }
 
-close DICIN;
-# Close the input file.
-
-close DICOUT;
-# Close the output file.
+[\&exdftag];

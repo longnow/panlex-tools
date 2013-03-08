@@ -19,13 +19,13 @@ my $VERSION = 2;
 
 #######################################################
 
-open DICIN, '<:encoding(utf8)', "$BASENAME-$VERSION.txt";
+open $in, '<:encoding(utf8)', "$BASENAME-$VERSION.txt";
 # Open the input file for reading.
 
-open DICOUT, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
+open $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
 # Create or truncate the output file and open it for writing.
 
-while (<DICIN>) {
+while (<$in>) {
 # For each line of the input file:
 
 	s%<note.+?</note>%%g;
@@ -43,13 +43,13 @@ while (<DICIN>) {
 	s%<[^<>]+>%%g;
 	# Delete all remaining tags in it.
 
-	print DICOUT;
+	print $out;
 	# Output it.
 
 }
 
-close DICIN;
+close $in;
 # Close the input file.
 
-close DICOUT;
+close $out;
 # Close the output file.

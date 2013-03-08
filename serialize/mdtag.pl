@@ -10,36 +10,27 @@ use strict;
 # Require strict checking of variable references, etc.
 
 use utf8;
-# Make Perl interpret the script and standard files as UTF-8 rather than bytes.
+# Make Perl interpret the script as UTF-8 rather than bytes.
 
-open DICIN, '<:utf8', "$ARGV[0]-$ARGV[1].txt";
-# Open the input file for reading.
+sub mdtag {
+    my ($in, $out, $mdcol, $mdtag) = @_;
+    
+    while (<$in>) {
+    # For each line of the input file:
 
-open DICOUT, '>:utf8', ("$ARGV[0]-" . ($ARGV[1] + 1) . '.txt');
-# Create or truncate the output file and open it for writing.
+    	chomp;
+    	# Delete its trailing newline.
 
-my @col;
+    	my @col = (split /\t/, $_, -1);
+    	# Identify its columns.
 
-while (<DICIN>) {
-# For each line of the input file:
+    	($col[$mdcol] = "$mdtag$col[$mdcol]") if (length $col[$mdcol]);
+    	# Prefix a meaning-identifier tag to the meaning-identifier column's content,
+    	# if not blank.
 
-	chomp;
-	# Delete its trailing newline.
-
-	@col = (split /\t/, $_, -1);
-	# Identify its columns.
-
-	($col[$ARGV[2]] = "$ARGV[3]$col[$ARGV[2]]") if (length $col[$ARGV[2]]);
-	# Prefix a meaning-identifier tag to the meaning-identifier column's content,
-	# if not blank.
-
-	print DICOUT ((join "\t", @col), "\n");
-	# Output the line.
-
+    	print $out join("\t", @col), "\n";
+    	# Output the line.
+    }    
 }
 
-close DICIN;
-# Close the input file.
-
-close DICOUT;
-# Close the output file.
+[\&mdtag];

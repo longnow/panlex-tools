@@ -15,38 +15,29 @@ use strict;
 # Require strict checking of variable references, etc.
 
 use utf8;
-# Make Perl interpret the script and standard files as UTF-8 rather than bytes.
+# Make Perl interpret the script as UTF-8 rather than bytes.
 
-open DICIN, '<:utf8', "$ARGV[0]-$ARGV[1].txt";
-# Open the input file for reading.
+sub wcshift {
+    my ($in, $out, $wccol, $wcstart, $wcend, $wctag, $extag, $post) = @_;
+    
+    while (<$in>) {
+    # For each line of the input file:
 
-open DICOUT, '>:utf8', ("$ARGV[0]-" . ($ARGV[1] + 1) . '.txt');
-# Create or truncate the output file and open it for writing.
+    	chomp;
+    	# Delete its trailing newline.
 
-my (@col);
+    	@col = (split /\t/, $_, -1);
+    	# Identify its columns.
 
-while (<DICIN>) {
-# For each line of the input file:
+    	$col[$wccol] =~ s/$extag$wcstart(.+?)$wcend($post+)/$extag$2$wctag$1/g;
+    	# Replace all word class specifications prepended to expressions with post-ex wc tags.
 
-	chomp;
-	# Delete its trailing newline.
+    	$col[$wccol] =~ s/$wcstart(.+?)$wcend//g;
+    	# Delete all other word class specifications, including those prepended to definitions.
 
-	@col = (split /\t/, $_, -1);
-	# Identify its columns.
-
-	$col[$ARGV[2]] =~ s/$ARGV[6]$ARGV[3](.+?)$ARGV[4]($ARGV[7]+)/$ARGV[6]$2$ARGV[5]$1/g;
-	# Replace all word class specifications prepended to expressions with post-ex wc tags.
-
-	$col[$ARGV[2]] =~ s/$ARGV[3](.+?)$ARGV[4]//g;
-	# Delete all other word class specifications, including those prepended to definitions.
-
-	print DICOUT ((join "\t", @col), "\n");
-	# Output the line.
-
+    	print $out join("\t", @col), "\n";
+    	# Output the line.
+    }    
 }
 
-close DICIN;
-# Close the input file.
-
-close DICOUT;
-# Close the output file.
+[\&wcshift];

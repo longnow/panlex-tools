@@ -11,46 +11,38 @@ use strict;
 # Require strict checking of variable references, etc.
 
 use utf8;
-# Make Perl interpret the script and standard files as UTF-8 rather than bytes.
+# Make Perl interpret the script as UTF-8 rather than bytes.
 
-open DICIN, '<:utf8', "$ARGV[0]-$ARGV[1].txt";
-# Open the input file for reading.
+sub out_simple_2 {
+    my ($in, $out, $lv1, $lv2) = @_;
+    
+    print $out ".\n2\n$lv1\n$lv2\n";
+    # Output the file header.
 
-open DICOUT, '>:utf8', "$ARGV[0]-$ARGV[2].txt";
-# Create or truncate the output file and open it for writing.
+    my %all;
 
-print DICOUT ".\n2\n$ARGV[3]\n$ARGV[4]\n";
-# Output the file header.
+    while (<$in>) {
+    # For each line of the input file:
 
-my %all;
+    	chomp;
+    	# Delete its trailing newline.
 
-while (<DICIN>) {
-# For each line of the input file:
+    	s/⫷exp⫸[^⫷]+//g;
+    	# Delete all unnormalized expressions.
 
-	chomp;
-	# Delete its trailing newline.
+    	unless (exists $all{$_}) {
+    	# If it is not a duplicate:
 
-	s/⫷exp⫸[^⫷]+//g;
-	# Delete all unnormalized expressions.
+    		$all{$_} = '';
+    		# Add it to the table of entries.
 
-	unless (exists $all{$_}) {
-	# If it is not a duplicate:
+    		s/\t?⫷ex⫸/\n/g;
+    		# Convert all expression tags and the inter-column tab.
 
-		$all{$_} = '';
-		# Add it to the table of entries.
-
-		s/\t?⫷ex⫸/\n/g;
-		# Convert all expression tags and the inter-column tab.
-
-		print DICOUT "$_\n";
-		# Output the converted line.
-
-	}
-
+    		print $out $_, "\n";
+    		# Output the converted line.
+    	}
+    }    
 }
 
-close DICIN;
-# Close the input file.
-
-close DICOUT;
-# Close the output file.
+[\&out_simple_2, 1];

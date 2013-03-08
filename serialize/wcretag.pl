@@ -13,107 +13,102 @@ use strict;
 # Require strict checking of variable references, etc.
 
 use utf8;
-# Make Perl interpret the script and standard files as UTF-8 rather than bytes.
+# Make Perl interpret the script as UTF-8 rather than bytes.
 
-open WC, '<:utf8', 'wc.txt';
-# Open the wc file for reading.
+use FindBin;
+use File::Spec::Functions;
 
-open DICIN, '<:utf8', "$ARGV[0]-$ARGV[1].txt";
-# Open the input file for reading.
+sub wcretag {
+    my ($in, $out, $pretag, $posttag, $wctag, $mdtag, @wccol) = @_;
+    
+    open my $wc, '<:utf8', catfile($FindBin::Bin, 'wc.txt') or die $!;
+    # Open the wc file for reading.
 
-open DICOUT, '>:utf8', ("$ARGV[0]-" . ($ARGV[1] + 1) . '.txt');
-# Create or truncate the output file and open it for writing.
+    my %wc;
 
-my (@col, $col, $i, $md, %wc, @wcmd);
+    while (<$wc>) {
+    # For each line of the wc file:
 
-while (<WC>) {
-# For each line of the wc file:
+    	chomp;
+    	# Delete its trailing newline.
 
-	chomp;
-	# Delete its trailing newline.
+    	my @col = split /\t/, $_, -1;
+    	# Identify its columns.
 
-	@col = (split /\t/);
-	# Identify its columns.
+    	$wc{$col[0]} = $col[1];
+    	# Add it to the table of wc conversions.
+    }	
 
-	$wc{$col[0]} = $col[1];
-	# Add it to the table of wc conversions.
+    while (<$in>) {
+    # For each line of the input file:
 
-}	
+    	chomp;
+    	# Delete its trailing newline.
 
-while (<DICIN>) {
-# For each line of the input file:
+    	my @col = split /\t/, $_, -1;
+    	# Identify its columns.
 
-	chomp;
-	# Delete its trailing newline.
+        for (my $i = 0; $i < @wccol; $i++) {
+    	# For each column containing word classifications:
 
-	@col = (split /\t/, $_, -1);
-	# Identify its columns.
+    		while ($col[$i] =~ /$pretag(.+?)$posttag/) {
+    		# As long as any remains unretagged:
 
-	foreach $i (@ARGV[6 .. $#ARGV]) {
-	# For each column containing word classifications:
+    			if (exists $wc{$1}) {
+    			# If the first one's content is convertible:
 
-		while ($col[$i] =~ /$ARGV[2](.+?)$ARGV[3]/) {
-		# As long as any remains unretagged:
+    				my @wcmd = (split /:/, $wc{$1});
+    				# Identify the wc and the md values of its conversion.
 
-			if (exists $wc{$1}) {
-			# If the first one's content is convertible:
+    				if (@wcmd == 1) {
+    				# If there is no md value:
 
-				@wcmd = (split /:/, $wc{$1});
-				# Identify the wc and the md values of its conversion.
+    					$col[$i] =~ s/$pretag.+?$posttag/$wctag$wcmd[0]/;
+    					# Retag the wc.
 
-				if (@wcmd == 1) {
-				# If there is no md value:
+    				}
 
-					$col[$i] =~ s/$ARGV[2].+?$ARGV[3]/$ARGV[4]$wcmd[0]/;
-					# Retag the wc.
+    				else {
+    				# Otherwise, i.e. if there is an md value:
 
-				}
+    					if (length $wcmd[0]) {
+    					# If there is a wc value:
 
-				else {
-				# Otherwise, i.e. if there is an md value:
+    						$col[$i] =~ s/$pretag.+?$posttag/$wctag$wcmd[0]$mdtag$wcmd[1]/;
+    						# Retag the wc.
 
-					if (length $wcmd[0]) {
-					# If there is a wc value:
+    					}
 
-						$col[$i] =~ s/$ARGV[2].+?$ARGV[3]/$ARGV[4]$wcmd[0]$ARGV[5]$wcmd[1]/;
-						# Retag the wc.
+    					else {
+    					# Otherwise, i.e. if there is no wc value:
 
-					}
+    						$col[$i] =~ s/$pretag.+?$posttag/$mdtag$wcmd[1]/;
+    						# Retag the wc.
 
-					else {
-					# Otherwise, i.e. if there is no wc value:
+    					}
 
-						$col[$i] =~ s/$ARGV[2].+?$ARGV[3]/$ARGV[5]$wcmd[1]/;
-						# Retag the wc.
+    				}
 
-					}
+    			}
 
-				}
+    			else {
+    			# Otherwise, i.e. if the first one's content is not convertible:
 
-			}
+    				my $md = $1;
+    				# Identify it.
 
-			else {
-			# Otherwise, i.e. if the first one's content is not convertible:
+    				$col[$i] =~ s/$pretag.+?$posttag/$mdtag$md/;
+    				# Retag the wc.
 
-				$md = $1;
-				# Identify it.
+    			}
 
-				$col[$i] =~ s/$ARGV[2].+?$ARGV[3]/$ARGV[5]$md/;
-				# Retag the wc.
+    		}
 
-			}
+    	}
 
-		}
-
-	}
-
-	print DICOUT ((join "\t", @col), "\n");
-	# Output the line.
-
+    	print $out join ("\t", @col), "\n";
+    	# Output the line.
+    }    
 }
 
-close DICIN;
-# Close the input file.
-
-close DICOUT;
-# Close the output file.
+[\&wcretag];

@@ -22,16 +22,16 @@ my $VERSION = 0;
 
 #######################################################
 
-open DICIN, '<:encoding(utf8)', "$BASENAME-$VERSION.txt";
+open $in, '<:encoding(utf8)', "$BASENAME-$VERSION.txt";
 # Open the input file for reading.
 
 open SEG2OLD, '>:encoding(utf8)', ("$BASENAME-seg2-$VERSION.txt");
 # Create or truncate the recoding input file and open it for writing.
 
-open DICOUT, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
+open $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
 # Create or truncate the output file and open it for writing.
 
-while (<DICIN>) {
+while (<$in>) {
 # For each line of the input file:
 
 	print SEG2OLD (split /\t/)[2];
@@ -39,7 +39,7 @@ while (<DICIN>) {
 
 }
 
-close DICIN;
+close $in;
 # Close the input file.
 
 close SEG2OLD;
@@ -51,7 +51,7 @@ my $newver = ($VERSION + 1);
 `txtconv -t secondary/kantipur.tec -i "$BASENAME-seg2-$VERSION.txt" -o "$BASENAME-seg2-$newver.txt"`;
 # Recode the recoding input file.
 
-open DICIN, '<:encoding(utf8)', "$BASENAME-$VERSION.txt";
+open $in, '<:encoding(utf8)', "$BASENAME-$VERSION.txt";
 # Open the input file again for reading.
 
 open SEG2NEW, '<:encoding(utf8)', "$BASENAME-seg2-$newver.txt";
@@ -59,7 +59,7 @@ open SEG2NEW, '<:encoding(utf8)', "$BASENAME-seg2-$newver.txt";
 
 my (@seg, $seg2);
 
-while (<DICIN>) {
+while (<$in>) {
 # For each line of the input file:
 
 	@seg = (split /\t/);
@@ -71,13 +71,13 @@ while (<DICIN>) {
 	($seg2 = "\n") if ($seg2 =~ /\x{fffd}/);
 	# If it contains an invalid character, make it blank.
 
-	print DICOUT "$seg[0]\t$seg[1]\t$seg2";
+	print $out "$seg[0]\t$seg[1]\t$seg2";
 	# Output segments 0 and 1 of the line and the recoded segment 2.
 
 }
 
-close DICIN;
+close $in;
 # Close the input file.
 
-close DICOUT;
+close $out;
 # Close the output file.

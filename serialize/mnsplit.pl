@@ -10,7 +10,7 @@ use strict;
 # Require strict checking of variable references, etc.
 
 use utf8;
-# Make Perl interpret the script and standard files as UTF-8 rather than bytes.
+# Make Perl interpret the script as UTF-8 rather than bytes.
 
 sub mnsplit {
     my ($in, $out, $mndelim, $mncol) = @_;
