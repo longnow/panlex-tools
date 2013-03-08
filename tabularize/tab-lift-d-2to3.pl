@@ -19,10 +19,10 @@ my $VERSION = 2;
 
 #######################################################
 
-open $in, '<:encoding(utf8)', "$BASENAME-$VERSION.txt";
+open my $in, '<:encoding(utf8)', "$BASENAME-$VERSION.txt";
 # Open the input file for reading.
 
-open $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
+open my $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
 # Create or truncate the output file and open it for writing.
 
 while (<$in>) {

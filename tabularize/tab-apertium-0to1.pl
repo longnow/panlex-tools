@@ -23,10 +23,10 @@ my $VERSION = 0;
 
 #######################################################
 
-open $in, '<:encoding(utf8)', "$BASENAME-$VERSION.dix";
+open my $in, '<:encoding(utf8)', "$BASENAME-$VERSION.dix";
 # Open the input file for reading.
 
-open $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
+open my $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
 # Create or truncate the output file and open it for writing.
 
 my %st;

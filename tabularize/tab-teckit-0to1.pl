@@ -22,13 +22,13 @@ my $VERSION = 0;
 
 #######################################################
 
-open $in, '<:encoding(utf8)', "$BASENAME-$VERSION.txt";
+open my $in, '<:encoding(utf8)', "$BASENAME-$VERSION.txt";
 # Open the input file for reading.
 
 open SEG2OLD, '>:encoding(utf8)', ("$BASENAME-seg2-$VERSION.txt");
 # Create or truncate the recoding input file and open it for writing.
 
-open $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
+open my $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
 # Create or truncate the output file and open it for writing.
 
 while (<$in>) {
@@ -51,7 +51,7 @@ my $newver = ($VERSION + 1);
 `txtconv -t secondary/kantipur.tec -i "$BASENAME-seg2-$VERSION.txt" -o "$BASENAME-seg2-$newver.txt"`;
 # Recode the recoding input file.
 
-open $in, '<:encoding(utf8)', "$BASENAME-$VERSION.txt";
+open my $in, '<:encoding(utf8)', "$BASENAME-$VERSION.txt";
 # Open the input file again for reading.
 
 open SEG2NEW, '<:encoding(utf8)', "$BASENAME-seg2-$newver.txt";
