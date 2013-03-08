@@ -1,7 +1,7 @@
 #!/bin/sh
-# Converts a tab-delimited approver file for uploading to PanLex.
+# Converts a tab-delimited source file for uploading to PanLex.
 
-# The basename of the approver file.
+# The basename of the source file.
 BASENAME='aaa-bbb-Author'
 
 # The directory containing serialize scripts. If unset here, it will be set 
@@ -24,7 +24,7 @@ fi
 ### DO NOT MODIFY SECTION ABOVE ###
 
 $PERLCMD $SERIALIZEDIR/apostrophe.pl $BASENAME 0 '1:gyd-000' '3:nny-000' '5:eng-000'
-# Converts a tab-delimited approver file's apostrophes.
+# Converts a tab-delimited source file's apostrophes.
 # Arguments:
 #	0: base of the filename.
 #	1: version of the file.
@@ -32,7 +32,7 @@ $PERLCMD $SERIALIZEDIR/apostrophe.pl $BASENAME 0 '1:gyd-000' '3:nny-000' '5:eng-
 #		possibly requiring apostrophe normalization.
 
 $PERLCMD $SERIALIZEDIR/extag.pl $BASENAME 1 '‣' '⁋' '⫷ex⫸' '⫷mn⫸' 0 2
-# Tags all expressions and all intra-column meaning changes in a tab-delimited approver file,
+# Tags all expressions and all intra-column meaning changes in a tab-delimited source file,
 # disregarding any definitional parts.
 # Arguments:
 #	0: base of the filename.
@@ -44,7 +44,7 @@ $PERLCMD $SERIALIZEDIR/extag.pl $BASENAME 1 '‣' '⁋' '⫷ex⫸' '⫷mn⫸' 0 
 #	6+: columns containing expressions.
 
 $PERLCMD $SERIALIZEDIR/exdftag.pl $BASENAME 2 '⫷ex⫸' '[^⫷]' '[^⫷ ]' '(?:\([^()]+\)|（[^（）]+）)' '⫷df⫸' 25 3 '[][/,;?!~]' '«[^«»]+»' 2
-# Splits definitional expressions into reduced expressions and definitions in an approver file with
+# Splits definitional expressions into reduced expressions and definitions in a source file with
 # already-tagged expressions and tags the added definitions.
 # Arguments:
 #	0: base of the filename.
@@ -63,7 +63,7 @@ $PERLCMD $SERIALIZEDIR/exdftag.pl $BASENAME 2 '⫷ex⫸' '[^⫷]' '[^⫷ ]' '(?:
 #	11+: columns containing expressions that may contain definitional parts.
 
 $PERLCMD $SERIALIZEDIR/dftag.pl $BASENAME 3 '⫷df⫸' 1 2
-# Tags all column-based definitions in a tab-delimited approver file.
+# Tags all column-based definitions in a tab-delimited source file.
 # Arguments:
 #	0: base of the filename.
 #	1: version of the input file.
@@ -79,7 +79,7 @@ $PERLCMD $SERIALIZEDIR/mitag.pl $BASENAME 4 2 '⫷mi⫸'
 #	3: meaning-identifier tag.
 
 $PERLCMD $SERIALIZEDIR/wcretag.pl $BASENAME 2 '⫷wc:' '⫸' '⫷wc⫸' '⫷md:gram⫸' 1 2
-# Retags word classifications in a tab-delimited approver file.
+# Retags word classifications in a tab-delimited source file.
 # Arguments:
 #	0: base of the filename.
 #	1: version of the input file.
@@ -90,7 +90,7 @@ $PERLCMD $SERIALIZEDIR/wcretag.pl $BASENAME 2 '⫷wc:' '⫸' '⫷wc⫸' '⫷md:g
 #	6+: columns containing word classifications.
 
 $PERLCMD $SERIALIZEDIR/wctag.pl $BASENAME 5 1 '⫷wc⫸' '⫷md:gram⫸'
-# Converts and tags word classifications in a tab-delimited approver file.
+# Converts and tags word classifications in a tab-delimited source file.
 # Arguments:
 #	0: base of the filename.
 #	1: version of the input file.
@@ -99,7 +99,7 @@ $PERLCMD $SERIALIZEDIR/wctag.pl $BASENAME 5 1 '⫷wc⫸' '⫷md:gram⫸'
 #	4: metadatum tag.
 
 $PERLCMD $SERIALIZEDIR/mdtag.pl $BASENAME 6 2 '⫷md:gram⫸'
-# Tags metadata in a tab-delimited approver file.
+# Tags metadata in a tab-delimited source file.
 # Arguments:
 #	0: base of the filename.
 #	1: version of the input file.
@@ -107,7 +107,7 @@ $PERLCMD $SERIALIZEDIR/mdtag.pl $BASENAME 6 2 '⫷md:gram⫸'
 #	3: metadatum tag.
 
 $PERLCMD $SERIALIZEDIR/dmtag.pl $BASENAME 7 '⫷dm⫸' '‣' 2 3
-# Tags domain expressions in a tab-delimited approver file.
+# Tags domain expressions in a tab-delimited source file.
 # Arguments:
 #	0: base of the filename.
 #	1: version of the input file.
@@ -116,7 +116,7 @@ $PERLCMD $SERIALIZEDIR/dmtag.pl $BASENAME 7 '⫷dm⫸' '‣' 2 3
 #	4+: columns containing domain expressions.
 
 $PERLCMD $SERIALIZEDIR/mnsplit.pl $BASENAME 8 '⫷mn⫸' 2
-# Splits multi-meaning lines of a tagged approver file, eliminating any duplicate output lines.
+# Splits multi-meaning lines of a tagged source file, eliminating any duplicate output lines.
 # Arguments:
 #	0: base of the filename.
 #	1: version of the input file.
@@ -125,7 +125,7 @@ $PERLCMD $SERIALIZEDIR/mnsplit.pl $BASENAME 8 '⫷mn⫸' 2
 
 $PERLCMD $SERIALIZEDIR/wcshift.pl $BASENAME 9 2 '«wc:' '»' '⫷wc⫸' '⫷ex⫸' '[^⫷]'
 # Replaces prepended word class specifications with post-ex wc tags in a
-# tab-delimited approver file.
+# tab-delimited source file.
 # Arguments:
 #	0: base of the filename.
 #	1: version of the input file.
@@ -137,7 +137,7 @@ $PERLCMD $SERIALIZEDIR/wcshift.pl $BASENAME 9 2 '«wc:' '»' '⫷wc⫸' '⫷ex�
 #	7: regular expression matching any post-tag character.
 
 $PERLCMD $SERIALIZEDIR/normalize.pl $BASENAME 10 '⫷[a-z:]+⫸' '⫷ex⫸' 0 50 10 'eng-000' '⫷exp⫸' '⫷df⫸' ', '
-# Normalizes expressions in a tagged approver file.
+# Normalizes expressions in a tagged source file.
 # Arguments:
 #	0: base of the filename.
 #	1: version of the input file.
@@ -161,7 +161,7 @@ $PERLCMD $SERIALIZEDIR/normalize.pl $BASENAME 10 '⫷[a-z:]+⫸' '⫷ex⫸' 0 50
 #		normalizable, or blank if not.
 
 $PERLCMD $SERIALIZEDIR/out-simple-0.pl $BASENAME 11 'final' '0:epo-000' '1:hun-000'
-# Converts a normally tagged approver file to a simple-text varilingual approver file,
+# Converts a normally tagged source file to a simple-text varilingual source file,
 # eliminating duplicates.
 # Arguments:
 #	0: base of the filename.
@@ -171,7 +171,7 @@ $PERLCMD $SERIALIZEDIR/out-simple-0.pl $BASENAME 11 'final' '0:epo-000' '1:hun-0
 #		containing expressions.
 
 $PERLCMD $SERIALIZEDIR/out-simple-2.pl $BASENAME 12 'final' 'rus-000' 'eng-000'
-# Converts a normally tagged approver file to a simple-text bilingual approver file,
+# Converts a normally tagged source file to a simple-text bilingual source file,
 # eliminating duplicates.
 # Arguments:
 #	0: base of the filename.
@@ -181,7 +181,7 @@ $PERLCMD $SERIALIZEDIR/out-simple-2.pl $BASENAME 12 'final' 'rus-000' 'eng-000'
 #	4: variety UID of column 1.
 
 $PERLCMD $SERIALIZEDIR/out-full-0.pl $BASENAME 12 'final' '' 2 2 '0:eng-000' '1:haa-000'
-# Converts a standard tagged approver file to a full-text varilingual approver file.
+# Converts a standard tagged source file to a full-text varilingual source file.
 # Arguments:
 #	0: base of the filename.
 #	1: version of the input file.
@@ -194,7 +194,7 @@ $PERLCMD $SERIALIZEDIR/out-full-0.pl $BASENAME 12 'final' '' 2 2 '0:eng-000' '1:
 #		containing tags (ex, df, dm) requiring variety specifications.
 
 $PERLCMD $SERIALIZEDIR/out-full-2.pl $BASENAME 12 'final' '' 2 1 '0:art-259' '2:eng-000'
-# Converts a standard tagged approver file to a full-text bilingual approver file, eliminating duplicates.
+# Converts a standard tagged source file to a full-text bilingual source file, eliminating duplicates.
 # Arguments:
 #	0: base of the filename.
 #	1: version of the input file.

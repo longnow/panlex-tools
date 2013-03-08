@@ -1,4 +1,4 @@
-# Converts a tab-delimited approver file's apostrophes.
+# Converts a tab-delimited source file's apostrophes.
 # Arguments:
 #	0: base of the filename.
 #	1: version of the file.

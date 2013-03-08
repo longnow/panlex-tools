@@ -1,4 +1,4 @@
-# Tags all expressions and all intra-column meaning changes in a tab-delimited approver file,
+# Tags all expressions and all intra-column meaning changes in a tab-delimited source file,
 # disregarding any definitional parts.
 # Arguments:
 #	0: base of the filename.

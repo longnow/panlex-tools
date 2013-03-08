@@ -20,29 +20,29 @@ if (exists &$cmd_sub) {
 }
 
 sub cmd_fetch {
-    my ($approver) = @_;
+    my ($source) = @_;
     
-    print(STDERR "You need to specify an approver label.\n"), return unless $approver;
+    print(STDERR "You need to specify a source label.\n"), return unless $source;
     check_env(qw/PANLEX_SOURCEDIR PANLEX_USER/);
     
-    $approver =~ s/:/-/g;
+    $source =~ s/:/-/g;
     foreach my $dir (qw/queued used/) {
         my $local_dir = catdir($ENV{PANLEX_SOURCEDIR}, $dir);
         -d $local_dir || mkdir($local_dir);
-        my $exitval = shell_cmd("scp -BCpr panlex.net:/opt/panlex/sources/$dir/$approver " . catdir($local_dir, $approver));
+        my $exitval = shell_cmd("scp -BCpr panlex.net:/opt/panlex/sources/$dir/$source " . catdir($local_dir, $source));
         last if $exitval == 0;
     }
 }
 
 sub cmd_which {
-    my ($approver) = @_;
+    my ($source) = @_;
 
-    print(STDERR "You need to specify an approver.\n"), return unless $approver;
+    print(STDERR "You need to specify a source.\n"), return unless $source;
     check_env(qw/PANLEX_SOURCEDIR/);
 
-    $approver =~ s/:/-/g;
+    $source =~ s/:/-/g;
     foreach my $dir (qw/queued used/) {
-        my $local_dir = catdir($ENV{PANLEX_SOURCEDIR}, $dir, $approver);
+        my $local_dir = catdir($ENV{PANLEX_SOURCEDIR}, $dir, $source);
         print ($local_dir, "\n"), return if -d $local_dir;
     }
 }
@@ -71,10 +71,10 @@ Commands:
 
 cp <tool>
     copy panlex tool into the current directory
-fetch <approver>
-    fetches an approver directory from panlex.net
-which <approver>
-    returns the local directory for an approver
+fetch <source>
+    fetches a source directory from panlex.net
+which <source>
+    returns the local directory for a source
     
 EOF
 }

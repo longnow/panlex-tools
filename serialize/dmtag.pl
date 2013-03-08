@@ -1,4 +1,4 @@
-# Tags domain expressions in a tab-delimited approver file.
+# Tags domain expressions in a tab-delimited source file.
 # Arguments:
 #	0: base of the filename.
 #	1: version of the input file.

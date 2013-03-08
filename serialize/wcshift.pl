@@ -1,5 +1,5 @@
 # Replaces prepended word class specifications with post-ex wc tags in a
-# tab-delimited approver file and deletes word class specifications
+# tab-delimited source file and deletes word class specifications
 # prepended to definitions.
 # Arguments:
 #	0: base of the filename.

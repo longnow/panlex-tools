@@ -1,4 +1,4 @@
-# Converts a standard tagged approver file to a full-text bilingual approver file, eliminating duplicates.
+# Converts a standard tagged source file to a full-text bilingual source file, eliminating duplicates.
 # Arguments:
 #	0: base of the filename.
 #	1: version of the input file.

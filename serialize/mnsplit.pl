@@ -1,4 +1,4 @@
-# Splits multi-meaning lines of a tagged approver file, eliminating any duplicate output lines.
+# Splits multi-meaning lines of a tagged source file, eliminating any duplicate output lines.
 # Arguments:
 #	0: base of the filename.
 #	1: version of the file.

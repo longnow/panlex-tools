@@ -1,4 +1,4 @@
-# Splits definitional expressions into reduced expressions and definitions in an approver file with
+# Splits definitional expressions into reduced expressions and definitions in a source file with
 # already-tagged expressions and tags the added definitions.
 # Arguments:
 #	0: base of the filename.

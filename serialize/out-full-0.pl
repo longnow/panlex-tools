@@ -1,4 +1,4 @@
-# Converts a standard tagged approver file to a full-text varilingual approver file.
+# Converts a standard tagged source file to a full-text varilingual source file.
 # Arguments:
 #	0: base of the filename.
 #	1: version of the input file.

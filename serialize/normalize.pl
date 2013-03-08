@@ -1,4 +1,4 @@
-# Normalizes expressions in a tagged approver file.
+# Normalizes expressions in a tagged source file.
 # Arguments:
 #	0: base of the filename.
 #	1: version of the input file.
@@ -169,7 +169,7 @@ $dbh->do (
 	. 'group by tttd.td, ex.tt'
 );
 # Create a temporary database table containing the texts of the expressions in the
-# variety that have those degradations and the sums of those expressions' approvers'
+# variety that have those degradations and the sums of those expressions' sources'
 # qualities.
 
 $dbh->do (
