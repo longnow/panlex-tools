@@ -188,7 +188,8 @@ for (my $i = 0; $i < @TOOLS; $i += 2) {
 
     my ($sub, $final) = @{require $tool_path};
     my $input = "$BASENAME-$VERSION.txt";
-    open my $in, '<:utf8', $input  or die $!;
+    die "could not find file $input" unless -e $input;
+    open my $in, '<:utf8', $input or die $!;
     
     $VERSION = $final ? 'final' : $VERSION+1;
     my $output = "$BASENAME-$VERSION.txt";
