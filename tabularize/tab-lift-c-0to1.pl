@@ -11,18 +11,18 @@ use utf8;
 
 #######################################################
 
-my $fnbase = 'ibb-eng-Brunett';
+my $BASENAME = 'ibb-eng-Brunett';
 # Identify the filename base.
 
-my $ver = 0;
+my $VERSION = 0;
 # Identify the input file's version.
 
 #######################################################
 
-open DICIN, '<:encoding(utf8)', "$fnbase-$ver.xml";
+open DICIN, '<:encoding(utf8)', "$BASENAME-$VERSION.xml";
 # Open the input file for reading.
 
-open DICOUT, '>:encoding(utf8)', ("$fnbase-" . ($ver + 1) . '.txt');
+open DICOUT, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
 # Create or truncate the output file and open it for writing.
 
 my $all = (join '', <DICIN>);

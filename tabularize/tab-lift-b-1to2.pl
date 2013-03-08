@@ -15,18 +15,18 @@ use utf8;
 
 #######################################################
 
-my $fnbase = 'cng-cmn-eng-FelzienH';
+my $BASENAME = 'cng-cmn-eng-FelzienH';
 # Identify the filename base.
 
-my $ver = 1;
+my $VERSION = 1;
 # Identify the input file's version.
 
 #######################################################
 
-open DICIN, '<:encoding(utf8)', "$fnbase-$ver.txt";
+open DICIN, '<:encoding(utf8)', "$BASENAME-$VERSION.txt";
 # Open the input file for reading.
 
-open DICOUT, '>:encoding(utf8)', ("$fnbase-" . ($ver + 1) . '.txt');
+open DICOUT, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
 # Create or truncate the output file and open it for writing.
 
 my (%all, $i, $key, @seg);

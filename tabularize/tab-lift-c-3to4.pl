@@ -14,18 +14,18 @@ require 'dedup.pl';
 
 #######################################################
 
-my $fnbase = 'ttv-eng-T';
+my $BASENAME = 'ttv-eng-T';
 # Identify the filename base.
 
-my $ver = 3;
+my $VERSION = 3;
 # Identify the input file's version.
 
 #######################################################
 
-open DICIN, '<:encoding(utf8)', "$fnbase-$ver.txt";
+open DICIN, '<:encoding(utf8)', "$BASENAME-$VERSION.txt";
 # Open the input file for reading.
 
-open DICOUT, '>:encoding(utf8)', ("$fnbase-" . ($ver + 1) . '.txt');
+open DICOUT, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
 # Create or truncate the output file and open it for writing.
 
 my @col;
