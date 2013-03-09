@@ -34,7 +34,7 @@ sub process {
     foreach my $i (@spec) {
     # For each variety-specific column:
 
-    	my @col = (split /:/, $i);
+    	my @col = split /:/, $i;
     	# Identify its specification parts.
 
     	$col{$col[0]} = $col[1];

@@ -11,7 +11,7 @@ use utf8;
 
 #######################################################
 
-my $BASENAME = 'wic-eng-Rood';
+my $BASENAME = 'aaa-bbb-Author';
 # Identify the filename base.
 
 my $VERSION = 3;
@@ -25,8 +25,6 @@ open my $in, '<:encoding(utf8)', "$BASENAME-$VERSION.txt";
 open my $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
 # Create or truncate the output file and open it for writing.
 
-my @col;
-
 my %lv = (
 	'wic', 1,
 	'eng', 3
@@ -39,7 +37,7 @@ while (<$in>) {
 	chomp;
 	# Delete its trailing newline.
 
-	@col = (('') x 4);
+	my @col = (('') x 4);
 	# Reinitialize the output as a list of 4 blank columns.
 
 	if (s/⫷mi=([^⫷⫸]+)⫸//) {

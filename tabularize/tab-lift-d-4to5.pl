@@ -11,7 +11,7 @@ use utf8;
 
 #######################################################
 
-my $BASENAME = 'byv-eng-M';
+my $BASENAME = 'aaa-bbb-Author';
 # Identify the filename base.
 
 my $VERSION = 4;
@@ -25,15 +25,13 @@ open my $in, '<:encoding(utf8)', "$BASENAME-$VERSION.txt";
 open my $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
 # Create or truncate the output file and open it for writing.
 
-my @col;
-
 while (<$in>) {
 # For each line of the input file:
 
 	chomp;
 	# Delete its trailing newline.
 
-	@col = split /\t/, $_, -1;
+	my @col = split /\t/, $_, -1;
 	# Identify its columns.
 
 	$col[1] =~ s/'/'/g;

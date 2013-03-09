@@ -11,10 +11,10 @@ use utf8;
 
 #######################################################
 
-my $BASENAME = 'sbe-spa-eng-Morse';
+my $BASENAME = 'aaa-bbb-Author';
 # Identify the filename base.
 
-my $VERSION = 0;
+my $VERSION = 2;
 # Identify the input file's version.
 
 my $lcs = 'sbe';

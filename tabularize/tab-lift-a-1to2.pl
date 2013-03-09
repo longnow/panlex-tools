@@ -13,12 +13,14 @@ use strict;
 use utf8;
 # Make Perl interpret the script as UTF-8.
 
+require 'trim.pl';
+
 #######################################################
 
 my $BASENAME = 'aaa-bbb-Author';
 # Identify the filename base.
 
-my $VERSION = 0;
+my $VERSION = 1;
 # Identify the input file's version.
 
 #######################################################
@@ -29,7 +31,7 @@ open my $in, '<:encoding(utf8)', "$BASENAME-$VERSION.txt";
 open my $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
 # Create or truncate the output file and open it for writing.
 
-my (%all, $key, @seg);
+my %all;
 
 while (<$in>) {
 # For each line of the input file:
@@ -37,7 +39,7 @@ while (<$in>) {
 	if (/⫷ex:eng:/) {
 	# If it includes a translation:
 
-		$_ = (&Trim ($_));
+		$_ = Trim($_);
 		# Trim spaces in it.
 
 		s/⫷wc:(?:word|free root):/⫷wc:/;
@@ -62,7 +64,7 @@ while (<$in>) {
 		s/s\.t\./something/g;
 		# Unabbreviate “something”.
 
-		@seg = split /\t/, $_, -1;
+		my @seg = split /\t/, $_, -1;
 		# Identify its segments.
 
 		$seg[1] =~ s/, /‣/;
@@ -92,7 +94,7 @@ while (<$in>) {
 
 		}
 
-		$key = join("\t", @seg[1 .. 3]);
+		my $key = join("\t", @seg[1 .. 3]);
 		# Identify a concatenation of segments 1–3.
 
 		unless (exists $all{$key}) {
@@ -112,25 +114,3 @@ close $in;
 
 close $out;
 # Close the output file.
-
-# Trim
-# Deletes leading, trailing, and extra spaces from the specified tab-delimited string.
-# Argument:
-#	0: string.
-
-sub Trim {
-
-	my $ret = $_[0];
-	# Identify a copy of the specified string.
-
-	$ret =~ s/ {2,}/ /g;
-	# Collapse all multiple spaces in it.
-
-	$ret =~ s/:\K | (?=⫸)//g;
-	# Delete all leading and trailing spaces in it.
-
-	return $ret;
-	# Return it.
-
-}
-

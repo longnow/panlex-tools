@@ -32,7 +32,7 @@ sub process {
     	chomp;
     	# Delete its trailing newline.
 
-    	my @col = (split /\t/);
+    	my @col = split /\t/, $_, -1;
     	# Identify its columns.
 
     	$wc{$col[0]} = $col[1];
@@ -52,7 +52,7 @@ sub process {
     	if (exists $wc{$col[$wccol]}) {
     	# If the content of the column containing word classifications is a convertible one:
 
-    		my @wcmd = (split /:/, $wc{$col[$wccol]});
+    		my @wcmd = split /:/, $wc{$col[$wccol]};
     		# Identify the wc and the md values of its conversion.
 
     		if (@wcmd == 1) {

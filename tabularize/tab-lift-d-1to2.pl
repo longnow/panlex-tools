@@ -11,10 +11,10 @@ use utf8;
 
 #######################################################
 
-my $BASENAME = 'ibb-eng-Brunett';
+my $BASENAME = 'aaa-bbb-Author';
 # Identify the filename base.
 
-my $VERSION = 0;
+my $VERSION = 1;
 # Identify the input file's version.
 
 #######################################################

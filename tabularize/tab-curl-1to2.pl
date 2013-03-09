@@ -18,7 +18,7 @@ use utf8;
 my $BASENAME = 'aaa-bbb-Author';
 # Identify the filename base.
 
-my $VERSION = 0;
+my $VERSION = 1;
 # Identify the input file's version.
 
 #######################################################
@@ -28,8 +28,6 @@ open my $in, '<:encoding(utf8)', "$BASENAME-$VERSION.txt";
 
 open my $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
 # Create or truncate the output file and open it for writing.
-
-my @seg;
 
 my $eng = '';
 # Initialize the prior eng-000 expression as unknown.
@@ -43,10 +41,10 @@ while (<$in>) {
 	if (index($_, '¶') == 0) {
 	# If it is an entry:
 
-		$_ = (substr $_, 1);
+		$_ = substr $_, 1;
 		# Delete its entry marker.
 
-		@seg = split /\t/, $_, -1;
+		my @seg = split /\t/, $_, -1;
 		# Identify its segments.
 
 		if ($seg[0] eq '.') {

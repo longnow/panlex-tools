@@ -59,7 +59,7 @@ sub process {
     			if (exists $wc{$1}) {
     			# If the first one's content is convertible:
 
-    				my @wcmd = (split /:/, $wc{$1});
+    				my @wcmd = split /:/, $wc{$1};
     				# Identify the wc and the md values of its conversion.
 
     				if (@wcmd == 1) {

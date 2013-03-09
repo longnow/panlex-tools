@@ -28,8 +28,6 @@ open my $in, '<:encoding(utf8)', "$BASENAME-$VERSION.html";
 open my $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
 # Create or truncate the output file and open it for writing.
 
-my @seg;
-
 while (<$in>) {
 # For each line of the input file:
 
@@ -39,10 +37,10 @@ while (<$in>) {
 		chomp;
 		# Delete its trailing newline.
 
-		@seg = m#^<tr><td class="l1">(.+?)</td><td class="l2">(.+?)</td></tr>#;
+		my @seg = m#^<tr><td class="l1">(.+?)</td><td class="l2">(.+?)</td></tr>#;
 		# Identify its segments.
 
-		(print $out "$seg[0]\t$seg[1]\n") if @seg;
+		print $out "$seg[0]\t$seg[1]\n" if @seg;
 		# Output them, if they exist.
 	}
 

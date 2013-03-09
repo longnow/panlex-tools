@@ -22,19 +22,21 @@ my $VERSION = 0;
 
 #######################################################
 
-open my $in, '<:encoding(utf8)', "$BASENAME-$VERSION.txt";
+my ($in, $out);
+
+open $in, '<:encoding(utf8)', "$BASENAME-$VERSION.txt";
 # Open the input file for reading.
 
-open SEG2OLD, '>:encoding(utf8)', ("$BASENAME-seg2-$VERSION.txt");
+open my $seg2old, '>:encoding(utf8)', ("$BASENAME-seg2-$VERSION.txt");
 # Create or truncate the recoding input file and open it for writing.
 
-open my $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
+open $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
 # Create or truncate the output file and open it for writing.
 
 while (<$in>) {
 # For each line of the input file:
 
-	print SEG2OLD (split /\t/)[2];
+	print $seg2old (split /\t/, $_, -1)[2];
 	# Output its segment 2 to the recoding input file.
 
 }
@@ -42,39 +44,38 @@ while (<$in>) {
 close $in;
 # Close the input file.
 
-close SEG2OLD;
+close $seg2old;
 # Close the recoding input file.
 
-my $newver = ($VERSION + 1);
+my $newver = $VERSION + 1;
 # Identify the new version.
 
 `txtconv -t secondary/kantipur.tec -i "$BASENAME-seg2-$VERSION.txt" -o "$BASENAME-seg2-$newver.txt"`;
 # Recode the recoding input file.
 
-open my $in, '<:encoding(utf8)', "$BASENAME-$VERSION.txt";
+open $in, '<:encoding(utf8)', "$BASENAME-$VERSION.txt";
 # Open the input file again for reading.
 
-open SEG2NEW, '<:encoding(utf8)', "$BASENAME-seg2-$newver.txt";
+open my $seg2new, '<:encoding(utf8)', "$BASENAME-seg2-$newver.txt";
 # Open the recoding output file for reading.
-
-my (@seg, $seg2);
 
 while (<$in>) {
 # For each line of the input file:
 
-	@seg = (split /\t/);
+	my @seg = split /\t/, $_, -1;
 	# Identify its segments.
 
-	$seg2 = <SEG2NEW>;
+	my $seg2 = <$seg2new>;
 	# Identify the corresponding recoded segment 2.
 
-	($seg2 = "\n") if ($seg2 =~ /\x{fffd}/);
+	$seg2 = "\n" if $seg2 =~ /\x{fffd}/;
 	# If it contains an invalid character, make it blank.
 
 	print $out "$seg[0]\t$seg[1]\t$seg2";
 	# Output segments 0 and 1 of the line and the recoded segment 2.
-
 }
+
+close $seg2new;
 
 close $in;
 # Close the input file.
