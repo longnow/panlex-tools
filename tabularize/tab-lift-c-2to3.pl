@@ -40,19 +40,19 @@ while (<$in>) {
 	s%</entry>$%%;
 	# Delete the closing entry tag in it.
 
-	s%<grammatical-info value="([^"]+)"/>%«wcmd=$1»%g;
+	s%<grammatical-info value="([^"]+)"/>%⫷wcmd=$1⫸%g;
 	# Shorten all wc-md specifications in it.
 
-	s%<note><form lang="eng"><text>Tones: +([^<>]+)</text></form></note>%«tone=$1»%g;
+	s%<note><form lang="eng"><text>Tones: +([^<>]+)</text></form></note>%⫷tone=$1⫸%g;
 	# Shorten all tone notes in it.
 
-	s%<note type="dialect"><form lang="eng"><text>([^<>]+)</text></form></note>%«lvs=$1»%g;
+	s%<note type="dialect"><form lang="eng"><text>([^<>]+)</text></form></note>%⫷lvs=$1⫸%g;
 	# Shorten all dialect notes in it.
 
 	s%<note.+?</note>%%g;
 	# Delete all other notes in it.
 
-	s%<form lang="([^"]+)"><text>([^<>]+)</text></form>%«ex$1=$2»%g;
+	s%<form lang="([^"]+)"><text>([^<>]+)</text></form>%⫷ex$1=$2⫸%g;
 	# Shorten all translations in it.
 
 	s%</?definition>%%g;

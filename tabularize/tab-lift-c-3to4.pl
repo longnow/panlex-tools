@@ -51,7 +51,7 @@ while (<$in>) {
 	$col[2] =~ s%</?sense>%%g;
 	# Delete the remaining sense tags in column 2.
 
-	print $out ((join "\t", @col) . "\n");
+	print $out join("\t", @col), "\n";
 	# Output it.
 
 }

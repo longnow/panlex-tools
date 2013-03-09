@@ -32,7 +32,7 @@ open my $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
 while (<$in>) {
 # For each line of the input file:
 
-	if ((index $_, '¶') == 0) {
+	if (index($_, '¶') == 0) {
 	# If it is an entry:
 
 		$_ = (substr $_, 1);
@@ -59,9 +59,7 @@ while (<$in>) {
 
 		print $out;
 		# Output it.
-
 	}
-
 }
 
 close $in;

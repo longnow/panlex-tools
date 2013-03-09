@@ -46,15 +46,15 @@ while (<$in>) {
 	# Convert all unparenthesized commas and semicolons in column 3
 	# to synonym delimiters.
 
-	$col[3] =~ s/(?:^|‣)\Kto be /«wc:verb»(be) /g;
+	$col[3] =~ s/(?:^|‣)\Kto be /⫷wc:verb⫸(be) /g;
 	# Convert all leading instances of “to be” to preposed verb
 	# specifications and parenthesized “be” in column 3.
 
-	$col[3] =~ s/(?:^|‣)\Kto /«wc:verb»/g;
+	$col[3] =~ s/(?:^|‣)\Kto /⫷wc:verb⫸/g;
 	# Convert all leading instances of “to” to preposed verb
 	# specifications in column 3.
 
-	print $out ((join "\t", @col) . "\n");
+	print $out join("\t", @col), "\n";
 	# Output it.
 
 }

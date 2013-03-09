@@ -40,7 +40,7 @@ my $wc = '';
 while (<$in>) {
 # For each line of the input file:
 
-	if ((index $_, '¶') == 0) {
+	if (index($_, '¶') == 0) {
 	# If it is an entry:
 
 		$_ = (substr $_, 1);
@@ -54,7 +54,6 @@ while (<$in>) {
 
 			$seg[0] = $eng;
 			# Make it inherit.
-
 		}
 
 		else {
@@ -65,7 +64,6 @@ while (<$in>) {
 
 			$eng = $seg[0];
 			# Make the prior eng-000 expression current.
-
 		}
 
 		if ($seg[1] eq '.') {
@@ -73,7 +71,6 @@ while (<$in>) {
 
 			$seg[1] = $wc;
 			# Make it inherit.
-
 		}
 
 		else {
@@ -81,14 +78,11 @@ while (<$in>) {
 
 			$wc = $seg[1];
 			# Make the prior wc current.
-
 		}
 
-		print $out (join "\t", @seg[0, 2, 1, 3]);
+		print $out join("\t", @seg[0, 2, 1, 3]);
 		# Output it, with the wc column shifted to apply to the rop-000 column.
-
 	}
-
 }
 
 close $in;

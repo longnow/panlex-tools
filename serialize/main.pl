@@ -31,7 +31,7 @@ my @TOOLS = (
 #	3: meaning tag.
 #	4+: columns containing expressions.
 
-#'exdftag'      => [ '⫷ex⫸', '[^⫷]', '[^⫷ ]', '(?:\([^()]+\)|（[^（）]+）)', '⫷df⫸', 25, 3, '[][/,;?!~]', '«[^«»]+»', 2 ],
+#'exdftag'      => [ '⫷ex⫸', '[^⫷]', '[^⫷ ]', '(?:\([^()]+\)|（[^（）]+）)', '⫷df⫸', 25, 3, '[][/,;?!~]', '⫷[^⫷⫸]+⫸', 2 ],
 # Splits definitional expressions into reduced expressions and definitions in a source file with
 # already-tagged expressions and tags the added definitions.
 # Arguments:

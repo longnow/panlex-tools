@@ -27,7 +27,7 @@ sub process {
     	my @col = split /\t/, $_, -1;
     	# Identify its columns.
 
-    	if ((index $col[$mncol], $mndelim) < 0) {
+    	if (index($col[$mncol], $mndelim) < 0) {
     	# If the potentially multimeaning column is one-meaning:
 
     		unless (exists $line{$_}) {
@@ -53,7 +53,7 @@ sub process {
     			$line[$mncol] = $mn;
     			# Replace the multimeaning column with the meaning segment.
 
-    			my $ln = (join "\t", @line);
+    			my $ln = join("\t", @line);
     			# Identify the meaning's line.
 
     			unless (exists $line{$ln}) {

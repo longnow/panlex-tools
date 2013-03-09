@@ -31,43 +31,43 @@ sub process {
     # disconnection to avoid an automatic rollback. Username and password will be obtained
     # from local (client) environment variables PGUSER and PGPASSWORD, respectively.
 
-    $dbh->do (
+    $dbh->do(
     	'create temporary table apostemp as '
     	. "select lv, false as rq, false as ma, false as mtc, ''::text as best from lv order by lv"
     );
     # Create a temporary database table of apostrophe data.
 
-    $dbh->do (
+    $dbh->do(
     	'update apostemp set rq = true from cp '
     	. "where cp.lv = apostemp.lv and c0 <= '02019' and c1 >= '02019'"
     );
     # Add U+2019 data to it.
 
-    $dbh->do (
+    $dbh->do(
     	'update apostemp set ma = true from cp '
     	. "where cp.lv = apostemp.lv and c0 <= '002bc' and c1 >= '002bc'"
     );
     # Add U+02bc data to it.
 
-    $dbh->do (
+    $dbh->do(
     	'update apostemp set mtc = true from cp '
     	. "where cp.lv = apostemp.lv and c0 <= '002bb' and c1 >= '002bb'"
     );
     # Add U+02bb data to it.
 
-    $dbh->do (
+    $dbh->do(
     	"update apostemp set best = ''' from cp "
     	. 'where cp.lv = apostemp.lv and rq and not ma and not mtc'
     );
-    $dbh->do (
+    $dbh->do(
     	"update apostemp set best = 'ʼ' from cp "
     	. 'where cp.lv = apostemp.lv and not rq and not mtc'
     );
-    $dbh->do (
+    $dbh->do(
     	"update apostemp set best = 'ʻ' from cp "
     	. 'where cp.lv = apostemp.lv and not rq and not ma and mtc'
     );
-    $dbh->do (
+    $dbh->do(
     	"update apostemp set best = 'ʼ' "
     	. 'where lv not in (select distinct lv from cp)'
     );
@@ -88,10 +88,10 @@ sub process {
     	my @lcvc = ($collcvc[1] =~ /^([a-z]{3})-(\d{3})$/);
     	# Identify the variety's lc and vc.
 
-    	my $lv = ($dbh->selectrow_array ("select * from lv ('$lcvc[0]', $lcvc[1])"))[0];
+    	my $lv = ($dbh->selectrow_array("select * from lv ('$lcvc[0]', $lcvc[1])"))[0];
     	# Identify its lv.
 
-    	my $best = ($dbh->selectrow_array ("select best from apostemp where lv = $lv"));
+    	my $best = ($dbh->selectrow_array("select best from apostemp where lv = $lv"));
     	# Identify the normative apostrophe of the variety.
 
     	if (defined $best && length $best) {

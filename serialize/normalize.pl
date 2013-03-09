@@ -37,7 +37,7 @@ use Unicode::Normalize;
 # Import the Unicode normalization module.
 
 sub process {
-    my ($in, $out, $re, $extag, $excol, $minscore, $minscore_repl, $lv, $prenormtag, $dftag, $syndelim) = @_;
+    my ($in, $out, $tag, $extag, $excol, $minscore, $minscore_repl, $lv, $prenormtag, $dftag, $syndelim) = @_;
     
     my $dbh = DBI->connect(
     	"dbi:Pg:dbname=plx;host=db.panlex.org;port=5432", '', '',
@@ -52,13 +52,13 @@ sub process {
 
     my (%ex, @ex, @line);
 
-    my $lentag = (length $extag);
+    my $lentag = length $extag;
     # Identify the length of the expression tag.
 
-    my @lcvc = (split /-/, $lv);
+    my @lcvc = split /-/, $lv;
     # Identify the variety's lc and vc.
 
-    $lv = QV ("lv ('$lcvc[0]', $lcvc[1])");
+    $lv = QV("lv ('$lcvc[0]', $lcvc[1])");
     # Identify the variety's ID.
 
     my $done = 0;
@@ -79,48 +79,42 @@ sub process {
     	if (length $col[$excol]) {
     	# If the column containing proposed expressions is nonblank:
 
-    		my @seg = ($col[$excol] =~ /($re.+?(?=$re|$))/go);
+    		my @seg = ($col[$excol] =~ /($tag.+?(?=$tag|$))/go);
     		# Identify the tagged items, including tags, in it.
 
-    		for (my $i = 0; $i < @seg; $i++) {
+    		foreach my $seg (@seg) {
     		# For each of them:
 
-    			if ((index $seg[$i], $extag) == 0) {
+    			if (index($seg, $extag) == 0) {
     			# If it is tagged as an expression:
 
-    				foreach my $ex (PsList ($seg[$i], $lentag, $syndelim)) {
+    				foreach my $ex (PsList($seg, $lentag, $syndelim)) {
     				# For the expression, or for each expression if it is a pseudo-list:
 
     					$ex{$ex} = '';
     					# Add it to the table of proposed expression texts, if not
     					# already in it.
-
     				}
-
     			}
-
     		}
-
     	}
-
     }
 
-    $dbh->do ("create temporary table tttd (tt text, td text, uqsum integer)");
+    $dbh->do("create temporary table tttd (tt text, td text, uqsum integer)");
     # Create a temporary database table to contain the texts, degradations, and scores
     # of the proposed expressions.
 
-    my $sth = ($dbh->prepare ("insert into tttd (tt) values (?)"));
+    my $sth = $dbh->prepare("insert into tttd (tt) values (?)");
     # Prepare a statement to insert a text into it.
 
     foreach my $tt (keys %ex) {
     # For each proposed expression:
 
-    	$sth->execute ($tt);
+    	$sth->execute($tt);
     	# Add its text to the table.
-
     }
 
-    $dbh->do (
+    $dbh->do(
     	'update tttd set uqsum = tbl.uqsum from ('
     		. 'select tttd.tt, sum (uq) as uqsum from tttd, ex, exap, ap '
     		. "where lv = $lv and ex.tt = tttd.tt and exap.ex = ex.ex and ap.ap = exap.ap "
@@ -129,23 +123,22 @@ sub process {
     );
     # Add the proposed expressions' scores, if any, to the table.
 
-    foreach my $exok (QCs ("tt from tttd where uqsum >= $minscore")) {
+    foreach my $exok (QCs("tt from tttd where uqsum >= $minscore")) {
     # For each proposed expression that has a score and whose score is sufficient for
     # outright acceptance as an expression:
 
     	$ex{$exok} = 'exok';
     	# Identify it as such.
-
     }
 
-    $dbh->do ("delete from tttd where uqsum >= $minscore");
+    $dbh->do("delete from tttd where uqsum >= $minscore");
     # Delete from the table the records of those expressions.
 
-    $dbh->do ("update tttd set td = td (tt)");
+    $dbh->do("update tttd set td = td (tt)");
     # Add to the table the degradations of the texts of the remaining proposed
     # expressions.
 
-    $dbh->do (
+    $dbh->do(
     	'create temporary table ttcand as '
     	. 'select distinct tttd.td, ex.tt, sum (uq) as uqsum from tttd, ex, exap, ap '
     	. "where lv = $lv and ex.td = tttd.td and exap.ex = ex.ex and ap.ap = exap.ap "
@@ -155,13 +148,13 @@ sub process {
     # variety that have those degradations and the sums of those expressions' sources'
     # qualities.
 
-    $dbh->do (
+    $dbh->do(
     	'create temporary table tdmax as select td, max (uqsum) as uqmax from ttcand group by td'
     );
     # Create a temporary database table containing the maximum quality sum of each degradation's
     # expressions, if any, in the variety.
 
-    foreach my $exok (QCs (
+    foreach my $exok (QCs(
     	'tttd.tt from tttd, tdmax '
     	. "where tttd.td = tdmax.td and uqsum = uqmax and uqsum >= $minscore_repl"
     )) {
@@ -170,16 +163,15 @@ sub process {
 
     	$ex{$exok} = 'exok';
     	# Identify it as such.
-
     }
 
-    $dbh->do (
+    $dbh->do(
     	'delete from tttd using tdmax '
     	. "where tttd.td = tdmax.td and uqsum = uqmax and uqsum >= $minscore_repl"
     );
     # Delete those expressions' records from the database table.
 
-    $dbh->do (
+    $dbh->do(
     	'update tttd set td = ttcand.tt, uqsum = uqmax from ttcand, tdmax '
     	. 'where tdmax.td = tttd.td and ttcand.td = tttd.td and ttcand.uqsum = uqmax'
     );
@@ -187,62 +179,48 @@ sub process {
     # having those degradations, if any, and replace the scores of the replaced expressions
     # with the scores of their replacements.
 
-    my @ttfmtoref = (QRs ("tt, td from tttd where uqsum >= $minscore_repl"));
+    my %ttto;
+
     # Identify a list of references to replaced-replacer pairs for proposed
     # expressions.
-
-    my (@ttfm, %ttto, @ttto);
-
-    foreach my $ttfmto (@ttfmtoref) {
+    foreach my $ttfmto (QRs("tt, td from tttd where uqsum >= $minscore_repl")) {
     # For each of them:
-
-    	my @ttfmto = @$ttfmto;
-    	# Identify the referenced pair.
-
-    	push @ttfm, $ttfmto[0];
-    	push @ttto, $ttfmto[1];
-    	# Append its elements to the lists of replaced and replacing texts.
-    }
-
-    for (my $i = 0; $i < @ttfm; $i++) {
-    # For each of those replacements:
-
-    	$ttto{$ttfm[$i]} = $ttto[$i];
+    	
+    	$ttto{$ttfmto->[0]} = $ttfmto->[1];
     	# Add it to a table of replacements.
-
     }
 
     foreach my $line (@line) {
     # For each line:
 
-    	my @col = (split /\t/, $line, -1);
+    	my @col = split /\t/, $line, -1;
     	# Identify its columns.
 
     	if (length $col[$excol]) {
     	# If the column containing proposed expressions is nonblank:
 
-    		my @seg = ($col[$excol] =~ m/($re.+?(?=$re|$))/go);
+    		my @seg = ($col[$excol] =~ m/($tag.+?(?=$tag|$))/go);
     		# Identify the tagged items, including tags, in it.
 
-    		for (my $i = 0; $i < @seg; $i++) {
+    		foreach my $seg (@seg) {
     		# For each item:
 
-    			if ((index $seg[$i], $extag) == 0) {
+    			if (index($seg, $extag) == 0) {
     			# If it is tagged as an expression:
 
     				my $allok = 1;
     				# Initialize the list's elements as all classifiable as
     				# expressions.
 
-    				foreach my $ex (@ex = (PsList ($seg[$i], $lentag, $syndelim))) {
+    				foreach my $ex (@ex = (PsList($seg, $lentag, $syndelim))) {
     				# Identify the expression, or a list of the expressions in it if
     				# it is a pseudo-list.
 
     				# For each of them:
 
     					unless (
-    						(exists $ex{$ex}) && ($ex{$ex} eq 'exok')
-    						|| (exists $ttto{$ex})
+    						(exists $ex{$ex} && $ex{$ex} eq 'exok')
+    						|| exists $ttto{$ex}
     					) {
     					# If it is not classifiable as an expression without
     					# replacement or after being replaced:
@@ -258,7 +236,7 @@ sub process {
 
     				}
 
-    				$seg[$i] = '';
+    				$seg = '';
     				# Reinitialize the item as blank.
 
     				if ($allok) {
@@ -268,37 +246,33 @@ sub process {
     					foreach my $ex (@ex) {
     					# For each of them:
 
-    						if ((exists $ex{$ex}) && ($ex{$ex} eq 'exok')) {
+    						if (exists $ex{$ex} && $ex{$ex} eq 'exok') {
     						# If it is classifiable as an expression without
     						# replacement:
 
-    							$seg[$i] .= "$extag$ex";
+    							$seg .= "$extag$ex";
     							# Append it, with an expression tag, to the
     							# item.
-
     						}
 
     						else {
     						# Otherwise, i.e. if it is classifiable as an
     						# expression only after replacement:
 
-    							$seg[$i] .=
-    								"$prenormtag$ex$extag$ttto{$ex}";
+    							$seg .= "$prenormtag$ex$extag$ttto{$ex}";
     							# Append it, with a pre-normalized
     							# expression tag, and its replacement, with
     							# an expression tag, to the item.
 
     						}
-
     					}
-
     				}
 
     				else {
     				# Otherwise, i.e. if not all elements of the list are classifiable
     				# as expressions with or without replacement:
 
-    					$seg[$i] = (join "$syndelim", @ex);
+    					$seg = join($syndelim, @ex);
     					# Identify the concatenation of the list's elements, with
     					# the specified delimiter if any, i.e. the original item
     					# without its expression tag.
@@ -307,19 +281,17 @@ sub process {
     					# If proposed expressions not classifiable as expressions
     					# are to be converted to definitions:
 
-    						$seg[$i] = "$dftag$seg[$i]";
+    						$seg = "$dftag$seg";
     						# Prepend a definition tag to the concatenation.
-
     					}
 
     					else {
     					# Otherwise, i.e. if such proposed expressions are not
     					# to be converted to definitions:
 
-    						$seg[$i] = "$prenormtag$seg[$i]";
+    						$seg = "$prenormtag$seg";
     						# Prepend a pre-normalized expression tag to the
     						# concatenation.
-
     					}
 
     				}
@@ -328,12 +300,12 @@ sub process {
 
     		}
 
-    		$col[$excol] = (join '', @seg);
+    		$col[$excol] = join('', @seg);
     		# Identify the column with all expression reclassifications.
 
     	}
 
-    	print $out join ("\t", @col), "\n";
+    	print $out join("\t", @col), "\n";
     	# Output the line.
 
     }
@@ -356,16 +328,15 @@ sub PsList {
 
 	my @ex;
 
-	my $tt  = (substr $_[0], $_[1]);
+	my $tt  = substr $_[0], $_[1];
 	# Identify the specified pseudo-list without its tag.
 
-	if ((length $_[2]) && ($tt =~ /$_[2]/)) {
+	if (length $_[2] && $tt =~ /$_[2]/) {
 	# If expressions are to be classified as single or pseudo-list
 	# and it contains a pseudo-list delimiter:
 
-		@ex = (split /$_[2]/, $tt);
+		@ex = split /$_[2]/, $tt;
 		# Identify the expressions in the pseudo-list.
-
 	}
 
 	else {
@@ -375,12 +346,10 @@ sub PsList {
 
 		@ex = ($tt);
 		# Identify a list of the sole expression.
-
 	}
 
 	return @ex;
 	# Return a list
-
 }
 
 #### QCs
@@ -391,26 +360,9 @@ sub PsList {
 
 sub QCs {
 
-	my $ref = $dbh->selectcol_arrayref ("select " . $_[0]);
-	# Identify a reference to the array of the values in the first or only column resulting
+	return @{$dbh->selectcol_arrayref("select " . $_[0]) || []};
+	# Return the array of the values in the first or only column resulting
 	# from the specified query.
-
-	if (defined $ref) {
-	# If there are any values:
-
-		return @$ref;
-		# Return them.
-
-	}
-
-	else {
-	# Otherwise, i.e. if there are no values:
-
-		return ();
-		# Return an empty array.
-
-	}
-
 }
 
 #### QRs
@@ -421,9 +373,8 @@ sub QCs {
 
 sub QRs {
 
-	return @{$dbh->selectall_arrayref ("select $_[0]")};
+	return @{$dbh->selectall_arrayref("select $_[0]") || []};
 	# Return the list of references to the rows resulting from the specified query.
-
 }
 
 #### QV
@@ -434,25 +385,15 @@ sub QRs {
 
 sub QV {
 
-	my @ret = ($dbh->selectrow_array ("select $_[0]"));
+	my @ret = $dbh->selectrow_array("select $_[0]");
 	# Identify the array of values in the first row resulting from the specified query.
 
-	if (@ret && (defined $ret[0])) {
-	# If the array isn't empty and its first element is defined:
-
-		return $ret[0];
-		# Return that element's value.
-
-	}
-
-	else {
-	# Otherwise, i.e. if it is empty or its first element is undefined:
-
-		return '';
-		# Return a blank value.
-
-	}
-
+    return $ret[0] if @ret && defined $ret[0];
+	# If the array isn't empty and its first element is defined,
+	# return that value.
+	
+	return '';
+	# Otherwise, return a blank value.
 }
 
 1;

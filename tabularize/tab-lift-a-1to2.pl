@@ -92,7 +92,7 @@ while (<$in>) {
 
 		}
 
-		$key = (join "\t", @seg[1 .. 3]);
+		$key = join("\t", @seg[1 .. 3]);
 		# Identify a concatenation of segments 1–3.
 
 		unless (exists $all{$key}) {
@@ -101,13 +101,10 @@ while (<$in>) {
 			$all{$key} = '';
 			# Add it to the table of concatenations.
 
-			print $out (join "\t", @seg);
+			print $out join("\t", @seg);
 			# Output the line.
-
 		}
-
 	}
-
 }
 
 close $in;

@@ -29,7 +29,7 @@ open my $in, '<:encoding(utf8)', "$BASENAME-$VERSION.xml";
 open my $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
 # Create or truncate the output file and open it for writing.
 
-my $all = (join '', <$in>);
+my $all = join('', <$in>);
 # Identify the entire content of the input file.
 
 $all =~ s/\n */ /g;

@@ -29,7 +29,7 @@ open my $in, '<:encoding(utf8)', "$BASENAME-$VERSION.txt";
 open my $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
 # Create or truncate the output file and open it for writing.
 
-my $all = (join '', <$in>);
+my $all = join('', <$in>);
 # Identify a concatenation of all lines of the input file.
 
 $all =~ s/\n/ /g;

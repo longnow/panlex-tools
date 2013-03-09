@@ -70,19 +70,19 @@ while (<$in>) {
 			# Delete any trailing substring beginning with an open parenthesis and not
 			# closed.
 
-			$seg[$i] =~ s/^(.+)!$/«wc:ijec»$1/;
+			$seg[$i] =~ s/^(.+)!$/⫷wc:ijec⫸$1/;
 			# Convert any trailing exclamation mark to a preposed wc specification.
 
 		}
 
-		$seg[3] =~ s/(?:^|‣)\K((?:to become|to be|to|become|be)) /«wc:verb»($1) /g;
+		$seg[3] =~ s/(?:^|‣)\K((?:to become|to be|to|become|be)) /⫷wc:verb⫸($1) /g;
 		# In all expressions in segment 3 that begin with a verb particle or copula,
 		# parenthesize it and prefix the expressions with wc specifications.
 
 		$seg[3] =~ s/^CL \(([^()]+)\)$/$1⫷md:gram⫸classifier/;
 		# If segment 3 is a classifier, convert it to an expression and a metadatum.
 
-		$key = (join "\t", @seg[1 .. 3]);
+		$key = join("\t", @seg[1 .. 3]);
 		# Identify a concatenation of segments 1–3.
 
 		unless (exists $all{$key}) {
@@ -91,7 +91,7 @@ while (<$in>) {
 			$all{$key} = '';
 			# Add it to the table of concatenations.
 
-			print $out (join "\t", @seg), "\n";
+			print $out join("\t", @seg), "\n";
 			# Output the line.
 
 		}

@@ -31,13 +31,13 @@ while (<$in>) {
 	s%<note.+?</note>%%g;
 	# Delete all note elements in it.
 
-	s%<(form|gloss) lang="([^"]+)"><text>(?:[A-Z][^:]+: +)?([^<>]+)</text></\1>%«ex$2=$3»%g;
+	s%<(form|gloss) lang="([^"]+)"><text>(?:[A-Z][^:]+: +)?([^<>]+)</text></\1>%⫷ex$2=$3⫸%g;
 	# Shorten all expression specifications in it.
 
-	s%^<entry id="([^"]+)">%«mi=$1»%;
+	s%^<entry id="([^"]+)">%⫷mi=$1⫸%;
 	# Shorten its mi.
 
-	s%<grammatical-info value="([^"]+)"/>%«wcmd=$1»%g;
+	s%<grammatical-info value="([^"]+)"/>%⫷wcmd=$1⫸%g;
 	# Shorten all wc-md specifications in it.
 
 	s%<[^<>]+>%%g;

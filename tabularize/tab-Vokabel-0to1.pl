@@ -33,7 +33,7 @@ my @seg;
 while (<$in>) {
 # For each line of the input file:
 
-	if ((index $_, '<tr><td class="l1">') == 0) {
+	if (index($_, '<tr><td class="l1">') == 0) {
 	# If it is an entry:
 
 		chomp;
@@ -44,7 +44,6 @@ while (<$in>) {
 
 		(print $out "$seg[0]\t$seg[1]\n") if @seg;
 		# Output them, if they exist.
-
 	}
 
 }

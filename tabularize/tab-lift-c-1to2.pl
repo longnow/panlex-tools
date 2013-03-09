@@ -28,7 +28,7 @@ open my $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
 while (<$in>) {
 # For each line of the input file:
 
-	next unless (($_ ne "\n") && ((index $_, '<entry') == 0));
+	next unless ($_ ne "\n" && index($_, '<entry') == 0);
 	# If it is not an entry, disregard it.
 
 	next if /<relation type="paradigmatic-variant-from"/;

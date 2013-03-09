@@ -42,7 +42,7 @@ while (<$in>) {
 	@col = (('') x 4);
 	# Reinitialize the output as a list of 4 blank columns.
 
-	if (s/«mi=([^«»]+)»//) {
+	if (s/⫷mi=([^⫷⫸]+)⫸//) {
 	# If the line contains a meaning identifier, delete it and:
 
 		$col[0] = $1;
@@ -50,7 +50,7 @@ while (<$in>) {
 
 	}
 
-	while (s/«ex([^=]+)=([^«»]+)»//) {
+	while (s/⫷ex([^=]+)=([^⫷⫸]+)⫸//) {
 	# As long as the line contains any expression list, delete it and:
 
 		$col[$lv{$1}] .= (((length $col[$lv{$1}]) ? '‣' : '') . $2);
@@ -58,7 +58,7 @@ while (<$in>) {
 
 	}
 
-	if (s/«wcmd=([^«»]+)»//) {
+	if (s/⫷wcmd=([^⫷⫸]+)⫸//) {
 	# If the line contains a wc-md specification, delete it and:
 
 		$col[2] = $1;
@@ -66,10 +66,10 @@ while (<$in>) {
 
 	}
 
-	(print "$_\n") if (length $_);
+	print "$_\n" if length $_;
 	# If any content remains in the line, report it.
 
-	print $out ((join "\t", @col) . "\n");
+	print $out join("\t", @col), "\n";
 	# Output it.
 
 }
