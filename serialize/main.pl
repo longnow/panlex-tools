@@ -2,8 +2,6 @@
 # Converts a tab-delimited source file for uploading to PanLex.
 use strict;
 use utf8;
-use File::Spec::Functions;
-use Cwd;
 
 # The basename of the source file.
 my $BASENAME = 'aaa-bbb-Author';
@@ -169,26 +167,40 @@ my @TOOLS = (
 
 ### DO NOT MODIFY BELOW THIS LINE ###
 
-my $DIR;
-if (-d $PANLEX_TOOLDIR) {
-    $DIR = catfile($PANLEX_TOOLDIR,'serialize');
-} elsif (-d $ENV{PANLEX_TOOLDIR}) {
-    $DIR = catfile($ENV{PANLEX_TOOLDIR},'serialize');
-} else {
-    $DIR = getcwd;
+use File::Spec::Functions;
+use Cwd;
+
+foreach my $dir (grep { $_ && -d $_ } ($PANLEX_TOOLDIR, $ENV{PANLEX_TOOLDIR})) {
+    push @INC, catfile($dir,'serialize');    
+    push @INC, catfile($dir,'lib');    
 }
 
-die "odd number of items in \@TOOLS" unless @TOOLS % 2 == 0;
+$PANLEX_TOOLDIR ||= $ENV{PANLEX_TOOLDIR};
+
+my $log = {
+    time => time(),
+    tools => \@TOOLS,
+};
+
+if (-d $PANLEX_TOOLDIR) {    
+    # get the panlex-tools revision.
+    my $pwd = cwd();
+    chdir $PANLEX_TOOLDIR;
+    my $rev = `git rev-parse HEAD`;
+    chomp $rev;
+    chdir $pwd;
+    $log->{git_revision} = $rev;
+}
 
 print "\n";
+die "odd number of items in \@TOOLS" unless @TOOLS % 2 == 0;
 
 for (my $i = 0; $i < @TOOLS; $i += 2) {
     my ($tool,$args) = @TOOLS[$i, $i+1];
 
-    my $tool_path = catfile($DIR, $tool . '.pl');
+    require $tool . '.pl';
     my $pkg = 'PanLex::Serialize::' . $tool;
     $pkg =~ s/-/_/g;
-    require $tool_path;
 
     my $input = "$BASENAME-$VERSION.txt";
     die "could not find file $input" unless -e $input;
@@ -207,5 +219,10 @@ for (my $i = 0; $i < @TOOLS; $i += 2) {
     close $in;
     close $out;
 }
+
+require JSON;
+open my $fh, '>', 'log.json';
+print $fh JSON->new->utf8->pretty(1)->canonical(1)->encode($log);
+close $fh;
 
 print "\n";
