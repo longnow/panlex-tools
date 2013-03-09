@@ -184,19 +184,25 @@ print "\n";
 
 for (my $i = 0; $i < @TOOLS; $i += 2) {
     my ($tool,$args) = @TOOLS[$i, $i+1];
-    my $tool_path = catfile($DIR, $tool . '.pl');
 
-    my ($sub, $final) = @{require $tool_path};
+    my $tool_path = catfile($DIR, $tool . '.pl');
+    my $pkg = 'PanLex::Serialize::' . $tool;
+    $pkg =~ s/-/_/g;
+    require $tool_path;
+
     my $input = "$BASENAME-$VERSION.txt";
     die "could not find file $input" unless -e $input;
     open my $in, '<:utf8', $input or die $!;
     
-    $VERSION = $final ? 'final' : $VERSION+1;
+    {
+        no strict 'refs';
+        $VERSION = ${$pkg.'::final'} ? 'final' : $VERSION+1;
+    }
     my $output = "$BASENAME-$VERSION.txt";
     open my $out, '>:utf8', "$BASENAME-$VERSION.txt" or die $!;
     
-    printf "%-12s %s => %s\n", $tool, $input, $output;
-    &$sub($in, $out, @$args);
+    printf "%-13s %s => %s\n", $tool, $input, $output;
+    $pkg->can('process')->($in, $out, @$args);
 
     close $in;
     close $out;

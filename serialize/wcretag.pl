@@ -6,6 +6,8 @@
 #	3: metadatum tag.
 #	4+: columns containing word classifications.
 
+package PanLex::Serialize::wcretag;
+
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
 
@@ -18,7 +20,7 @@ use utf8;
 use File::Spec::Functions;
 use File::Basename.
 
-sub wcretag {
+sub process {
     my ($in, $out, $pretag, $posttag, $wctag, $mdtag, @wccol) = @_;
     
     open my $wc, '<:utf8', catfile(dirname(__FILE__), 'wc.txt') or die $!;
@@ -111,4 +113,4 @@ sub wcretag {
     }    
 }
 
-[\&wcretag];
+1;

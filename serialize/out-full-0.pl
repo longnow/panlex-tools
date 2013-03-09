@@ -7,6 +7,8 @@
 #	3+: specifications (column index and variety UID, colon-delimited) of columns
 #		containing tags (ex, df, dm) requiring variety specifications.
 
+package PanLex::Serialize::out_full_0;
+
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
 
@@ -16,7 +18,9 @@ use strict;
 use utf8;
 # Make Perl interpret the script as UTF-8 rather than bytes.
 
-sub out_full_0 {
+$PanLex::Serialize::out_full_0::final = 1;
+
+sub process {
     my ($in, $out, $wc, $mindf, $minex, @spec) = @_;
     
     die "Invalid minimum count\n" if ($mindf < 2) || ($minex < 1);
@@ -110,4 +114,4 @@ sub out_full_0 {
     }    
 }
 
-[\&out_full_0, 1];
+1;

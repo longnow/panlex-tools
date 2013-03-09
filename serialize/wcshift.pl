@@ -8,6 +8,8 @@
 #	4: expression tag.
 #	5: regular expression matching any post-tag character.
 
+package PanLex::Serialize::wcshift;
+
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
 
@@ -17,7 +19,7 @@ use strict;
 use utf8;
 # Make Perl interpret the script as UTF-8 rather than bytes.
 
-sub wcshift {
+sub process {
     my ($in, $out, $wccol, $wcstart, $wcend, $wctag, $extag, $post) = @_;
     
     while (<$in>) {
@@ -40,4 +42,4 @@ sub wcshift {
     }    
 }
 
-[\&wcshift];
+1;

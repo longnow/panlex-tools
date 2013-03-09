@@ -3,6 +3,8 @@
 #	0: definition tag.
 #	1+: columns containing definitions.
 
+package PanLex::Serialize::dftag;
+
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
 
@@ -12,8 +14,7 @@ use strict;
 use utf8;
 # Make Perl interpret the script as UTF-8 rather than bytes.
 
-
-sub dftag {
+sub process {
     my ($in, $out, $dftag, @dfcol) = @_;
     
     while (<$in>) {
@@ -37,4 +38,4 @@ sub dftag {
     }    
 }
 
-[\&dftag];
+1;

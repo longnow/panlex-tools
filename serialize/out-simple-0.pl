@@ -4,6 +4,8 @@
 #	0+: specifications (column index and variety UID, colon-delimited) of columns
 #		containing expressions.
 
+package PanLex::Serialize::out_simple_0;
+
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
 
@@ -13,7 +15,9 @@ use strict;
 use utf8;
 # Make Perl interpret the script as UTF-8 rather than bytes.
 
-sub out_simple_0 {
+$PanLex::Serialize::out_simple_0::final = 1;
+
+sub process {
     my ($in, $out, @args) = @_;
     
     print $out ".\n0\n";
@@ -72,4 +76,4 @@ sub out_simple_0 {
     }
 };
 
-[\&out_simple_0, 1];
+1;

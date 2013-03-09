@@ -23,7 +23,7 @@ use strict;
 use utf8;
 # Make Perl interpret the script as UTF-8 rather than bytes.
 
-sub exdftag {
+sub process {
     my ($in, $out, $extag, $re_posttag, $re_posttagw, $re_df, $dftag, $tmc, $tmw, 
         $re_dfsub, $re_pre, @exdfcol) = @_;
 
@@ -107,4 +107,4 @@ sub exdftag {
     }    
 }
 
-[\&exdftag];
+1;

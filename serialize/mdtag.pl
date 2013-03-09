@@ -3,6 +3,8 @@
 #	0: column containing metadata.
 #	1: metadatum tag.
 
+package PanLex::Serialize::mdtag;
+
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
 
@@ -12,7 +14,7 @@ use strict;
 use utf8;
 # Make Perl interpret the script as UTF-8 rather than bytes.
 
-sub mdtag {
+sub process {
     my ($in, $out, $mdcol, $mdtag) = @_;
     
     while (<$in>) {
@@ -33,4 +35,4 @@ sub mdtag {
     }    
 }
 
-[\&mdtag];
+1;

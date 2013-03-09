@@ -3,6 +3,8 @@
 #	0: meaning-delimitation tag.
 #	1: number (0-based) of the column that may contain multiple meanings.
 
+package PanLex::Serialize::mnsplit;
+
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
 
@@ -12,7 +14,7 @@ use strict;
 use utf8;
 # Make Perl interpret the script as UTF-8 rather than bytes.
 
-sub mnsplit {
+sub process {
     my ($in, $out, $mndelim, $mncol) = @_;
     my %line;
     
@@ -68,4 +70,4 @@ sub mnsplit {
     }
 }
 
-[\&mnsplit];
+1;

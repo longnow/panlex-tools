@@ -4,6 +4,8 @@
 #	0: variety UID of column 0.
 #	1: variety UID of column 1.
 
+package PanLex::Serialize::out_simple_2;
+
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
 
@@ -13,7 +15,9 @@ use strict;
 use utf8;
 # Make Perl interpret the script as UTF-8 rather than bytes.
 
-sub out_simple_2 {
+$PanLex::Serialize::out_simple_2::final = 1;
+
+sub process {
     my ($in, $out, $lv1, $lv2) = @_;
     
     print $out ".\n2\n$lv1\n$lv2\n";
@@ -45,4 +49,4 @@ sub out_simple_2 {
     }    
 }
 
-[\&out_simple_2, 1];
+1;

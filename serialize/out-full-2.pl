@@ -8,6 +8,8 @@
 #	5*: specifications (column index and variety UID, colon-delimited) of other columns
 #		containing tags (df, dm) requiring variety specifications.
 
+package PanLex::Serialize::out_full_2;
+
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
 
@@ -17,7 +19,9 @@ use strict;
 use utf8;
 # Make Perl interpret the script as UTF-8 rather than bytes.
 
-sub out_full_2 {
+$PanLex::Serialize::out_full_2::final = 1;
+
+sub process {
     my ($in, $out, $wc, $mindf, $minex, @spec) = @_;
 
     my (%col, %en, @cols);
@@ -115,3 +119,5 @@ sub out_full_2 {
     	}
     }    
 }
+
+1;

@@ -4,6 +4,8 @@
 #	1: word-classification tag.
 #	2: metadatum tag.
 
+package PanLex::Serialize::wctag;
+
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
 
@@ -16,7 +18,7 @@ use utf8;
 use File::Spec::Functions;
 use File::Basename;
 
-sub wctag {
+sub process {
     my ($in, $out, $wccol, $wctag, $mdtag) = @_;
     
     open my $wc, '<:utf8', catfile(dirname(__FILE__), 'wc.txt') or die $!;
@@ -99,4 +101,4 @@ sub wctag {
     }    
 }
 
-[\&wctag];
+1;

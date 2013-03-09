@@ -7,16 +7,18 @@
 #	3: meaning tag.
 #	4+: columns containing expressions.
 
+package PanLex::Serialize::extag;
+
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
 
 use strict;
-# Require strict checking of variable references, etc.
+# Require strict checking of variables, etc. except references.
 
 use utf8;
 # Make Perl interpret the script as UTF-8 rather than bytes.
 
-sub extag {
+sub process {
     my ($in, $out, $exdelim, $mndelim, $extag, $mntag, @excol) = @_;
     
     # For each line of the input file:
@@ -54,4 +56,4 @@ sub extag {
     }
 }
 
-[\&extag];
+1;

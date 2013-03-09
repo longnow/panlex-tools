@@ -3,6 +3,8 @@
 #	0+: specifications (column index and variety UID, colon-delimited) of columns
 #		possibly requiring apostrophe normalization.
 
+package PanLex::Serialize::apostrophe;
+
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
 
@@ -15,7 +17,7 @@ use utf8;
 use DBI;
 # Import the general database-interface module. It imports DBD::Pg for PostgreSQL automatically.
 
-sub apostrophe {
+sub process {
     my ($in, $out, @args) = @_;
     
     my $dbh = DBI->connect(
@@ -167,4 +169,4 @@ sub apostrophe {
     # Disconnect from the database.    
 }
 
-[\&apostrophe];
+1;

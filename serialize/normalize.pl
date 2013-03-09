@@ -19,6 +19,8 @@
 #		they are to be normalized if and only if all expressions in the list are
 #		normalizable, or blank if not.
 
+package PanLex::Serialize::normalize;
+
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
 
@@ -34,7 +36,7 @@ use DBI;
 use Unicode::Normalize;
 # Import the Unicode normalization module.
 
-sub normalize {
+sub process {
     my ($in, $out, $re, $extag, $excol, $minscore, $minscore_repl, $lv, $prenormtag, $dftag, $syndelim) = @_;
     
     my $dbh = DBI->connect(
@@ -451,4 +453,4 @@ sub QV {
 
 }
 
-[\&normalize];
+1;

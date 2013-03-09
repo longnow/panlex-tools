@@ -3,6 +3,8 @@
 #	0: column that contains meaning identifiers.
 #	1: meaning-identifier tag.
 
+package PanLex::Serialize::mitag;
+
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
 
@@ -12,7 +14,7 @@ use strict;
 use utf8;
 # Make Perl interpret the script as UTF-8 rather than bytes.
 
-sub mitag {
+sub process {
     my ($in, $out, $micol, $mitag);
     
     while (<$in>) {
@@ -30,4 +32,4 @@ sub mitag {
     }    
 }
 
-[\&mitag];
+1;

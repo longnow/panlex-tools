@@ -4,6 +4,8 @@
 #	1: inter-expression delimiter, or blank if none.
 #	2+: columns containing domain expressions.
 
+package PanLex::Serialize::dmtag;
+
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
 
@@ -13,7 +15,7 @@ use strict;
 use utf8;
 # Make Perl interpret the script as UTF-8 rather than bytes.
 
-sub dmtag {
+sub process {
     my ($in, $out, $dmtag, $exdelim, @dmcols) = @_;
     
     while (<$in>) {
