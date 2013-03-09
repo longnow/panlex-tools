@@ -40,7 +40,7 @@ sub process {
     my ($in, $out, $re, $extag, $excol, $minscore, $minscore_repl, $lv, $prenormtag, $dftag, $syndelim) = @_;
     
     my $dbh = DBI->connect(
-    	"dbi:Pg:dbname=plx;host=uf.utilika.org;port=5432", '', '',
+    	"dbi:Pg:dbname=plx;host=db.panlex.org;port=5432", '', '',
     	{ (AutoCommit => 0), (pg_enable_utf8 => 1) }
     );
     # Specify & connect to the PostgreSQL 9.0.1 database “plx”, with AutoCommit off
@@ -50,7 +50,7 @@ sub process {
     # disconnection to avoid an automatic rollback. Username and password will be obtained
     # from local (client) environment variables PGUSER and PGPASSWORD, respectively.
 
-    my ($allok, %ex, @ex, @line, @seg, @ttfm, %ttto, @ttto);
+    my (%ex, @ex, @line);
 
     my $lentag = (length $extag);
     # Identify the length of the expression tag.
@@ -191,6 +191,8 @@ sub process {
     # Identify a list of references to replaced-replacer pairs for proposed
     # expressions.
 
+    my (@ttfm, %ttto, @ttto);
+
     foreach my $ttfmto (@ttfmtoref) {
     # For each of them:
 
@@ -228,7 +230,7 @@ sub process {
     			if ((index $seg[$i], $extag) == 0) {
     			# If it is tagged as an expression:
 
-    				$allok = 1;
+    				my $allok = 1;
     				# Initialize the list's elements as all classifiable as
     				# expressions.
 

@@ -21,7 +21,7 @@ sub process {
     my ($in, $out, @args) = @_;
     
     my $dbh = DBI->connect(
-    	"dbi:Pg:dbname=plx;host=uf.utilika.org;port=5432", '', '',
+    	"dbi:Pg:dbname=plx;host=db.panlex.org;port=5432", '', '',
     	{ (AutoCommit => 0), (pg_enable_utf8 => 1) }
     );
     # Specify & connect to the PostgreSQL 9.0.1 database “plx”, with AutoCommit off
