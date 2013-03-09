@@ -79,7 +79,7 @@ sub process {
     for (my $i = 0; $i < @args; $i++) {
     # For each column to be processed:
 
-    	my @collcvc = (split /:/, $args[$i]);
+    	my @collcvc = split /:/, $args[$i];
     	# Identify its column index and variety UID.
 
     	$pcol[$i] = $collcvc[0];
@@ -94,13 +94,12 @@ sub process {
     	my $best = ($dbh->selectrow_array ("select best from apostemp where lv = $lv"));
     	# Identify the normative apostrophe of the variety.
 
-    	if ((defined $best) && (length $best)) {
+    	if (defined $best && length $best) {
     	# If there is one:
 
     		$apos{$collcvc[0]} = $best;
     		# Add the index of the column and its variety's normative apostrophe to the table
     		# of normative apostrophes.
-
     	}
 
     }
@@ -108,47 +107,41 @@ sub process {
     while (<$in>) {
     # For each line of the input file:
         
-    	if ((index $_, "'") > -1) {
+    	if (index($_, "'") > -1) {
     	# If it contains any apostrophes:
 
-    		my @col = (split /\t/, $_, -1);
+    		my @col = split /\t/, $_, -1;
     		# Identify its columns.
 
-            for (my $i = 0; $i < @args; $i++) {
+            foreach my $i (@pcol) {
     		# For each column to be processed:
 
-    			if ((index $col[$pcol[$i]], "'") > -1) {
+    			if (index($col[$i], "'") > -1) {
     			# If it contains any apostrophes:
 
-    				if (exists $apos{$pcol[$i]}) {
+    				if (exists $apos{$i}) {
     				# If its variety's apostrophes are convertible:
 
-    					$col[$pcol[$i]] =~ s/'/$apos{$pcol[$i]}/g;
+    					$col[$i] =~ s/'/$apos{$i}/g;
     					# Convert them.
-
     				}
 
     				else {
     				# Otherwise, i.e. if its variety's apostrophes are not convertible:
 
-    					$noncon{$pcol[$i]} = '';
+    					$noncon{$i} = '';
     					# Add the column to the table of columns containing nonconvertible
     					# apostrophes, if not already in it.
-
     				}
-
     			}
-
     		}
 
-    		$_ = (join "\t", @col);
+    		$_ = join "\t", @col;
     		# Identify the modified line.
-
     	}
 
     	print $out;
     	# Output the line.
-
     }
 
     if (keys %noncon) {
@@ -156,10 +149,9 @@ sub process {
 
     	warn (
     		'Could not convert apostrophes found in column(s) '
-    		. (join ', ', (sort {$a <=> $b} (keys %noncon))) . "\n"
+    		. join(', ', sort { $a <=> $b } keys %noncon) . "\n"
     	);
     	# Report them.
-
     }
 
     $dbh->commit;

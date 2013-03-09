@@ -37,7 +37,7 @@ sub process {
     	chomp;
     	# Delete its trailing newline.
 
-    	my @seg = (split /\t/, $_, -1);
+    	my @seg = split /\t/, $_, -1;
     	# Identify its columns.
 
     	foreach my $i (@exdfcol) {

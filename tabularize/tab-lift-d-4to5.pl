@@ -33,7 +33,7 @@ while (<$in>) {
 	chomp;
 	# Delete its trailing newline.
 
-	@col = (split /\t/, $_, -1);
+	@col = split /\t/, $_, -1;
 	# Identify its columns.
 
 	$col[1] =~ s/'/'/g;

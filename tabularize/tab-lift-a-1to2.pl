@@ -62,7 +62,7 @@ while (<$in>) {
 		s/s\.t\./something/g;
 		# Unabbreviate “something”.
 
-		@seg = (split /\t/, $_, -1);
+		@seg = split /\t/, $_, -1;
 		# Identify its segments.
 
 		$seg[1] =~ s/, /‣/;

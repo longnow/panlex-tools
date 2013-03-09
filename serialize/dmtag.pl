@@ -21,7 +21,7 @@ sub process {
     while (<$in>) {
     # For each line of the input file:
 
-    	my @col = (split /\t/, $_, -1);
+    	my @col = split /\t/, $_, -1;
     	# Identify its columns.
 
     	foreach my $i (@dmcols) {

@@ -43,7 +43,7 @@ while (<$in>) {
 		s/^⫷mi:([^⫸]+)⫸⫷ex:cng:([^⫸]+)⫸⫷ex:cmn:([^⫸]+)⫸⫷ex:eng:([^⫸]+)⫸$/$1\t$2\t$3\t$4/;
 		# If it has 1 cmn-003 and 1 eng-000 translation, convert it.
 
-		@seg = (split /\t/, $_, -1);
+		@seg = split /\t/, $_, -1;
 		# Identify its segments.
 
 		foreach $i (2, 3) {

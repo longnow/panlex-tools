@@ -23,7 +23,7 @@ sub process {
     	chomp;
     	# Delete its trailing newline.
 
-    	my @col = (split /\t/, $_, -1);
+    	my @col = split /\t/, $_, -1;
     	# Identify its columns.
 
     	foreach my $i (@dfcol) {

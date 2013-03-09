@@ -28,7 +28,7 @@ sub process {
     	chomp;
     	# Delete its trailing newline.
 
-    	@col = (split /\t/, $_, -1);
+    	@col = split /\t/, $_, -1;
     	# Identify its columns.
 
     	$col[$wccol] =~ s/$extag$wcstart(.+?)$wcend($post+)/$extag$2$wctag$1/g;

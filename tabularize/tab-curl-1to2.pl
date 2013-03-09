@@ -46,7 +46,7 @@ while (<$in>) {
 		$_ = (substr $_, 1);
 		# Delete its entry marker.
 
-		@seg = (split /\t/, $_, -1);
+		@seg = split /\t/, $_, -1;
 		# Identify its segments.
 
 		if ($seg[0] eq '.') {
