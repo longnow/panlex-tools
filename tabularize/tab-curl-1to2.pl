@@ -18,7 +18,7 @@ use utf8;
 my $BASENAME = 'aaa-bbb-Author';
 # Identify the filename base.
 
-my $VERSION = 1;
+my $VERSION = 0;
 # Identify the input file's version.
 
 #######################################################

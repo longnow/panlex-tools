@@ -14,7 +14,7 @@ use utf8;
 my $BASENAME = 'sbe-spa-eng-Morse';
 # Identify the filename base.
 
-my $VERSION = 2;
+my $VERSION = 0;
 # Identify the input file's version.
 
 my $lcs = 'sbe';

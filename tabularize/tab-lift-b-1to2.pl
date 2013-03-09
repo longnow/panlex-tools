@@ -18,7 +18,7 @@ use utf8;
 my $BASENAME = 'cng-cmn-eng-FelzienH';
 # Identify the filename base.
 
-my $VERSION = 1;
+my $VERSION = 0;
 # Identify the input file's version.
 
 #######################################################

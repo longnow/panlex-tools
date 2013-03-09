@@ -14,7 +14,7 @@ use utf8;
 my $BASENAME = 'ibb-eng-Brunett';
 # Identify the filename base.
 
-my $VERSION = 1;
+my $VERSION = 0;
 # Identify the input file's version.
 
 #######################################################
