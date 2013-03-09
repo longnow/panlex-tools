@@ -10,27 +10,20 @@ use utf8;
 # “require” statement, i.e. via an “eval `cat dedup.pl`” mechanism.
 
 sub Dedup {
+    my ($list, $delim) = @_;
 
-	my ($el, %el);
-
-	my $ret = $_[0];
-	# Identify the specified pseudo-list.
-
-	my @el = (split /$_[1]/, $_[0]);
-	# Identify its elements.
-
-	foreach $el (@el) {
+    my %el;
+	foreach my $i (split /$delim/, $list) {
 	# For each of them:
 
-		$el{$el} = '';
+		$el{$i} = '';
 		# Add it to the table of elements, if not already in it.
 
 	}
 
-	return (join "$_[1]", (keys %el));
+	return join($delim, keys %el);
 	# Return the specified pseudo-list, without any duplicate elements,
 	# in random order.
-
 }	
 
 1;
