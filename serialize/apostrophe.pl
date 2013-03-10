@@ -24,9 +24,9 @@ sub process {
     	"dbi:Pg:dbname=plx;host=db.panlex.org;port=5432", '', '',
     	{ (AutoCommit => 0), (pg_enable_utf8 => 1) }
     );
-    # Specify & connect to the PostgreSQL 9.0.1 database “plx”, with AutoCommit off
+    # Specify & connect to the PostgreSQL database “plx”, with AutoCommit off
     # and the UTF-8 flag on (without which strings read from the database and split into
-    # characters are split into bytes rather than Unicode character values. DBI automatically
+    # characters are split into bytes rather than Unicode character values). DBI automatically
     # issues a begin_work statement, requiring an explicit commit statement before the
     # disconnection to avoid an automatic rollback. Username and password will be obtained
     # from local (client) environment variables PGUSER and PGPASSWORD, respectively.
@@ -101,7 +101,6 @@ sub process {
     		# Add the index of the column and its variety's normative apostrophe to the table
     		# of normative apostrophes.
     	}
-
     }
 
     while (<$in>) {
@@ -137,7 +136,7 @@ sub process {
     		}
 
     		$_ = join "\t", @col;
-    		# Identify the modified line.
+    		# Save the modified line.
     	}
 
     	print $out;
@@ -153,9 +152,6 @@ sub process {
     	);
     	# Report them.
     }
-
-    $dbh->commit;
-    # Commit the database transaction.
 
     $dbh->disconnect;
     # Disconnect from the database.    

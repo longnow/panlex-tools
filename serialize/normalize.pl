@@ -43,14 +43,14 @@ sub process {
     	"dbi:Pg:dbname=plx;host=db.panlex.org;port=5432", '', '',
     	{ (AutoCommit => 0), (pg_enable_utf8 => 1) }
     );
-    # Specify & connect to the PostgreSQL 9.0.1 database “plx”, with AutoCommit off
+    # Specify & connect to the PostgreSQL database “plx”, with AutoCommit off
     # and the UTF-8 flag on (without which strings read from the database and split into
-    # characters are split into bytes rather than Unicode character values. DBI automatically
+    # characters are split into bytes rather than Unicode character values). DBI automatically
     # issues a begin_work statement, requiring an explicit commit statement before the
     # disconnection to avoid an automatic rollback. Username and password will be obtained
     # from local (client) environment variables PGUSER and PGPASSWORD, respectively.
 
-    my (%ex, @ex, @line);
+    my (%ex, @line);
 
     my $lentag = length $extag;
     # Identify the length of the expression tag.
@@ -212,7 +212,9 @@ sub process {
     				# Initialize the list's elements as all classifiable as
     				# expressions.
 
-    				foreach my $ex (@ex = (PsList($seg, $lentag, $syndelim))) {
+                    my @ex = PsList($seg, $lentag, $syndelim);
+                    
+    				foreach my $ex (@ex) {
     				# Identify the expression, or a list of the expressions in it if
     				# it is a pseudo-list.
 
@@ -231,7 +233,6 @@ sub process {
 
     						last;
     						# Stop checking the expression(s) in the list.
-
     					}
 
     				}
@@ -263,7 +264,6 @@ sub process {
     							# Append it, with a pre-normalized
     							# expression tag, and its replacement, with
     							# an expression tag, to the item.
-
     						}
     					}
     				}
@@ -293,11 +293,8 @@ sub process {
     						# Prepend a pre-normalized expression tag to the
     						# concatenation.
     					}
-
     				}
-
     			}
-
     		}
 
     		$col[$excol] = join('', @seg);
@@ -307,11 +304,7 @@ sub process {
 
     	print $out join("\t", @col), "\n";
     	# Output the line.
-
     }
-
-    $dbh->commit;
-    # Commit the database transaction.
 
     $dbh->disconnect;
     # Disconnect from the database.    
