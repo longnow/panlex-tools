@@ -306,6 +306,9 @@ sub process {
     	# Output the line.
     }
 
+    $dbh->rollback;
+    # Explicitly rollback our temporary table.
+
     $dbh->disconnect;
     # Disconnect from the database.    
 }
