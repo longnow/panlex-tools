@@ -39,7 +39,9 @@ sub process {
 
     	$wc{$col[0]} = $col[1];
     	# Add it to the table of wc conversions.
-    }	
+    }
+    
+    close $wc;
 
     while (<$in>) {
     # For each line of the input file:
@@ -50,7 +52,7 @@ sub process {
     	my @col = split /\t/, $_, -1;
     	# Identify its columns.
 
-        for (my $i = 0; $i < @wccol; $i++) {
+        foreach my $i (@wccol) {
     	# For each column containing word classifications:
 
     		while ($col[$i] =~ /$pretag(.+?)$posttag/) {
@@ -67,7 +69,6 @@ sub process {
 
     					$col[$i] =~ s/$pretag.+?$posttag/$wctag$wcmd[0]/;
     					# Retag the wc.
-
     				}
 
     				else {
@@ -78,7 +79,6 @@ sub process {
 
     						$col[$i] =~ s/$pretag.+?$posttag/$wctag$wcmd[0]$mdtag$wcmd[1]/;
     						# Retag the wc.
-
     					}
 
     					else {
@@ -86,11 +86,8 @@ sub process {
 
     						$col[$i] =~ s/$pretag.+?$posttag/$mdtag$wcmd[1]/;
     						# Retag the wc.
-
     					}
-
     				}
-
     			}
 
     			else {
@@ -101,14 +98,11 @@ sub process {
 
     				$col[$i] =~ s/$pretag.+?$posttag/$mdtag$md/;
     				# Retag the wc.
-
     			}
-
     		}
-
     	}
 
-    	print $out join ("\t", @col), "\n";
+    	print $out join("\t", @col), "\n";
     	# Output the line.
     }    
 }

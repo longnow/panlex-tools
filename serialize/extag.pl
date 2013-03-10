@@ -32,22 +32,22 @@ sub process {
     	foreach my $i (@excol) {
     	# For each expression column:
 
-    		$col[$i] =~ s/$exdelim/$extag/g if length $exdelim;
+    		$col[$i] =~ s/$exdelim/$extag/og if length $exdelim;
     		# Convert each expression delimiter in it to an expression tag, if expression
     		# delimiters exist.
 
-    		$col[$i] =~ s/$mndelim/$mntag$extag/g if (length $mndelim);
+    		$col[$i] =~ s/$mndelim/$mntag$extag/og if length $mndelim;
     		# Convert each meaning delimiter in it to a meaning tag and an expression tag,
     		# if meaning delimiters exist.
 
-    		$col[$i] = "$extag$col[$i]" if length $col[$i] && $col[$i] !~ /^(?:$extag|$mntag)/;
+    		$col[$i] = "$extag$col[$i]" if length $col[$i] && $col[$i] !~ /^(?:$extag|$mntag)/o;
     		# Prefix an expression tag to the column, if not blank and not already
     		# containing a leading expression or meaning tag.
 
-    		$col[$i] =~ s/$extag(?=$extag|$mntag|$)//g;
+    		$col[$i] =~ s/$extag(?=$extag|$mntag|$)//og;
     		# Delete all expression tags with blank contents.
 
-    		$col[$i] =~ s/$mntag(?=$mntag|$)//g;
+    		$col[$i] =~ s/$mntag(?=$mntag|$)//og;
     		# Delete all meaning tags with blank contents.
     	}
 

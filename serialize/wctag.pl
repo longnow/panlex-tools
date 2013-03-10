@@ -37,8 +37,9 @@ sub process {
 
     	$wc{$col[0]} = $col[1];
     	# Add it to the table of wc conversions.
-
-    }	
+    }
+    
+    close $wc;
 
     while (<$in>) {
     # For each line of the input file:
@@ -60,7 +61,6 @@ sub process {
 
     			$col[$wccol] = "$wctag$wcmd[0]";
     			# Convert the wc to a tagged wc.
-
     		}
 
     		elsif (@wcmd == 2) {
@@ -71,7 +71,6 @@ sub process {
 
     				$col[$wccol] = "$wctag$wcmd[0]$mdtag$wcmd[1]";
     				# Convert the wc to a wc and an md, each tagged.
-
     			}
 
     			else {
@@ -79,11 +78,8 @@ sub process {
 
     				$col[$wccol] = "$mdtag$wcmd[1]";
     				# Convert the wc to a tagged md.
-
     			}
-
     		}
-
     	}
 
     	elsif (length $col[$wccol]) {
@@ -92,12 +88,10 @@ sub process {
 
     		$col[$wccol] = "$mdtag$col[$wccol]";
     		# Convert the content to a tagged md.
-
     	}
 
     	print $out join("\t", @col), "\n";
     	# Output the line.
-
     }    
 }
 

@@ -26,7 +26,7 @@ sub process {
     	my @col = split /\t/, $_, -1;
     	# Identify its columns.
 
-    	($col[$mdcol] = "$mdtag$col[$mdcol]") if (length $col[$mdcol]);
+    	$col[$mdcol] = "$mdtag$col[$mdcol]" if length $col[$mdcol];
     	# Prefix a meaning-identifier tag to the meaning-identifier column's content,
     	# if not blank.
 

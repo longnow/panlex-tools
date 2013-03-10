@@ -33,7 +33,7 @@ sub process {
     		# Prefix a definition tag to the column, if not blank.
     	}
 
-    	print $out join ("\t", @col), "\n";
+    	print $out join("\t", @col), "\n";
     	# Output the line.
     }    
 }

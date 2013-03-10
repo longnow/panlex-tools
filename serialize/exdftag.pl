@@ -24,8 +24,8 @@ use utf8;
 # Make Perl interpret the script as UTF-8 rather than bytes.
 
 sub process {
-    my ($in, $out, $extag, $re_posttag, $re_posttagw, $re_df, $dftag, $tmc, $tmw, 
-        $re_dfsub, $re_pre, @exdfcol) = @_;
+    my ($in, $out, $extag, $posttag_re, $posttagw_re, $df_re, $dftag, $tmc, $tmw, 
+        $dfsub_re, $pre_re, @exdfcol) = @_;
 
     $tmc++ if $tmc;
     # Identify the character count of the shortest expression exceeding the maximum
@@ -44,58 +44,55 @@ sub process {
     	# For each of them that may contain expressions with embedded definitions or
     	# expressions classifiable as definitions:
 
-    		if (length $re_df) {
+    		if (length $df_re) {
     		# If there is a criterion for definitional substrings:
 
-    			while ($seg[$i] =~ /($extag$re_posttag*$re_df$re_posttag*)/o) {
+    			while ($seg[$i] =~ /($extag$posttag_re*$df_re$posttag_re*)/o) {
     			# As long as any expression in the column satisfies the criterion:
 
-    				my $df = $1;
-    				my $ex = $1;
+    				my ($df,$ex) = ($1,$1);
     				# Identify the expression and a definition identical to it.
 
-    				$df =~ s/^$extag(?:$re_pre)?/$dftag/o;
+    				$df =~ s/^$extag(?:$pre_re)?/$dftag/o;
     				# In the definition, change the expression tag and any preposed annotation
     				# to a definition tag.
 
-    				$ex =~ s/$re_df//og;
+    				$ex =~ s/$df_re//og;
     				# In the expression, delete all definitional substrings.
 
     				$ex =~ s/ {2,}/ /g;
     				# In the expression, collapse any multiple spaces.
 
-    				$ex =~ s/^$extag(?:$re_pre)?\K | $//og;
+    				$ex =~ s/^$extag(?:$pre_re)?\K | $//og;
     				# In the expression, delete all initial and final spaces.
 
-    				($ex = '') if (
-    					($ex eq $extag)
-    					|| (($tmc) && ($ex =~ /^$extag(?:$re_pre)?+.{$tmc}/o))
-    					|| (($tmw) && ($ex =~ /^(?:[^ ]+ ){$tmw}/o))
-    					|| ((length $re_dfsub) && ($ex =~ /^$extag(?:$re_pre)?$re_posttag*$re_dfsub/))
-    				);
+    				$ex = '' if
+    					$ex eq $extag
+    					|| ($tmc && $ex =~ /^$extag(?:$pre_re)?+.{$tmc}/o)
+    					|| ($tmw && $ex =~ /^(?:[^ ]+ ){$tmw}/o)
+    					|| (length $dfsub_re && $ex =~ /^$extag(?:$pre_re)?$posttag_re*$dfsub_re/)
+    				;
     				# If the expression has become blank, exceeds a maximum count, or contains
     				# a prohibited character, delete the expression. (The possessive quantifier
     				# prohibits including a preposed annotation in the count.)
 
-    				$seg[$i] =~ s/$extag$re_posttag*$re_df$re_posttag*/$df$ex/o;
+    				$seg[$i] =~ s/$extag$posttag_re*$df_re$posttag_re*/$df$ex/o;
     				# Replace the expression with the definition and the reduced expression.
-
     			}
-
     		}
 
-    		($seg[$i] =~ s/$extag(?:$re_pre)?(${re_posttag}{$tmc,})/$dftag$1/og)
+    		$seg[$i] =~ s/$extag(?:$pre_re)?(${posttag_re}{$tmc,})/$dftag$1/og
     			if $tmc;
     		# Convert every expression in the column that exceeds the maximum character
     		# count, if there is one, to a definition, omitting any preposed annotation.
 
-    		($seg[$i] =~ s/$extag(?:$re_pre)?((?:$re_posttagw+ ){$tmw})/$dftag$1/og)
+    		$seg[$i] =~ s/$extag(?:$pre_re)?((?:$posttagw_re+ ){$tmw})/$dftag$1/og
     			if $tmw;
     		# Convert every expression in the column that exceeds a maximum word count,
     		# if there is one, to a definition, omitting any preposed annotation.
 
-    		($seg[$i] =~ s/$extag(?:$re_pre)?($re_posttag*(?:$re_dfsub))/$dftag$1/og)
-    			if (length $re_dfsub);
+    		$seg[$i] =~ s/$extag(?:$pre_re)?($posttag_re*(?:$dfsub_re))/$dftag$1/og
+    			if length $dfsub_re;
     		# Convert every expression containing a prohibited character, if there is any,
     		# to a definition, omitting any preposed annotation.
 
@@ -103,7 +100,6 @@ sub process {
 
     	print $out join("\t", @seg), "\n";
     	# Output the line.
-
     }    
 }
 

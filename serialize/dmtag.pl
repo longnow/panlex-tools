@@ -16,7 +16,7 @@ use utf8;
 # Make Perl interpret the script as UTF-8 rather than bytes.
 
 sub process {
-    my ($in, $out, $dmtag, $exdelim, @dmcols) = @_;
+    my ($in, $out, $dmtag, $exdelim, @dmcol) = @_;
     
     while (<$in>) {
     # For each line of the input file:
@@ -24,13 +24,13 @@ sub process {
     	my @col = split /\t/, $_, -1;
     	# Identify its columns.
 
-    	foreach my $i (@dmcols) {
+    	foreach my $i (@dmcol) {
     	# For each domain-expression column:
 
     		if (length $exdelim) {
     		# If there is an inter-expression delimiter:
 
-    			$col[$i] =~ s/(^|$exdelim)(?!$|$exdelim)/$dmtag/g;
+    			$col[$i] =~ s/(^|$exdelim)(?!$|$exdelim)/$dmtag/og;
     			# Prefix each element of the column's value with a domain-expression tag.
     		}
 
@@ -39,14 +39,12 @@ sub process {
 
     			$col[$i] = "$dmtag$col[$i]";
     			# Prefix the column's value with a domain-expression tag.
-
     		}
-
     	}
 
-    	print $out join ("\t", @col);
+    	print $out join("\t", @col);
     	# Output the line.
     }    
 }
 
-[\&dmtag];
+1;

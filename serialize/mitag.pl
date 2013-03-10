@@ -23,7 +23,7 @@ sub process {
     	my @col = split /\t/, $_, -1;
     	# Identify its columns.
 
-    	($col[$micol] = "$mitag$col[$micol]") if (length $col[$micol]);
+    	$col[$micol] = "$mitag$col[$micol]" if length $col[$micol];
     	# Prefix a meaning-identifier tag to the meaning-identifier column's content,
     	# if not blank.
 
