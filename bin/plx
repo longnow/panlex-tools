@@ -23,14 +23,22 @@ sub cmd_fetch {
     my ($source) = @_;
     
     print(STDERR "You need to specify a source label.\n"), return unless $source;
-    check_env(qw/PANLEX_SOURCEDIR PANLEX_USER/);
+    check_env(qw/PANLEX_SOURCEDIR/);
     
     $source =~ s/:/-/g;
-    foreach my $dir (qw/queued used/) {
+    foreach my $dir (qw/queued used incoming/) {
         my $local_dir = catdir($ENV{PANLEX_SOURCEDIR}, $dir);
         -d $local_dir || mkdir($local_dir);
-        my $exitval = shell_cmd("scp -BCpr panlex.net:/opt/panlex/sources/$dir/$source " . catdir($local_dir, $source));
-        last if $exitval == 0;
+        chdir $local_dir;
+        
+        my $zip = $source . '.zip';
+        my $exitval = shell_cmd("curl -f -n -o $zip http://dev.panlex.org/sources/zip/$dir/$source");
+        
+        if ($exitval == 0) {
+            $exitval = shell_cmd("unzip $zip");
+            $exitval == 0 && shell_cmd("rm -f $zip");
+            last;            
+        }
     }
 }
 
