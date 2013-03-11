@@ -1,14 +1,14 @@
 #!/usr/bin/env perl
-
-use utf8;
 use strict;
 no strict 'refs';
+use encoding 'utf8';
 
 use File::Spec::Functions;
 use File::Copy qw/copy/;
 
 usage(), exit(0) unless @ARGV;
 
+utf8::upgrade($_) for @ARGV;
 my $cmd = shift @ARGV;
 my $cmd_sub = 'cmd_'.$cmd;
 
@@ -24,31 +24,59 @@ sub cmd_fetch {
     
     print(STDERR "You need to specify a source label.\n"), return unless $source;
     check_env(qw/PANLEX_SOURCEDIR/);
-    
     $source =~ s/:/-/g;
+    
     foreach my $dir (qw/queued used incoming/) {
         my $local_dir = catdir($ENV{PANLEX_SOURCEDIR}, $dir);
         -d $local_dir || mkdir($local_dir);
         chdir $local_dir;
         
         my $zip = $source . '.zip';
-        my $exitval = shell_cmd("curl -f -n -o $zip http://dev.panlex.org/sources/zip/$dir/$source");
+        my $exit = shell_cmd(qw/curl -f -n --basic -o/, $zip, "http://dev.panlex.org/sources/zip/$dir/$source");
         
-        if ($exitval == 0) {
-            $exitval = shell_cmd("unzip $zip");
-            $exitval == 0 && shell_cmd("rm -f $zip");
-            last;            
+        if ($exit == 0) {
+            $exit = shell_cmd("unzip $zip");
+            $exit == 0 && shell_cmd(qw/rm -f/, $zip);
+            print STDERR "\nDownloaded '$source' from $dir directory.\n";
+            return;            
         }
     }
+    
+    print STDERR "\nCould not download '$source' from queued, used, or incoming directories.\n";
+}
+
+sub cmd_upload {
+    my ($source) = @_;
+    
+    print(STDERR "You need to specify a source label.\n"), return unless $source;
+    check_env(qw/PANLEX_SOURCEDIR/);
+    $source =~ s/:/-/g;
+
+    my $parent = catfile($ENV{PANLEX_SOURCEDIR}, 'queued');
+    my $dir = catfile($parent, $source);
+    print(STDERR "There is no directory $dir; cannot proceed.\n") unless -d $dir;
+    chdir $parent;
+    
+    my $zip = $source . '.zip';
+    my $exit = shell_cmd(qw/zip -r/, $zip, $source);
+    print(STDERR "Could not create $zip; cannot proceed."), return unless $exit == 0;
+    
+    $exit = shell_cmd(qw/curl -f -n --basic -F/, "zip=\@$zip;type=application/zip", 
+        "http://dev.panlex.org/sources/upload");
+    shell_cmd(qw/rm -f/, $zip);
+    
+    $exit == 0
+        ? print(STDERR "\nSuccessfully uploaded '$source' to incoming directory.\n")
+        : print(STDERR "\nUnable to upload '$source' to incoming directory.\n");
 }
 
 sub cmd_which {
     my ($source) = @_;
 
-    print(STDERR "You need to specify a source.\n"), return unless $source;
+    print(STDERR "You need to specify a source label.\n"), return unless $source;
     check_env(qw/PANLEX_SOURCEDIR/);
-
     $source =~ s/:/-/g;
+    
     foreach my $dir (qw/queued used/) {
         my $local_dir = catdir($ENV{PANLEX_SOURCEDIR}, $dir, $source);
         print ($local_dir, "\n"), return if -d $local_dir;
@@ -80,9 +108,21 @@ Commands:
 cp <tool>
     copy panlex tool into the current directory
 fetch <source>
-    fetches a source directory from panlex.net
+    fetches a source from dev.panlex.org and puts it in PANLEX_SOURCEDIR
+upload <source>
+    uploads a local source in queued/ to incoming/ on dev.panlex.org
 which <source>
-    returns the local directory for a source
+    prints the local directory for a source
+    
+Environment variables:
+
+PANLEX_SOURCEDIR    local directory containing sources
+PANLEX_TOOLDIR      local directory containing panlex-tools
+
+To use 'fetch' and 'upload', you need curl, zip/unzip, and a file ~/.netrc
+containing your login credentials, as follows:
+
+machine dev.panlex.org login <username> password <password>
     
 EOF
 }
@@ -104,7 +144,7 @@ sub check_env {
 }
 
 sub shell_cmd {
-    my ($cmd) = @_;
-    print $cmd, "\n";
-    return system $cmd;
+    my (@cmd) = @_;
+    print "@cmd\n";
+    return system(@cmd) >> 8;
 }
