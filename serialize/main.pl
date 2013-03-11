@@ -168,7 +168,6 @@ my @TOOLS = (
 ### DO NOT MODIFY BELOW THIS LINE ###
 
 use File::Spec::Functions;
-use Cwd;
 
 foreach my $dir (grep { $_ && -d $_ } ($PANLEX_TOOLDIR, $ENV{PANLEX_TOOLDIR})) {
     push @INC, catfile($dir,'serialize');    
@@ -184,7 +183,7 @@ my $log = {
 
 if (-d $PANLEX_TOOLDIR) {    
     # get the panlex-tools revision.
-    my $pwd = cwd();
+    my $pwd = curdir();
     chdir $PANLEX_TOOLDIR;
     my $rev = `git rev-parse HEAD`;
     chomp $rev;
