@@ -169,6 +169,9 @@ my @TOOLS = (
 
 use File::Spec::Functions;
 
+print "\n";
+die "odd number of items in \@TOOLS" unless @TOOLS % 2 == 0;
+
 foreach my $dir (grep { $_ && -d $_ } ($PANLEX_TOOLDIR, $ENV{PANLEX_TOOLDIR})) {
     push @INC, catfile($dir,'serialize');    
     push @INC, catfile($dir,'lib');    
@@ -176,10 +179,7 @@ foreach my $dir (grep { $_ && -d $_ } ($PANLEX_TOOLDIR, $ENV{PANLEX_TOOLDIR})) {
 
 $PANLEX_TOOLDIR ||= $ENV{PANLEX_TOOLDIR};
 
-my $log = {
-    time => time(),
-    tools => \@TOOLS,
-};
+my $log = { tools => \@TOOLS };
 
 if (-d $PANLEX_TOOLDIR) {    
     # get the panlex-tools revision.
@@ -190,9 +190,6 @@ if (-d $PANLEX_TOOLDIR) {
     chdir $pwd;
     $log->{git_revision} = $rev;
 }
-
-print "\n";
-die "odd number of items in \@TOOLS" unless @TOOLS % 2 == 0;
 
 for (my $i = 0; $i < @TOOLS; $i += 2) {
     my ($tool,$args) = @TOOLS[$i, $i+1];
@@ -205,19 +202,22 @@ for (my $i = 0; $i < @TOOLS; $i += 2) {
     die "could not find file $input" unless -e $input;
     open my $in, '<:utf8', $input or die $!;
     
-    {
+    {   
         no strict 'refs';
         $VERSION = ${$pkg.'::final'} ? 'final' : $VERSION+1;
     }
+    
     my $output = "$BASENAME-$VERSION.txt";
     open my $out, '>:utf8', "$BASENAME-$VERSION.txt" or die $!;
     
-    printf "%-13s %s => %s\n", $tool, $input, $output;
+    printf "%-13s: %s => %s\n", $tool, $input, $output;
     $pkg->can('process')->($in, $out, @$args);
 
     close $in;
     close $out;
 }
+
+$log->{time} = time();
 
 require JSON;
 open my $fh, '>', 'log.json';
