@@ -58,7 +58,7 @@ while (<$in>) {
 	s%</?definition>%%g;
 	# Delete all translation-enclosing tags in it.
 
-	print $out;
+	print $out $_;
 	# Output it.
 
 }

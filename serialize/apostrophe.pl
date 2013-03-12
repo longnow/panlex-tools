@@ -139,7 +139,7 @@ sub process {
     		# Save the modified line.
     	}
 
-    	print $out;
+    	print $out $_;
     	# Output the line.
     }
 

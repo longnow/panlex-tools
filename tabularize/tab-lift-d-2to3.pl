@@ -43,7 +43,7 @@ while (<$in>) {
 	s%<[^<>]+>%%g;
 	# Delete all remaining tags in it.
 
-	print $out;
+	print $out $_;
 	# Output it.
 
 }

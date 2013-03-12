@@ -43,7 +43,7 @@ while (<$in>) {
 	s%<trait[^/]+/>%%g;
 	# Delete all trait specifications in it.
 
-	print $out;
+	print $out $_;
 	# Output it.
 
 }

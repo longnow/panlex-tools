@@ -57,7 +57,7 @@ while (<$in>) {
 		s/ +(?=\t|‣|⁋|$)//g;
 		# Delete all trailing spaces.
 
-		print $out;
+		print $out $_;
 		# Output it.
 	}
 }

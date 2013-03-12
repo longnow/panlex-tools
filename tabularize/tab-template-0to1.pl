@@ -47,7 +47,7 @@ while (<$in>) {
 
 	}
 
-	print $out;
+	print $out $_;
 	# Output it.
 
 }
