@@ -168,6 +168,7 @@ my @TOOLS = (
 ### DO NOT MODIFY BELOW THIS LINE ###
 
 use File::Spec::Functions;
+use Cwd;
 
 print "\n";
 die "odd number of items in \@TOOLS" unless @TOOLS % 2 == 0;
@@ -183,7 +184,7 @@ my $log = { tools => \@TOOLS };
 
 if (-d $PANLEX_TOOLDIR) {    
     # get the panlex-tools revision.
-    my $pwd = curdir();
+    my $pwd = cwd();
     chdir $PANLEX_TOOLDIR;
     my $rev = `git rev-parse HEAD`;
     chomp $rev;
@@ -210,7 +211,7 @@ for (my $i = 0; $i < @TOOLS; $i += 2) {
     my $output = "$BASENAME-$VERSION.txt";
     open my $out, '>:utf8', "$BASENAME-$VERSION.txt" or die $!;
     
-    printf "%-13s: %s => %s\n", $tool, $input, $output;
+    printf "%-13s %s => %s\n", $tool.':', $input, $output;
     $pkg->can('process')->($in, $out, @$args);
 
     close $in;
