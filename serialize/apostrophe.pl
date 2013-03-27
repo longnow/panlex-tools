@@ -3,7 +3,7 @@
 #	0+: specifications (column index and variety UID, colon-delimited) of columns
 #		possibly requiring apostrophe normalization.
 
-package PanLex::Serialize::apostrophe2;
+package PanLex::Serialize::apostrophe;
 
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
