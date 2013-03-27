@@ -2,6 +2,7 @@
 # Converts a tab-delimited source file for uploading to PanLex.
 use strict;
 use utf8;
+use JSON;
 
 # The basename of the source file.
 my $BASENAME = 'aaa-bbb-Author';
@@ -220,7 +221,6 @@ for (my $i = 0; $i < @TOOLS; $i += 2) {
 
 $log->{time} = time();
 
-require JSON;
 open my $fh, '>', 'log.json';
 print $fh JSON->new->utf8->pretty(1)->canonical(1)->encode($log);
 close $fh;
