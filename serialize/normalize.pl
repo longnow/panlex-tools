@@ -30,8 +30,7 @@ use strict;
 use utf8;
 # Make Perl interpret the script as UTF-8 rather than bytes.
 
-use DBI;
-# Import the general database-interface module. It imports DBD::Pg for PostgreSQL automatically.
+use PanLex;
 
 use Unicode::Normalize;
 # Import the Unicode normalization module.
@@ -39,32 +38,15 @@ use Unicode::Normalize;
 sub process {
     my ($in, $out, $tag, $extag, $excol, $minscore, $minscore_repl, $lv, $prenormtag, $dftag, $syndelim) = @_;
     
-    my $dbh = DBI->connect(
-    	"dbi:Pg:dbname=plx;host=db.panlex.org;port=5432", '', '',
-    	{ (AutoCommit => 0), (pg_enable_utf8 => 1) }
-    );
-    # Specify & connect to the PostgreSQL database “plx”, with AutoCommit off
-    # and the UTF-8 flag on (without which strings read from the database and split into
-    # characters are split into bytes rather than Unicode character values). DBI automatically
-    # issues a begin_work statement, requiring an explicit commit statement before the
-    # disconnection to avoid an automatic rollback. Username and password will be obtained
-    # from local (client) environment variables PGUSER and PGPASSWORD, respectively.
-
-    my (%ex, @line);
+    my (%ex, %exok);
 
     my $lentag = length $extag;
     # Identify the length of the expression tag.
 
-    my @lcvc = split /-/, $lv;
-    # Identify the variety's lc and vc.
-
-    $lv = QV("lv ('$lcvc[0]', $lcvc[1])");
-    # Identify the variety's ID.
-
     my $done = 0;
     # Initialize the count of processed lines as 0.
 
-    push @line, <$in>;
+    my @line = <$in>;
     # Identify a list of the lines of the input file.
 
     chomp @line;
@@ -100,94 +82,35 @@ sub process {
     	}
     }
 
-    $dbh->do("create temporary table tttd (tt text, td text, uqsum integer)");
-    # Create a temporary database table to contain the texts, degradations, and scores
-    # of the proposed expressions.
-
-    my $sth = $dbh->prepare("insert into tttd (tt) values (?)");
-    # Prepare a statement to insert a text into it.
-
-    foreach my $tt (keys %ex) {
-    # For each proposed expression:
-
-    	$sth->execute($tt);
-    	# Add its text to the table.
+    my $result = panlex_api("/norm/$lv", { tt => [keys %ex] });
+    die "could not retrieve normalization data from PanLex API"
+        unless $result && $result->{status} eq 'OK';    
+    
+    while (my ($tt,$norm) = each %{$result->{norm}}) {
+        # For each proposed expression that has a score and whose score is sufficient for
+        # outright acceptance as an expression:
+        if ($norm->{score} >= $minscore) {
+            $exok{$tt} = '';
+            delete $ex{$tt};
+        }
     }
 
-    $dbh->do(
-    	'update tttd set uqsum = tbl.uqsum from ('
-    		. 'select tttd.tt, sum (uq) as uqsum from tttd, ex, exap, ap '
-    		. "where lv = $lv and ex.tt = tttd.tt and exap.ex = ex.ex and ap.ap = exap.ap "
-    		. 'group by tttd.tt'
-    	. ') as tbl where tttd.tt = tbl.tt'
-    );
-    # Add the proposed expressions' scores, if any, to the table.
-
-    foreach my $exok (QCs("tt from tttd where uqsum >= $minscore")) {
-    # For each proposed expression that has a score and whose score is sufficient for
-    # outright acceptance as an expression:
-
-    	$ex{$exok} = 'exok';
-    	# Identify it as such.
-    }
-
-    $dbh->do("delete from tttd where uqsum >= $minscore");
-    # Delete from the table the records of those expressions.
-
-    $dbh->do("update tttd set td = td (tt)");
-    # Add to the table the degradations of the texts of the remaining proposed
-    # expressions.
-
-    $dbh->do(
-    	'create temporary table ttcand as '
-    	. 'select distinct tttd.td, ex.tt, sum (uq) as uqsum from tttd, ex, exap, ap '
-    	. "where lv = $lv and ex.td = tttd.td and exap.ex = ex.ex and ap.ap = exap.ap "
-    	. 'group by tttd.td, ex.tt'
-    );
-    # Create a temporary database table containing the texts of the expressions in the
-    # variety that have those degradations and the sums of those expressions' sources'
-    # qualities.
-
-    $dbh->do(
-    	'create temporary table tdmax as select td, max (uqsum) as uqmax from ttcand group by td'
-    );
-    # Create a temporary database table containing the maximum quality sum of each degradation's
-    # expressions, if any, in the variety.
-
-    foreach my $exok (QCs(
-    	'tttd.tt from tttd, tdmax '
-    	. "where tttd.td = tdmax.td and uqsum = uqmax and uqsum >= $minscore_repl"
-    )) {
-    # For each proposed expression that is a highest-scoring expression in the variety with
-    # its degradation and whose score is sufficient for acceptance as an expression:
-
-    	$ex{$exok} = 'exok';
-    	# Identify it as such.
-    }
-
-    $dbh->do(
-    	'delete from tttd using tdmax '
-    	. "where tttd.td = tdmax.td and uqsum = uqmax and uqsum >= $minscore_repl"
-    );
-    # Delete those expressions' records from the database table.
-
-    $dbh->do(
-    	'update tttd set td = ttcand.tt, uqsum = uqmax from ttcand, tdmax '
-    	. 'where tdmax.td = tttd.td and ttcand.td = tttd.td and ttcand.uqsum = uqmax'
-    );
-    # Replace the degradations in the table with the texts of the highest-scoring expressions
-    # having those degradations, if any, and replace the scores of the replaced expressions
-    # with the scores of their replacements.
+    $result = panlex_api("/norm/$lv", { tt => [keys %ex], degrade => 1 });
+    die "could not retrieve normalization data from PanLex API"
+        unless $result && $result->{status} eq 'OK';    
 
     my %ttto;
 
-    # Identify a list of references to replaced-replacer pairs for proposed
-    # expressions.
-    foreach my $ttfmto (QRs("tt, td from tttd where uqsum >= $minscore_repl")) {
-    # For each of them:
-    	
-    	$ttto{$ttfmto->[0]} = $ttfmto->[1];
-    	# Add it to a table of replacements.
+    while (my ($tt,$norm) = each %{$result->{norm}}) {
+        # For each proposed expression that is a highest-scoring expression in the variety with
+        # its degradation and whose score is sufficient for acceptance as an expression:
+        if ($norm->{score} >= $minscore_repl && defined $norm->{ttNorm}) {
+            if ($tt eq $norm->{ttNorm}) {
+                $exok{$tt} = '';
+            } else {
+                $ttto{$tt} = $norm->{ttNorm};                    
+            }
+        }
     }
 
     foreach my $line (@line) {
@@ -220,14 +143,11 @@ sub process {
 
     				# For each of them:
 
-    					unless (
-    						(exists $ex{$ex} && $ex{$ex} eq 'exok')
-    						|| exists $ttto{$ex}
-    					) {
+    					unless (exists $exok{$ex} || exists $ttto{$ex}) {
     					# If it is not classifiable as an expression without
     					# replacement or after being replaced:
 
-    						$allok = '';
+    						$allok = 0;
     						# Identify the list as containing at least 1
     						# expression not classifiable as an expression.
 
@@ -247,7 +167,7 @@ sub process {
     					foreach my $ex (@ex) {
     					# For each of them:
 
-    						if (exists $ex{$ex} && $ex{$ex} eq 'exok') {
+    						if (exists $exok{$ex}) {
     						# If it is classifiable as an expression without
     						# replacement:
 
@@ -305,12 +225,6 @@ sub process {
     	print $out join("\t", @col), "\n";
     	# Output the line.
     }
-
-    $dbh->rollback;
-    # Explicitly rollback our temporary table.
-
-    $dbh->disconnect;
-    # Disconnect from the database.    
 }
 
 #### PsList
@@ -346,50 +260,6 @@ sub PsList {
 
 	return @ex;
 	# Return a list
-}
-
-#### QCs
-# Submit the specified SQL query prefixed with "select", get an array of the first or only value
-# in each resulting row, and return the resulting array.
-# Arguments:
-#   0: query after "select".
-
-sub QCs {
-
-	return @{$dbh->selectcol_arrayref("select " . $_[0]) || []};
-	# Return the array of the values in the first or only column resulting
-	# from the specified query.
-}
-
-#### QRs
-# Submit the specified SQL query prefixed with "select", get a list of references to rows of
-# resulting values, and return the resulting list of row references.
-# Arguments:
-#   0: query after "select".
-
-sub QRs {
-
-	return @{$dbh->selectall_arrayref("select $_[0]") || []};
-	# Return the list of references to the rows resulting from the specified query.
-}
-
-#### QV
-# Submit the specified SQL query prefixed with "select", get 1 or the first resulting row, get
-# the first value of the row, and return the resulting value or a blank if undefined.
-# Arguments:
-#   0: query after "select".
-
-sub QV {
-
-	my @ret = $dbh->selectrow_array("select $_[0]");
-	# Identify the array of values in the first row resulting from the specified query.
-
-    return $ret[0] if @ret && defined $ret[0];
-	# If the array isn't empty and its first element is defined,
-	# return that value.
-	
-	return '';
-	# Otherwise, return a blank value.
 }
 
 1;
