@@ -82,7 +82,7 @@ sub process {
     	}
     }
 
-    my $result = panlex_api("/norm/$lv", { tt => [keys %ex] });
+    my $result = panlex_api_request_all("/norm/$lv", { tt => [keys %ex] });
     die "could not retrieve normalization data from PanLex API"
         unless $result && $result->{status} eq 'OK';    
     
@@ -90,12 +90,11 @@ sub process {
         # For each proposed expression that has a score and whose score is sufficient for
         # outright acceptance as an expression:
         if ($norm->{score} >= $minscore) {
-            $exok{$tt} = '';
-            delete $ex{$tt};
+            $exok{$tt} = delete $ex{$tt};
         }
     }
 
-    $result = panlex_api("/norm/$lv", { tt => [keys %ex], degrade => 1 });
+    $result = panlex_api_request("/norm/$lv", { tt => [keys %ex], degrade => 1 });
     die "could not retrieve normalization data from PanLex API"
         unless $result && $result->{status} eq 'OK';    
 
