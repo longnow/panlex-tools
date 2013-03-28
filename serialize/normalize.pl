@@ -82,7 +82,7 @@ sub process {
     	}
     }
 
-    my $result = panlex_api_request_all("/norm/$lv", { tt => [keys %ex] });
+    my $result = panlex_api_query_all("/norm/$lv", { tt => [keys %ex] });
     die "could not retrieve normalization data from PanLex API"
         unless $result && $result->{status} eq 'OK';    
     
@@ -94,7 +94,7 @@ sub process {
         }
     }
 
-    $result = panlex_api_request("/norm/$lv", { tt => [keys %ex], degrade => 1 });
+    $result = panlex_api_query("/norm/$lv", { tt => [keys %ex], degrade => 1 });
     die "could not retrieve normalization data from PanLex API"
         unless $result && $result->{status} eq 'OK';    
 
