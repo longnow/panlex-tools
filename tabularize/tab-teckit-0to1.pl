@@ -1,4 +1,4 @@
-#!/usr/bin/env perl -w
+#!/usr/bin/env perl
 
 use warnings 'FATAL', 'all';
 # Make every warning fatal.

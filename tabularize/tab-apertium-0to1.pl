@@ -1,4 +1,4 @@
-#!/usr/bin/env perl -w
+#!/usr/bin/env perl
 
 # tab-apertium-0to1.pl
 # Tabularizes an Apertium .dix file, eliminating duplicate entries.

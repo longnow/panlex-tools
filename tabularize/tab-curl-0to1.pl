@@ -1,4 +1,4 @@
-#!/usr/bin/env perl -w
+#!/usr/bin/env perl
 
 # tab-curl-0to1.pl
 # Tabularizes an html-curl file.

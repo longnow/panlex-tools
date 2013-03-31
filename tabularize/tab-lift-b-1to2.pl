@@ -1,4 +1,4 @@
-#!/usr/bin/env perl -w
+#!/usr/bin/env perl
 
 # tab-lift-1to2.pl
 # Finishes tabularizing a lift file.
