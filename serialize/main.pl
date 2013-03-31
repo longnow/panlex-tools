@@ -10,7 +10,7 @@ my $BASENAME = 'aaa-bbb-Author';
 # The initial version to use.
 my $VERSION = 0;
 
-# The panlex-tools directory containing the serialize scripts. If unset here, 
+# The panlex-tools directory containing the serialize scripts. If unset here,
 # will look next in env var PANLEX_TOOLDIR, otherwise use the current directory.
 my $PANLEX_TOOLDIR;
 
