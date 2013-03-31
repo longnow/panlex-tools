@@ -28,7 +28,7 @@ sub process {
         $uid_col{$uid} = $col;
     }
     
-    my $result = panlex_api_query_all('/lv', { uid => [keys %uid_col], include => 'cp' });
+    my $result = panlex_query_all('/lv', { uid => [keys %uid_col], include => 'cp' });
     die "could not retrieve codepoint data from PanLex API"
         unless $result && $result->{status} eq 'OK';
     

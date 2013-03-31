@@ -6,7 +6,7 @@ use HTTP::Request;
 use LWP::UserAgent;
 
 use vars qw/@EXPORT/;
-@EXPORT = qw/panlex_api_query panlex_api_query_all/;
+@EXPORT = qw/panlex_query panlex_query_all/;
 
 my $API_URL = "http://if4.panlex.org/api";
 
@@ -14,10 +14,11 @@ my $API_URL = "http://if4.panlex.org/api";
 # $body will automatically be converted to JSON, and the JSON response
 # will be parsed and returned.
 # If the request fails, the response will be undef.
-sub panlex_api_query {
+sub panlex_query {
     my ($url, $body) = @_;
     
-    my $req = HTTP::Request->new(POST => $API_URL . $url);
+    $url = $url =~ m{^/} ? $API_URL . $url : $url;
+    my $req = HTTP::Request->new(POST => $url);
     $req->content_type('application/json');
     $req->content(encode_json($body || {}));
     
@@ -31,10 +32,10 @@ sub panlex_api_query {
 }
 
 # Recursively query the PanLex API until all results are returned.
-# Arguments are the same as for panlex_api_query.
+# Arguments are the same as for panlex_query.
 # The result array of the returned value will contain all results,
 # and resultNum will reflect the total number of results.
-sub panlex_api_query_all {
+sub panlex_query_all {
     my ($url, $body) = @_;
     
     delete $body->{limit};
@@ -42,7 +43,7 @@ sub panlex_api_query_all {
     
     my $result;
     while (1) {
-        my $this_result = panlex_api_query($url, $body);
+        my $this_result = panlex_query($url, $body);
         return undef unless $this_result;
         
         if ($result) {
