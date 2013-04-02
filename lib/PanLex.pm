@@ -8,7 +8,7 @@ use LWP::UserAgent;
 use vars qw/@EXPORT/;
 @EXPORT = qw/panlex_query panlex_query_all/;
 
-my $API_URL = "http://if4.panlex.org/api";
+my $API_URL = "http://api.panlex.org";
 
 # Send a query to the PanLex API at $url, with request body in $body.
 # $body will automatically be converted to JSON, and the JSON response
