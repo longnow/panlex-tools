@@ -20,13 +20,14 @@ sub panlex_query {
     $url = $url =~ m{^/} ? $API_URL . $url : $url;
     my $req = HTTP::Request->new(POST => $url);
     $req->content_type('application/json');
+    $req->accept_decodable;
     $req->content(encode_json($body || {}));
     
     my $ua = LWP::UserAgent->new;
     my $res = $ua->request($req);
     
     return undef unless $res && $res->code == 200;
-    my $content = $res->content;
+    my $content = $res->decoded_content;
     eval { $content = decode_json($content) };
     return $@ ? undef : $content;
 }
