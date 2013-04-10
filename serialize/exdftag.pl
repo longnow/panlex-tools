@@ -14,6 +14,8 @@
 #		or blank if none.
 #	9+: columns containing expressions that may contain definitional parts.
 
+package PanLex::Serialize::exdftag;
+
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
 
