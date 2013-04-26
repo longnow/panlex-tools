@@ -28,23 +28,23 @@ open my $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
 while (<$in>) {
 # For each line of the input file:
 
-	next unless ($_ ne "\n" && index($_, '<entry') == 0);
-	# If it is not an entry, disregard it.
+    next unless ($_ ne "\n" && index($_, '<entry') == 0);
+    # If it is not an entry, disregard it.
 
-	next if /<relation type="paradigmatic-variant-from"/;
-	# If it is nonlemmatic, disregard it.
+    next if /<relation type="paradigmatic-variant-from"/;
+    # If it is nonlemmatic, disregard it.
 
-	s%<example>.+?</example>%%g;
-	# Delete all examples in it.
+    s%<example>.+?</example>%%g;
+    # Delete all examples in it.
 
-	s%<relation type="[^"]+" ref="[^"]+"/>%%g;
-	# Delete all relation specifications in it.
+    s%<relation type="[^"]+" ref="[^"]+"/>%%g;
+    # Delete all relation specifications in it.
 
-	s%<trait[^/]+/>%%g;
-	# Delete all trait specifications in it.
+    s%<trait[^/]+/>%%g;
+    # Delete all trait specifications in it.
 
-	print $out $_;
-	# Output it.
+    print $out $_;
+    # Output it.
 
 }
 

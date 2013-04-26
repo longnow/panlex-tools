@@ -28,27 +28,27 @@ open my $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
 while (<$in>) {
 # For each line of the input file:
 
-	# while (s/, *(?![^()]*\))/‣/) {}
-	s/ *, *(?![^()]*\))/‣/g;
-	# Convert all unparenthesized commas in it to synonym delimiters.
+    # while (s/, *(?![^()]*\))/‣/) {}
+    s/ *, *(?![^()]*\))/‣/g;
+    # Convert all unparenthesized commas in it to synonym delimiters.
 
-	s/(?:^|\t|‣)\K +| +(?=$|\t|‣)//g;
-	# Delete all leading and trailing spaces in it.
+    s/(?:^|\t|‣)\K +| +(?=$|\t|‣)//g;
+    # Delete all leading and trailing spaces in it.
 
-	s/ {2,}/ /g;
-	# Collapse all multiple spaces in it.
+    s/ {2,}/ /g;
+    # Collapse all multiple spaces in it.
 
-	if (/^[^,]+\t(?:[^ ,]+, )+[^ ,]+$/) {
-	# If column 0 contains no commas and column 1 is a sequence of
-	# comma-delimited single words:
+    if (/^[^,]+\t(?:[^ ,]+, )+[^ ,]+$/) {
+    # If column 0 contains no commas and column 1 is a sequence of
+    # comma-delimited single words:
 
-		s/, /⁋/g;
-		# Convert all commas in the line to meaning delimiters.
+        s/, /⁋/g;
+        # Convert all commas in the line to meaning delimiters.
 
-	}
+    }
 
-	print $out $_;
-	# Output it.
+    print $out $_;
+    # Output it.
 
 }
 

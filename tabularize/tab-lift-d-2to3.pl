@@ -28,23 +28,23 @@ open my $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
 while (<$in>) {
 # For each line of the input file:
 
-	s%<note.+?</note>%%g;
-	# Delete all note elements in it.
+    s%<note.+?</note>%%g;
+    # Delete all note elements in it.
 
-	s%<(form|gloss) lang="([^"]+)"><text>(?:[A-Z][^:]+: +)?([^<>]+)</text></\1>%⫷ex$2=$3⫸%g;
-	# Shorten all expression specifications in it.
+    s%<(form|gloss) lang="([^"]+)"><text>(?:[A-Z][^:]+: +)?([^<>]+)</text></\1>%⫷ex$2=$3⫸%g;
+    # Shorten all expression specifications in it.
 
-	s%^<entry id="([^"]+)">%⫷mi=$1⫸%;
-	# Shorten its mi.
+    s%^<entry id="([^"]+)">%⫷mi=$1⫸%;
+    # Shorten its mi.
 
-	s%<grammatical-info value="([^"]+)"/>%⫷wcmd=$1⫸%g;
-	# Shorten all wc-md specifications in it.
+    s%<grammatical-info value="([^"]+)"/>%⫷wcmd=$1⫸%g;
+    # Shorten all wc-md specifications in it.
 
-	s%<[^<>]+>%%g;
-	# Delete all remaining tags in it.
+    s%<[^<>]+>%%g;
+    # Delete all remaining tags in it.
 
-	print $out $_;
-	# Output it.
+    print $out $_;
+    # Output it.
 
 }
 

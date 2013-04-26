@@ -26,49 +26,49 @@ open my $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
 # Create or truncate the output file and open it for writing.
 
 my %lv = (
-	'wic', 1,
-	'eng', 3
+    'wic', 1,
+    'eng', 3
 );
 # Identify a table of language varieties and their columns.
 
 while (<$in>) {
 # For each line of the input file:
 
-	chomp;
-	# Delete its trailing newline.
+    chomp;
+    # Delete its trailing newline.
 
-	my @col = (('') x 4);
-	# Reinitialize the output as a list of 4 blank columns.
+    my @col = (('') x 4);
+    # Reinitialize the output as a list of 4 blank columns.
 
-	if (s/⫷mi=([^⫷⫸]+)⫸//) {
-	# If the line contains a meaning identifier, delete it and:
+    if (s/⫷mi=([^⫷⫸]+)⫸//) {
+    # If the line contains a meaning identifier, delete it and:
 
-		$col[0] = $1;
-		# Make it the content of output column 0.
+        $col[0] = $1;
+        # Make it the content of output column 0.
 
-	}
+    }
 
-	while (s/⫷ex([^=]+)=([^⫷⫸]+)⫸//) {
-	# As long as the line contains any expression list, delete it and:
+    while (s/⫷ex([^=]+)=([^⫷⫸]+)⫸//) {
+    # As long as the line contains any expression list, delete it and:
 
-		$col[$lv{$1}] .= (((length $col[$lv{$1}]) ? '‣' : '') . $2);
-		# Add it to its variety's output column.
+        $col[$lv{$1}] .= (((length $col[$lv{$1}]) ? '‣' : '') . $2);
+        # Add it to its variety's output column.
 
-	}
+    }
 
-	if (s/⫷wcmd=([^⫷⫸]+)⫸//) {
-	# If the line contains a wc-md specification, delete it and:
+    if (s/⫷wcmd=([^⫷⫸]+)⫸//) {
+    # If the line contains a wc-md specification, delete it and:
 
-		$col[2] = $1;
-		# Make it the content of output column 2.
+        $col[2] = $1;
+        # Make it the content of output column 2.
 
-	}
+    }
 
-	print "$_\n" if length $_;
-	# If any content remains in the line, report it.
+    print "$_\n" if length $_;
+    # If any content remains in the line, report it.
 
-	print $out join("\t", @col), "\n";
-	# Output it.
+    print $out join("\t", @col), "\n";
+    # Output it.
 
 }
 

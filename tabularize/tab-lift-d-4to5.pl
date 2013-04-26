@@ -28,32 +28,32 @@ open my $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
 while (<$in>) {
 # For each line of the input file:
 
-	chomp;
-	# Delete its trailing newline.
+    chomp;
+    # Delete its trailing newline.
 
-	my @col = split /\t/, $_, -1;
-	# Identify its columns.
+    my @col = split /\t/, $_, -1;
+    # Identify its columns.
 
-	$col[1] =~ s/'/'/g;
-	# Convert all right single quotation marks in column 1 to apostrophes.
+    $col[1] =~ s/'/'/g;
+    # Convert all right single quotation marks in column 1 to apostrophes.
 
-	$col[2] =~ s/^None$//;
-	# If column 2 is “None”, delete it.
+    $col[2] =~ s/^None$//;
+    # If column 2 is “None”, delete it.
 
-	$col[3] =~ s/ *[,;] *(?![^()]*\))/‣/g;
-	# Convert all unparenthesized commas and semicolons in column 3
-	# to synonym delimiters.
+    $col[3] =~ s/ *[,;] *(?![^()]*\))/‣/g;
+    # Convert all unparenthesized commas and semicolons in column 3
+    # to synonym delimiters.
 
-	$col[3] =~ s/(?:^|‣)\Kto be /⫷wc:verb⫸(be) /g;
-	# Convert all leading instances of “to be” to preposed verb
-	# specifications and parenthesized “be” in column 3.
+    $col[3] =~ s/(?:^|‣)\Kto be /⫷wc:verb⫸(be) /g;
+    # Convert all leading instances of “to be” to preposed verb
+    # specifications and parenthesized “be” in column 3.
 
-	$col[3] =~ s/(?:^|‣)\Kto /⫷wc:verb⫸/g;
-	# Convert all leading instances of “to” to preposed verb
-	# specifications in column 3.
+    $col[3] =~ s/(?:^|‣)\Kto /⫷wc:verb⫸/g;
+    # Convert all leading instances of “to” to preposed verb
+    # specifications in column 3.
 
-	print $out join("\t", @col), "\n";
-	# Output it.
+    print $out join("\t", @col), "\n";
+    # Output it.
 
 }
 

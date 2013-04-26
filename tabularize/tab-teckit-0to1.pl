@@ -36,8 +36,8 @@ open $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
 while (<$in>) {
 # For each line of the input file:
 
-	print $seg2old (split /\t/, $_, -1)[2];
-	# Output its segment 2 to the recoding input file.
+    print $seg2old (split /\t/, $_, -1)[2];
+    # Output its segment 2 to the recoding input file.
 
 }
 
@@ -62,17 +62,17 @@ open my $seg2new, '<:encoding(utf8)', "$BASENAME-seg2-$newver.txt";
 while (<$in>) {
 # For each line of the input file:
 
-	my @seg = split /\t/, $_, -1;
-	# Identify its segments.
+    my @seg = split /\t/, $_, -1;
+    # Identify its segments.
 
-	my $seg2 = <$seg2new>;
-	# Identify the corresponding recoded segment 2.
+    my $seg2 = <$seg2new>;
+    # Identify the corresponding recoded segment 2.
 
-	$seg2 = "\n" if $seg2 =~ /\x{fffd}/;
-	# If it contains an invalid character, make it blank.
+    $seg2 = "\n" if $seg2 =~ /\x{fffd}/;
+    # If it contains an invalid character, make it blank.
 
-	print $out "$seg[0]\t$seg[1]\t$seg2";
-	# Output segments 0 and 1 of the line and the recoded segment 2.
+    print $out "$seg[0]\t$seg[1]\t$seg2";
+    # Output segments 0 and 1 of the line and the recoded segment 2.
 }
 
 close $seg2new;

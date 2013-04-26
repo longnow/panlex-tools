@@ -1,23 +1,23 @@
 # Normalizes expressions in a tagged source file.
 # Arguments:
-#	0: tag specification (regular expression).
-#	1: expression tag.
-#	2: column containing expressions to be normalized.
-#	3: minimum score (0 or more) a proposed expression must have in order to be accepted
-#		outright as an expression. Every proposed expression with a lower (or no) score is
-#		to be replaced with the highest-scoring expression sharing its language variety and
-#		degradation, if any such expression has a higher score than it.
-#	4: minimum score a proposed expression that is not accepted outright as an expression,
-#		or its replacement, must have in order to be accepted as an expression.
-#	5: variety UID of expressions to be normalized.
-#	6: tag of pre-normalized expression.
-#	7: if proposed expressions not accepted as expressions and not having replacements accepted
-#		as expressions are to be converted to definitions, definition tag, or blank if they
-#		are to be converted to pre-normalized expressions.
-#	8: regular expression matching the synonym delimiter if each proposed expression containing
-#		such a delimiter is to be treated as a list of synonymous proposed expressions and
-#		they are to be normalized if and only if all expressions in the list are
-#		normalizable, or blank if not.
+#    0: tag specification (regular expression).
+#    1: expression tag.
+#    2: column containing expressions to be normalized.
+#    3: minimum score (0 or more) a proposed expression must have in order to be accepted
+#        outright as an expression. Every proposed expression with a lower (or no) score is
+#        to be replaced with the highest-scoring expression sharing its language variety and
+#        degradation, if any such expression has a higher score than it.
+#    4: minimum score a proposed expression that is not accepted outright as an expression,
+#        or its replacement, must have in order to be accepted as an expression.
+#    5: variety UID of expressions to be normalized.
+#    6: tag of pre-normalized expression.
+#    7: if proposed expressions not accepted as expressions and not having replacements accepted
+#        as expressions are to be converted to definitions, definition tag, or blank if they
+#        are to be converted to pre-normalized expressions.
+#    8: regular expression matching the synonym delimiter if each proposed expression containing
+#        such a delimiter is to be treated as a list of synonymous proposed expressions and
+#        they are to be normalized if and only if all expressions in the list are
+#        normalizable, or blank if not.
 
 package PanLex::Serialize::normalize;
 
@@ -31,12 +31,20 @@ use utf8;
 # Make Perl interpret the script as UTF-8 rather than bytes.
 
 use PanLex;
+use PanLex::Validation;
 
 use Unicode::Normalize;
 # Import the Unicode normalization module.
 
 sub process {
     my ($in, $out, $tag, $extag, $excol, $minscore, $minscore_repl, $lv, $prenormtag, $dftag, $syndelim) = @_;
+
+    foreach my $score ($minscore, $minscore_repl) {
+        die "invalid minimum score" unless valid_int($score) && $score >= 0;
+    }
+    
+    validate_col($excol);
+    validate_uid($lv);
     
     my (%ex, %exok);
 
@@ -55,31 +63,33 @@ sub process {
     foreach my $line (@line) {
     # For each line:
 
-    	my @col = split /\t/, $line, -1;
-    	# Identify its columns.
+        my @col = split /\t/, $line, -1;
+        # Identify its columns.
 
-    	if (length $col[$excol]) {
-    	# If the column containing proposed expressions is nonblank:
+        die "column $excol not present in line: $_" unless defined $col[$excol];
 
-    		my @seg = ($col[$excol] =~ /($tag.+?(?=$tag|$))/go);
-    		# Identify the tagged items, including tags, in it.
+        if (length $col[$excol]) {
+        # If the column containing proposed expressions is nonblank:
 
-    		foreach my $seg (@seg) {
-    		# For each of them:
+            my @seg = ($col[$excol] =~ /($tag.+?(?=$tag|$))/go);
+            # Identify the tagged items, including tags, in it.
 
-    			if (index($seg, $extag) == 0) {
-    			# If it is tagged as an expression:
+            foreach my $seg (@seg) {
+            # For each of them:
 
-    				foreach my $ex (PsList($seg, $lentag, $syndelim)) {
-    				# For the expression, or for each expression if it is a pseudo-list:
+                if (index($seg, $extag) == 0) {
+                # If it is tagged as an expression:
 
-    					$ex{$ex} = '';
-    					# Add it to the table of proposed expression texts, if not
-    					# already in it.
-    				}
-    			}
-    		}
-    	}
+                    foreach my $ex (PsList($seg, $lentag, $syndelim)) {
+                    # For the expression, or for each expression if it is a pseudo-list:
+
+                        $ex{$ex} = '';
+                        # Add it to the table of proposed expression texts, if not
+                        # already in it.
+                    }
+                }
+            }
+        }
     }
 
     my $result = panlex_query_all("/norm/$lv", { tt => [keys %ex] });
@@ -115,150 +125,150 @@ sub process {
     foreach my $line (@line) {
     # For each line:
 
-    	my @col = split /\t/, $line, -1;
-    	# Identify its columns.
+        my @col = split /\t/, $line, -1;
+        # Identify its columns.
 
-    	if (length $col[$excol]) {
-    	# If the column containing proposed expressions is nonblank:
+        if (length $col[$excol]) {
+        # If the column containing proposed expressions is nonblank:
 
-    		my @seg = ($col[$excol] =~ m/($tag.+?(?=$tag|$))/go);
-    		# Identify the tagged items, including tags, in it.
+            my @seg = ($col[$excol] =~ m/($tag.+?(?=$tag|$))/go);
+            # Identify the tagged items, including tags, in it.
 
-    		foreach my $seg (@seg) {
-    		# For each item:
+            foreach my $seg (@seg) {
+            # For each item:
 
-    			if (index($seg, $extag) == 0) {
-    			# If it is tagged as an expression:
+                if (index($seg, $extag) == 0) {
+                # If it is tagged as an expression:
 
-    				my $allok = 1;
-    				# Initialize the list's elements as all classifiable as
-    				# expressions.
+                    my $allok = 1;
+                    # Initialize the list's elements as all classifiable as
+                    # expressions.
 
                     my @ex = PsList($seg, $lentag, $syndelim);
                     
-    				foreach my $ex (@ex) {
-    				# Identify the expression, or a list of the expressions in it if
-    				# it is a pseudo-list.
+                    foreach my $ex (@ex) {
+                    # Identify the expression, or a list of the expressions in it if
+                    # it is a pseudo-list.
 
-    				# For each of them:
+                    # For each of them:
 
-    					unless (exists $exok{$ex} || exists $ttto{$ex}) {
-    					# If it is not classifiable as an expression without
-    					# replacement or after being replaced:
+                        unless (exists $exok{$ex} || exists $ttto{$ex}) {
+                        # If it is not classifiable as an expression without
+                        # replacement or after being replaced:
 
-    						$allok = 0;
-    						# Identify the list as containing at least 1
-    						# expression not classifiable as an expression.
+                            $allok = 0;
+                            # Identify the list as containing at least 1
+                            # expression not classifiable as an expression.
 
-    						last;
-    						# Stop checking the expression(s) in the list.
-    					}
+                            last;
+                            # Stop checking the expression(s) in the list.
+                        }
 
-    				}
+                    }
 
-    				$seg = '';
-    				# Reinitialize the item as blank.
+                    $seg = '';
+                    # Reinitialize the item as blank.
 
-    				if ($allok) {
-    				# If all elements of the list are classifiable as expressions with
-    				# or without replacement:
+                    if ($allok) {
+                    # If all elements of the list are classifiable as expressions with
+                    # or without replacement:
 
-    					foreach my $ex (@ex) {
-    					# For each of them:
+                        foreach my $ex (@ex) {
+                        # For each of them:
 
-    						if (exists $exok{$ex}) {
-    						# If it is classifiable as an expression without
-    						# replacement:
+                            if (exists $exok{$ex}) {
+                            # If it is classifiable as an expression without
+                            # replacement:
 
-    							$seg .= "$extag$ex";
-    							# Append it, with an expression tag, to the
-    							# item.
-    						}
+                                $seg .= "$extag$ex";
+                                # Append it, with an expression tag, to the
+                                # item.
+                            }
 
-    						else {
-    						# Otherwise, i.e. if it is classifiable as an
-    						# expression only after replacement:
+                            else {
+                            # Otherwise, i.e. if it is classifiable as an
+                            # expression only after replacement:
 
-    							$seg .= "$prenormtag$ex$extag$ttto{$ex}";
-    							# Append it, with a pre-normalized
-    							# expression tag, and its replacement, with
-    							# an expression tag, to the item.
-    						}
-    					}
-    				}
+                                $seg .= "$prenormtag$ex$extag$ttto{$ex}";
+                                # Append it, with a pre-normalized
+                                # expression tag, and its replacement, with
+                                # an expression tag, to the item.
+                            }
+                        }
+                    }
 
-    				else {
-    				# Otherwise, i.e. if not all elements of the list are classifiable
-    				# as expressions with or without replacement:
+                    else {
+                    # Otherwise, i.e. if not all elements of the list are classifiable
+                    # as expressions with or without replacement:
 
-    					$seg = join($syndelim, @ex);
-    					# Identify the concatenation of the list's elements, with
-    					# the specified delimiter if any, i.e. the original item
-    					# without its expression tag.
+                        $seg = join($syndelim, @ex);
+                        # Identify the concatenation of the list's elements, with
+                        # the specified delimiter if any, i.e. the original item
+                        # without its expression tag.
 
-    					if (length $dftag) {
-    					# If proposed expressions not classifiable as expressions
-    					# are to be converted to definitions:
+                        if (length $dftag) {
+                        # If proposed expressions not classifiable as expressions
+                        # are to be converted to definitions:
 
-    						$seg = "$dftag$seg";
-    						# Prepend a definition tag to the concatenation.
-    					}
+                            $seg = "$dftag$seg";
+                            # Prepend a definition tag to the concatenation.
+                        }
 
-    					else {
-    					# Otherwise, i.e. if such proposed expressions are not
-    					# to be converted to definitions:
+                        else {
+                        # Otherwise, i.e. if such proposed expressions are not
+                        # to be converted to definitions:
 
-    						$seg = "$prenormtag$seg";
-    						# Prepend a pre-normalized expression tag to the
-    						# concatenation.
-    					}
-    				}
-    			}
-    		}
+                            $seg = "$prenormtag$seg";
+                            # Prepend a pre-normalized expression tag to the
+                            # concatenation.
+                        }
+                    }
+                }
+            }
 
-    		$col[$excol] = join('', @seg);
-    		# Identify the column with all expression reclassifications.
+            $col[$excol] = join('', @seg);
+            # Identify the column with all expression reclassifications.
 
-    	}
+        }
 
-    	print $out join("\t", @col), "\n";
-    	# Output the line.
+        print $out join("\t", @col), "\n";
+        # Output the line.
     }
 }
 
 #### PsList
 # Return a list of items in the specified prefixed pseudo-list.
 # Arguments:
-#	0: pseudo-list.
-#	1: length of its prefix.
-#	2: regular expression matching the pseudo-list delimiter, or blank if none.
+#    0: pseudo-list.
+#    1: length of its prefix.
+#    2: regular expression matching the pseudo-list delimiter, or blank if none.
 
 sub PsList {
 
-	my @ex;
+    my @ex;
 
-	my $tt  = substr $_[0], $_[1];
-	# Identify the specified pseudo-list without its tag.
+    my $tt  = substr $_[0], $_[1];
+    # Identify the specified pseudo-list without its tag.
 
-	if (length $_[2] && $tt =~ /$_[2]/) {
-	# If expressions are to be classified as single or pseudo-list
-	# and it contains a pseudo-list delimiter:
+    if (length $_[2] && $tt =~ /$_[2]/) {
+    # If expressions are to be classified as single or pseudo-list
+    # and it contains a pseudo-list delimiter:
 
-		@ex = split /$_[2]/, $tt;
-		# Identify the expressions in the pseudo-list.
-	}
+        @ex = split /$_[2]/, $tt;
+        # Identify the expressions in the pseudo-list.
+    }
 
-	else {
-	# Otherwise, i.e. if expressions are not to be classified as
-	# single or pseudo-list or they are but it contains no
-	# pseudo-list delimiter:
+    else {
+    # Otherwise, i.e. if expressions are not to be classified as
+    # single or pseudo-list or they are but it contains no
+    # pseudo-list delimiter:
 
-		@ex = ($tt);
-		# Identify a list of the sole expression.
-	}
+        @ex = ($tt);
+        # Identify a list of the sole expression.
+    }
 
-	return @ex;
-	# Return a list
+    return @ex;
+    # Return a list
 }
 
 1;

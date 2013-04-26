@@ -35,35 +35,35 @@ my $state = 1;
 while (<$in>) {
 # For each line of the input file:
 
-	chomp;
-	# Delete its trailing newline.
+    chomp;
+    # Delete its trailing newline.
 
-	if (/^<tr/) {
-	# If it is the start of a row:
+    if (/^<tr/) {
+    # If it is the start of a row:
 
-		$state = 1;
-		# Identify the state as in-entry.
+        $state = 1;
+        # Identify the state as in-entry.
 
-	}
+    }
 
-	elsif (m#^</tr#) {
-	# Otherwise, if it is the end of a row:
+    elsif (m#^</tr#) {
+    # Otherwise, if it is the end of a row:
 
-		print $out "\n";
-		# Output a newline.
+        print $out "\n";
+        # Output a newline.
 
-		$state = 0;
-		# Identify the state as not in-entry.
+        $state = 0;
+        # Identify the state as not in-entry.
 
-	}
+    }
 
-	elsif (($state == 1) && (m#^<div class=paragraph .+<b>([^<>]+)</b></span></div>$#)) {
-	# Otherwise, if the state is in-entry and the line is an entry line:
+    elsif (($state == 1) && (m#^<div class=paragraph .+<b>([^<>]+)</b></span></div>$#)) {
+    # Otherwise, if the state is in-entry and the line is an entry line:
 
-		print $out "\t$1";
-		# Output its expression, preceded by a tab.
+        print $out "\t$1";
+        # Output its expression, preceded by a tab.
 
-	}
+    }
 
 }
 

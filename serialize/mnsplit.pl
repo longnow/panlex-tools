@@ -1,7 +1,7 @@
 # Splits multi-meaning lines of a tagged source file, eliminating any duplicate output lines.
 # Arguments:
-#	0: meaning-delimitation tag.
-#	1: number (0-based) of the column that may contain multiple meanings.
+#    0: meaning-delimitation tag.
+#    1: number (0-based) of the column that may contain multiple meanings.
 
 package PanLex::Serialize::mnsplit;
 
@@ -14,59 +14,66 @@ use strict;
 use utf8;
 # Make Perl interpret the script as UTF-8 rather than bytes.
 
+use PanLex::Validation;
+
 sub process {
     my ($in, $out, $mndelim, $mncol) = @_;
-    my %line;
-    
+
+    validate_col($mncol);
+
+    my %line;    
+
     while (<$in>) {
     # For each line of the input file:
 
-    	chomp;
-    	# Delete its trailing newline.
+        chomp;
+        # Delete its trailing newline.
 
-    	my @col = split /\t/, $_, -1;
-    	# Identify its columns.
+        my @col = split /\t/, $_, -1;
+        # Identify its columns.
 
-    	if (index($col[$mncol], $mndelim) < 0) {
-    	# If the potentially multimeaning column is one-meaning:
+        die "column $mncol not present in line: $_" unless defined $col[$mncol];
 
-    		unless (exists $line{$_}) {
-    		# If the line isn't a duplicate:
+        if (index($col[$mncol], $mndelim) < 0) {
+        # If the potentially multimeaning column is one-meaning:
 
-    			$line{$_} = '';
-    			# Add it to the table of output lines.
+            unless (exists $line{$_}) {
+            # If the line isn't a duplicate:
 
-    			print $out $_, "\n";
-    			# Output it.
-    		}
-    	}
+                $line{$_} = '';
+                # Add it to the table of output lines.
 
-    	else {
-    	# Otherwise, i.e. if the column is multimeaning:
+                print $out $_, "\n";
+                # Output it.
+            }
+        }
 
-    		foreach my $mn (split /$mndelim/, $col[$mncol]) {
-    		# For each of its meaning segments:
+        else {
+        # Otherwise, i.e. if the column is multimeaning:
 
-    			my @line = @col;
-    			# Identify its line's columns, with the multimeaning column unchanged.
+            foreach my $mn (split /$mndelim/, $col[$mncol]) {
+            # For each of its meaning segments:
 
-    			$line[$mncol] = $mn;
-    			# Replace the multimeaning column with the meaning segment.
+                my @line = @col;
+                # Identify its line's columns, with the multimeaning column unchanged.
 
-    			my $ln = join("\t", @line);
-    			# Identify the meaning's line.
+                $line[$mncol] = $mn;
+                # Replace the multimeaning column with the meaning segment.
 
-    			unless (exists $line{$ln}) {
-    			# If it isn't a duplicate:
+                my $ln = join("\t", @line);
+                # Identify the meaning's line.
 
-    				$line{$ln} = '';
-    				# Add it to the table of output lines.
+                unless (exists $line{$ln}) {
+                # If it isn't a duplicate:
 
-    				print $out $ln, "\n";
-    				# Output it.
-    			}
-    		}
-    	}
+                    $line{$ln} = '';
+                    # Add it to the table of output lines.
+
+                    print $out $ln, "\n";
+                    # Output it.
+                }
+            }
+        }
     }
 }
 

@@ -31,18 +31,18 @@ open my $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
 while (<$in>) {
 # For each line of the input file:
 
-	if (index($_, '<tr><td class="l1">') == 0) {
-	# If it is an entry:
+    if (index($_, '<tr><td class="l1">') == 0) {
+    # If it is an entry:
 
-		chomp;
-		# Delete its trailing newline.
+        chomp;
+        # Delete its trailing newline.
 
-		my @seg = m#^<tr><td class="l1">(.+?)</td><td class="l2">(.+?)</td></tr>#;
-		# Identify its segments.
+        my @seg = m#^<tr><td class="l1">(.+?)</td><td class="l2">(.+?)</td></tr>#;
+        # Identify its segments.
 
-		print $out "$seg[0]\t$seg[1]\n" if @seg;
-		# Output them, if they exist.
-	}
+        print $out "$seg[0]\t$seg[1]\n" if @seg;
+        # Output them, if they exist.
+    }
 
 }
 

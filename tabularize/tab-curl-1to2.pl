@@ -38,49 +38,49 @@ my $wc = '';
 while (<$in>) {
 # For each line of the input file:
 
-	if (index($_, '¶') == 0) {
-	# If it is an entry:
+    if (index($_, '¶') == 0) {
+    # If it is an entry:
 
-		$_ = substr $_, 1;
-		# Delete its entry marker.
+        $_ = substr $_, 1;
+        # Delete its entry marker.
 
-		my @seg = split /\t/, $_, -1;
-		# Identify its segments.
+        my @seg = split /\t/, $_, -1;
+        # Identify its segments.
 
-		if ($seg[0] eq '.') {
-		# If the eng-000 expression is to be inherited:
+        if ($seg[0] eq '.') {
+        # If the eng-000 expression is to be inherited:
 
-			$seg[0] = $eng;
-			# Make it inherit.
-		}
+            $seg[0] = $eng;
+            # Make it inherit.
+        }
 
-		else {
-		# Otherwise, i.e. if the eng-000 expression is not to be inherited:
+        else {
+        # Otherwise, i.e. if the eng-000 expression is not to be inherited:
 
-			$seg[0] =~ s/^([^,]+), ([^,]+)$/$2 $1/;
-			# If it is inverted with a comma delimiter, normalize it.
+            $seg[0] =~ s/^([^,]+), ([^,]+)$/$2 $1/;
+            # If it is inverted with a comma delimiter, normalize it.
 
-			$eng = $seg[0];
-			# Make the prior eng-000 expression current.
-		}
+            $eng = $seg[0];
+            # Make the prior eng-000 expression current.
+        }
 
-		if ($seg[1] eq '.') {
-		# If the wc is to be inherited:
+        if ($seg[1] eq '.') {
+        # If the wc is to be inherited:
 
-			$seg[1] = $wc;
-			# Make it inherit.
-		}
+            $seg[1] = $wc;
+            # Make it inherit.
+        }
 
-		else {
-		# Otherwise, i.e. if the wc is not to be inherited:
+        else {
+        # Otherwise, i.e. if the wc is not to be inherited:
 
-			$wc = $seg[1];
-			# Make the prior wc current.
-		}
+            $wc = $seg[1];
+            # Make the prior wc current.
+        }
 
-		print $out join("\t", @seg[0, 2, 1, 3]);
-		# Output it, with the wc column shifted to apply to the rop-000 column.
-	}
+        print $out join("\t", @seg[0, 2, 1, 3]);
+        # Output it, with the wc column shifted to apply to the rop-000 column.
+    }
 }
 
 close $in;

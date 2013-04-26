@@ -32,34 +32,34 @@ open my $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
 while (<$in>) {
 # For each line of the input file:
 
-	if (index($_, '¶') == 0) {
-	# If it is an entry:
+    if (index($_, '¶') == 0) {
+    # If it is an entry:
 
-		$_ = (substr $_, 1);
-		# Delete its entry marker.
+        $_ = (substr $_, 1);
+        # Delete its entry marker.
 
-		s/\t1\. /\t/;
-		# Delete any initial meaning index.
+        s/\t1\. /\t/;
+        # Delete any initial meaning index.
 
-		s/ (?:\d\.|---) /⁋/g;
-		# Replace all subsequent meaning indices and triple hyphen-minuses with
-		# meaning delimiters.
+        s/ (?:\d\.|---) /⁋/g;
+        # Replace all subsequent meaning indices and triple hyphen-minuses with
+        # meaning delimiters.
 
-		while (s/[,\x{060c}](?![^()]+\))/‣/) {}
-		# Replace all unparenthesized commas and Arabic commas with synonym delimiters.
+        while (s/[,\x{060c}](?![^()]+\))/‣/) {}
+        # Replace all unparenthesized commas and Arabic commas with synonym delimiters.
 
-		s/ {2,}/ /g;
-		# Collapse all multiple spaces.
+        s/ {2,}/ /g;
+        # Collapse all multiple spaces.
 
-		s/(?:^|\t|‣|⁋)\K +//g;
-		# Delete all leading spaces.
+        s/(?:^|\t|‣|⁋)\K +//g;
+        # Delete all leading spaces.
 
-		s/ +(?=\t|‣|⁋|$)//g;
-		# Delete all trailing spaces.
+        s/ +(?=\t|‣|⁋|$)//g;
+        # Delete all trailing spaces.
 
-		print $out $_;
-		# Output it.
-	}
+        print $out $_;
+        # Output it.
+    }
 }
 
 close $in;

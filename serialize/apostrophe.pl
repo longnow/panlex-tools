@@ -1,7 +1,7 @@
 # Converts a tab-delimited source file's apostrophes.
 # Arguments:
-#	0+: specifications (column index and variety UID, colon-delimited) of columns
-#		possibly requiring apostrophe normalization.
+#    0+: specifications (column index and variety UID, colon-delimited) of columns
+#        possibly requiring apostrophe normalization.
 
 package PanLex::Serialize::apostrophe;
 
@@ -15,6 +15,7 @@ use utf8;
 # Make Perl interpret the script as UTF-8 rather than bytes.
 
 use PanLex;
+use PanLex::Validation;
 
 sub process {
     my ($in, $out, @args) = @_;
@@ -23,6 +24,7 @@ sub process {
     
     foreach my $spec (@args) {
         my ($col, $uid) = split /:/, $spec;
+        validate_spec($col, $uid);
         $col = int($col);
         push @pcol, $col;
         $uid_col{$uid} = $col;
@@ -69,51 +71,53 @@ sub process {
     while (<$in>) {
     # For each line of the input file:
         
-    	if (index($_, "'") > -1) {
-    	# If it contains any apostrophes:
+        if (index($_, "'") > -1) {
+        # If it contains any apostrophes:
 
-    		my @col = split /\t/, $_, -1;
-    		# Identify its columns.
+            my @col = split /\t/, $_, -1;
+            # Identify its columns.
 
             foreach my $i (@pcol) {
-    		# For each column to be processed:
+            # For each column to be processed:
 
-    			if (index($col[$i], "'") > -1) {
-    			# If it contains any apostrophes:
+                die "column $i not present in line: $_" unless defined $col[$i];
 
-    				if (exists $apos{$i}) {
-    				# If its variety's apostrophes are convertible:
+                if (index($col[$i], "'") > -1) {
+                # If it contains any apostrophes:
 
-    					$col[$i] =~ s/'/$apos{$i}/g;
-    					# Convert them.
-    				}
+                    if (exists $apos{$i}) {
+                    # If its variety's apostrophes are convertible:
 
-    				else {
-    				# Otherwise, i.e. if its variety's apostrophes are not convertible:
+                        $col[$i] =~ s/'/$apos{$i}/g;
+                        # Convert them.
+                    }
 
-    					$noncon{$i} = '';
-    					# Add the column to the table of columns containing nonconvertible
-    					# apostrophes, if not already in it.
-    				}
-    			}
-    		}
+                    else {
+                    # Otherwise, i.e. if its variety's apostrophes are not convertible:
 
-    		$_ = join "\t", @col;
-    		# Save the modified line.
-    	}
+                        $noncon{$i} = '';
+                        # Add the column to the table of columns containing nonconvertible
+                        # apostrophes, if not already in it.
+                    }
+                }
+            }
 
-    	print $out $_;
-    	# Output the line.
+            $_ = join "\t", @col;
+            # Save the modified line.
+        }
+
+        print $out $_;
+        # Output the line.
     }
 
     if (keys %noncon) {
     # If any column contained nonconvertible apostrophes:
 
-    	warn (
-    		'Could not convert apostrophes found in column(s) '
-    		. join(', ', sort { $a <=> $b } keys %noncon) . "\n"
-    	);
-    	# Report them.
+        warn (
+            'Could not convert apostrophes found in column(s) '
+            . join(', ', sort { $a <=> $b } keys %noncon) . "\n"
+        );
+        # Report them.
     }
 }
 
