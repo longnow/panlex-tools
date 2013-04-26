@@ -93,8 +93,10 @@ sub process {
     }
 
     my $result = panlex_query_all("/norm/$lv", { tt => [keys %ex] });
-    die "could not retrieve normalization data from PanLex API"
-        unless $result && $result->{status} eq 'OK';    
+    die "could not retrieve normalization data from PanLex API: HTTP request failed" 
+        unless $result;
+    die "could not retrieve normalization data from PanLex API: $result->{error}" 
+        unless $result->{status} eq 'OK';
     
     while (my ($tt,$norm) = each %{$result->{norm}}) {
         # For each proposed expression that has a score and whose score is sufficient for

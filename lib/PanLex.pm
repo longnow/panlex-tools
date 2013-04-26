@@ -47,14 +47,24 @@ sub panlex_query_all {
         my $this_result = panlex_query($url, $body);
         return undef unless $this_result;
         
-        if ($result) {
-            push @{$result->{result}}, @{$this_result->{result}};
-            $result->{resultNum} += $this_result->{resultNum};
+        if ($this_result->{status} eq 'OK') {
+            if ($result) {
+                push @{$result->{result}}, @{$this_result->{result}};
+                $result->{resultNum} += $this_result->{resultNum};
+            } else {
+               $result = $this_result; 
+            }
+
+            return $result if $this_result->{resultNum} < $this_result->{resultMax};
+            $body->{offset} += $this_result->{resultNum};
         } else {
-           $result = $this_result; 
-        }
-        
-        return $result if $this_result->{resultNum} < $this_result->{resultMax};
-        $body->{offset} += $this_result->{resultNum};
+            if ($result) {
+                $result->{status} = $this_result->{status};
+                $result->{error} = $this_result->{error};
+                return $result;                
+            } else {
+                return $this_result;
+            }            
+        }        
     }
 }
