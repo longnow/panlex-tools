@@ -92,7 +92,7 @@ sub process {
         }
     }
 
-    my $result = panlex_query_all("/norm/$lv", { tt => [keys %ex] });
+    my $result = panlex_query("/norm/$lv", { tt => [keys %ex] });
     die "could not retrieve normalization data from PanLex API: HTTP request failed" 
         unless $result;
     die "could not retrieve normalization data from PanLex API: $result->{error}" 
