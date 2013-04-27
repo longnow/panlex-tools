@@ -8,6 +8,8 @@ use LWP::UserAgent;
 use vars qw/@EXPORT/;
 @EXPORT = qw/panlex_query panlex_query_all/;
 
+$PanLex::ARRAY_MAX = 10000;
+
 my $API_URL = "http://api.panlex.org";
 
 # Send a query to the PanLex API at $url, with request body in $body.

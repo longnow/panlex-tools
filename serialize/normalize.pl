@@ -92,12 +92,8 @@ sub process {
         }
     }
 
-    my $result = panlex_query("/norm/$lv", { tt => [keys %ex], cache => 0 });
-    die "could not retrieve normalization data from PanLex API: HTTP request failed" 
-        unless $result;
-    die "could not retrieve normalization data from PanLex API: $result->{error}" 
-        unless $result->{status} eq 'OK';
-    
+    my $result = norm($lv, [keys %ex], 0);
+        
     while (my ($tt,$norm) = each %{$result->{norm}}) {
         # For each proposed expression that has a score and whose score is sufficient for
         # outright acceptance as an expression:
@@ -106,13 +102,11 @@ sub process {
         }
     }
 
-    $result = panlex_query("/norm/$lv", { tt => [keys %ex], degrade => 1, cache => 0 });
-    die "could not retrieve normalization data from PanLex API"
-        unless $result && $result->{status} eq 'OK';    
+    $result = norm($lv, [keys %ex], 1);
 
     my %ttto;
 
-    while (my ($tt,$norm) = each %{$result->{norm}}) {
+    while (my ($tt,$norm) = each %$result) {
         # For each proposed expression that is a highest-scoring expression in the variety with
         # its degradation and whose score is sufficient for acceptance as an expression:
         if ($norm->{score} >= $minscore_repl && defined $norm->{ttNorm}) {
@@ -237,6 +231,41 @@ sub process {
         # Output the line.
     }
 }
+
+#### norm
+# Iteratively query the PanLex api at /norm and return the results.
+# Arguments:
+#   0: variety UID.
+#   1: arrayref containing expression texts.
+#   2: degrade parameter (boolean).
+
+sub norm {
+    my ($lv, $tt, $degrade) = @_;
+    my $result = {};
+        
+    for (my $i = 0; $i < @$tt; $i += $PanLex::ARRAY_MAX) {
+        my $last = $i + $PanLex::ARRAY_MAX - 1;
+        $last = $#{$tt} if $last > $#{$tt};
+        
+        # get the next set of results.
+        my $this_result = panlex_query("/norm/$lv", { 
+            tt => [@{$tt}[$i .. $last]], 
+            degrade => $degrade,
+            cache => 0 
+        });
+        
+        die "could not retrieve normalization data from PanLex API: HTTP request failed" 
+            unless $this_result;
+        die "could not retrieve normalization data from PanLex API: $result->{error}" 
+            unless $this_result->{status} eq 'OK';
+        
+        # merge with the previous results, if any.
+        $result = { %$result, %{$this_result->{norm}} };
+    }
+    
+    return $result;
+}
+
 
 #### PsList
 # Return a list of items in the specified prefixed pseudo-list.
