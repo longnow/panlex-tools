@@ -94,7 +94,7 @@ sub process {
 
     my $result = norm($lv, [keys %ex], 0);
         
-    while (my ($tt,$norm) = each %{$result->{norm}}) {
+    while (my ($tt,$norm) = each %$result) {
         # For each proposed expression that has a score and whose score is sufficient for
         # outright acceptance as an expression:
         if ($norm->{score} >= $minscore) {
