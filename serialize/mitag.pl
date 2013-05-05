@@ -17,9 +17,9 @@ use utf8;
 use PanLex::Validation;
 
 sub process {
-    my ($in, $out, $micol, $mitag);
+    my ($in, $out, $micol, $mitag) = @_;
     
-    validate_col($mitag);
+    validate_col($micol);
 
     while (<$in>) {
     # For each line of the input file:

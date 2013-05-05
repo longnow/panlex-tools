@@ -19,7 +19,7 @@ use PanLex::Validation;
 sub process {
     my ($in, $out, $mdcol, $mdtag) = @_;
     
-    validate_col($mdtag);
+    validate_col($mdcol);
 
     while (<$in>) {
     # For each line of the input file:
