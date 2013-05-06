@@ -1,4 +1,6 @@
-# Converts a standard tagged source file to a full-text varilingual source file.
+# Converts a standard tagged source file to a full-text varilingual source file,
+# eliminating duplicates.
+
 # Arguments:
 #    0: word classification to annotate all expressions as that have no tagged wc,
 #        or blank if none.
@@ -23,99 +25,110 @@ use PanLex::Validation;
 $PanLex::Serialize::out_full_0::final = 1;
 
 sub process {
-    my ($in, $out, $wc, $mindf, $minex, @spec) = @_;
-    
-    die "invalid minimum count\n" if ($mindf < 2) || ($minex < 1);
-    # If either minimum count is too small, quit and notify the user.
 
-    print $out ":\n0\n";
-    # Output the file header.
+	my ($in, $out, $wc, $mindf, $minex, @spec) = @_;
 
-    my %col;
+	die "invalid minimum count\n" if ($mindf < 2) || ($minex < 1);
+	# If either minimum count is too small, quit and notify the user.
 
-    foreach my $i (@spec) {
-    # For each variety-specific column:
+	print $out ":\n0\n";
+	# Output the file header.
 
-        my @col = split /:/, $i;
-        # Identify its specification parts.
+	my (%col, %en);
 
-        validate_spec(@col);
+	foreach my $i (@spec) {
+	# For each variety-specific column:
 
-        $col{$col[0]} = $col[1];
-        # Add its index and variety UID to the table of variety-specific columns.
+		my @col = split /:/, $i;
+		# Identify its specification parts.
 
-    }
+		validate_spec(@col);
 
-    while (<$in>) {
-    # For each line of the input file:
+		$col{$col[0]} = $col[1];
+		# Add its index and variety UID to the table of variety-specific columns.
 
-        chomp;
-        # Delete its trailing newline.
+	}
 
-        my @col = split /\t/, $_, -1;
-        # Identify its columns.
+	while (<$in>) {
+	# For each line of the input file:
 
-        for (my $i = 0; $i < @col; $i++) {
-        # For each of them:
+		chomp;
+		# Delete its trailing newline.
 
-            if (exists $col{$i}) {
-            # If it is variety-specific:
+		my @col = split /\t/, $_, -1;
+		# Identify its columns.
 
-                $col[$i] =~ s/⫷ex⫸/⫷ex:$col{$i}⫸/g;
-                # Insert the column's variety UID into each expression tag in it.
+		for (my $i = 0; $i < @col; $i++) {
+		# For each of them:
 
-                $col[$i] =~ s/⫷df⫸/⫷df:$col{$i}⫸/g;
-                # Insert the column's variety UID into each definition tag in it.
+			if (exists $col{$i}) {
+			# If it is variety-specific:
 
-                $col[$i] =~ s/⫷dm⫸/⫷dm:$col{$i}⫸/g;
-                # Insert the column's variety UID into each domain tag in it.
+				$col[$i] =~ s/⫷ex⫸/⫷ex:$col{$i}⫸/g;
+				# Insert the column's variety UID into each expression tag in it.
 
-            }
+				$col[$i] =~ s/⫷df⫸/⫷df:$col{$i}⫸/g;
+				# Insert the column's variety UID into each definition tag in it.
 
-        }
+				$col[$i] =~ s/⫷dm⫸/⫷dm:$col{$i}⫸/g;
+				# Insert the column's variety UID into each domain tag in it.
 
-        my $en = join '', @col;
-        # Identify a concatenation of its modified columns.
+			}
 
-        $en =~ s/⫷exp⫸.+?(?=⫷ex:|⫷df|⫷dm|⫷mi|$)//g;
-        # Delete all deprecated (i.e. pre-normalized) expressions in it.
+		}
 
-        while ($en =~ s/(⫷df:[a-z]{3}-\d{3}⫸[^⫷]+)⫷(?:wc|md:[^⫸]+)⫸[^⫷]+/$1/) {}
-        # Delete all word classifications or metadata following definitions.
+		my $en = join '', @col;
+		# Identify a concatenation of its modified columns.
 
-        while ($en =~ s/((⫷(?:wc|md:[^⫸]+)⫸[^⫷⫸]+)(?:⫷(?:wc|md:[^⫸]+)⫸[^⫷⫸]+)*)\2(?=⫷|$)/$1/) {}
-        # Delete all duplicate wc and md elements of any ex element in it.
+		$en =~ s/⫷exp⫸.+?(?=⫷ex:|⫷df|⫷dm|⫷mi|$)//g;
+		# Delete all deprecated (i.e. pre-normalized) expressions in it.
 
-        while ($en =~ s/((⫷((?:df|dm):[^⫸]+)⫸[^⫷⫸]+)(?:⫷.+?)?)\2(?=⫷|$)/$1/) {}
-        # Delete all duplicate df and dm elements in it.
+		while ($en =~ s/(⫷df:[a-z]{3}-\d{3}⫸[^⫷]+)⫷(?:wc|md:[^⫸]+)⫸[^⫷]+/$1/) {}
+		# Delete all word classifications or metadata following definitions.
 
-        while ($en =~ s/((⫷ex:[^⫸]+⫸[^⫷⫸]+)(?:⫷.+?)?)\K\2(?:⫷(?:wc|md:[^⫸]+)⫸[^⫷⫸]+)*(?=⫷|$)//) {}
-        # Delete all duplicate ex elements in it.
+		while ($en =~ s/((⫷(?:wc|md:[^⫸]+)⫸[^⫷⫸]+)(?:⫷(?:wc|md:[^⫸]+)⫸[^⫷⫸]+)*)\2(?=⫷|$)/$1/) {}
+		# Delete all duplicate wc and md elements of any ex element in it.
 
-        my @exdf;
-        next if (
-            ((@exdf = ($en =~ /(⫷(?:ex|df):)/g)) < $mindf)
-            || ((@exdf = ($en =~ /(⫷ex:)/g)) < $minex)
-        );
-        # If the count of remaining expressions and definitions or the count of remaining
-        # expressions is smaller than the minimum, disregard the line.
+		while ($en =~ s/((⫷((?:df|dm):[^⫸]+)⫸[^⫷⫸]+)(?:⫷.+?)?)\2(?=⫷|$)/$1/) {}
+		# Delete all duplicate df and dm elements in it.
 
-        $en =~ s/⫷mi⫸/\nmi\n/g;
-        # Convert all meaning-identifier tags in it.
+		while ($en =~ s/((⫷ex:[^⫸]+⫸[^⫷⫸]+)(?:⫷.+?)?)\K\2(?:⫷(?:wc|md:[^⫸]+)⫸[^⫷⫸]+)*(?=⫷|$)//) {}
+		# Delete all duplicate ex elements in it.
 
-        $en =~ s/⫷(ex|df|dm):([a-z]{3}-\d{3})⫸/\n$1\n$2\n/g;
-        # Convert all expression, definition, and domain tags in it.
+		my @exdf;
 
-        $en =~ s/⫷wc⫸/\nwc\n/g;
-        # Convert all word-classification tags in it.
+		next if (
+			((@exdf = ($en =~ /(⫷(?:ex|df):)/g)) < $mindf)
+			|| ((@exdf = ($en =~ /(⫷ex:)/g)) < $minex)
+		);
+		# If the count of remaining expressions and definitions or the count of remaining
+		# expressions is smaller than the minimum, disregard the line.
 
-        $en =~ s/⫷md:(.+?)⫸/\nmd\n$1\n/g;
-        # Convert all metadatum tags in it.
+		$en =~ s/⫷mi⫸/\nmi\n/g;
+		# Convert all meaning-identifier tags in it.
 
-        print $out $en, "\n";
-        # Output the converted line.
+		$en =~ s/⫷(ex|df|dm):([a-z]{3}-\d{3})⫸/\n$1\n$2\n/g;
+		# Convert all expression, definition, and domain tags in it.
 
-    }    
+		$en =~ s/⫷wc⫸/\nwc\n/g;
+		# Convert all word-classification tags in it.
+
+		$en =~ s/⫷md:(.+?)⫸/\nmd\n$1\n/g;
+		# Convert all metadatum tags in it.
+
+		unless (exists $en{$en}) {
+		# If the converted line is not a duplicate:
+
+			$en{$en} = '';
+			# Add it to the table of lines.
+
+			print $out $en, "\n";
+			# Output it.
+
+		}
+
+	}
+
 }
 
 1;
