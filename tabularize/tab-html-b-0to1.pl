@@ -51,7 +51,7 @@ $all =~ s/>\K\s//g;
 $all =~ s/\n/ /g;
 # Convert all other newlines in it to spaces.
 
-my @tr = ($content =~ m%<tr>(.+?)</tr>%g);
+my @tr = ($all =~ m%<tr>(.+?)</tr>%g);
 # Identify a list of its tr elements.
 
 my @td;
