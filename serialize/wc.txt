@@ -82,6 +82,7 @@ misc	misc
 MOD	advb:MOD
 n	noun
 N	noun
+N.	noun
 n.	noun
 n:	noun
 na.	noun:na.
@@ -164,6 +165,7 @@ Suf.	affx:suffix
 suffix	affx:suffix
 svin.	verb:svin.
 TEMP	advb:TEMP
+temps.	advb:temps.
 tr	verb:tr
 tr.	verb:tr.
 TV	verb:TV
@@ -171,6 +173,7 @@ v.	verb
 v. aux.	auxv
 v	verb
 V	verb
+V.	verb
 V INCORP	verb:INCORP
 va.	auxv
 VAux.	auxv
