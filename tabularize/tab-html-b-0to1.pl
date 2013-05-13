@@ -54,7 +54,7 @@ $all =~ s/\n/ /g;
 my @tr = ($all =~ m%<tr>(.+?)</tr>%g);
 # Identify a list of its tr elements.
 
-my @td;
+my (@td, $tr);
 
 foreach $tr (@tr) {
 # For each of them:
