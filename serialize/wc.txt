@@ -1,8 +1,10 @@
 a	adjv
 Adj	adjv
+Adj.	adjv
 adj.	adjv
 adj	adjv
 ADJ	adjv
+Adj. poss.	adjv:poss.
 ADJECTIVE	adjv
 Adjective	adjv
 Adjectives	adjv
@@ -118,6 +120,7 @@ pcl	:pcl
 phr: v	verb:phr
 pn.	pron
 pos	pron:pos
+pos.	advb:pos.
 Posp.	post
 POST	post
 Post	post
@@ -129,6 +132,7 @@ preadv	prep:preadv
 prefix	affx:prefix
 prep	prep
 prep.	prep
+prép.	prep
 Preposition	prep
 prn	pron
 Pro	pron
@@ -152,6 +156,7 @@ prop n.	name
 prop.n.	name
 Proper Noun	name
 quant	detr:quant
+quant.	detr:quant.
 Quantifier	detr:Quantifier
 QT	detr:QT
 rel	conj:rel
@@ -161,7 +166,8 @@ sbd.	conj:sbd.
 sf.	noun:sf.
 sm.	noun:sm.
 spn	pron:spn
-Suf.	affx:suffix
+Suf.	affx:Suf.
+suf.	affx:suf.
 suffix	affx:suffix
 svin.	verb:svin.
 TEMP	advb:TEMP
