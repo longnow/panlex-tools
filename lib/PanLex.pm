@@ -27,6 +27,8 @@ sub panlex_query {
     
     my $ua = LWP::UserAgent->new;
     my $res = $ua->request($req);
+
+    my $content = $res->decoded_content;
     
     if ($content ne '') {
         eval { $content = decode_json($content) };
