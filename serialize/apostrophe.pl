@@ -31,10 +31,6 @@ sub process {
     }
     
     my $result = panlex_query_all('/lv', { uid => [keys %uid_col], include => 'cp' });
-    die "could not retrieve codepoint data from PanLex API: HTTP request failed" 
-        unless $result;
-    die "could not retrieve codepoint data from PanLex API: $result->{error}" 
-        unless $result->{status} eq 'OK';
     
     # Add data on the best apostrophe, making it U+02bc for varieties without any data on
     # editor-approved characters.

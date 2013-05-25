@@ -253,12 +253,7 @@ sub norm {
             degrade => $degrade,
             cache => 0 
         });
-        
-        die "could not retrieve normalization data from PanLex API: HTTP request failed" 
-            unless $this_result;
-        die "could not retrieve normalization data from PanLex API: $result->{error}" 
-            unless $this_result->{status} eq 'OK';
-        
+                
         # merge with the previous results, if any.
         $result = { %$result, %{$this_result->{norm}} };
     }
