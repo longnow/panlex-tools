@@ -54,7 +54,7 @@ sub process {
                 }
             } else {
                 if ($rq) {
-                    $best = "'" if !$ma;
+                    $best = "’" if !$ma;
                 } else {
                     $best = 'ʼ';
                 }
