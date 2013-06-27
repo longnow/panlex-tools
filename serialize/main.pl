@@ -222,7 +222,7 @@ for (my $i = 0; $i < @TOOLS; $i += 2) {
 
 $log->{time} = time();
 
-open my $fh, '>:utf8', 'log.json';
+open my $fh, '>:utf8', 'log.json' or die $!;
 print $fh JSON->new->pretty(1)->canonical(1)->encode($log);
 close $fh;
 

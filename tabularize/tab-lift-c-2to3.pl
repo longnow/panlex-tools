@@ -25,7 +25,7 @@ my $lcs = 'sbe';
 open my $in, '<:encoding(utf8)', "$BASENAME-$VERSION.txt";
 # Open the input file for reading.
 
-open my $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
+open my $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt') or die $!;
 # Create or truncate the output file and open it for writing.
 
 while (<$in>) {
