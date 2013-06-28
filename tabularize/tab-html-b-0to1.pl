@@ -15,7 +15,7 @@ use utf8;
 # Make Perl interpret the script as UTF-8.
 
 use HTML::Entities 'decode_entities';
-# Import subroutines to encode and decode HTML character entities.
+# Import subroutines to decode HTML character entities.
 
 #######################################################
 
@@ -39,10 +39,10 @@ my @all = <$in>;
 chomp @all;
 # Delete their trailing newlines.
 
-my $all = (decode_entities (join '', @all));
+my $all = decode_entities(join '', @all);
 # Identify their concatenation, with HTML entities decoded.
 
-$all =~ s/>\K\s//g;
+$all =~ s/>\K\s+//g;
 # Delete all whitespace characters immediately after right angle brackets in it.
 
 $all =~ s/\n/ /g;
