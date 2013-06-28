@@ -54,11 +54,11 @@ my @tr = ($all =~ m%<tr>(.+?)</tr>%g);
 foreach my $tr (@tr) {
 # For each of them:
 
- my @td = ($tr =~ m%<td.*?>([^<>]+?)<.*?/td>%g);
- # Identify a list of the first of its nonblank td elements’ innermost contents.
+    my @td = ($tr =~ m%<td.*?>([^<>]+?)<.*?/td>%g);
+    # Identify a list of the first of its nonblank td elements’ innermost contents.
 
- print $out join("\t", @td), "\n" if length(join('', @td));
- # Output it unless all elements of the list are blank.
+    print $out join("\t", @td), "\n" if length(join('', @td));
+    # Output it unless all elements of the list are blank.
 
 }
 
