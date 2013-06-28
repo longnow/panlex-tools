@@ -17,9 +17,6 @@ use utf8;
 use HTML::Entities 'decode_entities';
 # Import subroutines to encode and decode HTML character entities.
 
-require 'trim.pl';
-# Import a subroutine to trim excess spaces.
-
 #######################################################
 
 my $BASENAME = 'aaa-bbb-Author';
