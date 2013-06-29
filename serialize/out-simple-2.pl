@@ -17,7 +17,8 @@ use utf8;
 
 use PanLex::Validation;
 
-$PanLex::Serialize::out_simple_2::final = 1;
+our $final = 1;
+# Declare that this script produces a final source file.
 
 sub process {
     my ($in, $out, $lv1, $lv2) = @_;

@@ -22,7 +22,8 @@ use utf8;
 
 use PanLex::Validation;
 
-$PanLex::Serialize::out_full_0::final = 1;
+our $final = 1;
+# Declare that this script produces a final source file.
 
 sub process {
 
