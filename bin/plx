@@ -46,6 +46,7 @@ sub cmd_cp {
     foreach my $dir (
         ['serialize'], 
         ['serialize', 'sub'],
+        ['tabularize', 'util'], 
     ) {
         my $file = catfile($ENV{PANLEX_TOOLDIR}, @$dir, $tool);
         
@@ -56,13 +57,11 @@ sub cmd_cp {
     }
 
     foreach my $dir (
-        ['tabularize'], 
         ['tabularize', 'arabic'], 
         ['tabularize', 'html-curl'], 
         ['tabularize', 'lift'], 
         ['tabularize', 'main'], 
         ['tabularize', 'misc'], 
-        ['tabularize', 'util'], 
     ) {
         my $file = catfile($ENV{PANLEX_TOOLDIR}, @$dir, $tool);
 
