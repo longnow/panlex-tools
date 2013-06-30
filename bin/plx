@@ -19,57 +19,6 @@ if (exists &$cmd_sub) {
     usage();
 }
 
-sub cmd_fetch {
-    my ($source) = @_;
-    
-    print(STDERR "You need to specify a source label.\n"), return unless $source;
-    check_env(qw/PANLEX_SOURCEDIR/);
-    $source =~ s/:/-/g;
-    
-    foreach my $dir (qw/queued used incoming/) {
-        my $local_dir = catdir($ENV{PANLEX_SOURCEDIR}, $dir);
-        -d $local_dir || mkdir($local_dir);
-        chdir $local_dir;
-        
-        my $zip = $source . '.zip';
-        my $exit = shell_cmd(qw/curl -f -n --basic -o/, $zip, "http://dev.panlex.org/sources/zip/$dir/$source");
-        
-        if ($exit == 0) {
-            $exit = shell_cmd("unzip $zip");
-            $exit == 0 && shell_cmd(qw/rm -f/, $zip);
-            print STDERR "\nDownloaded '$source' from $dir directory.\n";
-            return;            
-        }
-    }
-    
-    print STDERR "\nCould not download '$source' from queued, used, or incoming directories.\n";
-}
-
-sub cmd_upload {
-    my ($source) = @_;
-    
-    print(STDERR "You need to specify a source label.\n"), return unless $source;
-    check_env(qw/PANLEX_SOURCEDIR/);
-    $source =~ s/:/-/g;
-
-    my $parent = catfile($ENV{PANLEX_SOURCEDIR}, 'queued');
-    my $dir = catfile($parent, $source);
-    print(STDERR "There is no directory $dir; cannot proceed.\n") unless -d $dir;
-    chdir $parent;
-    
-    my $zip = $source . '.zip';
-    my $exit = shell_cmd(qw/zip -r/, $zip, $source);
-    print(STDERR "Could not create $zip; cannot proceed."), return unless $exit == 0;
-    
-    $exit = shell_cmd(qw/curl -f -n --basic -F/, "zip=\@$zip;type=application/zip", 
-        "http://dev.panlex.org/sources/upload");
-    shell_cmd(qw/rm -f/, $zip);
-    
-    $exit == 0
-        ? print(STDERR "\nSuccessfully uploaded '$source' to incoming directory.\n")
-        : print(STDERR "\nUnable to upload '$source' to incoming directory.\n");
-}
-
 sub cmd_which {
     my ($source) = @_;
 
@@ -91,9 +40,12 @@ sub cmd_cp {
 
     $tool .= '.pl' unless $tool =~ /\./;
 
+    foreach my $dir (['serialize'], ['serialize', 'sub']) {
+        my $file = catfile($ENV{PANLEX_TOOLDIR}, @$dir, $tool);
+        copy($file, curdir()), return if -e $file;
+    }
+
     foreach my $dir (
-        ['serialize'], 
-        ['serialize', 'sub'], 
         ['tabularize'], 
         ['tabularize', 'arabic'], 
         ['tabularize', 'html'], 
@@ -117,10 +69,6 @@ Commands:
 
 cp <tool>
     copy panlex tool into the current directory
-fetch <source>
-    fetches a source from dev.panlex.org and puts it in PANLEX_SOURCEDIR
-upload <source>
-    uploads a local source in queued/ to incoming/ on dev.panlex.org
 which <source>
     prints the local directory for a source
     
@@ -128,12 +76,6 @@ Environment variables:
 
 PANLEX_SOURCEDIR    local directory containing sources
 PANLEX_TOOLDIR      local directory containing panlex-tools
-
-To use 'fetch' and 'upload', you need curl, zip/unzip, and a file ~/.netrc
-containing your login credentials, as follows:
-
-machine dev.panlex.org login <username> password <password>
-    
 EOF
 }
 
