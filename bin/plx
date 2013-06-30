@@ -51,9 +51,7 @@ sub cmd_cp {
         my $file = catfile($ENV{PANLEX_TOOLDIR}, @$dir, $tool);
         
         if (-e $file) {
-            copy($file, $sourcedir);
-            my $mode = (stat($file))[2] & 07777;
-            chmod $mode, $tool;
+            cp_file($file, $tool, $source);
             return;
         }
     }
@@ -68,23 +66,29 @@ sub cmd_cp {
         my $file = catfile($ENV{PANLEX_TOOLDIR}, @$dir, $tool);
 
         if (-e $file) {
-            open my $fd, '<:utf8', $file or die $!;
-            my $data = do { local $/; <$fd> };
-            close $fd;
-            
-            $data =~ s/aaa-bbb-Author/$source/;
-            
-            open $fd, '>:utf8', "${source}.${tool}" or die $!;
-            print $fd $data;
-            close $fd;
-            
-            my $mode = (stat($file))[2] & 07777;
-            chmod $mode, "${source}.${tool}";
+            cp_file($file, "${source}.${tool}", $source);
             return;
         }
     }
     
     print STDERR "could not find panlex tool $tool\n";
+}
+
+sub cp_file {
+    my ($source_file, $target_file, $source_label) = @_;
+
+    open my $fd, '<:utf8', $source_file or die $!;
+    my $data = do { local $/; <$fd> };
+    close $fd;
+    
+    $data =~ s/aaa-bbb-Author/$source_label/;
+    
+    open $fd, '>:utf8', $target_file or die $!;
+    print $fd $data;
+    close $fd;
+    
+    my $mode = (stat($source_file))[2] & 07777;
+    chmod $mode, $target_file;
 }
 
 sub usage {
