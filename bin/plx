@@ -3,7 +3,7 @@ use strict;
 no strict 'refs';
 use encoding 'utf8';
 
-use File::Spec::Functions;
+use File::Spec::Functions qw/catdir catfile curdir rel2abs splitdir/;
 use File::Copy qw/copy/;
 
 usage(), exit(0) unless @ARGV;
@@ -24,7 +24,7 @@ sub cmd_which {
 
     print(STDERR "You need to specify a source label.\n"), return unless $source;
     check_env(qw/PANLEX_SOURCEDIR/);
-    $source =~ s/:/-/g;
+    $source =~ tr/:/-/;
     
     foreach my $dir (qw/queued used/) {
         my $local_dir = catdir($ENV{PANLEX_SOURCEDIR}, $dir, $source);
@@ -40,22 +40,36 @@ sub cmd_cp {
 
     $tool .= '.pl' unless $tool =~ /\./;
 
-    foreach my $dir (['serialize'], ['serialize', 'sub']) {
+    my $curdir_path = rel2abs(curdir());
+    my $curdir = (splitdir($curdir_path))[-1];
+
+    foreach my $dir (
+        ['serialize'], 
+        ['serialize', 'sub'],
+    ) {
         my $file = catfile($ENV{PANLEX_TOOLDIR}, @$dir, $tool);
-        copy($file, curdir()), return if -e $file;
+        
+        if (-e $file) {
+            copy($file, $curdir_path);
+            return;
+        }
     }
 
     foreach my $dir (
         ['tabularize'], 
         ['tabularize', 'arabic'], 
-        ['tabularize', 'html'], 
+        ['tabularize', 'html-curl'], 
         ['tabularize', 'lift'], 
         ['tabularize', 'main'], 
         ['tabularize', 'misc'], 
         ['tabularize', 'util'], 
     ) {
         my $file = catfile($ENV{PANLEX_TOOLDIR}, @$dir, $tool);
-        copy($file, curdir()), return if -e $file;
+
+        if (-e $file) {
+            copy($file, catfile($curdir_path, "${curdir}.${tool}"));
+            return;
+        }
     }
     
     print STDERR "could not find panlex tool $tool\n";

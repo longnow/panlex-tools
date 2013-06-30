@@ -168,8 +168,7 @@ my @TOOLS = (
 
 ### DO NOT MODIFY BELOW THIS LINE ###
 
-use File::Spec::Functions;
-use Cwd;
+use File::Spec::Functions qw/catfile curdir rel2abs/;
 binmode STDOUT, ':utf8';
 
 print "\n";
@@ -186,7 +185,7 @@ my $log = { tools => \@TOOLS };
 
 if (-d $PANLEX_TOOLDIR) {    
     # get the panlex-tools revision.
-    my $pwd = cwd();
+    my $pwd = rel2abs(curdir());
     chdir $PANLEX_TOOLDIR;
     my $rev = `git rev-parse HEAD`;
     chomp $rev;
@@ -199,7 +198,7 @@ for (my $i = 0; $i < @TOOLS; $i += 2) {
 
     require $tool . '.pl';
     my $pkg = 'PanLex::Serialize::' . $tool;
-    $pkg =~ s/-/_/g;
+    $pkg =~ tr/-/_/;
 
     my $input = "$BASENAME-$VERSION.txt";
     die "could not find file $input" unless -e $input;
