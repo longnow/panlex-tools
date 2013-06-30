@@ -176,8 +176,8 @@ print "\n";
 die "odd number of items in \@TOOLS" unless @TOOLS % 2 == 0;
 
 foreach my $dir (grep { $_ && -d $_ } ($PANLEX_TOOLDIR, $ENV{PANLEX_TOOLDIR})) {
-    push @INC, catfile($dir,'serialize');    
-    push @INC, catfile($dir,'lib');    
+    push @INC, catfile($dir, 'serialize', 'sub');    
+    push @INC, catfile($dir, 'lib');    
 }
 
 $PANLEX_TOOLDIR ||= $ENV{PANLEX_TOOLDIR};
