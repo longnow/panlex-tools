@@ -68,13 +68,13 @@ sub cmd_cp {
         my $file = catfile($ENV{PANLEX_TOOLDIR}, @$dir, $tool);
 
         if (-e $file) {
-            open my $fd, '<:utf8', $file or die $1;
+            open my $fd, '<:utf8', $file or die $!;
             my $data = do { local $/; <$fd> };
             close $fd;
             
             $data =~ s/aaa-bbb-Author/$source/;
             
-            open $fd, '>:utf8', "${source}.${tool}" or die $1;
+            open $fd, '>:utf8', "${source}.${tool}" or die $!;
             print $fd $data;
             close $fd;
             
