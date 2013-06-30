@@ -91,8 +91,18 @@ sub cmd_cp {
 
     $tool .= '.pl' unless $tool =~ /\./;
 
-    foreach my $dir ('serialize', 'tabularize') {
-        my $file = catfile($ENV{PANLEX_TOOLDIR}, $dir, $tool);
+    foreach my $dir (
+        ['serialize'], 
+        ['serialize', 'sub'], 
+        ['tabularize'], 
+        ['tabularize', 'arabic'], 
+        ['tabularize', 'html'], 
+        ['tabularize', 'lift'], 
+        ['tabularize', 'main'], 
+        ['tabularize', 'misc'], 
+        ['tabularize', 'util'], 
+    ) {
+        my $file = catfile($ENV{PANLEX_TOOLDIR}, @$dir, $tool);
         copy($file, curdir()), return if -e $file;
     }
     
