@@ -33,12 +33,14 @@ sub cmd_which {
 }
 
 sub cmd_cp {
-    my ($tool) = @_;
+    my ($tool, $dest) = @_;
 
     print(STDERR "You need to specify a tool.\n"), return unless $tool;
     check_env(qw/PANLEX_TOOLDIR/);
 
+    $dest ||= $tool;
     $tool .= '.pl' unless $tool =~ /\./;
+    $dest .= '.pl' unless $dest =~ /\./;
 
     my $sourcedir = rel2abs(curdir());
 
@@ -59,7 +61,7 @@ sub cmd_cp {
         my $file = catfile($ENV{PANLEX_TOOLDIR}, @$dir, $tool);
         
         if (-e $file) {
-            cp_file($file, $tool, $source);
+            cp_file($file, $dest, $source);
             return;
         }
     }
@@ -74,7 +76,7 @@ sub cmd_cp {
         my $file = catfile($ENV{PANLEX_TOOLDIR}, @$dir, $tool);
 
         if (-e $file) {
-            cp_file($file, "${source}.${tool}", $source);
+            cp_file($file, "${source}.${dest}", $source);
             return;
         }
     }
