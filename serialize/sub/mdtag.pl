@@ -30,7 +30,7 @@ sub process {
         my @col = split /\t/, $_, -1;
         # Identify its columns.
 
-        die "column $mdcol not present in line: $_" unless defined $col[$mdcol];
+        die "column $mdcol not present in line" unless defined $col[$mdcol];
 
         $col[$mdcol] = "$mdtag$col[$mdcol]" if length $col[$mdcol];
         # Prefix a meaning-identifier tag to the meaning-identifier column's content,

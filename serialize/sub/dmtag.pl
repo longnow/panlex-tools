@@ -31,7 +31,7 @@ sub process {
         foreach my $i (@dmcol) {
         # For each domain-expression column:
 
-            die "column $i not present in line: $_" unless defined $col[$i];
+            die "column $i not present in line" unless defined $col[$i];
 
             if (length $exdelim) {
             # If there is an inter-expression delimiter:

@@ -66,7 +66,7 @@ sub process {
         my @col = split /\t/, $line, -1;
         # Identify its columns.
 
-        die "column $excol not present in line: $_" unless defined $col[$excol];
+        die "column $excol not present in line" unless defined $col[$excol];
 
         if (length $col[$excol]) {
         # If the column containing proposed expressions is nonblank:

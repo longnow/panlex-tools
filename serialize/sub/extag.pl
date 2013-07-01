@@ -35,8 +35,8 @@ sub process {
 
         foreach my $i (@excol) {
         # For each expression column:
-
-            die "column $i not present in line: $_" unless defined $col[$i];
+            
+            die "column $i not present in line unless defined $col[$i];
 
             $col[$i] =~ s/$exdelim/$extag/og if length $exdelim;
             # Convert each expression delimiter in it to an expression tag, if expression

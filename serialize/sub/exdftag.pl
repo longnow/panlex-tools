@@ -50,7 +50,7 @@ sub process {
         # For each of them that may contain expressions with embedded definitions or
         # expressions classifiable as definitions:
 
-            die "column $i not present in line: $_" unless defined $col[$i];
+            die "column $i not present in line" unless defined $col[$i];
 
             if (length $df_re) {
             # If there is a criterion for definitional substrings:

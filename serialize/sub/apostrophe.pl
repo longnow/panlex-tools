@@ -78,7 +78,7 @@ sub process {
             foreach my $i (@pcol) {
             # For each column to be processed:
 
-                die "column $i not present in line: $_" unless defined $col[$i];
+                die "column $i not present in line" unless defined $col[$i];
 
                 if (index($col[$i], "'") > -1) {
                 # If it contains any apostrophes:

@@ -32,7 +32,7 @@ sub process {
         my @col = split /\t/, $_, -1;
         # Identify its columns.
 
-        die "column $mncol not present in line: $_" unless defined $col[$mncol];
+        die "column $mncol not present in line" unless defined $col[$mncol];
 
         if (index($col[$mncol], $mndelim) < 0) {
         # If the potentially multimeaning column is one-meaning:

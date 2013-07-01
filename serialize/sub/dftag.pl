@@ -33,7 +33,7 @@ sub process {
         foreach my $i (@dfcol) {
         # For each definition column:
 
-            die "column $i not present in line: $_" unless defined $col[$i];
+            die "column $i not present in line" unless defined $col[$i];
 
             $col[$i] = "$dftag$col[$i]" if length $col[$i];
             # Prefix a definition tag to the column, if not blank.
