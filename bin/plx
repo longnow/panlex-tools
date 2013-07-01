@@ -41,7 +41,15 @@ sub cmd_cp {
     $tool .= '.pl' unless $tool =~ /\./;
 
     my $sourcedir = rel2abs(curdir());
-    my $source = (splitdir($sourcedir))[-1];
+
+    my $source;
+    foreach my $dir (reverse splitdir($sourcedir)) {
+        if ($dir =~ /^[a-z]{3}-/) {
+            $source = $dir;
+            last;
+        }
+    }
+    $source ||= 'aaa-bbb-Author';
 
     foreach my $dir (
         ['serialize'], 
