@@ -53,11 +53,7 @@ sub cmd_cp {
     }
     $source ||= 'aaa-bbb-Author';
 
-    foreach my $dir (
-        ['serialize'], 
-        ['serialize', 'sub'],
-        ['tabularize', 'util'], 
-    ) {
+    foreach my $dir ( ['serialize'], ['serialize', 'sub'], ['tabularize', 'util'] ) {
         my $file = catfile($ENV{PANLEX_TOOLDIR}, @$dir, $tool);
         
         if (-e $file) {
@@ -66,19 +62,11 @@ sub cmd_cp {
         }
     }
 
-    foreach my $dir (
-        ['tabularize', 'arabic'], 
-        ['tabularize', 'html-curl'], 
-        ['tabularize', 'lift'], 
-        ['tabularize', 'main'], 
-        ['tabularize', 'misc'], 
-    ) {
-        my $file = catfile($ENV{PANLEX_TOOLDIR}, @$dir, $tool);
-
-        if (-e $file) {
-            cp_file($file, "${source}.${dest}", $source);
-            return;
-        }
+    my @tabularize = glob(catfile($ENV{PANLEX_TOOLDIR}, 'tabularize', '*', $tool));
+    
+    if (@tabularize) {
+        cp_file($tabularize[0], "${source}.${dest}", $source);
+        return;
     }
     
     print STDERR "could not find panlex tool $tool\n";
