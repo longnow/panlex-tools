@@ -31,10 +31,11 @@ sub process {
         # Identify its columns.
 
         die "column $mdcol not present in line" unless defined $col[$mdcol];
+        # If the specified column does not exist or has an undefined value, quit and
+        # report the error.
 
         $col[$mdcol] = "$mdtag$col[$mdcol]" if length $col[$mdcol];
-        # Prefix a meaning-identifier tag to the meaning-identifier column's content,
-        # if not blank.
+        # Prefix a metadatum tag to the metadatum column's content, if not blank.
 
         print $out join("\t", @col), "\n";
         # Output the line.
