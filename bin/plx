@@ -19,19 +19,6 @@ if (exists &$cmd_sub) {
     usage();
 }
 
-sub cmd_which {
-    my ($source) = @_;
-
-    print(STDERR "You need to specify a source label.\n"), return unless $source;
-    check_env(qw/PANLEX_SOURCEDIR/);
-    $source =~ tr/:/-/;
-    
-    foreach my $dir (qw/queued used/) {
-        my $local_dir = catdir($ENV{PANLEX_SOURCEDIR}, $dir, $source);
-        print ($local_dir, "\n"), return if -d $local_dir;
-    }
-}
-
 sub cmd_cp {
     my ($tool, $dest) = @_;
 
@@ -97,12 +84,9 @@ Commands:
 
 cp <tool>
     copy panlex tool into the current directory
-which <source>
-    prints the local directory for a source
     
 Environment variables:
 
-PANLEX_SOURCEDIR    local directory containing sources
 PANLEX_TOOLDIR      local directory containing panlex-tools
 EOF
 }
