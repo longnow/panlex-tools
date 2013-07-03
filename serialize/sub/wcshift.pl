@@ -3,11 +3,11 @@
 # tab-delimited source file.
 # Arguments:
 #   col:      column containing prepended word class specifications.
-#   pretag:   start of word-class specification; default '⫷wc:'.
-#   posttag:  end of word-class specification; default '⫸'.
-#   wctag:    word-classification tag; default '⫷wc⫸'.
-#   extag:    expression tag; default '⫷ex⫸'.
-#   postre:   regex matching any post-tag character; default '[^⫷]'.
+#   pretag:   start of word-class specification. default '⫷wc:'.
+#   posttag:  end of word-class specification. default '⫸'.
+#   wctag:    word-classification tag. default '⫷wc⫸'.
+#   extag:    expression tag. default '⫷ex⫸'.
+#   postre:   regex matching any post-tag character. default '[^⫷]'.
 
 package PanLex::Serialize::wcshift;
 

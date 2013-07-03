@@ -1,7 +1,7 @@
 # Tags all column-based definitions in a tab-delimited source file.
 # Arguments:
-#   cols:   columns containing definitions.
-#   dftag:  definition tag; default '⫷df⫸'.
+#   cols:   array of columns containing definitions.
+#   dftag:  definition tag. default '⫷df⫸'.
 
 package PanLex::Serialize::dftag;
 

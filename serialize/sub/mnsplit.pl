@@ -2,7 +2,7 @@
 # output lines.
 # Arguments:
 #   col:    column that may contain multiple meanings.
-#   delim:  meaning-delimitation tag; default '⫷mn⫸'.
+#   delim:  meaning-delimitation tag. default '⫷mn⫸'.
 
 package PanLex::Serialize::mnsplit;
 

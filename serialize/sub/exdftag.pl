@@ -6,17 +6,17 @@
 #   re:       regex matching a definitional part of an expression, or '' if none.
 #   subre:    regex matching any substring forcing an expression to be
 #               reclassified as a definition, or '' if none.
-#   maxchar:  maximum character count permitted in an expression, or '' if none;
+#   maxchar:  maximum character count permitted in an expression, or '' if none.
 #               default ''. example: 25.
-#   maxword:  maximum word count permitted in an expression, or '' if none;
+#   maxword:  maximum word count permitted in an expression, or '' if none.
 #               default ''. example: 3.
-#   extag:    expression tag; default '⫷ex⫸'.
-#   dftag:    definition tag; default '⫷df⫸'.
-#   postre:   regex matching any post-tag character; default '[^⫷]'.
+#   extag:    expression tag. default '⫷ex⫸'.
+#   dftag:    definition tag. default '⫷df⫸'.
+#   postre:   regex matching any post-tag character. default '[^⫷]'.
 #   postwre:  regex matching any post-tag character that is not a space;
 #               default '[^⫷ ]'.
 #   prere:    regex matching a preposed annotation not to be counted, or '' if
-#               none; default '⫷[^⫷⫸]+⫸'.
+#               none. default '⫷[^⫷⫸]+⫸'.
 
 package PanLex::Serialize::exdftag;
 

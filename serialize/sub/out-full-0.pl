@@ -5,9 +5,9 @@
 #             specifications.
 #   mindf:  minimum count (2 or more) of definitions and expressions per entry;
 #             default 2.
-#   minex:  minimum count (1 or more) of expressions per entry; default 2.
+#   minex:  minimum count (1 or more) of expressions per entry. default 2.
 #   wc:     word classification to annotate all expressions as that have no 
-#             tagged wc, or '' if none; default ''.
+#             tagged wc, or '' if none. default ''.
 
 package PanLex::Serialize::out_full_0;
 
