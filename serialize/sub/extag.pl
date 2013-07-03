@@ -20,8 +20,14 @@ use utf8;
 
 use PanLex::Validation;
 
-sub process {
-    my ($in, $out, $exdelim, $mndelim, $extag, $mntag, @excol) = @_;
+sub process { 
+    my ($in, $out, $args) = @_;
+    
+    my @excol   = @{$args->{cols}||[]};
+    my $exdelim = $args->{ex} || '‣';
+    my $mndelim = $args->{mn} || '⁋';
+    my $extag   = $args->{extag} || '⫷ex⫸';
+    my $mntag   = $args->{mntag} || '⫷mn⫸';
     
     validate_col($_) for (@excol);
 
