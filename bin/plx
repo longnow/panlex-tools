@@ -40,7 +40,7 @@ sub cmd_cp {
     }
     $source ||= 'aaa-bbb-Author';
 
-    foreach my $dir ( ['serialize'], ['serialize', 'sub'], ['tabularize', 'util'] ) {
+    foreach my $dir ( ['serialize'], ['serialize', 'sub'], ['serialize', 'data'], ['tabularize', 'util'] ) {
         my $file = catfile($ENV{PANLEX_TOOLDIR}, @$dir, $tool);
         
         if (-e $file) {
