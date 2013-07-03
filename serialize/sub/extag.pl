@@ -26,7 +26,7 @@ sub process {
     validate_cols($args->{cols});
     
     my @excol   = @{$args->{cols}};
-    my $exdelim = defined $args->{exdelim} ? $args->{exdelim} : '‣';
+    my $syndelim = defined $args->{syndelim} ? $args->{syndelim} : '‣';
     my $mndelim = defined $args->{mndelim} ? $args->{mndelim} : '⁋';
     my $extag   = defined $args->{extag} ? $args->{extag} : '⫷ex⫸';
     my $mntag   = defined $args->{mntag} ? $args->{mntag} :  '⫷mn⫸';
@@ -44,7 +44,7 @@ sub process {
             
             die "column $i not present in line" unless defined $col[$i];
 
-            $col[$i] =~ s/$exdelim/$extag/og if length $exdelim;
+            $col[$i] =~ s/$syndelim/$extag/og if length $syndelim;
             # Convert each expression delimiter in it to an expression tag, if expression
             # delimiters exist.
 
