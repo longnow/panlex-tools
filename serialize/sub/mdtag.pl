@@ -18,13 +18,11 @@ use PanLex::Validation;
 
 sub process {
     my ($in, $out, $args) = @_;
-    
-    validate_hash($args);
-    
+        
+    validate_col($args->{col});
+
     my $mdcol   = $args->{col};
     my $mdtag   = defined $args->{mdtag} ? $args->{mdtag} : '⫷md:gram⫸';
-
-    validate_col($mdcol);
 
     while (<$in>) {
     # For each line of the input file:

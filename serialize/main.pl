@@ -15,11 +15,11 @@ my $PANLEX_TOOLDIR;
 
 my @TOOLS = (
     
-#'apostrophe'   => [ '1:gyd-000', '3:nny-000', '5:eng-000' ],
+#'apostrophe'   => { specs => ['1:gyd-000', '3:nny-000', '5:eng-000'] },
 # Converts a tab-delimited source file's apostrophes.
 # Arguments:
-#   0+: specifications (column index and variety UID, colon-delimited) of 
-#         columns possibly requiring apostrophe normalization.
+#   specs:  specifications (column index and variety UID, colon-delimited) of 
+#             columns possibly requiring apostrophe normalization.
 
 #'extag'        => { cols => [0, 1] },
 # Tags all expressions and all intra-column meaning changes in a tab-delimited 

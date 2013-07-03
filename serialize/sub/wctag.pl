@@ -22,13 +22,11 @@ use File::Basename;
 sub process {
     my ($in, $out, $args) = @_;
     
-    validate_hash($args);
+    validate_col($args->{col});
     
     my $wccol   = $args->{col};
     my $wctag   = defined $args->{wctag} ? $args->{wctag} : '⫷wc⫸';
     my $mdtag   = defined $args->{mdtag} ? $args->{mdtag} : '⫷md:gram⫸';
-
-    validate_col($wccol);
 
     open my $wc, '<:utf8', catfile(dirname(__FILE__), '..', 'data', 'wc.txt') or die $!;
     # Open the wc file for reading.

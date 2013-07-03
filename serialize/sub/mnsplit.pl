@@ -19,12 +19,10 @@ use PanLex::Validation;
 sub process {
     my ($in, $out, $args) = @_;
 
-    validate_hash($args);
+    validate_col($args->{col});
 
     my $mncol   = $args->{col};
     my $delim   = defined $args->{delim} ? $args->{delim} : '⫷mn⫸';
-
-    validate_col($mncol);
 
     my %line;    
 

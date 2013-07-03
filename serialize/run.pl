@@ -1,6 +1,7 @@
 use strict;
 use JSON;
 use File::Spec::Functions qw/catfile curdir rel2abs/;
+use PanLex::Validation;
 binmode STDOUT, ':utf8';
 
 sub run {
@@ -24,6 +25,8 @@ sub run {
 
     for (my $i = 0; $i < @TOOLS; $i += 2) {
         my ($tool, $args) = @TOOLS[$i, $i+1];
+
+        validate_hash($args);
 
         my $tool_path = catfile('sub', $tool . '.pl');
         require $tool_path;

@@ -19,7 +19,6 @@ use PanLex::Validation;
 sub process {
     my ($in, $out, $args) = @_;
 
-    validate_hash($args);
     validate_cols($args->{cols});
 
     my @dfcol   = @{$args->{cols}};

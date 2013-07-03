@@ -20,13 +20,12 @@ use PanLex::Validation;
 sub process {
     my ($in, $out, $args) = @_;
 
-    validate_array($args);
+    validate_specs($args->{specs});
 
     my (@pcol, %uid_col, %apos);
     
-    foreach my $spec (@$args) {
+    foreach my $spec (@{$args->{specs}}) {
         my ($col, $uid) = split /:/, $spec;
-        validate_spec($col, $uid);
         $col = int($col);
         push @pcol, $col;
         $uid_col{$uid} = $col;

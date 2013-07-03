@@ -24,7 +24,7 @@ use PanLex::Validation;
 sub process {
     my ($in, $out, $args) = @_;
     
-    validate_hash($args);
+    validate_col($args->{col});
 
     my $wccol   = $args->{col};
     my $pretag  = defined $args->{pretag} ? $args->{pretag} : '⫷wc:';
@@ -33,8 +33,6 @@ sub process {
     my $extag   = defined $args->{extag} ? $args->{extag} : '⫷ex⫸';
     my $postre  = defined $args->{postre} ? $args->{postre} : '[^⫷]';
     
-    validate_col($wccol);
-
     while (<$in>) {
     # For each line of the input file:
 

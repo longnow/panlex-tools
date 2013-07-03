@@ -38,9 +38,10 @@ use Unicode::Normalize;
 
 sub process {
     my ($in, $out, $args) = @_;
-
-    validate_hash($args);
     
+    validate_col($args->{col});
+    validate_uid($args->{uid});
+
     my $excol   = $args->{col};
     my $uid     = $args->{uid};
     my $min     = $args->{min};
@@ -54,10 +55,7 @@ sub process {
     foreach my $score ($min, $mindeg) {
         die "invalid minimum score" unless valid_int($score) && $score >= 0;
     }
-    
-    validate_col($excol);
-    validate_uid($uid);
-    
+        
     my (%ex, %exok);
 
     my $lentag = length $extag;
