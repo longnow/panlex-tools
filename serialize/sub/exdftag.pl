@@ -34,8 +34,8 @@ sub process {
     validate_cols($args->{cols});
 
     my @exdfcol = @{$args->{cols}};
-    my $re      = defined $args->{re} ? $args->{re} : '(?:\([^()]+\)|（[^（）]+）)';
-    my $subre   = defined $args->{subre} ? $args->{subre} : '[][/,;?!~]';
+    my $re      = defined $args->{re} ? $args->{re} : '';
+    my $subre   = defined $args->{subre} ? $args->{subre} : '';
     my $tmc     = defined $args->{maxchar} ? $args->{maxchar} : '';
     my $tmw     = defined $args->{maxword} ? $args->{maxword} : '';
     my $extag   = defined $args->{extag} ? $args->{extag} : '⫷ex⫸';

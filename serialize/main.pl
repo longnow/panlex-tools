@@ -31,17 +31,15 @@ my @TOOLS = (
 #   extag:    expression tag; default '⫷ex⫸'.
 #   mntag:    meaning tag; default '⫷mn⫸'.
 
-#'exdftag'      => { cols => [0, 1] },
+#'exdftag'      => { cols => [0, 1], re => '(?:\([^()]+\)|（[^（）]+）)', subre => '[][/,;?!~]' },
 # Splits definitional expressions into reduced expressions and definitions in 
 # a source file with already-tagged expressions and tags the added definitions.
 # Arguments:
 #   cols:     array of columns containing expressions that may contain 
 #               definitional parts.
-#   re:       regex matching a definitional part of an expression; default
-#               '(?:\([^()]+\)|（[^（）]+）)'.
+#   re:       regex matching a definitional part of an expression, or '' if none.
 #   subre:    regex matching any substring forcing an expression to be
-#               reclassified as a definition, or '' if none; default
-#               '[][/,;?!~]'.
+#               reclassified as a definition, or '' if none.
 #   maxchar:  maximum character count permitted in an expression, or '' if none;
 #               default ''. example: 25.
 #   maxword:  maximum word count permitted in an expression, or '' if none;
