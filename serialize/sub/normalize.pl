@@ -14,10 +14,10 @@
 #             and not having replacements accepted as expressions are to be
 #             converted to definitions; '' (blank) if they are to be converted
 #             to pre-normalized expressions. default '⫷df⫸'.
-#   delim:  regular expression matching the synonym delimiter if each proposed
-#             expression containing such a delimiter is to be treated as a list
-#             of synonymous proposed expressions and they are to be normalized
-#             if and only if all expressions in the list are normalizable; or ''
+#   delim:  regex matching the synonym delimiter if each proposed expression
+#             containing such a delimiter is to be treated as a list of
+#             synonymous proposed expressions and they are to be normalized if
+#             and only if all expressions in the list are normalizable; or ''
 #             (blank) if not. default ''. example: ', '.
 #   extag:  expression tag. default '⫷ex⫸'.
 #   exptag: pre-normalized expression tag. default '⫷exp⫸'.
