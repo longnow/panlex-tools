@@ -22,7 +22,16 @@ use utf8;
 use PanLex::Validation;
 
 sub process {
-    my ($in, $out, $wccol, $wcstart, $wcend, $wctag, $extag, $post) = @_;
+    my ($in, $out, $args) = @_;
+    
+    validate_hash($args);
+
+    my $wccol   = $args->{col};
+    my $pretag  = defined $args->{pretag} ? $args->{pretag} : '⫷wc:';
+    my $posttag = defined $args->{posttag} ? $args->{posttag} : '⫸';
+    my $wctag   = defined $args->{wctag} ? $args->{wctag} : '⫷wc⫸';
+    my $extag   = defined $args->{extag} ? $args->{extag} : '⫷ex⫸';
+    my $postre  = defined $args->{postre} ? $args->{postre} : '[^⫷]';
     
     validate_col($wccol);
 
@@ -32,13 +41,13 @@ sub process {
         chomp;
         # Delete its trailing newline.
 
-        @col = split /\t/, $_, -1;
+        my @col = split /\t/, $_, -1;
         # Identify its columns.
 
-        $col[$wccol] =~ s/$extag$wcstart(.+?)$wcend($post+)/$extag$2$wctag$1/g;
+        $col[$wccol] =~ s/$extag$pretag(.+?)$posttag($postre+)/$extag$2$wctag$1/g;
         # Replace all word class specifications prepended to expressions with post-ex wc tags.
 
-        $col[$wccol] =~ s/$wcstart(.+?)$wcend//g;
+        $col[$wccol] =~ s/$pretag(.+?)$posttag//g;
         # Delete all other word class specifications, including those prepended to definitions.
 
         print $out join("\t", @col), "\n";

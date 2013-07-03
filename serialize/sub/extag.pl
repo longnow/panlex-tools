@@ -23,14 +23,15 @@ use PanLex::Validation;
 sub process { 
     my ($in, $out, $args) = @_;
     
-    my @excol   = @{$args->{cols}||[]};
-    my $exdelim = $args->{ex} || '‣';
-    my $mndelim = $args->{mn} || '⁋';
-    my $extag   = $args->{extag} || '⫷ex⫸';
-    my $mntag   = $args->{mntag} || '⫷mn⫸';
+    validate_hash($args);
+    validate_cols($args->{cols});
     
-    validate_col($_) for (@excol);
-
+    my @excol   = @{$args->{cols}};
+    my $exdelim = defined $args->{exdelim} ? $args->{exdelim} : '‣';
+    my $mndelim = defined $args->{mndelim} ? $args->{mndelim} : '⁋';
+    my $extag   = defined $args->{extag} ? $args->{extag} : '⫷ex⫸';
+    my $mntag   = defined $args->{mntag} ? $args->{mntag} :  '⫷mn⫸';
+    
     # For each line of the input file:
     while (<$in>) {
         chomp;

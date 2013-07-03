@@ -17,7 +17,12 @@ use utf8;
 use PanLex::Validation;
 
 sub process {
-    my ($in, $out, $micol, $mitag) = @_;
+    my ($in, $out, $args) = @_;
+    
+    validate_hash($args);
+    
+    my $micol   = $args->{col};
+    my $mitag   = defined $args->{mitag} ? $args->{mitag} : '⫷mi⫸';
     
     validate_col($micol);
 

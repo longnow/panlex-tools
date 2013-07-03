@@ -20,8 +20,14 @@ use File::Spec::Functions;
 use File::Basename;
 
 sub process {
-    my ($in, $out, $wccol, $wctag, $mdtag) = @_;
+    my ($in, $out, $args) = @_;
     
+    validate_hash($args);
+    
+    my $wccol   = $args->{col};
+    my $wctag   = defined $args->{wctag} ? $args->{wctag} : '⫷wc⫸';
+    my $mdtag   = defined $args->{mdtag} ? $args->{mdtag} : '⫷md:gram⫸';
+
     validate_col($wccol);
 
     open my $wc, '<:utf8', catfile(dirname(__FILE__), '..', 'data', 'wc.txt') or die $!;

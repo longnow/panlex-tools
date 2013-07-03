@@ -44,11 +44,7 @@ sub run {
 
         printf "%-13s %s => %s\n", $tool.':', $input, $output;
 
-        if (ref $args eq 'HASH') {
-          $pkg->can('process')->($in, $out, $args);      
-        } else {
-          $pkg->can('process')->($in, $out, @$args);      
-        }
+        $pkg->can('process')->($in, $out, $args);      
 
         close $in;
         close $out;

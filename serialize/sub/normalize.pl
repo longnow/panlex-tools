@@ -37,14 +37,26 @@ use Unicode::Normalize;
 # Import the Unicode normalization module.
 
 sub process {
-    my ($in, $out, $tag, $extag, $excol, $minscore, $minscore_repl, $lv, $prenormtag, $dftag, $syndelim) = @_;
+    my ($in, $out, $args) = @_;
 
-    foreach my $score ($minscore, $minscore_repl) {
+    validate_hash($args);
+    
+    my $excol   = $args->{col};
+    my $uid     = $args->{uid};
+    my $min     = $args->{min};
+    my $mindeg  = $args->{mindeg};
+    my $dftag   = defined $args->{dftag} ? $args->{dftag} : '⫷df⫸';
+    my $delim   = defined $args->{delim} ? $args->{delim} : '';
+    my $extag   = defined $args->{extag} ? $args->{extag} : '⫷ex⫸';
+    my $exptag  = defined $args->{exptag} ? $args->{exptag} : '⫷exp⫸';
+    my $tagre   = defined $args->{tagre} ? $args->{tagre} : '⫷[a-z:]+⫸';
+
+    foreach my $score ($min, $mindeg) {
         die "invalid minimum score" unless valid_int($score) && $score >= 0;
     }
     
     validate_col($excol);
-    validate_uid($lv);
+    validate_uid($uid);
     
     my (%ex, %exok);
 
@@ -71,7 +83,7 @@ sub process {
         if (length $col[$excol]) {
         # If the column containing proposed expressions is nonblank:
 
-            my @seg = ($col[$excol] =~ /($tag.+?(?=$tag|$))/go);
+            my @seg = ($col[$excol] =~ /($tagre.+?(?=$tagre|$))/go);
             # Identify the tagged items, including tags, in it.
 
             foreach my $seg (@seg) {
@@ -80,7 +92,7 @@ sub process {
                 if (index($seg, $extag) == 0) {
                 # If it is tagged as an expression:
 
-                    foreach my $ex (PsList($seg, $lentag, $syndelim)) {
+                    foreach my $ex (PsList($seg, $lentag, $delim)) {
                     # For the expression, or for each expression if it is a pseudo-list:
 
                         $ex{$ex} = '';
@@ -92,24 +104,24 @@ sub process {
         }
     }
 
-    my $result = norm($lv, [keys %ex], 0);
+    my $result = norm($uid, [keys %ex], 0);
         
     while (my ($tt,$norm) = each %$result) {
         # For each proposed expression that has a score and whose score is sufficient for
         # outright acceptance as an expression:
-        if ($norm->{score} >= $minscore) {
+        if ($norm->{score} >= $min) {
             $exok{$tt} = delete $ex{$tt};
         }
     }
 
-    $result = norm($lv, [keys %ex], 1);
+    $result = norm($uid, [keys %ex], 1);
 
     my %ttto;
 
     while (my ($tt,$norm) = each %$result) {
         # For each proposed expression that is a highest-scoring expression in the variety with
         # its degradation and whose score is sufficient for acceptance as an expression:
-        if ($norm->{score} >= $minscore_repl && defined $norm->{ttNorm}) {
+        if ($norm->{score} >= $mindeg && defined $norm->{ttNorm}) {
             if ($tt eq $norm->{ttNorm}) {
                 $exok{$tt} = '';
             } else {
@@ -127,7 +139,7 @@ sub process {
         if (length $col[$excol]) {
         # If the column containing proposed expressions is nonblank:
 
-            my @seg = ($col[$excol] =~ m/($tag.+?(?=$tag|$))/go);
+            my @seg = ($col[$excol] =~ m/($tagre.+?(?=$tagre|$))/go);
             # Identify the tagged items, including tags, in it.
 
             foreach my $seg (@seg) {
@@ -140,7 +152,7 @@ sub process {
                     # Initialize the list's elements as all classifiable as
                     # expressions.
 
-                    my @ex = PsList($seg, $lentag, $syndelim);
+                    my @ex = PsList($seg, $lentag, $delim);
                     
                     foreach my $ex (@ex) {
                     # Identify the expression, or a list of the expressions in it if
@@ -185,7 +197,7 @@ sub process {
                             # Otherwise, i.e. if it is classifiable as an
                             # expression only after replacement:
 
-                                $seg .= "$prenormtag$ex$extag$ttto{$ex}";
+                                $seg .= "$exptag$ex$extag$ttto{$ex}";
                                 # Append it, with a pre-normalized
                                 # expression tag, and its replacement, with
                                 # an expression tag, to the item.
@@ -197,7 +209,7 @@ sub process {
                     # Otherwise, i.e. if not all elements of the list are classifiable
                     # as expressions with or without replacement:
 
-                        $seg = join($syndelim, @ex);
+                        $seg = join($delim, @ex);
                         # Identify the concatenation of the list's elements, with
                         # the specified delimiter if any, i.e. the original item
                         # without its expression tag.
@@ -214,7 +226,7 @@ sub process {
                         # Otherwise, i.e. if such proposed expressions are not
                         # to be converted to definitions:
 
-                            $seg = "$prenormtag$seg";
+                            $seg = "$exptag$seg";
                             # Prepend a pre-normalized expression tag to the
                             # concatenation.
                         }
@@ -240,7 +252,7 @@ sub process {
 #   2: degrade parameter (boolean).
 
 sub norm {
-    my ($lv, $tt, $degrade) = @_;
+    my ($uid, $tt, $degrade) = @_;
     my $result = {};
         
     for (my $i = 0; $i < @$tt; $i += $PanLex::ARRAY_MAX) {
@@ -248,7 +260,7 @@ sub norm {
         $last = $#{$tt} if $last > $#{$tt};
         
         # get the next set of results.
-        my $this_result = panlex_query("/norm/$lv", { 
+        my $this_result = panlex_query("/norm/$uid", { 
             tt => [@{$tt}[$i .. $last]], 
             degrade => $degrade,
             cache => 0 

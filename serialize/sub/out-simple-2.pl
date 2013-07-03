@@ -21,12 +21,12 @@ our $final = 1;
 # Declare that this script produces a final source file.
 
 sub process {
-    my ($in, $out, $lv1, $lv2) = @_;
+    my ($in, $out, $args) = @_;
     
-    validate_uid($lv1);
-    validate_uid($lv2);
+    validate_array($args);
+    validate_uid($_) for @$args;
 
-    print $out ".\n2\n$lv1\n$lv2\n";
+    print $out ".\n2\n$args->[0]\n$args->[1]\n";
     # Output the file header.
 
     my %all;

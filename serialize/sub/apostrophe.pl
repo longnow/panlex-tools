@@ -18,11 +18,13 @@ use PanLex;
 use PanLex::Validation;
 
 sub process {
-    my ($in, $out, @args) = @_;
+    my ($in, $out, $args) = @_;
+
+    validate_array($args);
 
     my (@pcol, %uid_col, %apos);
     
-    foreach my $spec (@args) {
+    foreach my $spec (@$args) {
         my ($col, $uid) = split /:/, $spec;
         validate_spec($col, $uid);
         $col = int($col);

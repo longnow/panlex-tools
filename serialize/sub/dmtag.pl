@@ -18,9 +18,14 @@ use utf8;
 use PanLex::Validation;
 
 sub process {
-    my ($in, $out, $dmtag, $exdelim, @dmcol) = @_;
+    my ($in, $out, $args) = @_;
 
-    validate_col($_) for @dmcol;
+    validate_hash($args);
+    validate_cols($args->{cols});
+
+    my @dmcol   = @{$args->{cols}};
+    my $dmtag   = defined $args->{dmtag} ? $args->{dmtag} : '⫷dm⫸';
+    my $delim   = defined $args->{delim} ? $args->{delim} : '‣';
     
     while (<$in>) {
     # For each line of the input file:
@@ -33,10 +38,10 @@ sub process {
 
             die "column $i not present in line" unless defined $col[$i];
 
-            if (length $exdelim) {
+            if (length $delim) {
             # If there is an inter-expression delimiter:
 
-                $col[$i] =~ s/(^|$exdelim)(?!$|$exdelim)/$dmtag/og;
+                $col[$i] =~ s/(^|$delim)(?!$|$delim)/$dmtag/og;
                 # Prefix each element of the column's value with a domain-expression tag.
             }
 

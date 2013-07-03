@@ -17,9 +17,13 @@ use utf8;
 use PanLex::Validation;
 
 sub process {
-    my ($in, $out, $dftag, @dfcol) = @_;
+    my ($in, $out, $args) = @_;
 
-    validate_col($_) for @dfcol;
+    validate_hash($args);
+    validate_cols($args->{cols});
+
+    my @dfcol   = @{$args->{cols}};
+    my $dftag   = defined $args->{dftag} ? $args->{dftag} :  '⫷df⫸';
     
     while (<$in>) {
     # For each line of the input file:

@@ -27,8 +27,11 @@ our $final = 1;
 
 sub process {
 
-    my ($in, $out, $wc, $mindf, $minex, @spec) = @_;
+    my ($in, $out, $args) = @_;
 
+    validate_array($args);
+    my ($wc, $mindf, $minex, @spec) = @$args;
+    
     die "invalid minimum count\n" if ($mindf < 2) || ($minex < 1);
     # If either minimum count is too small, quit and notify the user.
 

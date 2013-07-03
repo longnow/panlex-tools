@@ -17,7 +17,12 @@ use utf8;
 use PanLex::Validation;
 
 sub process {
-    my ($in, $out, $mndelim, $mncol) = @_;
+    my ($in, $out, $args) = @_;
+
+    validate_hash($args);
+
+    my $mncol   = $args->{col};
+    my $delim   = defined $args->{delim} ? $args->{delim} : '⫷mn⫸';
 
     validate_col($mncol);
 
@@ -34,7 +39,7 @@ sub process {
 
         die "column $mncol not present in line" unless defined $col[$mncol];
 
-        if (index($col[$mncol], $mndelim) < 0) {
+        if (index($col[$mncol], $delim) < 0) {
         # If the potentially multimeaning column is one-meaning:
 
             unless (exists $line{$_}) {
@@ -51,7 +56,7 @@ sub process {
         else {
         # Otherwise, i.e. if the column is multimeaning:
 
-            foreach my $mn (split /$mndelim/, $col[$mncol]) {
+            foreach my $mn (split /$delim/, $col[$mncol]) {
             # For each of its meaning segments:
 
                 my @line = @col;

@@ -21,14 +21,16 @@ our $final = 1;
 # Declare that this script produces a final source file.
 
 sub process {
-    my ($in, $out, @spec) = @_;
+    my ($in, $out, $args) = @_;
+    
+    validate_array($args);
     
     print $out ".\n0\n";
     # Output the file header.
 
     my (%all, %col);
 
-    foreach my $i (@spec) {
+    foreach my $i (@$args) {
     # For each expression column:
 
         my @col = split /:/, $i;

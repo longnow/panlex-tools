@@ -25,7 +25,10 @@ our $final = 1;
 # Declare that this script produces a final source file.
 
 sub process {
-    my ($in, $out, $wc, $mindf, $minex, @spec) = @_;
+    my ($in, $out, $args) = @_;
+
+    validate_array($args);
+    my ($wc, $mindf, $minex, @spec) = @$args;
 
     my (%col, %en, @cols);
 

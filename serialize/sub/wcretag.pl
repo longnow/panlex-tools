@@ -22,9 +22,16 @@ use File::Spec::Functions;
 use File::Basename;
 
 sub process {
-    my ($in, $out, $pretag, $posttag, $wctag, $mdtag, @wccol) = @_;
+    my ($in, $out, $args) = @_;
+
+    validate_hash($args);
+    validate_cols($args->{cols});
     
-    validate_col($_) for @wccol;
+    my @wccol   = @{$args->{cols}};
+    my $pretag  = defined $args->{pretag} ? $args->{pretag} : '⫷wc:';
+    my $posttag = defined $args->{posttag} ? $args->{posttag} : '⫸';
+    my $wctag   = defined $args->{wctag} ? $args->{wctag} : '⫷wc⫸';
+    my $mdtag   = defined $args->{mdtag} ? $args->{mdtag} : '⫷md:gram⫸';
 
     open my $wc, '<:utf8', catfile(dirname(__FILE__), '..', 'data', 'wc.txt') or die $!;
     # Open the wc file for reading.
