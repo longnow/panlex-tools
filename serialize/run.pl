@@ -3,6 +3,7 @@ use JSON;
 use File::Spec::Functions qw/catfile curdir rel2abs/;
 use PanLex::Validation;
 binmode STDOUT, ':utf8';
+binmode STDERR, ':utf8';
 
 sub run {
     my ($PANLEX_TOOLDIR, $BASENAME, $VERSION, $TOOLS) = @_;
