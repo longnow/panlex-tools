@@ -1,7 +1,7 @@
 # Converts a normally tagged source file to a simple-text bilingual source file,
 # eliminating duplicates.
 # Arguments:
-#   uids:   two-element array containing variety UID of columns 0 and 1.
+#   uids:   two-element array containing variety UIDs of columns 0 and 1.
 
 package PanLex::Serialize::out_simple_2;
 
