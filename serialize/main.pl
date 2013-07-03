@@ -18,8 +18,8 @@ my @TOOLS = (
 #'apostrophe'   => { specs => ['1:gyd-000', '3:nny-000', '5:eng-000'] },
 # Converts a tab-delimited source file's apostrophes.
 # Arguments:
-#   specs:  specifications (column index and variety UID, colon-delimited) of 
-#             columns possibly requiring apostrophe normalization.
+#   specs:  array of specifications (column index and variety UID, colon-
+#             delimited) of columns possibly requiring apostrophe normalization.
 
 #'extag'        => { cols => [0, 1] },
 # Tags all expressions and all intra-column meaning changes in a tab-delimited 
@@ -137,40 +137,42 @@ my @TOOLS = (
 #   exptag: pre-normalized expression tag; default '⫷exp⫸'.
 #   tagre:  regex identifying any tag; default '⫷[a-z:]+⫸'.
 
-#'out-simple-0'   => [ '0:rus-000', '1:eng-000' ],
+#'out-simple-0' => { specs => [ '0:rus-000', '1:eng-000' ] },
 # Converts a normally tagged source file to a simple-text varilingual source file,
 # eliminating duplicates.
 # Arguments:
-#   0+: specifications (column index and variety UID, colon-delimited) of columns
-#         containing expressions.
+#   specs:  array of specifications (column index and variety UID, colon-
+#             delimited) of columns containing expressions.
 
-#'out-simple-2' => [ 'rus-000', 'eng-000' ],
+#'out-simple-2' => { uids => [ 'rus-000', 'eng-000' ] },
 # Converts a normally tagged source file to a simple-text bilingual source file,
 # eliminating duplicates.
 # Arguments:
-#   0:  variety UID of column 0.
-#   1:  variety UID of column 1.
+#   uids:   two-element array containing variety UID of columns 0 and 1.
 
-#'out-full-0'   => [ '', 2, 2, '0:rus-000', '1:eng-000' ],
+#'out-full-0'   => { specs => [ '0:rus-000', '1:eng-000' ] },
 # Converts a standard tagged source file to a full-text varilingual source file.
 # Arguments:
-#   0:  word classification to annotate all expressions as that have no tagged wc,
-#         or blank if none.
-#   1:  minimum count (2 or more) of definitions and expressions per entry.
-#   2:  minimum count (1 or more) of expressions per entry.
-#   3+: specifications (column index and variety UID, colon-delimited) of columns
-#         containing tags (ex, df, dm) requiring variety specifications.
+#   specs:  array of specifications (column index and variety UID, colon-
+#             delimited) of columns containing tags (e.g., ex, df, dm) requiring
+#             variety specifications.
+#   mindf:  minimum count (2 or more) of definitions and expressions per entry;
+#             default 2.
+#   minex:  minimum count (1 or more) of expressions per entry; default 2.
+#   wc:     word classification to annotate all expressions as that have no 
+#             tagged wc, or '' if none; default ''.
 
-#'out-full-2'   => [ '', 2, 1, '0:rus-259', '1:eng-000' ],
+#'out-full-2'   => { specs => [ '0:rus-259', '1:eng-000' ] },
 # Converts a standard tagged source file to a full-text bilingual source file, eliminating duplicates.
 # Arguments:
-#   0:  word classification to annotate all expressions as that have no tagged wc, or blank if none.
-#   1:  minimum count (2 or more) of definitions and expressions per entry.
-#   2:  minimum count (1 or more) of expressions per entry.
-#   3:  column index and variety UID, colon-delimited, of source expression column
-#   4:  column index and variety UID, colon-delimited, of target expression column
-#   5*: specifications (column index and variety UID, colon-delimited) of other columns
-#         containing tags (df, dm) requiring variety specifications.
+#   specs:  array of specifications (column index and variety UID, colon-
+#             delimited) of columns containing tags (e.g., ex, df, dm) requiring
+#             variety specifications.
+#   mindf:  minimum count (2 or more) of definitions and expressions per entry;
+#             default 2.
+#   minex:  minimum count (1 or more) of expressions per entry; default 1.
+#   wc:     word classification to annotate all expressions as that have no 
+#             tagged wc, or '' if none; default ''.
 
 );
 

@@ -3,7 +3,7 @@ use strict;
 use base 'Exporter';
 
 use vars qw/@EXPORT/;
-@EXPORT = qw/validate_spec validate_col validate_uid valid_int validate_array validate_hash validate_cols validate_specs/;
+@EXPORT = qw/validate_spec validate_col validate_uid valid_int validate_array validate_hash validate_cols validate_specs validate_uids/;
 
 # dies if the two arguments do not form a valid column and uid spec.
 sub validate_spec {
@@ -47,6 +47,13 @@ sub validate_cols {
 sub validate_specs {
     die "expected a specs argument with at least one specification" unless ref $_[0] eq 'ARRAY' && @{$_[0]};
     validate_spec($_) for @{$_[0]};
+}
+
+# dies unless the argument is a non-empty array reference.
+# also calls validate_uid on each element of the array.
+sub validate_uids {
+    die "expected a uids argument with at least one column" unless ref $_[0] eq 'ARRAY' && @{$_[0]};
+    validate_uids($_) for @{$_[0]};
 }
 
 1;

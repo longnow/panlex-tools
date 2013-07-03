@@ -1,13 +1,13 @@
-# Converts a standard tagged source file to a full-text varilingual source file,
-# eliminating duplicates.
-
+# Converts a standard tagged source file to a full-text varilingual source file.
 # Arguments:
-#    0: word classification to annotate all expressions as that have no tagged wc,
-#        or blank if none.
-#    1: minimum count (2 or more) of definitions and expressions per entry.
-#    2: minimum count (1 or more) of expressions per entry.
-#    3+: specifications (column index and variety UID, colon-delimited) of columns
-#        containing tags (ex, df, dm) requiring variety specifications.
+#   specs:  array of specifications (column index and variety UID, colon-
+#             delimited) of columns containing tags (e.g., ex, df, dm) requiring
+#             variety specifications.
+#   mindf:  minimum count (2 or more) of definitions and expressions per entry;
+#             default 2.
+#   minex:  minimum count (1 or more) of expressions per entry; default 2.
+#   wc:     word classification to annotate all expressions as that have no 
+#             tagged wc, or '' if none; default ''.
 
 package PanLex::Serialize::out_full_0;
 
@@ -26,12 +26,15 @@ our $final = 1;
 # Declare that this script produces a final source file.
 
 sub process {
-
     my ($in, $out, $args) = @_;
 
-    validate_array($args);
-    my ($wc, $mindf, $minex, @spec) = @$args;
+    validate_specs($args->{specs});
     
+    my @spec = @{$args->{specs}};
+    my $mindf = defined $args->{mindf} ? $args->{mindf} : 2;
+    my $minex = defined $args->{minex} ? $args->{minex} : 2;
+    my $wc = defined $args->{wc} ? $args->{wc} : '';
+        
     die "invalid minimum count\n" if ($mindf < 2) || ($minex < 1);
     # If either minimum count is too small, quit and notify the user.
 
@@ -45,8 +48,6 @@ sub process {
 
         my @col = split /:/, $i;
         # Identify its specification parts.
-
-        validate_spec(@col);
 
         $col{$col[0]} = $col[1];
         # Add its index and variety UID to the table of variety-specific columns.

@@ -1,23 +1,27 @@
 # Normalizes expressions in a tagged source file.
 # Arguments:
-#    0: tag specification (regular expression).
-#    1: expression tag.
-#    2: column containing expressions to be normalized.
-#    3: minimum score (0 or more) a proposed expression must have in order to be accepted
-#        outright as an expression. Every proposed expression with a lower (or no) score is
-#        to be replaced with the highest-scoring expression sharing its language variety and
-#        degradation, if any such expression has a higher score than it.
-#    4: minimum score a proposed expression that is not accepted outright as an expression,
-#        or its replacement, must have in order to be accepted as an expression.
-#    5: variety UID of expressions to be normalized.
-#    6: tag of pre-normalized expression.
-#    7: if proposed expressions not accepted as expressions and not having replacements accepted
-#        as expressions are to be converted to definitions, definition tag, or blank if they
-#        are to be converted to pre-normalized expressions.
-#    8: regular expression matching the synonym delimiter if each proposed expression containing
-#        such a delimiter is to be treated as a list of synonymous proposed expressions and
-#        they are to be normalized if and only if all expressions in the list are
-#        normalizable, or blank if not.
+#   col:    column containing expressions to be normalized.
+#   uid:    variety UID of expressions to be normalized.
+#   min:    minimum score (0 or more) a proposed expression must have in order 
+#             to be accepted outright as an expression. Every proposed expression
+#             with a lower (or no) score is to be replaced with the highest-
+#             scoring expression sharing its language variety and degradation, if
+#             any such expression has a higher score than it.
+#   mindeg: minimum score a proposed expression that is not accepted outright as
+#             an expression, or its replacement, must have in order to be
+#             accepted as an expression.
+#   dftag:  definition tag, if proposed expressions not accepted as expressions 
+#             and not having replacements accepted as expressions are to be
+#             converted to definitions; '' (blank) if they are to be converted
+#             to pre-normalized expressions; default '⫷df⫸'.
+#   delim:  regular expression matching the synonym delimiter if each proposed
+#             expression containing such a delimiter is to be treated as a list
+#             of synonymous proposed expressions and they are to be normalized
+#             if and only if all expressions in the list are normalizable; or ''
+#             (blank) if not; default ''. example: ', '.
+#   extag:  expression tag; default '⫷ex⫸'.
+#   exptag: pre-normalized expression tag; default '⫷exp⫸'.
+#   tagre:  regex identifying any tag; default '⫷[a-z:]+⫸'.
 
 package PanLex::Serialize::normalize;
 

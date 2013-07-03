@@ -1,8 +1,8 @@
 # Converts a normally tagged source file to a simple-text varilingual source file,
 # eliminating duplicates.
 # Arguments:
-#    0+: specifications (column index and variety UID, colon-delimited) of columns
-#        containing expressions.
+#   specs:  array of specifications (column index and variety UID, colon-
+#             delimited) of columns containing expressions.
 
 package PanLex::Serialize::out_simple_0;
 
@@ -23,20 +23,18 @@ our $final = 1;
 sub process {
     my ($in, $out, $args) = @_;
     
-    validate_array($args);
+    validate_specs($args);
     
     print $out ".\n0\n";
     # Output the file header.
 
     my (%all, %col);
 
-    foreach my $i (@$args) {
+    foreach my $i (@{$args->{specs}}) {
     # For each expression column:
 
         my @col = split /:/, $i;
         # Identify its specification parts.
-
-        validate_spec(@col);
 
         $col{$col[0]} = $col[1];
         # Add its index and variety UID to the table of expression columns.

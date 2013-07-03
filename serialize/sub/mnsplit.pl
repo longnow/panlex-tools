@@ -1,7 +1,8 @@
-# Splits multi-meaning lines of a tagged source file, eliminating any duplicate output lines.
+# Splits multi-meaning lines of a tagged source file, eliminating any duplicate
+# output lines.
 # Arguments:
-#    0: meaning-delimitation tag.
-#    1: number (0-based) of the column that may contain multiple meanings.
+#   col:    column that may contain multiple meanings.
+#   delim:  meaning-delimitation tag; default '⫷mn⫸'.
 
 package PanLex::Serialize::mnsplit;
 

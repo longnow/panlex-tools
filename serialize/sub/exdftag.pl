@@ -1,18 +1,22 @@
-# Splits definitional expressions into reduced expressions and definitions in a source file with
-# already-tagged expressions and tags the added definitions.
+# Splits definitional expressions into reduced expressions and definitions in 
+# a source file with already-tagged expressions and tags the added definitions.
 # Arguments:
-#    0: expression tag in file.
-#    1: regular expression matching any post-tag character.
-#    2: regular expression matching any post-tag character that is not a space.
-#    3: regular expression matching a definitional part of an expression.
-#    4: definition tag to be used on definitions.
-#    5: maximum character count permitted in an expression, or blank if none.
-#    6: maximum word count permitted in an expression, or blank if none.
-#    7: regular expression matching any substring forcing an expression to be
-#        reclassified as a definition, or blank if none.
-#    8: regular expression matching a preposed annotation not to be counted,
-#        or blank if none.
-#    9+: columns containing expressions that may contain definitional parts.
+#   cols:     array of columns containing expressions that may contain 
+#               definitional parts.
+#   re:       regex matching a definitional part of an expression, or '' if none.
+#   subre:    regex matching any substring forcing an expression to be
+#               reclassified as a definition, or '' if none.
+#   maxchar:  maximum character count permitted in an expression, or '' if none;
+#               default ''. example: 25.
+#   maxword:  maximum word count permitted in an expression, or '' if none;
+#               default ''. example: 3.
+#   extag:    expression tag; default '⫷ex⫸'.
+#   dftag:    definition tag; default '⫷df⫸'.
+#   postre:   regex matching any post-tag character; default '[^⫷]'.
+#   postwre:  regex matching any post-tag character that is not a space;
+#               default '[^⫷ ]'.
+#   prere:    regex matching a preposed annotation not to be counted, or '' if
+#               none; default '⫷[^⫷⫸]+⫸'.
 
 package PanLex::Serialize::exdftag;
 

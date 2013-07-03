@@ -1,7 +1,7 @@
 # Tags metadata in a tab-delimited source file.
 # Arguments:
-#    0: column containing metadata.
-#    1: metadatum tag.
+#   col:   column containing metadata.
+#   mdtag: metadatum tag; default '⫷md:gram⫸'.
 
 package PanLex::Serialize::mdtag;
 

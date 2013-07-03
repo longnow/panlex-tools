@@ -1,7 +1,7 @@
 # Tags meaning identifiers.
 # Arguments:
-#    0: column that contains meaning identifiers.
-#    1: meaning-identifier tag.
+#   col:    column that contains meaning identifiers.
+#   mitag:  meaning-identifier tag; default '⫷mi⫸'.
 
 package PanLex::Serialize::mitag;
 

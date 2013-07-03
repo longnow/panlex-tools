@@ -1,7 +1,7 @@
 # Converts a tab-delimited source file's apostrophes.
 # Arguments:
-#    0+: specifications (column index and variety UID, colon-delimited) of columns
-#        possibly requiring apostrophe normalization.
+#   specs:  array of specifications (column index and variety UID, colon-
+#             delimited) of columns possibly requiring apostrophe normalization.
 
 package PanLex::Serialize::apostrophe;
 

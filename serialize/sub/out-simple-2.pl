@@ -1,8 +1,7 @@
 # Converts a normally tagged source file to a simple-text bilingual source file,
 # eliminating duplicates.
 # Arguments:
-#    0: variety UID of column 0.
-#    1: variety UID of column 1.
+#   uids:   two-element array containing variety UID of columns 0 and 1.
 
 package PanLex::Serialize::out_simple_2;
 
@@ -23,10 +22,12 @@ our $final = 1;
 sub process {
     my ($in, $out, $args) = @_;
     
-    validate_array($args);
-    validate_uid($_) for @$args;
+    validate_uids($args->{uids});
+    
+    my @uids = @{$args->{uids}};
+    die "you must specify exactly two UIDs" if @uids != 2;
 
-    print $out ".\n2\n$args->[0]\n$args->[1]\n";
+    print $out ".\n2\n$uids->[0]\n$uids->[1]\n";
     # Output the file header.
 
     my %all;

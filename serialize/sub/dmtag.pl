@@ -1,8 +1,8 @@
 # Tags domain expressions in a tab-delimited source file.
 # Arguments:
-#    0: domain-expression tag.
-#    1: inter-expression delimiter, or blank if none.
-#    2+: columns containing domain expressions.
+#   cols:     array of columns containing metadata.
+#   dmtag:    domain-expression tag; default '⫷dm⫸'.
+#   delim:    inter-expression delimiter, or '' if none; default '‣'.
 
 package PanLex::Serialize::dmtag;
 

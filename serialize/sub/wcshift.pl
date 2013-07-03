@@ -1,12 +1,13 @@
+#'wcshift'      => { col => 2 },
 # Replaces prepended word class specifications with post-ex wc tags in a
 # tab-delimited source file.
 # Arguments:
-#    0: column containing prepended word class specifications.
-#    1: start of word-class specification.
-#    2: end of word-class specification.
-#    3: word-classification tag.
-#    4: expression tag.
-#    5: regular expression matching any post-tag character.
+#   col:      column containing prepended word class specifications.
+#   pretag:   start of word-class specification; default '⫷wc:'.
+#   posttag:  end of word-class specification; default '⫸'.
+#   wctag:    word-classification tag; default '⫷wc⫸'.
+#   extag:    expression tag; default '⫷ex⫸'.
+#   postre:   regex matching any post-tag character; default '[^⫷]'.
 
 package PanLex::Serialize::wcshift;
 

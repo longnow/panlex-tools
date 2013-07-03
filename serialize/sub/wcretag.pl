@@ -1,10 +1,11 @@
+#'wcretag'      => { cols => [1, 2] },
 # Retags word classifications in a tab-delimited source file.
 # Arguments:
-#    0: input file's wc tag before its content.
-#    1: input file's wc tag after its content.
-#    2: output file's word-classification tag.
-#    3: metadatum tag.
-#    4+: columns containing word classifications.
+#   cols:     array of columns containing word classifications.
+#   pretag:   input file's wc tag before its content; default '⫷wc:'.
+#   posttag:  input file's wc tag after its content; default '⫸'.
+#   wctag:    output file's word-classification tag; default '⫷wc⫸'
+#   mdtag:    metadatum tag; default '⫷md:gram⫸'.
 
 package PanLex::Serialize::wcretag;
 

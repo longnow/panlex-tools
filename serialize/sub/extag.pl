@@ -1,11 +1,11 @@
-# Tags all expressions and all intra-column meaning changes in a tab-delimited source file,
-# disregarding any definitional parts.
+# Tags all expressions and all intra-column meaning changes in a tab-delimited 
+# source file, disregarding any definitional parts.
 # Arguments:
-#    0: synonym delimiter (regular expression), or blank if none.
-#    1: meaning delimiter (regular expression), or blank if none.
-#    2: expression tag.
-#    3: meaning tag.
-#    4+: columns containing expressions.
+#   cols:     array of columns containing expressions.
+#   syndelim: synonym delimiter (regex), or '' if none; default '‣'.
+#   mndelim:  meaning delimiter (regex), or '' if none; default '⁋'.
+#   extag:    expression tag; default '⫷ex⫸'.
+#   mntag:    meaning tag; default '⫷mn⫸'.
 
 package PanLex::Serialize::extag;
 

@@ -1,8 +1,9 @@
+#'wctag'        => { col => 1 },
 # Converts and tags word classifications in a tab-delimited source file.
 # Arguments:
-#    0: column containing word classifications.
-#    1: word-classification tag.
-#    2: metadatum tag.
+#   col:   column containing word classifications.
+#   wctag: word-classification tag; default '⫷wc⫸'.
+#   mdtag: metadatum tag; default '⫷md:gram⫸'.
 
 package PanLex::Serialize::wctag;
 
