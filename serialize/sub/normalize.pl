@@ -14,7 +14,7 @@
 #             and not having replacements accepted as expressions are to be
 #             converted to definitions; '' (blank) if they are to be converted
 #             to pre-normalized expressions. default '⫷df⫸'.
-#   delim:  regex matching the synonym delimiter if each proposed expression
+#   delim:  regex matching the synonym delimiter, if each proposed expression
 #             containing such a delimiter is to be treated as a list of
 #             synonymous proposed expressions and they are to be normalized if
 #             and only if all expressions in the list are normalizable; or ''
