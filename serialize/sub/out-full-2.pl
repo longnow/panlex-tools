@@ -1,8 +1,9 @@
-# Converts a standard tagged source file to a full-text bilingual source file, eliminating duplicates.
+# Converts a standard tagged source file to a full-text bilingual source file, 
+# eliminating duplicates.
 # Arguments:
-#   specs:  array of specifications (column index and variety UID, colon-
-#             delimited) of columns containing tags (e.g., ex, df, dm) requiring
-#             variety specifications.
+#   specs:  array of specifications (column index + colon + variety UID) of
+#             columns containing tags (e.g., ex, df, dm) requiring variety
+#             specifications.
 #   mindf:  minimum count (2 or more) of definitions and expressions per entry;
 #             default 2.
 #   minex:  minimum count (1 or more) of expressions per entry; default 1.

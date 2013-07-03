@@ -141,8 +141,8 @@ my @TOOLS = (
 # Converts a normally tagged source file to a simple-text varilingual source file,
 # eliminating duplicates.
 # Arguments:
-#   specs:  array of specifications (column index and variety UID, colon-
-#             delimited) of columns containing expressions.
+#   specs:  array of specifications (column index + colon + variety UID) of
+#             columns containing expressions.
 
 #'out-simple-2' => { uids => [ 'rus-000', 'eng-000' ] },
 # Converts a normally tagged source file to a simple-text bilingual source file,
@@ -153,9 +153,9 @@ my @TOOLS = (
 #'out-full-0'   => { specs => [ '0:rus-000', '1:eng-000' ] },
 # Converts a standard tagged source file to a full-text varilingual source file.
 # Arguments:
-#   specs:  array of specifications (column index and variety UID, colon-
-#             delimited) of columns containing tags (e.g., ex, df, dm) requiring
-#             variety specifications.
+#   specs:  array of specifications (column index + colon + variety UID) of
+#             columns containing tags (e.g., ex, df, dm) requiring variety
+#             specifications.
 #   mindf:  minimum count (2 or more) of definitions and expressions per entry;
 #             default 2.
 #   minex:  minimum count (1 or more) of expressions per entry; default 2.
@@ -163,11 +163,12 @@ my @TOOLS = (
 #             tagged wc, or '' if none; default ''.
 
 #'out-full-2'   => { specs => [ '0:rus-259', '1:eng-000' ] },
-# Converts a standard tagged source file to a full-text bilingual source file, eliminating duplicates.
+# Converts a standard tagged source file to a full-text bilingual source file, 
+# eliminating duplicates.
 # Arguments:
-#   specs:  array of specifications (column index and variety UID, colon-
-#             delimited) of columns containing tags (e.g., ex, df, dm) requiring
-#             variety specifications.
+#   specs:  array of specifications (column index + colon + variety UID) of
+#             columns containing tags (e.g., ex, df, dm) requiring variety
+#             specifications.
 #   mindf:  minimum count (2 or more) of definitions and expressions per entry;
 #             default 2.
 #   minex:  minimum count (1 or more) of expressions per entry; default 1.

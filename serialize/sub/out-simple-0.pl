@@ -1,8 +1,8 @@
 # Converts a normally tagged source file to a simple-text varilingual source file,
 # eliminating duplicates.
 # Arguments:
-#   specs:  array of specifications (column index and variety UID, colon-
-#             delimited) of columns containing expressions.
+#   specs:  array of specifications (column index + colon + variety UID) of
+#             columns containing expressions.
 
 package PanLex::Serialize::out_simple_0;
 
