@@ -24,7 +24,8 @@ sub process {
     
     validate_col($wccol);
 
-    open my $wc, '<:utf8', catfile(dirname(__FILE__), '..', 'data', 'wc.txt') or die $!;
+    my $wctxt = -e 'wc.txt' ? 'wc.txt' : catfile(dirname(__FILE__), '..', 'data', 'wc.txt');
+    open my $wc, '<:utf8', $wctxt or die $!;
     # Open the wc file for reading.
 
     my %wc;
