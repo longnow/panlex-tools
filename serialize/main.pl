@@ -18,8 +18,8 @@ my @TOOLS = (
 #'apostrophe'   => { specs => ['1:gyd-000', '3:nny-000', '5:eng-000'] },
 # Converts a tab-delimited source file's apostrophes.
 # Arguments:
-#   specs:  array of specifications (column index and variety UID, colon-
-#             delimited) of columns possibly requiring apostrophe normalization.
+#   specs:  array of specifications (column index + colon + variety UID) of
+#             columns possibly requiring apostrophe normalization.
 
 #'extag'        => { cols => [0, 1] },
 # Tags all expressions and all intra-column meaning changes in a tab-delimited 
