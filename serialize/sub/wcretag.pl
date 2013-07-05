@@ -23,15 +23,24 @@ use File::Spec::Functions;
 use File::Basename;
 
 sub process {
-    my ($in, $out, $args) = @_;
+    my $in = shift;
+    my $out = shift;
+    my $args = ref $_[0] ? $_[0] : \@_;
 
-    validate_cols($args->{cols});
+    my (@wccol, $pretag, $posttag, $wctag, $mdtag);
     
-    my @wccol   = @{$args->{cols}};
-    my $pretag  = defined $args->{pretag} ? $args->{pretag} : '⫷wc:';
-    my $posttag = defined $args->{posttag} ? $args->{posttag} : '⫸';
-    my $wctag   = defined $args->{wctag} ? $args->{wctag} : '⫷wc⫸';
-    my $mdtag   = defined $args->{mdtag} ? $args->{mdtag} : '⫷md:gram⫸';
+    if (ref $args eq 'HASH') {
+        validate_cols($args->{cols});
+
+        @wccol    = @{$args->{cols}};
+        $pretag   = defined $args->{pretag} ? $args->{pretag} : '⫷wc:';
+        $posttag  = defined $args->{posttag} ? $args->{posttag} : '⫸';
+        $wctag    = defined $args->{wctag} ? $args->{wctag} : '⫷wc⫸';
+        $mdtag    = defined $args->{mdtag} ? $args->{mdtag} : '⫷md:gram⫸';      
+    } else {
+        ($pretag, $posttag, $wctag, $mdtag, @wccol) = @$args;
+        validate_cols(\@wccol);
+    }
 
     my $wctxt = -e 'wc.txt' ? 'wc.txt' : catfile(dirname(__FILE__), '..', 'data', 'wc.txt');
     open my $wc, '<:utf8', $wctxt or die $!;

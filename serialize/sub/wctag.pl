@@ -21,14 +21,22 @@ use File::Spec::Functions;
 use File::Basename;
 
 sub process {
-    my ($in, $out, $args) = @_;
+    my $in = shift;
+    my $out = shift;
+    my $args = ref $_[0] ? $_[0] : \@_;
     
-    validate_col($args->{col});
+    my ($wccol, $wctag, $mdtag);
     
-    my $wccol   = $args->{col};
-    my $wctag   = defined $args->{wctag} ? $args->{wctag} : '⫷wc⫸';
-    my $mdtag   = defined $args->{mdtag} ? $args->{mdtag} : '⫷md:gram⫸';
+    if (ref $args eq 'HASH') {
+        $wccol    = $args->{col};
+        $wctag    = defined $args->{wctag} ? $args->{wctag} : '⫷wc⫸';
+        $mdtag    = defined $args->{mdtag} ? $args->{mdtag} : '⫷md:gram⫸';      
+    } else {
+        ($wccol, $wctag, $mdtag) = @$args;
+    }
 
+    validate_col($wccol);
+    
     my $wctxt = -e 'wc.txt' ? 'wc.txt' : catfile(dirname(__FILE__), '..', 'data', 'wc.txt');
     open my $wc, '<:utf8', $wctxt or die $!;
     # Open the wc file for reading.

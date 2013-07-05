@@ -20,16 +20,25 @@ use utf8;
 
 use PanLex::Validation;
 
-sub process { 
-    my ($in, $out, $args) = @_;
+sub process {
+    my $in = shift;
+    my $out = shift;
+    my $args = ref $_[0] ? $_[0] : \@_;
+
+    my (@excol, $syndelim, $mndelim, $extag, $mntag);
     
-    validate_cols($args->{cols});
-    
-    my @excol   = @{$args->{cols}};
-    my $syndelim = defined $args->{syndelim} ? $args->{syndelim} : '‣';
-    my $mndelim = defined $args->{mndelim} ? $args->{mndelim} : '⁋';
-    my $extag   = defined $args->{extag} ? $args->{extag} : '⫷ex⫸';
-    my $mntag   = defined $args->{mntag} ? $args->{mntag} :  '⫷mn⫸';
+    if (ref $args eq 'HASH') {
+        validate_cols($args->{cols});
+
+        @excol    = @{$args->{cols}};
+        $syndelim = defined $args->{syndelim} ? $args->{syndelim} : '‣';
+        $mndelim  = defined $args->{mndelim} ? $args->{mndelim} : '⁋';
+        $extag    = defined $args->{extag} ? $args->{extag} : '⫷ex⫸';
+        $mntag    = defined $args->{mntag} ? $args->{mntag} :  '⫷mn⫸';
+    } else {
+        ($syndelim, $mndelim, $extag, $mntag, @excol) = @$args;
+        validate_cols(\@excol);
+    }
     
     # For each line of the input file:
     while (<$in>) {

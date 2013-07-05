@@ -18,13 +18,23 @@ use PanLex;
 use PanLex::Validation;
 
 sub process {
-    my ($in, $out, $args) = @_;
+    my $in = shift;
+    my $out = shift;
+    my $args = ref $_[0] ? $_[0] : \@_;
 
-    validate_specs($args->{specs});
+    my @specs;
+    
+    if (ref $args eq 'HASH') {
+        validate_specs($args->{specs});
+        @specs = @{$args->{specs}};
+    } else {
+        @specs = @$args;
+        validate_specs(\@specs);
+    }
 
     my (@pcol, %uid_col, %apos);
     
-    foreach my $spec (@{$args->{specs}}) {
+    foreach my $spec (@specs}) {
         my ($col, $uid) = split /:/, $spec;
         $col = int($col);
         push @pcol, $col;

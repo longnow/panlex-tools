@@ -27,8 +27,6 @@ sub run {
     for (my $i = 0; $i < @TOOLS; $i += 2) {
         my ($tool, $args) = @TOOLS[$i, $i+1];
 
-        validate_hash($args);
-
         my $tool_path = catfile('sub', $tool . '.pl');
         require $tool_path;
         my $pkg = 'PanLex::Serialize::' . $tool;
@@ -47,6 +45,13 @@ sub run {
         open my $out, '>:utf8', "$BASENAME-$VERSION.txt" or die $!;
 
         printf "%-13s %s => %s\n", $tool.':', $input, $output;
+
+        die "tool arguments must be a hash or array ref"
+            unless ref $args eq 'HASH' || ref $args eq 'ARRAY';
+
+        use Data::Dumper;
+        print Dumper($args);
+        die;
 
         $pkg->can('process')->($in, $out, $args);      
 

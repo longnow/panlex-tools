@@ -18,13 +18,22 @@ use utf8;
 use PanLex::Validation;
 
 sub process {
-    my ($in, $out, $args) = @_;
+    my $in = shift;
+    my $out = shift;
+    my $args = ref $_[0] ? $_[0] : \@_;
 
-    validate_cols($args->{cols});
+    my (@dmcol, $dmtag, $delim);
 
-    my @dmcol   = @{$args->{cols}};
-    my $dmtag   = defined $args->{dmtag} ? $args->{dmtag} : '⫷dm⫸';
-    my $delim   = defined $args->{delim} ? $args->{delim} : '‣';
+    if (ref $args eq 'HASH') {
+        validate_cols($args->{cols});
+
+        @dmcol    = @{$args->{cols}};
+        $dmtag    = defined $args->{dmtag} ? $args->{dmtag} : '⫷dm⫸';
+        $delim    = defined $args->{delim} ? $args->{delim} : '‣';      
+    } else {
+        ($dmtag, $delim, @dmcol) = @$args;
+        validate_cols(\@dmcol);
+    }
     
     while (<$in>) {
     # For each line of the input file:

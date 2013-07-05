@@ -27,21 +27,30 @@ our $final = 1;
 # Declare that this script produces a final source file.
 
 sub process {
-    my ($in, $out, $args) = @_;
+    my $in = shift;
+    my $out = shift;
+    my $args = ref $_[0] ? $_[0] : \@_;
 
-    validate_specs($args->{specs});
+    my (@specs, $mindf, $minex, $wc);
     
-    my @spec = @{$args->{specs}};
-    my $mindf = defined $args->{mindf} ? $args->{mindf} : 2;
-    my $minex = defined $args->{minex} ? $args->{minex} : 1;
-    my $wc = defined $args->{wc} ? $args->{wc} : '';
+    if (ref $args eq 'HASH') {
+        validate_specs($args->{specs});
+
+        @specs  = @{$args->{specs}};
+        $mindf  = defined $args->{mindf} ? $args->{mindf} : 2;
+        $minex  = defined $args->{minex} ? $args->{minex} : 1;
+        $wc     = defined $args->{wc} ? $args->{wc} : '';
+    } else {
+        ($wc, $mindf, $minex, @specs) = @$args;
+        validate_specs(\@specs);
+    }
 
     die "invalid minimum count\n" if ($mindf < 2) || ($minex < 1);
     # If either minimum count is too small, quit and notify the user.
 
     my (%col, %en, @cols);
 
-    foreach my $i (@spec) {
+    foreach my $i (@specs) {
     # For each variety-specific column:
 
         my @col = split /:/, $i;

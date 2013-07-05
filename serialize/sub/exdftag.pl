@@ -32,20 +32,29 @@ use utf8;
 use PanLex::Validation;
 
 sub process {
-    my ($in, $out, $args) = @_;
+    my $in = shift;
+    my $out = shift;
+    my $args = ref $_[0] ? $_[0] : \@_;
 
-    validate_cols($args->{cols});
+    my (@exdfcol, $re, $subre, $tmc, $tmw, $extag, $dftag, $postre, $postwre, $prere);
 
-    my @exdfcol = @{$args->{cols}};
-    my $re      = defined $args->{re} ? $args->{re} : '';
-    my $subre   = defined $args->{subre} ? $args->{subre} : '';
-    my $tmc     = defined $args->{maxchar} ? $args->{maxchar} : '';
-    my $tmw     = defined $args->{maxword} ? $args->{maxword} : '';
-    my $extag   = defined $args->{extag} ? $args->{extag} : '⫷ex⫸';
-    my $dftag   = defined $args->{dftag} ? $args->{dftag} : '⫷df⫸';
-    my $postre  = defined $args->{postre} ? $args->{postre} : '[^⫷]';
-    my $postwre = defined $args->{postwre} ? $args->{postwre} : '[^⫷ ]';
-    my $prere   = defined $args->{prere} ? $args->{prere} : '⫷[^⫷⫸]+⫸';
+    if (ref $args eq 'HASH') {
+        validate_cols($args->{cols});
+
+        @exdfcol  = @{$args->{cols}};
+        $re       = defined $args->{re} ? $args->{re} : '';
+        $subre    = defined $args->{subre} ? $args->{subre} : '';
+        $tmc      = defined $args->{maxchar} ? $args->{maxchar} : '';
+        $tmw      = defined $args->{maxword} ? $args->{maxword} : '';
+        $extag    = defined $args->{extag} ? $args->{extag} : '⫷ex⫸';
+        $dftag    = defined $args->{dftag} ? $args->{dftag} : '⫷df⫸';
+        $postre   = defined $args->{postre} ? $args->{postre} : '[^⫷]';
+        $postwre  = defined $args->{postwre} ? $args->{postwre} : '[^⫷ ]';
+        $prere    = defined $args->{prere} ? $args->{prere} : '⫷[^⫷⫸]+⫸';
+    } else {
+        ($extag, $postre, $re, $dftag, $tmc, $tmw, $subre, $prere, @exdfcol) = @$args;
+        validate_cols(\@exdfcol);
+    }
 
     $tmc++ if $tmc;
     # Identify the character count of the shortest expression exceeding the maximum

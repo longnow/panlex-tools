@@ -21,16 +21,26 @@ our $final = 1;
 # Declare that this script produces a final source file.
 
 sub process {
-    my ($in, $out, $args) = @_;
+    my $in = shift;
+    my $out = shift;
+    my $args = ref $_[0] ? $_[0] : \@_;
     
-    validate_specs($args);
+    my @specs;
+    
+    if (ref $args eq 'HASH') {
+        validate_specs($args->{specs});
+        @specs = @{$args->{specs}};
+    } else {
+        @specs = @$args;
+        validate_specs(\@specs);
+    }
     
     print $out ".\n0\n";
     # Output the file header.
 
     my (%all, %col);
 
-    foreach my $i (@{$args->{specs}}) {
+    foreach my $i (@specs}) {
     # For each expression column:
 
         my @col = split /:/, $i;

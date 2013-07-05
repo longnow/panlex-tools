@@ -20,14 +20,23 @@ our $final = 1;
 # Declare that this script produces a final source file.
 
 sub process {
-    my ($in, $out, $args) = @_;
+    my $in = shift;
+    my $out = shift;
+    my $args = ref $_[0] ? $_[0] : \@_;
     
-    validate_uids($args->{uids});
+    my @uids;
     
-    my @uids = @{$args->{uids}};
+    if (ref $args eq 'HASH') {
+        validate_uids($args->{uids});
+        @uids = @{$args->{uids}};
+    } else {
+        @uids = @$args;
+        validate_uids(\@uids);
+    }
+
     die "you must specify exactly two UIDs" if @uids != 2;
 
-    print $out ".\n2\n$uids->[0]\n$uids->[1]\n";
+    print $out ".\n2\n$uids[0]\n$uids[1]\n";
     # Output the file header.
 
     my %all;

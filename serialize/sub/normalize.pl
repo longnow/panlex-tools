@@ -41,20 +41,28 @@ use Unicode::Normalize;
 # Import the Unicode normalization module.
 
 sub process {
-    my ($in, $out, $args) = @_;
+    my $in = shift;
+    my $out = shift;
+    my $args = ref $_[0] ? $_[0] : \@_;
     
-    validate_col($args->{col});
-    validate_uid($args->{uid});
+    my ($excol, $uid, $min, $mindeg, $dftag, $delim, $extag, $exptag, $tagre);
+    
+    if (ref $args eq 'HASH') {
+        $excol    = $args->{col};
+        $uid      = $args->{uid};
+        $min      = $args->{min};
+        $mindeg   = $args->{mindeg};
+        $dftag    = defined $args->{dftag} ? $args->{dftag} : '⫷df⫸';
+        $delim    = defined $args->{delim} ? $args->{delim} : '';
+        $extag    = defined $args->{extag} ? $args->{extag} : '⫷ex⫸';
+        $exptag   = defined $args->{exptag} ? $args->{exptag} : '⫷exp⫸';
+        $tagre    = defined $args->{tagre} ? $args->{tagre} : '⫷[a-z:]+⫸';      
+    } else {
+        ($tagre, $extag, $excol, $min, $mindeg, $uid, $exptag, $dftag, $delim) = @$args;
+    }
 
-    my $excol   = $args->{col};
-    my $uid     = $args->{uid};
-    my $min     = $args->{min};
-    my $mindeg  = $args->{mindeg};
-    my $dftag   = defined $args->{dftag} ? $args->{dftag} : '⫷df⫸';
-    my $delim   = defined $args->{delim} ? $args->{delim} : '';
-    my $extag   = defined $args->{extag} ? $args->{extag} : '⫷ex⫸';
-    my $exptag  = defined $args->{exptag} ? $args->{exptag} : '⫷exp⫸';
-    my $tagre   = defined $args->{tagre} ? $args->{tagre} : '⫷[a-z:]+⫸';
+    validate_col($excol);
+    validate_uid($uid);
 
     foreach my $score ($min, $mindeg) {
         die "invalid minimum score" unless valid_int($score) && $score >= 0;

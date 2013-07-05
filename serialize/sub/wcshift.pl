@@ -23,17 +23,25 @@ use utf8;
 use PanLex::Validation;
 
 sub process {
-    my ($in, $out, $args) = @_;
+    my $in = shift;
+    my $out = shift;
+    my $args = ref $_[0] ? $_[0] : \@_;
     
-    validate_col($args->{col});
+    my ($wccol, $pretag, $posttag, $wctag, $extag, $postre);
+    
+    if (ref $args eq 'HASH') {      
+        $wccol    = $args->{col};
+        $pretag   = defined $args->{pretag} ? $args->{pretag} : '⫷wc:';
+        $posttag  = defined $args->{posttag} ? $args->{posttag} : '⫸';
+        $wctag    = defined $args->{wctag} ? $args->{wctag} : '⫷wc⫸';
+        $extag    = defined $args->{extag} ? $args->{extag} : '⫷ex⫸';
+        $postre   = defined $args->{postre} ? $args->{postre} : '[^⫷]';
+    } else {
+        ($wccol, $pretag, $posttag, $wctag, $extag, $postre) = @$args;
+    }
+        
+    validate_col($wccol);
 
-    my $wccol   = $args->{col};
-    my $pretag  = defined $args->{pretag} ? $args->{pretag} : '⫷wc:';
-    my $posttag = defined $args->{posttag} ? $args->{posttag} : '⫸';
-    my $wctag   = defined $args->{wctag} ? $args->{wctag} : '⫷wc⫸';
-    my $extag   = defined $args->{extag} ? $args->{extag} : '⫷ex⫸';
-    my $postre  = defined $args->{postre} ? $args->{postre} : '[^⫷]';
-    
     while (<$in>) {
     # For each line of the input file:
 
