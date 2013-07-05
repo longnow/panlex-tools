@@ -34,7 +34,7 @@ sub process {
 
     my (@pcol, %uid_col, %apos);
     
-    foreach my $spec (@specs}) {
+    foreach my $spec (@specs) {
         my ($col, $uid) = split /:/, $spec;
         $col = int($col);
         push @pcol, $col;

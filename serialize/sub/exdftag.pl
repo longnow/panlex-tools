@@ -52,7 +52,7 @@ sub process {
         $postwre  = defined $args->{postwre} ? $args->{postwre} : '[^⫷ ]';
         $prere    = defined $args->{prere} ? $args->{prere} : '⫷[^⫷⫸]+⫸';
     } else {
-        ($extag, $postre, $re, $dftag, $tmc, $tmw, $subre, $prere, @exdfcol) = @$args;
+        ($extag, $postre, $postwre, $re, $dftag, $tmc, $tmw, $subre, $prere, @exdfcol) = @$args;
         validate_cols(\@exdfcol);
     }
 
