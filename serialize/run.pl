@@ -49,10 +49,6 @@ sub run {
         die "tool arguments must be a hash or array ref"
             unless ref $args eq 'HASH' || ref $args eq 'ARRAY';
 
-        use Data::Dumper;
-        print Dumper($args);
-        die;
-
         $pkg->can('process')->($in, $out, $args);      
 
         close $in;
