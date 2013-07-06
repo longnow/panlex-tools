@@ -50,7 +50,7 @@ close $seg2old;
 my $newver = $VERSION + 1;
 # Identify the new version.
 
-`txtconv -t secondary/kantipur.tec -i "$BASENAME-seg2-$VERSION.txt" -o "$BASENAME-seg2-$newver.txt"`;
+system "txtconv -t secondary/kantipur.tec -i '$BASENAME-seg2-$VERSION.txt' -o '$BASENAME-seg2-$newver.txt'";
 # Recode the recoding input file.
 
 open $in, '<:encoding(utf8)', "$BASENAME-$VERSION.txt" or die $!;
