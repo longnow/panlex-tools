@@ -60,7 +60,7 @@ sub column_heuristic {
         last if $diff == 0 || $seen{$hash} > 5;
     }
     
-    return [0,  @$h];
+    return [0, @$h];
 }
 
 # parses the columns from a line using a generated heuristic.
