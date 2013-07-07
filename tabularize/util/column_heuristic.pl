@@ -69,7 +69,14 @@ sub refine_heuristic {
 
 sub score_pos {
     my ($lines, $pos) = @_;
-    return scalar(grep { substr($_,$pos,1) eq ' ' } @$lines);
+    
+    my $score = 0;
+    
+    foreach my $line (@$lines) {
+        $score++ if substr($_,$pos,1) eq ' ';
+    }
+    
+    return $score;
 }
 
 sub heuristic_parse {
