@@ -63,9 +63,9 @@ sub refine_heuristic {
         my %score = map { $_ => score_pos($lines, $_) } @try_pos;
         my $maxscore = max(values %score);
         my @candidates = grep { $score{$_} == $maxscore } @try_pos;
-        my %diff = map { abs($_ - $pos) => $_ } @candidates;
+        my %distance = map { abs($_ - $pos) => $_ } @candidates;
         
-        $h->[$i] = $diff{min(keys %diff)};
+        $h->[$i] = $distance{min(keys %distance)};
     }
     
     return $h;
@@ -77,7 +77,7 @@ sub score_pos {
     my $score = 0;
     
     foreach my $line (@$lines) {
-        $score++ if substr($_,$pos,1) eq ' ';
+        $score++ if substr($line,$pos,1) eq ' ';
     }
     
     return $score;
