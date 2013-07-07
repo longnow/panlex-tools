@@ -120,7 +120,7 @@ my @TOOLS = (
 #             to be accepted outright as an expression. Every proposed expression
 #             with a lower (or no) score is to be replaced with the highest-
 #             scoring expression sharing its language variety and degradation, if
-#             any such expression has a higher score than it.
+#             any such expression has a higher score than it does.
 #   mindeg: minimum score a proposed expression that is not accepted outright as
 #             an expression, or its replacement, must have in order to be
 #             accepted as an expression.
