@@ -1,5 +1,6 @@
 use strict;
 use utf8;
+use List::Util qw/max min/;
 
 my $LOOK_RANGE = 10;
 
