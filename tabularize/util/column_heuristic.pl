@@ -1,3 +1,6 @@
+use strict;
+use utf8;
+
 my $LOOK_RANGE = 10;
 
 sub column_heuristic {
