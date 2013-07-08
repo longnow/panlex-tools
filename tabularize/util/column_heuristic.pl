@@ -84,12 +84,10 @@ sub refine_heuristic {
     my ($h, $lines, $maxlen) = @_;
     $h = [@$h];
     
-    for (my $i = 0; $i < @$h; $i++) {
-        my $pos = $h->[$i];
-        
+    foreach my $pos (@$h) {
         my @try_pos = ($pos);
-        for (my $j = 1; $j <= $LOOK_RANGE; $j++) {
-            push @try_pos, $pos - $j, $pos + $j;
+        for my $i (1 .. $LOOK_RANGE) {
+            push @try_pos, $pos - $i, $pos + $i;            
         }
         @try_pos = grep { $_ >= 0 && $_ <= $maxlen } @try_pos;
         
@@ -98,7 +96,7 @@ sub refine_heuristic {
         my @candidates = grep { $score{$_} == $maxscore } @try_pos;
         my %distance = map { abs($_ - $pos) => $_ } @candidates;
         
-        $h->[$i] = $distance{min(keys %distance)};
+        $pos = $distance{min(keys %distance)};
     }
     
     return $h;
