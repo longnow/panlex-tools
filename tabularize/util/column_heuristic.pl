@@ -38,8 +38,8 @@ sub column_heuristic {
     my $h = [];
     
     my $start_width = int($maxlen / $num);
-    for (my $i = 1; $i < $num; $i++) {
-        push @$h, $start_width * $i;
+    for my $i (1 .. $num - 1) {
+        push @$h, $start_width * $i;        
     }
 
     my %seen;
@@ -89,7 +89,7 @@ sub refine_heuristic {
         for my $i (1 .. $LOOK_RANGE) {
             push @try_pos, $pos - $i, $pos + $i;            
         }
-        @try_pos = grep { $_ >= 0 && $_ <= $maxlen } @try_pos;
+        @try_pos = grep { $_ >= 0 && $_ < $maxlen } @try_pos;
         
         my %score = map { $_ => score_pos($lines, $_) } @try_pos;
         my $maxscore = max(values %score);
