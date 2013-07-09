@@ -16,7 +16,7 @@ sub score_pos {
     foreach my $line (@$lines) {
         if (substr($line,$pos,1) eq ' ') {
             $score++;
-            $score += 5 * count_adjacent_spaces($line, $pos, $maxlen) / $maxlen;
+            #$score += 5 * count_adjacent_spaces($line, $pos, $maxlen) / $maxlen;
         }
     }
     
