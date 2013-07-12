@@ -12,7 +12,7 @@ sub run {
     print "\n";
     die "odd number of items in \@TOOLS" unless @TOOLS % 2 == 0;
 
-    my $log = { tools => \@TOOLS };
+    my $log = { tools => \@TOOLS, basename => $BASENAME, version => $VERSION };
 
     if (-d $PANLEX_TOOLDIR) {    
         # get the panlex-tools revision.
