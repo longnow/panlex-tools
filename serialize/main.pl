@@ -114,28 +114,30 @@ my @TOOLS = (
 #'normalize'    => { col => 0, uid => 'eng-000', min => 50, mindeg => 10 },
 # Normalizes expressions in a tagged source file.
 # Arguments:
-#   col:    column containing expressions to be normalized.
-#   uid:    variety UID of expressions to be normalized.
-#   min:    minimum score (0 or more) a proposed expression must have in order 
-#             to be accepted outright as an expression. Every proposed expression
-#             with a lower (or no) score is to be replaced with the highest-
-#             scoring expression sharing its language variety and degradation, if
-#             any such expression has a higher score than it does.
-#   mindeg: minimum score a proposed expression that is not accepted outright as
-#             an expression, or its replacement, must have in order to be
-#             accepted as an expression.
-#   dftag:  definition tag, if proposed expressions not accepted as expressions 
-#             and not having replacements accepted as expressions are to be
-#             converted to definitions; '' (blank) if they are to be converted
-#             to pre-normalized expressions. default '⫷df⫸'.
-#   delim:  regex matching the synonym delimiter, if each proposed expression
-#             containing such a delimiter is to be treated as a list of
-#             synonymous proposed expressions and they are to be normalized if
-#             and only if all expressions in the list are normalizable; or ''
-#             (blank) if not. default ''. example: ', '.
-#   extag:  expression tag. default '⫷ex⫸'.
-#   exptag: pre-normalized expression tag. default '⫷exp⫸'.
-#   tagre:  regex identifying any tag. default '⫷[a-z:]+⫸'.
+#   col:      column containing expressions to be normalized.
+#   uid:      variety UID of expressions to be normalized.
+#   min:      minimum score (0 or more) a proposed expression must have in order 
+#               to be accepted outright as an expression. Every proposed 
+#               expression with a lower (or no) score is to be replaced with the 
+#               highest-scoring expression sharing its language variety and 
+#               degradation, if any such expression has a higher score than it.
+#   mindeg:   minimum score a proposed expression that is not accepted outright 
+#               as an expression, or its replacement, must have in order to be
+#               accepted as an expression.
+#   failtag:  tag with which to retag proposed expressions not accepted as 
+#               expressions and not having replacements accepted as expressions; 
+#               '' (blank) if they are to be converted to pre-normalized 
+#               expressions. default '⫷df⫸'.
+#   ignore:   regex matching expressions to be ignored in normalization; or ''
+#               (blank) if none. default ''.
+#   delim:    regex matching the synonym delimiter, if each proposed expression
+#               containing such a delimiter is to be treated as a list of
+#               synonymous proposed expressions and they are to be normalized if
+#               and only if all expressions in the list are normalizable; or ''
+#               (blank) if not. default ''. example: ', '.
+#   extag:    expression tag. default '⫷ex⫸'.
+#   exptag:   pre-normalized expression tag. default '⫷exp⫸'.
+#   tagre:    regex identifying any tag. default '⫷[a-z:]+⫸'.
 
 #'out-simple-0' => { specs => [ '0:rus-000', '1:eng-000' ] },
 # Converts a normally tagged source file to a simple-text varilingual source file,
