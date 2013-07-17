@@ -5,7 +5,7 @@
 #             specifications.
 #   mindf:  minimum count (2 or more) of definitions and expressions per entry.
 #             default 2.
-#   minex:  minimum count (1 or more) of expressions per entry. default 2.
+#   minex:  minimum count (1 or more) of expressions per entry. default 1.
 #   wc:     word classification to annotate all expressions as that have no 
 #             tagged wc, or '' if none. default ''.
 
@@ -37,7 +37,7 @@ sub process {
 
         @specs  = @{$args->{specs}};
         $mindf  = defined $args->{mindf} ? $args->{mindf} : 2;
-        $minex  = defined $args->{minex} ? $args->{minex} : 2;
+        $minex  = defined $args->{minex} ? $args->{minex} : 1;
         $wc     = defined $args->{wc} ? $args->{wc} : '';
     } else {
         ($wc, $mindf, $minex, @specs) = @$args;

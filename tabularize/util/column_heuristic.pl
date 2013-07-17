@@ -9,15 +9,34 @@ my $LOOK_RANGE = 10;
 # returns the cumulative score for position $pos in $lines.
 # by default, gives a score of 1 for each space. modify as needed.
 sub score_pos {
-    my ($lines, $pos) = @_;
+    my ($lines, $pos, $maxlen) = @_;
     
     my $score = 0;
     
     foreach my $line (@$lines) {
-        $score++ if substr($line,$pos,1) eq ' ';
+        if (substr($line,$pos,1) eq ' ') {
+            $score++;
+            #$score += 5 * count_adjacent_spaces($line, $pos, $maxlen) / $maxlen;
+        }
     }
     
+    $score = int($score);
+        
     return $score;
+}
+
+sub count_adjacent_spaces {
+    my ($line, $pos, $maxlen) = @_;
+    my $count = 0;
+    
+    for (my $i = $pos - 1; $i >= 0 && substr($line,$i,1) eq ' '; $i--) {
+        $count++;
+    }
+    for (my $i = $pos + 1; $i < $maxlen && substr($line,$i,1) eq ' '; $i++) {
+        $count++;
+    }
+    
+    return $count;
 }
 
 # generates a heuristic for the location of column breaks.
@@ -38,8 +57,8 @@ sub column_heuristic {
     my $h = [];
     
     my $start_width = int($maxlen / $num);
-    for (my $i = 1; $i < $num; $i++) {
-        push @$h, $start_width * $i;
+    for my $i (1 .. $num - 1) {
+        push @$h, $start_width * $i;        
     }
 
     my %seen;
@@ -84,21 +103,19 @@ sub refine_heuristic {
     my ($h, $lines, $maxlen) = @_;
     $h = [@$h];
     
-    for (my $i = 0; $i < @$h; $i++) {
-        my $pos = $h->[$i];
-        
+    foreach my $pos (@$h) {
         my @try_pos = ($pos);
-        for (my $j = 1; $j <= $LOOK_RANGE; $j++) {
-            push @try_pos, $pos - $j, $pos + $j;
+        for my $i (1 .. $LOOK_RANGE) {
+            push @try_pos, $pos - $i, $pos + $i;            
         }
-        @try_pos = grep { $_ >= 0 && $_ <= $maxlen } @try_pos;
+        @try_pos = grep { $_ >= 0 && $_ < $maxlen } @try_pos;
         
-        my %score = map { $_ => score_pos($lines, $_) } @try_pos;
+        my %score = map { $_ => score_pos($lines, $_, $maxlen) } @try_pos;
         my $maxscore = max(values %score);
         my @candidates = grep { $score{$_} == $maxscore } @try_pos;
         my %distance = map { abs($_ - $pos) => $_ } @candidates;
         
-        $h->[$i] = $distance{min(keys %distance)};
+        $pos = $distance{min(keys %distance)};
     }
     
     return $h;

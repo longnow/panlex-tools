@@ -40,7 +40,7 @@ sub process {
 
     my (%all, %col);
 
-    foreach my $i (@specs}) {
+    foreach my $i (@specs) {
     # For each expression column:
 
         my @col = split /:/, $i;

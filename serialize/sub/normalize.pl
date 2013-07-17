@@ -1,27 +1,29 @@
 # Normalizes expressions in a tagged source file.
 # Arguments:
-#   col:    column containing expressions to be normalized.
-#   uid:    variety UID of expressions to be normalized.
-#   min:    minimum score (0 or more) a proposed expression must have in order 
-#             to be accepted outright as an expression. Every proposed expression
-#             with a lower (or no) score is to be replaced with the highest-
-#             scoring expression sharing its language variety and degradation, if
-#             any such expression has a higher score than it.
-#   mindeg: minimum score a proposed expression that is not accepted outright as
-#             an expression, or its replacement, must have in order to be
-#             accepted as an expression.
-#   dftag:  definition tag, if proposed expressions not accepted as expressions 
-#             and not having replacements accepted as expressions are to be
-#             converted to definitions; '' (blank) if they are to be converted
-#             to pre-normalized expressions. default '⫷df⫸'.
-#   delim:  regex matching the synonym delimiter, if each proposed expression
-#             containing such a delimiter is to be treated as a list of
-#             synonymous proposed expressions and they are to be normalized if
-#             and only if all expressions in the list are normalizable; or ''
-#             (blank) if not. default ''. example: ', '.
-#   extag:  expression tag. default '⫷ex⫸'.
-#   exptag: pre-normalized expression tag. default '⫷exp⫸'.
-#   tagre:  regex identifying any tag. default '⫷[a-z:]+⫸'.
+#   col:      column containing expressions to be normalized.
+#   uid:      variety UID of expressions to be normalized.
+#   min:      minimum score (0 or more) a proposed expression must have in order 
+#               to be accepted outright as an expression. Every proposed 
+#               expression with a lower (or no) score is to be replaced with the 
+#               highest-scoring expression sharing its language variety and 
+#               degradation, if any such expression has a higher score than it.
+#   mindeg:   minimum score a proposed expression that is not accepted outright 
+#               as an expression, or its replacement, must have in order to be
+#               accepted as an expression.
+#   failtag:  tag with which to retag proposed expressions not accepted as 
+#               expressions and not having replacements accepted as expressions; 
+#               '' (blank) if they are to be converted to pre-normalized 
+#               expressions. default '⫷df⫸'.
+#   ignore:   regex matching expressions to be ignored in normalization; or ''
+#               (blank) if none. default ''.
+#   delim:    regex matching the synonym delimiter, if each proposed expression
+#               containing such a delimiter is to be treated as a list of
+#               synonymous proposed expressions and they are to be normalized if
+#               and only if all expressions in the list are normalizable; or ''
+#               (blank) if not. default ''. example: ', '.
+#   extag:    expression tag. default '⫷ex⫸'.
+#   exptag:   pre-normalized expression tag. default '⫷exp⫸'.
+#   tagre:    regex identifying any tag. default '⫷[a-z:]+⫸'.
 
 package PanLex::Serialize::normalize;
 
@@ -45,20 +47,24 @@ sub process {
     my $out = shift;
     my $args = ref $_[0] ? $_[0] : \@_;
     
-    my ($excol, $uid, $min, $mindeg, $dftag, $delim, $extag, $exptag, $tagre);
+    my ($excol, $uid, $min, $mindeg, $failtag, $ignore, $delim, $extag, $exptag, $tagre);
     
     if (ref $args eq 'HASH') {
+        $args->{failtag} = $args->{dftag} unless defined $args->{failtag};
+
         $excol    = $args->{col};
         $uid      = $args->{uid};
         $min      = $args->{min};
         $mindeg   = $args->{mindeg};
-        $dftag    = defined $args->{dftag} ? $args->{dftag} : '⫷df⫸';
+        $failtag  = defined $args->{failtag} ? $args->{failtag} : '⫷df⫸';
+        $ignore   = defined $args->{ignore} ? $args->{ignore} : '';
         $delim    = defined $args->{delim} ? $args->{delim} : '';
         $extag    = defined $args->{extag} ? $args->{extag} : '⫷ex⫸';
         $exptag   = defined $args->{exptag} ? $args->{exptag} : '⫷exp⫸';
         $tagre    = defined $args->{tagre} ? $args->{tagre} : '⫷[a-z:]+⫸';      
     } else {
-        ($tagre, $extag, $excol, $min, $mindeg, $uid, $exptag, $dftag, $delim) = @$args;
+        ($tagre, $extag, $excol, $min, $mindeg, $uid, $exptag, $failtag, $delim) = @$args;
+        $ignore = '';
     }
 
     validate_col($excol);
@@ -105,9 +111,19 @@ sub process {
                     foreach my $ex (PsList($seg, $lentag, $delim)) {
                     # For the expression, or for each expression if it is a pseudo-list:
 
-                        $ex{$ex} = '';
-                        # Add it to the table of proposed expression texts, if not
-                        # already in it.
+                        if (length $ignore && $ex =~ /$ignore/o) {
+                        # If the expression is to be ignored:
+
+                            $exok{$ex} = '';
+                            # mark the expression as valid.
+                        }
+                        else {
+                        # Otherwise:
+
+                            $ex{$ex} = '';
+                            # Add it to the table of proposed expression texts, if not
+                            # already in it.                            
+                        }
                     }
                 }
             }
@@ -224,11 +240,11 @@ sub process {
                         # the specified delimiter if any, i.e. the original item
                         # without its expression tag.
 
-                        if (length $dftag) {
+                        if (length $failtag) {
                         # If proposed expressions not classifiable as expressions
                         # are to be converted to definitions:
 
-                            $seg = "$dftag$seg";
+                            $seg = "$failtag$seg";
                             # Prepend a definition tag to the concatenation.
                         }
 
