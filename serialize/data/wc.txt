@@ -1,1 +1,232 @@
-a	adjvadj	adjvAdj	adjvADJ	adjvadj.	adjvAdj.	adjvAdj. poss.	adjv:poss.Adjective	adjvADJECTIVE	adjvadjectives	adjvAdjectives	adjvadji	adjv:adjiadjv	adjvadv	advbAdv	advbADV	advbadv.	advbAdv.	advbadvb	advbAdverb	advbADVERB	advbAff	affxAFF	affxaff.	affxaffix	affxaffx	affxafx	affxagg.	adjvagg.	adjvart.	detr:art.Aux.	auxvauxv	auxvavv.	advbavv.	advbbnd pfx	affx:bnd pfxbnd sfx	affx:bnd sfxc	conjcard	detr:cardcnj	conjcnjadv	conj:cnjadvcnjcoo	conj:cnjcoocnjsub	conj:cnjsubcong.	conjconj	conjConj	conjCONJ	conjconj.	conjConj.	conjConjunction	conjcoord.	conj:coord.dem	detr:demDEM	detr:DEMdem.	detr:dem.Demonstrative	detr:Demonstrativedet	detrDet	detrdet.	detrDeterm.	detrDeterminer	detrdetr	detrdisc	misc:discepn	pron:epnexc	ijec:excExcl	ijec:ExclEXCL	ijec:EXCLf.v.	verb:f.v./frase di verbofrac	detr:fracijec	ijecinj	ijecINSTR	advb:INSTRinter	ijecINTER	ijecinter.	ijecinterj	ijecInterj	ijecinterj.	ijecinterjec.	ijecInterjection	ijecINTJ	ijecintj.	ijecintr	verb:intrintr.	verb:intr.INTRJCT	ijecIV	verb:IVLOC	advb:LOCmisc	miscMOD	advb:MODmod.avv.	advb:mod.avv.n	nounN	nounN Próprio.	namen:	nounn.	nounN.	nounn. manner.	noun:n.manner.n. qual.	noun:n.qual.n. quant.	noun:n.quant.n.f.	noun:f.n.idiom.	noun:n.idiom.n.loc.	noun:n.loc.n.m.	noun:m.n.manner.	noun:n.manner.n.n.	noun:n.n.qual.	noun:n.qual.n.quant.	noun:n.quant.n.time.	noun:n.time.na.	noun:na.name	nameNAME	nameni.	noun:ni.nm	noun:mnoun	nounNoun	nounNOUN	nounnouns	nounNouns	nounnp	namentr	verb:ntrnum	detr:numNum	detr:NumNUM	detr:NUMnum.	detr:num.Numeral	detr:Numeralord	detr:ordP	preppcl	:pclphr: v	verb:phrpn.	pronpos	pron:pospos.	advb:pos.Posp.	postpost	postPost	postPOST	postpp	preppp.	preppr	preppreadv	prep:preadvprefix	affx:prefixprep	prepprep.	prepprép.	prepPreposition	prepprn	pronpro	pronPro	pronPRO	pronpro.	pronpron	pronpron.	pronPron.	pronPron. Ab.	pron:Ab.Pron. Acus.	pron:Acus.Pron. Corref.	pron:Corref.Pron. Ergativo.	pron:Ergativo.Pron. Imp.	pronPron. Independente.	pron:Independente.Pron.Pess.	pron:Pess./pronome pessoalPronoun	pronprop	n.	nameprop n.	nameprop. n.	nameprop.n.	nameProper Noun	nameQT	detr:QTquant	detr:quantquant.	detr:quant.Quantifier	detr:Quantifierrel	conj:relRFLX PRO	pron:RFLXs	nouns.f.	noun:f.s.f.pl.	noun:f.pl.s.m.	noun:m.s.m.pl.	noun:m.pl.sbd.	conj:sbd.sf.	noun:sf.sm.	noun:sm.spn	pron:spnsuf.	affx:suf.Suf.	affx:Suf.suffix	affx:suffixsvin.	verb:svin.TEMP	advb:TEMPtemps.	advb:temps.tr	verb:trtr.	verb:tr.TV	verb:TVv	verbV	verbV INCORP	verb:INCORPV-INTR	verb:INTRV-TR	verb:TRv: itr	verb:itrv: tr	verb:trv:it	verb:itv:itr	verb:itrv:tr	verb:trv:tr	verb:trv.	verbV.	verbv. aux.	auxvv.i.	verb:v.i.v.impers.	verb:v.impers.v.rif.	verb:v.rif./verbo riflessivov.t.	verb:v.t.va.	auxvVAux.	auxvvbhaver	verb:vbhavervblex	verbvbmod	verb:vbmodvbser	verb:vbservc	verb:vcVCit.	verbverb	verbVerb	verbVERB	verbverbs	verbVerbs	verbvi	verb:viVi	verb:Vivi.	verb:vi.vin.	verb:vin.Vint.	verb:vivr.	verb:vr.vt	verb:vtVt	verb:Vtvt.	verb:vt.vtr	verb:vtr.vtr.	verb:vtr.Vtran.	verb:vtvtrm.	verb:vtrm.
+a	adjv
+adj	adjv
+Adj	adjv
+ADJ	adjv
+adj.	adjv
+Adj.	adjv
+Adj. poss.	adjv:poss.
+Adjective	adjv
+ADJECTIVE	adjv
+adjectives	adjv
+Adjectives	adjv
+adji	adjv:adji
+adjv	adjv
+adv	advb
+Adv	advb
+ADV	advb
+adv.	advb
+Adv.	advb
+advb	advb
+Adverb	advb
+ADVERB	advb
+Aff	affx
+AFF	affx
+aff.	affx
+affix	affx
+affx	affx
+afx	affx
+agg.	adjv
+agg.	adjv
+art.	detr:art.
+Aux.	auxv
+auxv	auxv
+avv.	advb
+avv.	advb
+bnd pfx	affx:bnd pfx
+bnd sfx	affx:bnd sfx
+c	conj
+card	detr:card
+cnj	conj
+cnjadv	conj:cnjadv
+cnjcoo	conj:cnjcoo
+cnjsub	conj:cnjsub
+cong.	conj
+conj	conj
+Conj	conj
+CONJ	conj
+conj.	conj
+Conj.	conj
+Conjunction	conj
+coord.	conj:coord.
+dem	detr:dem
+DEM	detr:DEM
+dem.	detr:dem.
+Demonstrative	detr:Demonstrative
+det	detr
+Det	detr
+det.	detr
+Determ.	detr
+Determiner	detr
+detr	detr
+disc	misc:disc
+epn	pron:epn
+exc	ijec:exc
+Excl	ijec:Excl
+EXCL	ijec:EXCL
+f.v.	verb:f.v./frase di verbo
+frac	detr:frac
+ijec	ijec
+inj	ijec
+INSTR	advb:INSTR
+inter	ijec
+INTER	ijec
+inter.	ijec
+interj	ijec
+Interj	ijec
+interj.	ijec
+interjec.	ijec
+Interjection	ijec
+INTJ	ijec
+intj.	ijec
+intr	verb:intr
+intr.	verb:intr.
+INTRJCT	ijec
+IV	verb:IV
+LOC	advb:LOC
+misc	misc
+MOD	advb:MOD
+mod.avv.	advb:mod.avv.
+n	noun
+N	noun
+N Próprio.	name
+n:	noun
+n.	noun
+N.	noun
+n. manner.	noun:n.manner.
+n. qual.	noun:n.qual.
+n. quant.	noun:n.quant.
+n.f.	noun:f.
+n.idiom.	noun:n.idiom.
+n.loc.	noun:n.loc.
+n.m.	noun:m.
+n.manner.	noun:n.manner.
+n.n.	noun:n.
+n.qual.	noun:n.qual.
+n.quant.	noun:n.quant.
+n.time.	noun:n.time.
+na.	noun:na.
+name	name
+NAME	name
+ni.	noun:ni.
+nm	noun:m
+noun	noun
+Noun	noun
+NOUN	noun
+nouns	noun
+Nouns	noun
+np	name
+ntr	verb:ntr
+num	detr:num
+Num	detr:Num
+NUM	detr:NUM
+num.	detr:num.
+Numeral	detr:Numeral
+ord	detr:ord
+P	prep
+pcl	:pcl
+phr: v	verb:phr
+pn.	pron
+pos	pron:pos
+pos.	advb:pos.
+Posp.	post
+post	post
+Post	post
+POST	post
+pp	prep
+pp.	prep
+pr	prep
+preadv	prep:preadv
+prefix	affx:prefix
+prep	prep
+prep.	prep
+prép.	prep
+Preposition	prep
+prn	pron
+pro	pron
+Pro	pron
+PRO	pron
+pro.	pron
+pron	pron
+pron.	pron
+Pron.	pron
+Pron. Ab.	pron:Ab.
+Pron. Acus.	pron:Acus.
+Pron. Corref.	pron:Corref.
+Pron. Ergativo.	pron:Ergativo.
+Pron. Imp.	pron
+Pron. Independente.	pron:Independente.
+Pron.Pess.	pron:Pess./pronome pessoal
+Pronoun	pron
+prop	n.	name
+prop n.	name
+prop. n.	name
+prop.n.	name
+Proper Noun	name
+QT	detr:QT
+quant	detr:quant
+quant.	detr:quant.
+Quantifier	detr:Quantifier
+rel	conj:rel
+RFLX PRO	pron:RFLX
+s	noun
+s.f.	noun:f.
+s.f.pl.	noun:f.pl.
+s.m.	noun:m.
+s.m.pl.	noun:m.pl.
+sbd.	conj:sbd.
+sf.	noun:sf.
+sm.	noun:sm.
+spn	pron:spn
+suf.	affx:suf.
+Suf.	affx:Suf.
+suffix	affx:suffix
+svin.	verb:svin.
+TEMP	advb:TEMP
+temps.	advb:temps.
+tr	verb:tr
+tr.	verb:tr.
+TV	verb:TV
+v	verb
+V	verb
+V INCORP	verb:INCORP
+V-INTR	verb:INTR
+V-TR	verb:TR
+v: itr	verb:itr
+v: tr	verb:tr
+v:it	verb:it
+v:itr	verb:itr
+v:tr	verb:tr
+v:tr	verb:tr
+v.	verb
+V.	verb
+v. aux.	auxv
+v.i.	verb:v.i.
+v.impers.	verb:v.impers.
+v.rif.	verb:v.rif./verbo riflessivo
+v.t.	verb:v.t.
+va.	auxv
+VAux.	auxv
+vbhaver	verb:vbhaver
+vblex	verb
+vbmod	verb:vbmod
+vbser	verb:vbser
+vc	verb:vc
+VCit.	verb
+verb	verb
+Verb	verb
+VERB	verb
+verbs	verb
+Verbs	verb
+vi	verb:vi
+Vi	verb:Vi
+vi.	verb:vi.
+vin.	verb:vin.
+Vint.	verb:vi
+vr.	verb:vr.
+vt	verb:vt
+Vt	verb:Vt
+vt.	verb:vt.
+vtr	verb:vtr.
+vtr.	verb:vtr.
+Vtran.	verb:vt
+vtrm.	verb:vtrm.
