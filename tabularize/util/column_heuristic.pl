@@ -1,6 +1,6 @@
 use strict;
 use utf8;
-use List::Util qw/max min/;
+use List::Util qw/max min sum/;
 
 # the number of positions to look (left and right) in each
 # successive iteration while refining the heuristic.
@@ -14,6 +14,9 @@ sub score_pos {
     my $score = 0;
     
     foreach my $line (@$lines) {
+        next if substr($line, 0, $pos) =~ /^\s+$/;
+        next if substr($line, $pos+1) =~ /^\s+$/;
+        
         if (substr($line,$pos,1) eq ' ') {
             $score++;
             #$score += 5 * count_adjacent_spaces($line, $pos, $maxlen) / $maxlen;
@@ -32,10 +35,11 @@ sub count_adjacent_spaces {
     for (my $i = $pos - 1; $i >= 0 && substr($line,$i,1) eq ' '; $i--) {
         $count++;
     }
+
     for (my $i = $pos + 1; $i < $maxlen && substr($line,$i,1) eq ' '; $i++) {
         $count++;
-    }
-    
+    }        
+
     return $count;
 }
 
@@ -48,7 +52,9 @@ sub column_heuristic {
     my ($num, $lines) = @_;
     $lines = [@$lines];
     
-    my $maxlen = max(map { length } @$lines);
+    my @len = map { length } @$lines;
+    my $maxlen = max(@len);
+    my $avglen = sum(@len) / @len;
     
     foreach my $line (@$lines) {
         $line .= ' ' x ($maxlen - length $line) if length $line < $maxlen;
@@ -56,7 +62,7 @@ sub column_heuristic {
     
     my $h = [];
     
-    my $start_width = int($maxlen / $num);
+    my $start_width = int($avglen / $num);
     for my $i (1 .. $num - 1) {
         push @$h, $start_width * $i;        
     }
