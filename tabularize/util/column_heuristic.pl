@@ -1,18 +1,20 @@
 use strict;
 use utf8;
-use List::Util qw/max min/;
-use Statistics::Basic qw/median/;
+use List::Util qw/max min sum/;
 
-# the number of positions to look (left and right) in each
-# successive iteration while refining the heuristic.
-my $LOOK_RANGE = 10;
+# the number of positions to look (left and right) for candidate boundaries.
+my $LOOK_RANGE = 15;
 
-# the minimum width of a column. candidate heuristics with columns
-# smaller than this will be discarded.
-my $MIN_WIDTH = 5;
+# the minimum width of a column. candidate columns with width smaller
+# than this will be discarded.
+my $MIN_WIDTH = 10;
 
-# returns the cumulative score for position $pos in $lines.
-# by default, gives a score of 1 for each space. modify as needed.
+# the maximum number of adjacent spaces to count towards a position's score.
+my $MAX_ADJACENT = int($LOOK_RANGE/2);
+
+# returns the cumulative score for position $pos in $lines. by default,
+# gives a score of 1 for each space, plus a weighted score for some
+# horizontally adjacent spaces (see count_adjacent_spaces).
 sub score_pos {
     my ($lines, $pos, $maxwidth) = @_;
     
@@ -20,17 +22,14 @@ sub score_pos {
     
     foreach my $line (@$lines) {        
         if (substr($line,$pos,1) eq ' ') {
-            # ignore cases where there is nothing but whitespace to one side, as this
-            # is not informative for the location of a column boundary.
-            next if substr($line, 0, $pos) =~ /^\s+$/;
-            next if substr($line, $pos+1) =~ /^\s+$/;
-
             $score++;
-            #$score += 5 * count_adjacent_spaces($line, $pos, $maxwidth) / $maxwidth;
+            $score += 5 * count_adjacent_spaces($line, $pos, $maxwidth) / $maxwidth;
         }
     }
     
     $score = int($score);
+    
+    #print "$pos = $score\n";
         
     return $score;
 }
@@ -39,15 +38,17 @@ sub count_adjacent_spaces {
     my ($line, $pos, $maxwidth) = @_;
     my $count = 0;
     
-    for (my $i = $pos - 1; $i >= 0 && substr($line,$i,1) eq ' '; $i--) {
-        $count++;
-    }        
+    my $str = substr($line,0,$pos-1);
+    return 0 if $str =~ /^ +$/;
+    $str =~ /( +)$/;
+    $count += length $1;
     
-    for (my $i = $pos + 1; $i < $maxwidth && substr($line,$i,1) eq ' '; $i++) {
-        $count++;
-    }        
+    $str = substr($line, $pos+1);
+    return 0 if $str =~ /^ +$/;
+    $str =~ /^( +)/;
+    $count += length $1;
     
-    return $count;
+    return min($count, $MAX_ADJACENT);
 }
 
 # generates a heuristic for the location of column breaks.
@@ -59,90 +60,22 @@ sub column_heuristic {
     my ($num, $lines) = @_;
     $lines = [@$lines];
     
-    my @len = map { length } @$lines;
+    my @len = grep { $_ > 0 } map { length } @$lines;
     my $maxwidth = max(@len);
     
     foreach my $line (@$lines) {
         $line .= ' ' x ($maxwidth - length $line) if length $line < $maxwidth;
     }
     
-    my @candidates = 
-        grep { valid_candidate($_) }
-        map { _column_heuristic($num, $lines, $maxwidth, $_) } (median(@len), $maxwidth);
+    my %candidates = 
+        map { $_->[1] => $_->[0] } # map score to candidate
+        map { pick_heuristic($num, $lines, $maxwidth, $_) } 
+            (median(@len), $maxwidth); # try two alternative starting points
     
-    die "could not find any candidate heuristics" unless @candidates;
+    die "could not find any candidate heuristics" unless keys %candidates;
     
-    return [0, @{$candidates[0]} ];
-}
-
-sub _column_heuristic {
-    my ($num, $lines, $maxwidth, $linewidth) = @_;
-
-    my $h = [];
-    
-    my $startwidth = int($linewidth / $num);
-    for my $i (1 .. $num - 1) {
-        push @$h, $startwidth * $i;        
-    }
-
-    my %seen;
-    $seen{hash_heuristic($h)}++;
-        
-    while (1) {
-        my $newh = refine_heuristic($h, $lines, $maxwidth);
-                
-        my $diff = 0;
-        for (my $i = 0; $i < $num; $i++) {
-            $diff += abs($h->[$i] - $newh->[$i]);
-        }
-        
-        $h = $newh;
-        my $hash = hash_heuristic($h);
-        $seen{$hash}++;
-        
-        last if $diff == 0 || $seen{$hash} > 5;
-    }
-    
-    return $h;
-}
-
-sub refine_heuristic {
-    my ($h, $lines, $maxwidth) = @_;
-    $h = [@$h];
-    
-    foreach my $pos (@$h) {
-        my @try_pos = ($pos);
-        for my $i (1 .. $LOOK_RANGE) {
-            push @try_pos, $pos - $i, $pos + $i;            
-        }
-        @try_pos = grep { $_ >= 0 && $_ < $maxwidth } @try_pos;
-        
-        my %score = map { $_ => score_pos($lines, $_, $maxwidth) } @try_pos;
-        my $maxscore = max(values %score);
-        my @candidates = grep { $score{$_} == $maxscore } @try_pos;
-        my %distance = map { abs($_ - $pos) => $_ } @candidates;
-        
-        $pos = $distance{min(keys %distance)};
-    }
-    
-    return $h;
-}
-
-sub hash_heuristic {
-    my ($h) = @_;
-    return join('|', map { sprintf "%04d", $_ } @$h);
-}
-
-sub valid_candidate {
-    my ($h) = @_;
-    
-    return 0 if $h->[0] < $MIN_WIDTH;
-    
-    for (my $i = 1; $i < @$h; $i++) {
-        return 0 if $h->[$i] - $h->[$i-1] < $MIN_WIDTH;
-    }
-    
-    return 1;
+    # return the candidate with the highest score
+    return [0, @{$candidates{max(keys %candidates)}} ];
 }
 
 # parses the columns from a line using a generated heuristic.
@@ -160,6 +93,109 @@ sub heuristic_parse {
     push @rec, substr($line, $h->[-1]);
     
     return @rec;
+}
+
+sub pick_heuristic {
+    my ($num, $lines, $maxwidth, $startwidth) = @_;
+
+    my $h = [];
+    
+    my $startcolwidth = int($startwidth / $num);
+    for my $i (1 .. $num - 1) {
+        push @$h, $startcolwidth * $i;
+    }
+    
+    # generate range of positions to try for each column boundary
+    my @candidate_pos;
+    foreach my $pos (@$h) {
+        my @try_pos = ($pos);
+        for my $i (1 .. $LOOK_RANGE) {
+            push @try_pos, $pos - $i, $pos + $i;            
+        }
+        @try_pos = grep { $_ >= 0 && $_ < $maxwidth } @try_pos;
+        push @candidate_pos, \@try_pos;
+    }
+    
+    # generate all candidate boundary combinations
+    my @candidates = ([]);
+    for my $i (0 .. @$h - 1) {
+        my @newcandidates;
+        foreach my $c (@candidates) {
+            foreach my $item (@{$candidate_pos[$i]}) {
+                push @newcandidates, [@$c, $item];
+            }
+        }
+        @candidates = @newcandidates;
+    }
+
+    # select only the valid combinations according to MIN_WIDTH
+    @candidates = grep { valid_candidate($_, $maxwidth) } @candidates;
+        
+    my %score;
+    foreach my $c (@candidates) {
+        $score{hash_heuristic($c)} = sum(map { score_pos($lines, $_, $maxwidth) } @$c);
+    }
+    #report_scores(\%score);
+        
+    my $maxscore = max(values %score);
+    my @top_candidates = grep { $score{$_} == $maxscore } keys %score;
+
+    my %distance;
+    foreach my $topc (@top_candidates) {
+        my $toph = unhash_heuristic($topc);
+        
+        my $d; 
+        for (my $i = 0; $i < @$toph; $i++) {
+            $d += abs($toph->[$i] - $h->[$i]);
+        }
+        
+        $distance{$d} = $toph;
+    }
+    
+    my $best_candidate = $distance{min(keys %distance)};
+
+    #print "starting point\n", Dumper($h), "\n";
+    #print "\nresult\n", Dumper([$best_candidate, $maxscore]), "\n";
+
+    return [$best_candidate, $maxscore];
+}
+
+sub report_scores {
+    my ($scores) = @_;
+    foreach my $h (sort keys %$scores) {
+        print "$h = $scores->{$h}\n";
+    }
+}
+
+sub hash_heuristic {
+    my ($h) = @_;
+    return join('-', map { sprintf "%03d", $_ } @$h);
+}
+
+sub unhash_heuristic {
+    my ($hash) = @_;
+    return [map { int($_) } split(/-/, $hash)];
+}
+
+sub valid_candidate {
+    my ($h, $maxwidth) = @_;
+    
+    return 0 if $h->[0] < $MIN_WIDTH;
+    
+    for (my $i = 1; $i < @$h; $i++) {
+        return 0 if $h->[$i] - $h->[$i-1] < $MIN_WIDTH;
+    }
+    
+    return 0 if $maxwidth - $h->[-1] - 1 < $MIN_WIDTH;
+    
+    return 1;
+}
+
+sub median {
+    my @vals = sort { $a <=> $b } @_;
+    my $len = @vals;
+    return $vals[int($len/2)] if $len % 2;
+    return $vals[int($len/2)-1] + $vals[int($len/2)];
 }
 
 1;
