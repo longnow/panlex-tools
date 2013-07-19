@@ -121,8 +121,8 @@ sub pick_heuristic {
     for my $i (0 .. @$h - 1) {
         my @newcandidates;
         foreach my $c (@candidates) {
-            foreach my $item (@{$candidate_pos[$i]}) {
-                push @newcandidates, [@$c, $item];
+            foreach my $pos (@{$candidate_pos[$i]}) {
+                push @newcandidates, [@$c, $pos];
             }
         }
         @candidates = @newcandidates;
@@ -133,18 +133,14 @@ sub pick_heuristic {
         
     my %score;
     foreach my $c (@candidates) {
-        $score{hash_heuristic($c)} = sum(map { score_pos($lines, $_, $maxwidth) } @$c);
+        my $s = sum(map { score_pos($lines, $_, $maxwidth) } @$c);
+        push @{$score{$s}}, $c;
     }
-    #report_scores(\%score);
-        
-    my $maxscore = max(values %score);
-    my @top_candidates = grep { $score{$_} == $maxscore } keys %score;
 
     my %distance;
-    foreach my $topc (@top_candidates) {
-        my $toph = unhash_heuristic($topc);
-        
-        my $d; 
+    my $maxscore = max(keys %score);
+    foreach my $toph (@{$score{$maxscore}}) {        
+        my $d = 0; 
         for (my $i = 0; $i < @$toph; $i++) {
             $d += abs($toph->[$i] - $h->[$i]);
         }
@@ -152,29 +148,12 @@ sub pick_heuristic {
         $distance{$d} = $toph;
     }
     
-    my $best_candidate = $distance{min(keys %distance)};
+    my $besth = $distance{min(keys %distance)};
 
     #print "starting point\n", Dumper($h), "\n";
-    #print "\nresult\n", Dumper([$best_candidate, $maxscore]), "\n";
+    #print "\nresult\n", Dumper([$besth, $maxscore]), "\n";
 
-    return [$best_candidate, $maxscore];
-}
-
-sub report_scores {
-    my ($scores) = @_;
-    foreach my $h (sort keys %$scores) {
-        print "$h = $scores->{$h}\n";
-    }
-}
-
-sub hash_heuristic {
-    my ($h) = @_;
-    return join('-', map { sprintf "%03d", $_ } @$h);
-}
-
-sub unhash_heuristic {
-    my ($hash) = @_;
-    return [map { int($_) } split(/-/, $hash)];
+    return [$besth, $maxscore];
 }
 
 sub valid_candidate {
