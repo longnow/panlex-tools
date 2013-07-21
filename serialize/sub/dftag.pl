@@ -27,7 +27,7 @@ sub process {
         validate_cols($args->{cols});
 
         @dfcol    = @{$args->{cols}};
-        $dftag    = defined $args->{dftag} ? $args->{dftag} :  '⫷df⫸';      
+        $dftag    = $args->{dftag} // '⫷df⫸';      
     } else {
         ($dftag, @dfcol) = @$args;
         validate_cols(\@dfcol);

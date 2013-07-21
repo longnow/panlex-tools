@@ -54,12 +54,12 @@ sub process {
         $uid      = $args->{uid};
         $min      = $args->{min};
         $mindeg   = $args->{mindeg};
-        $failtag  = defined $args->{failtag} ? $args->{failtag} : defined $args->{dftag} ? $args->{dftag} : '⫷df⫸';
-        $ignore   = defined $args->{ignore} ? $args->{ignore} : '';
-        $delim    = defined $args->{delim} ? $args->{delim} : '';
-        $extag    = defined $args->{extag} ? $args->{extag} : '⫷ex⫸';
-        $exptag   = defined $args->{exptag} ? $args->{exptag} : '⫷exp⫸';
-        $tagre    = defined $args->{tagre} ? $args->{tagre} : '⫷[a-z:]+⫸';      
+        $failtag  = $args->{failtag} // $args->{dftag} // '⫷df⫸';
+        $ignore   = $args->{ignore} // '';
+        $delim    = $args->{delim} // '';
+        $extag    = $args->{extag} // '⫷ex⫸';
+        $exptag   = $args->{exptag} // '⫷exp⫸';
+        $tagre    = $args->{tagre} // '⫷[a-z:]+⫸';      
     } else {
         ($tagre, $extag, $excol, $min, $mindeg, $uid, $exptag, $failtag, $delim) = @$args;
         $ignore = '';

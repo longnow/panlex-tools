@@ -29,8 +29,8 @@ sub process {
     
     if (ref $args eq 'HASH') {
         $wccol    = $args->{col};
-        $wctag    = defined $args->{wctag} ? $args->{wctag} : '⫷wc⫸';
-        $mdtag    = defined $args->{mdtag} ? $args->{mdtag} : '⫷md:gram⫸';      
+        $wctag    = $args->{wctag} // '⫷wc⫸';
+        $mdtag    = $args->{mdtag} // '⫷md:gram⫸';      
     } else {
         ($wccol, $wctag, $mdtag) = @$args;
     }

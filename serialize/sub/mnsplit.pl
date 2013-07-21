@@ -26,7 +26,7 @@ sub process {
 
     if (ref $args eq 'HASH') {
         $mncol    = $args->{col};
-        $delim    = defined $args->{delim} ? $args->{delim} : '⫷mn⫸';      
+        $delim    = $args->{delim} // '⫷mn⫸';      
     } else {
         ($delim, $mncol) = @$args;
     }

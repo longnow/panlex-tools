@@ -42,15 +42,15 @@ sub process {
         validate_cols($args->{cols});
 
         @exdfcol  = @{$args->{cols}};
-        $re       = defined $args->{re} ? $args->{re} : '';
-        $subre    = defined $args->{subre} ? $args->{subre} : '';
-        $tmc      = defined $args->{maxchar} ? $args->{maxchar} : '';
-        $tmw      = defined $args->{maxword} ? $args->{maxword} : '';
-        $extag    = defined $args->{extag} ? $args->{extag} : '⫷ex⫸';
-        $dftag    = defined $args->{dftag} ? $args->{dftag} : '⫷df⫸';
-        $postre   = defined $args->{postre} ? $args->{postre} : '[^⫷]';
-        $postwre  = defined $args->{postwre} ? $args->{postwre} : '[^⫷ ]';
-        $prere    = defined $args->{prere} ? $args->{prere} : '⫷[^⫷⫸]+⫸';
+        $re       = $args->{re} // '';
+        $subre    = $args->{subre} // '';
+        $tmc      = $args->{maxchar} // '';
+        $tmw      = $args->{maxword} // '';
+        $extag    = $args->{extag} // '⫷ex⫸';
+        $dftag    = $args->{dftag} // '⫷df⫸';
+        $postre   = $args->{postre} // '[^⫷]';
+        $postwre  = $args->{postwre} // '[^⫷ ]';
+        $prere    = $args->{prere} // '⫷[^⫷⫸]+⫸';
     } else {
         ($extag, $postre, $postwre, $re, $dftag, $tmc, $tmw, $subre, $prere, @exdfcol) = @$args;
         validate_cols(\@exdfcol);

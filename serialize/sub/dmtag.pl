@@ -28,8 +28,8 @@ sub process {
         validate_cols($args->{cols});
 
         @dmcol    = @{$args->{cols}};
-        $dmtag    = defined $args->{dmtag} ? $args->{dmtag} : '⫷dm⫸';
-        $delim    = defined $args->{delim} ? $args->{delim} : '‣';      
+        $dmtag    = $args->{dmtag} // '⫷dm⫸';
+        $delim    = $args->{delim} // '‣';      
     } else {
         ($dmtag, $delim, @dmcol) = @$args;
         validate_cols(\@dmcol);

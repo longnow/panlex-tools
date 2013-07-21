@@ -31,11 +31,11 @@ sub process {
     
     if (ref $args eq 'HASH') {      
         $wccol    = $args->{col};
-        $pretag   = defined $args->{pretag} ? $args->{pretag} : '⫷wc:';
-        $posttag  = defined $args->{posttag} ? $args->{posttag} : '⫸';
-        $wctag    = defined $args->{wctag} ? $args->{wctag} : '⫷wc⫸';
-        $extag    = defined $args->{extag} ? $args->{extag} : '⫷ex⫸';
-        $postre   = defined $args->{postre} ? $args->{postre} : '[^⫷]';
+        $pretag   = $args->{pretag} // '⫷wc:';
+        $posttag  = $args->{posttag} // '⫸';
+        $wctag    = $args->{wctag} // '⫷wc⫸';
+        $extag    = $args->{extag} // '⫷ex⫸';
+        $postre   = $args->{postre} // '[^⫷]';
     } else {
         ($wccol, $pretag, $posttag, $wctag, $extag, $postre) = @$args;
     }

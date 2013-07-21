@@ -37,9 +37,9 @@ sub process {
         validate_specs($args->{specs});
 
         @specs  = @{$args->{specs}};
-        $mindf  = defined $args->{mindf} ? $args->{mindf} : 2;
-        $minex  = defined $args->{minex} ? $args->{minex} : 1;
-        $wc     = defined $args->{wc} ? $args->{wc} : '';
+        $mindf  = $args->{mindf} // 2;
+        $minex  = $args->{minex} // 1;
+        $wc     = $args->{wc} // '';
     } else {
         ($wc, $mindf, $minex, @specs) = @$args;
         validate_specs(\@specs);

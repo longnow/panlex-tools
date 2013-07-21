@@ -31,10 +31,10 @@ sub process {
         validate_cols($args->{cols});
 
         @excol    = @{$args->{cols}};
-        $syndelim = defined $args->{syndelim} ? $args->{syndelim} : '‣';
-        $mndelim  = defined $args->{mndelim} ? $args->{mndelim} : '⁋';
-        $extag    = defined $args->{extag} ? $args->{extag} : '⫷ex⫸';
-        $mntag    = defined $args->{mntag} ? $args->{mntag} :  '⫷mn⫸';
+        $syndelim = $args->{syndelim} // '‣';
+        $mndelim  = $args->{mndelim} // '⁋';
+        $extag    = $args->{extag} // '⫷ex⫸';
+        $mntag    = $args->{mntag} //  '⫷mn⫸';
     } else {
         ($syndelim, $mndelim, $extag, $mntag, @excol) = @$args;
         validate_cols(\@excol);
