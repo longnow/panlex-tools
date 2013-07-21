@@ -50,13 +50,11 @@ sub process {
     my ($excol, $uid, $min, $mindeg, $failtag, $ignore, $delim, $extag, $exptag, $tagre);
     
     if (ref $args eq 'HASH') {
-        $args->{failtag} = $args->{dftag} unless defined $args->{failtag};
-
         $excol    = $args->{col};
         $uid      = $args->{uid};
         $min      = $args->{min};
         $mindeg   = $args->{mindeg};
-        $failtag  = defined $args->{failtag} ? $args->{failtag} : '⫷df⫸';
+        $failtag  = defined $args->{failtag} ? $args->{failtag} : defined $args->{dftag} ? $args->{dftag} : '⫷df⫸';
         $ignore   = defined $args->{ignore} ? $args->{ignore} : '';
         $delim    = defined $args->{delim} ? $args->{delim} : '';
         $extag    = defined $args->{extag} ? $args->{extag} : '⫷ex⫸';
