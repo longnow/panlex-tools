@@ -75,6 +75,8 @@ sub process {
         foreach my $i (@wccol) {
         # For each column containing word classifications:
 
+            die "column $i not present in line" unless defined $col[$i];
+
             while ($col[$i] =~ /$pretag(.+?)$posttag/) {
             # As long as any remains unretagged:
 

@@ -47,6 +47,8 @@ sub process {
         foreach my $i (@retagcol) {
         # For each column to be retagged:
 
+            die "column $i not present in line" unless defined $col[$i];
+
             $col[$i] =~ s/$oldtag/$newtag/g;
             # replace the old tag(s) with the new one.
 

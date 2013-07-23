@@ -67,6 +67,8 @@ sub process {
         my @col = split /\t/, $_, -1;
         # Identify its columns.
 
+        die "column $wccol not present in line" unless defined $col[$wccol];
+
         if (exists $wc{$col[$wccol]}) {
         # If the content of the column containing word classifications is a convertible one:
 
