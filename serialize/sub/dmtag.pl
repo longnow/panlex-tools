@@ -49,7 +49,7 @@ sub process {
             if (length $delim) {
             # If there is an inter-expression delimiter:
 
-                $col[$i] =~ s/(^|$delim)(?!$|$delim)/$dmtag/og;
+                $col[$i] =~ s/(^|$delim)(?!$|$delim)/$dmtag/g;
                 # Prefix each element of the column's value with a domain-expression tag.
             }
 

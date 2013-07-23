@@ -109,7 +109,7 @@ sub process {
                     foreach my $ex (PsList($seg, $lentag, $delim)) {
                     # For the expression, or for each expression if it is a pseudo-list:
 
-                        if (length $ignore && $ex =~ /$ignore/o) {
+                        if (length $ignore && $ex =~ /$ignore/) {
                         # If the expression is to be ignored:
 
                             $exok{$ex} = '';
