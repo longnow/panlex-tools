@@ -13,11 +13,11 @@ use strict;
 use utf8;
 # Make Perl interpret the script as UTF-8.
 
-require 'trim.pl';
-
 binmode STDOUT, ':encoding(utf8)';
 binmode STDERR, ':encoding(utf8)';
 # make STDOUT and STDERR print in UTF-8.
+
+require 'trim.pl';
 
 #######################################################
 
