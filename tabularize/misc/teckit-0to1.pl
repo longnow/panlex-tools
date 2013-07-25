@@ -12,6 +12,10 @@ use utf8;
 use Encode 'decode_utf8';
 # Import a routine to decode from UTF-8 to character values.
 
+binmode STDOUT, ':encoding(utf8)';
+binmode STDERR, ':encoding(utf8)';
+# make STDOUT and STDERR print in UTF-8.
+
 #######################################################
 
 my $BASENAME = 'aaa-bbb-Author';

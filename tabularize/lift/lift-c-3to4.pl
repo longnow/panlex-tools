@@ -12,6 +12,10 @@ use utf8;
 require 'dedup.pl';
 # Import a routine to delete duplicates.
 
+binmode STDOUT, ':encoding(utf8)';
+binmode STDERR, ':encoding(utf8)';
+# make STDOUT and STDERR print in UTF-8.
+
 #######################################################
 
 my $BASENAME = 'aaa-bbb-Author';

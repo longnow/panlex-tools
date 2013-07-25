@@ -12,6 +12,10 @@ use utf8;
 use HTML::Query 'Query';
 # Import the Query method to let us query HTML input.
 
+binmode STDOUT, ':encoding(utf8)';
+binmode STDERR, ':encoding(utf8)';
+# make STDOUT and STDERR print in UTF-8.
+
 #######################################################
 
 my $BASENAME = 'aaa-bbb-Author';
