@@ -89,7 +89,7 @@ my @TOOLS = (
 #'dmtag'        => { cols => [2, 3] },
 # Tags domain expressions in a tab-delimited source file.
 # Arguments:
-#   cols:   array of columns containing metadata.
+#   cols:   array of columns containing domain expressions.
 #   dmtag:  domain-expression tag. default '⫷dm⫸'.
 #   delim:  inter-expression delimiter, or '' if none. default '‣'.
 
