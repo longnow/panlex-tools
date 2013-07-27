@@ -17,6 +17,10 @@ use utf8;
 use HTML::Entities 'decode_entities';
 # Import subroutines to decode HTML character entities.
 
+binmode STDOUT, ':encoding(utf8)';
+binmode STDERR, ':encoding(utf8)';
+# make STDOUT and STDERR print in UTF-8.
+
 #######################################################
 
 my $BASENAME = 'aaa-bbb-Author';

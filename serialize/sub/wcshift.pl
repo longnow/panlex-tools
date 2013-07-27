@@ -31,11 +31,11 @@ sub process {
     
     if (ref $args eq 'HASH') {      
         $wccol    = $args->{col};
-        $pretag   = defined $args->{pretag} ? $args->{pretag} : '⫷wc:';
-        $posttag  = defined $args->{posttag} ? $args->{posttag} : '⫸';
-        $wctag    = defined $args->{wctag} ? $args->{wctag} : '⫷wc⫸';
-        $extag    = defined $args->{extag} ? $args->{extag} : '⫷ex⫸';
-        $postre   = defined $args->{postre} ? $args->{postre} : '[^⫷]';
+        $pretag   = $args->{pretag} // '⫷wc:';
+        $posttag  = $args->{posttag} // '⫸';
+        $wctag    = $args->{wctag} // '⫷wc⫸';
+        $extag    = $args->{extag} // '⫷ex⫸';
+        $postre   = $args->{postre} // '[^⫷]';
     } else {
         ($wccol, $pretag, $posttag, $wctag, $extag, $postre) = @$args;
     }
@@ -50,6 +50,8 @@ sub process {
 
         my @col = split /\t/, $_, -1;
         # Identify its columns.
+
+        die "column $wccol not present in line" unless defined $col[$wccol];
 
         $col[$wccol] =~ s/$extag$pretag(.+?)$posttag($postre+)/$extag$2$wctag$1/g;
         # Replace all word class specifications prepended to expressions with post-ex wc tags.

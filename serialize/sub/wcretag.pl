@@ -33,10 +33,10 @@ sub process {
         validate_cols($args->{cols});
 
         @wccol    = @{$args->{cols}};
-        $pretag   = defined $args->{pretag} ? $args->{pretag} : '⫷wc:';
-        $posttag  = defined $args->{posttag} ? $args->{posttag} : '⫸';
-        $wctag    = defined $args->{wctag} ? $args->{wctag} : '⫷wc⫸';
-        $mdtag    = defined $args->{mdtag} ? $args->{mdtag} : '⫷md:gram⫸';      
+        $pretag   = $args->{pretag} // '⫷wc:';
+        $posttag  = $args->{posttag} // '⫸';
+        $wctag    = $args->{wctag} // '⫷wc⫸';
+        $mdtag    = $args->{mdtag} // '⫷md:gram⫸';      
     } else {
         ($pretag, $posttag, $wctag, $mdtag, @wccol) = @$args;
         validate_cols(\@wccol);
@@ -74,6 +74,8 @@ sub process {
 
         foreach my $i (@wccol) {
         # For each column containing word classifications:
+
+            die "column $i not present in line" unless defined $col[$i];
 
             while ($col[$i] =~ /$pretag(.+?)$posttag/) {
             # As long as any remains unretagged:

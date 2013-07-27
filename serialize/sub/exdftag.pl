@@ -42,15 +42,15 @@ sub process {
         validate_cols($args->{cols});
 
         @exdfcol  = @{$args->{cols}};
-        $re       = defined $args->{re} ? $args->{re} : '';
-        $subre    = defined $args->{subre} ? $args->{subre} : '';
-        $tmc      = defined $args->{maxchar} ? $args->{maxchar} : '';
-        $tmw      = defined $args->{maxword} ? $args->{maxword} : '';
-        $extag    = defined $args->{extag} ? $args->{extag} : '⫷ex⫸';
-        $dftag    = defined $args->{dftag} ? $args->{dftag} : '⫷df⫸';
-        $postre   = defined $args->{postre} ? $args->{postre} : '[^⫷]';
-        $postwre  = defined $args->{postwre} ? $args->{postwre} : '[^⫷ ]';
-        $prere    = defined $args->{prere} ? $args->{prere} : '⫷[^⫷⫸]+⫸';
+        $re       = $args->{re} // '';
+        $subre    = $args->{subre} // '';
+        $tmc      = $args->{maxchar} // '';
+        $tmw      = $args->{maxword} // '';
+        $extag    = $args->{extag} // '⫷ex⫸';
+        $dftag    = $args->{dftag} // '⫷df⫸';
+        $postre   = $args->{postre} // '[^⫷]';
+        $postwre  = $args->{postwre} // '[^⫷ ]';
+        $prere    = $args->{prere} // '⫷[^⫷⫸]+⫸';
     } else {
         ($extag, $postre, $postwre, $re, $dftag, $tmc, $tmw, $subre, $prere, @exdfcol) = @$args;
         validate_cols(\@exdfcol);
@@ -78,51 +78,51 @@ sub process {
             if (length $re) {
             # If there is a criterion for definitional substrings:
 
-                while ($col[$i] =~ /($extag$postre*$re$postre*)/o) {
+                while ($col[$i] =~ /($extag$postre*$re$postre*)/) {
                 # As long as any expression in the column satisfies the criterion:
 
                     my ($df,$ex) = ($1,$1);
                     # Identify the expression and a definition identical to it.
 
-                    $df =~ s/^$extag(?:$prere)?/$dftag/o;
+                    $df =~ s/^$extag(?:$prere)?/$dftag/;
                     # In the definition, change the expression tag and any preposed annotation
                     # to a definition tag.
 
-                    $ex =~ s/$re//og;
+                    $ex =~ s/$re//g;
                     # In the expression, delete all definitional substrings.
 
                     $ex =~ s/ {2,}/ /g;
                     # In the expression, collapse any multiple spaces.
 
-                    $ex =~ s/^$extag(?:$prere)?\K | $//og;
+                    $ex =~ s/^$extag(?:$prere)?\K | $//g;
                     # In the expression, delete all initial and final spaces.
 
                     $ex = '' if
                         $ex eq $extag
-                        || ($tmc && $ex =~ /^$extag(?:$prere)?+.{$tmc}/o)
-                        || ($tmw && $ex =~ /^(?:[^ ]+ ){$tmw}/o)
+                        || ($tmc && $ex =~ /^$extag(?:$prere)?+.{$tmc}/)
+                        || ($tmw && $ex =~ /^(?:[^ ]+ ){$tmw}/)
                         || (length $subre && $ex =~ /^$extag(?:$prere)?$postre*$subre/)
                     ;
                     # If the expression has become blank, exceeds a maximum count, or contains
                     # a prohibited character, delete the expression. (The possessive quantifier
                     # prohibits including a preposed annotation in the count.)
 
-                    $col[$i] =~ s/$extag$postre*$re$postre*/$df$ex/o;
+                    $col[$i] =~ s/$extag$postre*$re$postre*/$df$ex/;
                     # Replace the expression with the definition and the reduced expression.
                 }
             }
-
-            $col[$i] =~ s/$extag(?:$prere)?(${postre}{$tmc,})/$dftag$1/og
+            
+            $col[$i] =~ s/$extag(?:$prere)?(${postre}{$tmc,})/$dftag$1/g
                 if $tmc;
             # Convert every expression in the column that exceeds the maximum character
             # count, if there is one, to a definition, omitting any preposed annotation.
 
-            $col[$i] =~ s/$extag(?:$prere)?((?:$postwre+ ){$tmw})/$dftag$1/og
+            $col[$i] =~ s/$extag(?:$prere)?((?:$postwre+ ){$tmw})/$dftag$1/g
                 if $tmw;
             # Convert every expression in the column that exceeds a maximum word count,
             # if there is one, to a definition, omitting any preposed annotation.
 
-            $col[$i] =~ s/$extag(?:$prere)?($postre*(?:$subre))/$dftag$1/og
+            $col[$i] =~ s/$extag(?:$prere)?($postre*(?:$subre))/$dftag$1/g
                 if length $subre;
             # Convert every expression containing a prohibited character, if there is any,
             # to a definition, omitting any preposed annotation.

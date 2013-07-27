@@ -31,10 +31,10 @@ sub process {
         validate_cols($args->{cols});
 
         @excol    = @{$args->{cols}};
-        $syndelim = defined $args->{syndelim} ? $args->{syndelim} : '‣';
-        $mndelim  = defined $args->{mndelim} ? $args->{mndelim} : '⁋';
-        $extag    = defined $args->{extag} ? $args->{extag} : '⫷ex⫸';
-        $mntag    = defined $args->{mntag} ? $args->{mntag} :  '⫷mn⫸';
+        $syndelim = $args->{syndelim} // '‣';
+        $mndelim  = $args->{mndelim} // '⁋';
+        $extag    = $args->{extag} // '⫷ex⫸';
+        $mntag    = $args->{mntag} //  '⫷mn⫸';
     } else {
         ($syndelim, $mndelim, $extag, $mntag, @excol) = @$args;
         validate_cols(\@excol);
@@ -53,22 +53,22 @@ sub process {
             
             die "column $i not present in line" unless defined $col[$i];
 
-            $col[$i] =~ s/$syndelim/$extag/og if length $syndelim;
+            $col[$i] =~ s/$syndelim/$extag/g if length $syndelim;
             # Convert each expression delimiter in it to an expression tag, if expression
             # delimiters exist.
 
-            $col[$i] =~ s/$mndelim/$mntag$extag/og if length $mndelim;
+            $col[$i] =~ s/$mndelim/$mntag$extag/g if length $mndelim;
             # Convert each meaning delimiter in it to a meaning tag and an expression tag,
             # if meaning delimiters exist.
 
-            $col[$i] = "$extag$col[$i]" if length $col[$i] && $col[$i] !~ /^(?:$extag|$mntag)/o;
+            $col[$i] = "$extag$col[$i]" if length $col[$i] && $col[$i] !~ /^(?:$extag|$mntag)/;
             # Prefix an expression tag to the column, if not blank and not already
             # containing a leading expression or meaning tag.
 
-            $col[$i] =~ s/$extag(?=$extag|$mntag|$)//og;
+            $col[$i] =~ s/$extag(?=$extag|$mntag|$)//g;
             # Delete all expression tags with blank contents.
 
-            $col[$i] =~ s/$mntag(?=$mntag|$)//og;
+            $col[$i] =~ s/$mntag(?=$mntag|$)//g;
             # Delete all meaning tags with blank contents.
         }
 

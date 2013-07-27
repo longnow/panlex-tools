@@ -25,7 +25,7 @@ sub process {
     
     if (ref $args eq 'HASH') {
         $mdcol    = $args->{col};
-        $mdtag    = defined $args->{mdtag} ? $args->{mdtag} : '⫷md:gram⫸';      
+        $mdtag    = $args->{mdtag} // '⫷md:gram⫸';      
     } else {
         ($mdcol, $mdtag) = @$args;
     }

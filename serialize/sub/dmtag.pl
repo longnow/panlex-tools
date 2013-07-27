@@ -28,8 +28,8 @@ sub process {
         validate_cols($args->{cols});
 
         @dmcol    = @{$args->{cols}};
-        $dmtag    = defined $args->{dmtag} ? $args->{dmtag} : '⫷dm⫸';
-        $delim    = defined $args->{delim} ? $args->{delim} : '‣';      
+        $dmtag    = $args->{dmtag} // '⫷dm⫸';
+        $delim    = $args->{delim} // '‣';      
     } else {
         ($dmtag, $delim, @dmcol) = @$args;
         validate_cols(\@dmcol);
@@ -49,7 +49,7 @@ sub process {
             if (length $delim) {
             # If there is an inter-expression delimiter:
 
-                $col[$i] =~ s/(^|$delim)(?!$|$delim)/$dmtag/og;
+                $col[$i] =~ s/(^|$delim)(?!$|$delim)/$dmtag/g;
                 # Prefix each element of the column's value with a domain-expression tag.
             }
 

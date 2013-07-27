@@ -139,6 +139,13 @@ my @TOOLS = (
 #   exptag:   pre-normalized expression tag. default '⫷exp⫸'.
 #   tagre:    regex identifying any tag. default '⫷[a-z:]+⫸'.
 
+#'retag'      => { cols => [1, 2], oldtag => '⫷fail⫸', newtag => '⫷ex⫸' },
+# Retags a tag in a tab-delimited source file.
+# Arguments:
+#   cols:     array of columns to be retagged.
+#   oldtag:   regex matching any tag(s) to be retagged.
+#   newtag:   new tag to use.
+
 #'out-simple-0' => { specs => [ '0:rus-000', '1:eng-000' ] },
 # Converts a normally tagged source file to a simple-text varilingual source file,
 # eliminating duplicates.

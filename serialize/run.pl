@@ -1,9 +1,10 @@
 use strict;
 use JSON;
 use File::Spec::Functions qw/catfile curdir rel2abs/;
+use Scalar::Util 'blessed';
 use PanLex::Validation;
-binmode STDOUT, ':utf8';
-binmode STDERR, ':utf8';
+binmode STDOUT, ':encoding(utf8)';
+binmode STDERR, ':encoding(utf8)';
 
 sub run {
     my ($PANLEX_TOOLDIR, $BASENAME, $VERSION, $TOOLS) = @_;
@@ -49,6 +50,12 @@ sub run {
         die "tool arguments must be a hash or array ref"
             unless ref $args eq 'HASH' || ref $args eq 'ARRAY';
 
+        # stringify any blessed arguments, so they will be processed correctly
+        # and can be converted to JSON.
+        foreach my $val (ref $args eq 'HASH' ? values %$args : @$args) {
+            $val = ''.$val if defined blessed($val);
+        }
+
         $pkg->can('process')->($in, $out, $args);      
 
         close $in;
@@ -58,7 +65,7 @@ sub run {
     $log->{time} = time();
 
     open my $fh, '>:utf8', 'log.json' or die $!;
-    print $fh JSON->new->pretty(1)->canonical(1)->encode($log);
+    print $fh JSON->new->pretty->canonical->encode($log);
     close $fh;
 
     print "\n";

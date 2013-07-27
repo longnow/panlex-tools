@@ -13,6 +13,10 @@ use strict;
 use utf8;
 # Make Perl interpret the script as UTF-8.
 
+binmode STDOUT, ':encoding(utf8)';
+binmode STDERR, ':encoding(utf8)';
+# make STDOUT and STDERR print in UTF-8.
+
 #######################################################
 
 my $BASENAME = 'aaa-bbb-Author';

@@ -13,44 +13,29 @@ binmode STDOUT, ':encoding(utf8)';
 binmode STDERR, ':encoding(utf8)';
 # make STDOUT and STDERR print in UTF-8.
 
+use Mojo::DOM;
+
 #######################################################
 
 my $BASENAME = 'aaa-bbb-Author';
 # Identify the filename base.
 
-my $VERSION = 2;
+my $VERSION = 0;
 # Identify the input file's version.
 
 #######################################################
 
-open my $in, '<:encoding(utf8)', "$BASENAME-$VERSION.txt" or die $!;
+open my $in, '<:encoding(utf8)', "$BASENAME-$VERSION.html" or die $!;
 # Open the input file for reading.
 
 open my $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt') or die $!;
 # Create or truncate the output file and open it for writing.
 
-while (<$in>) {
-# For each line of the input file:
+my $html = do { local $/; <$in> };
+# Read in the whole HTML input.
 
-    s%<note.+?</note>%%g;
-    # Delete all note elements in it.
-
-    s%<(form|gloss) lang="([^"]+)"><text>(?:[A-Z][^:]+: +)?([^<>]+)</text></\1>%⫷ex$2=$3⫸%g;
-    # Shorten all expression specifications in it.
-
-    s%^<entry id="([^"]+)">%⫷mi=$1⫸%;
-    # Shorten its mi.
-
-    s%<grammatical-info value="([^"]+)"/>%⫷wcmd=$1⫸%g;
-    # Shorten all wc-md specifications in it.
-
-    s%<[^<>]+>%%g;
-    # Delete all remaining tags in it.
-
-    print $out $_;
-    # Output it.
-
-}
+my $dom = Mojo::DOM->new($html);
+# Create a Mojo::DOM object to query the HTML document.
 
 close $in;
 # Close the input file.

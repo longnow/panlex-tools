@@ -25,7 +25,7 @@ sub process {
     
     if (ref $args eq 'HASH') {
         $micol    = $args->{col};
-        $mitag    = defined $args->{mitag} ? $args->{mitag} : '⫷mi⫸';      
+        $mitag    = $args->{mitag} // '⫷mi⫸';      
     } else {
         ($micol, $mitag) = @$args;
     }

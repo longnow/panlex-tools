@@ -1,9 +1,11 @@
-# Tags all column-based definitions in a tab-delimited source file.
+#'retag'      => { cols => [1, 2], oldtag => '⫷fail⫸', newtag => '⫷ex⫸' },
+# Retags a tag in a tab-delimited source file.
 # Arguments:
-#   cols:   array of columns containing definitions.
-#   dftag:  definition tag. default '⫷df⫸'.
+#   cols:     array of columns to be retagged.
+#   oldtag:   regex matching any tag(s) to be retagged.
+#   newtag:   new tag to use.
 
-package PanLex::Serialize::dftag;
+package PanLex::Serialize::retag;
 
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
@@ -21,18 +23,18 @@ sub process {
     my $out = shift;
     my $args = ref $_[0] ? $_[0] : \@_;
 
-    my (@dfcol, $dftag);
-
+    my (@retagcol, $oldtag, $newtag);
+    
     if (ref $args eq 'HASH') {
         validate_cols($args->{cols});
 
-        @dfcol    = @{$args->{cols}};
-        $dftag    = $args->{dftag} // '⫷df⫸';      
+        @retagcol    = @{$args->{cols}};
+        $oldtag      = $args->{oldtag};
+        $newtag      = $args->{newtag};
     } else {
-        ($dftag, @dfcol) = @$args;
-        validate_cols(\@dfcol);
+        die "array arguments are not supported";
     }
-    
+
     while (<$in>) {
     # For each line of the input file:
 
@@ -42,13 +44,14 @@ sub process {
         my @col = split /\t/, $_, -1;
         # Identify its columns.
 
-        foreach my $i (@dfcol) {
-        # For each definition column:
+        foreach my $i (@retagcol) {
+        # For each column to be retagged:
 
             die "column $i not present in line" unless defined $col[$i];
 
-            $col[$i] = "$dftag$col[$i]" if length $col[$i];
-            # Prefix a definition tag to the column, if not blank.
+            $col[$i] =~ s/$oldtag/$newtag/g;
+            # replace the old tag(s) with the new one.
+
         }
 
         print $out join("\t", @col), "\n";

@@ -15,10 +15,10 @@ sub Trim {
     $ret =~ s/ {2,}/ /g;
     # Collapse all multiple spaces in it.
 
-    $ret =~ s/ +(?=[⁋‣\t]|$)//g;
+    $ret =~ s/ (?=[⁋‣\t⫷⫸]|$)//g;
     # Delete all trailing spaces in it.
 
-    $ret =~ s/(?:^|[⁋‣\t])\K +//g;
+    $ret =~ s/(?:^|[⁋‣\t⫸])\K //g;
     # Delete all leading spaces in it.
 
     return $ret;

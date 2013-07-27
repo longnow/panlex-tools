@@ -29,8 +29,8 @@ sub process {
     
     if (ref $args eq 'HASH') {
         $wccol    = $args->{col};
-        $wctag    = defined $args->{wctag} ? $args->{wctag} : '⫷wc⫸';
-        $mdtag    = defined $args->{mdtag} ? $args->{mdtag} : '⫷md:gram⫸';      
+        $wctag    = $args->{wctag} // '⫷wc⫸';
+        $mdtag    = $args->{mdtag} // '⫷md:gram⫸';      
     } else {
         ($wccol, $wctag, $mdtag) = @$args;
     }
@@ -66,6 +66,8 @@ sub process {
 
         my @col = split /\t/, $_, -1;
         # Identify its columns.
+
+        die "column $wccol not present in line" unless defined $col[$wccol];
 
         if (exists $wc{$col[$wccol]}) {
         # If the content of the column containing word classifications is a convertible one:
