@@ -114,7 +114,6 @@ Noun	noun
 NOUN	noun
 nouns	noun
 Nouns	noun
-np	name
 ntr	verb:ntr
 num	detr:num
 Num	detr:Num
