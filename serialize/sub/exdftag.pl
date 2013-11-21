@@ -78,11 +78,11 @@ sub process {
             if (length $re) {
             # If there is a criterion for definitional substrings:
 
-                while ($col[$i] =~ /($extag$postre*$re$postre*)/) {
+                while ($col[$i] =~ /($extag(?:$prere)?$postre*$re$postre*)/) {
                 # As long as any expression in the column satisfies the criterion:
 
                     my ($df,$ex) = ($1,$1);
-                    # Identify the expression and a definition identical to it.
+                    # Identify the first such expression and a definition identical to it.
 
                     $df =~ s/^$extag(?:$prere)?/$dftag/;
                     # In the definition, change the expression tag and any preposed annotation
@@ -97,18 +97,19 @@ sub process {
                     $ex =~ s/^$extag(?:$prere)?\K | $//g;
                     # In the expression, delete all initial and final spaces.
 
-                    $ex = '' if
-                        $ex eq $extag
-                        || ($tmc && $ex =~ /^$extag(?:$prere)?+.{$tmc}/)
-                        || ($tmw && $ex =~ /^(?:[^ ]+ ){$tmw}/)
-                        || (length $subre && $ex =~ /^$extag(?:$prere)?$postre*$subre/)
-                    ;
+                    $ex = '' if (
+                        ($ex eq $extag)
+                        || ($tmc && ($ex =~ /^$extag(?:$prere)?+.{$tmc}/))
+                        || ($tmw && ($ex =~ /^(?:[^ ]+ ){$tmw}/))
+                        || ((length $subre) && ($ex =~ /^$extag(?:$prere)?$postre*$subre/))
+                    );
                     # If the expression has become blank, exceeds a maximum count, or contains
                     # a prohibited character, delete the expression. (The possessive quantifier
                     # prohibits including a preposed annotation in the count.)
 
-                    $col[$i] =~ s/$extag$postre*$re$postre*/$df$ex/;
+                    $col[$i] =~ s/$extag(?:$prere)?$postre*$re$postre*/$df$ex/;
                     # Replace the expression with the definition and the reduced expression.
+
                 }
             }
             
