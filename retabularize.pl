@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 
-# reserialize.pl
+# retabularize.pl
 
 # Converts a semitabular source file to a tabular source file.
 # Arguments:
