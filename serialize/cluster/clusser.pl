@@ -2,8 +2,22 @@
 
 # clusser.pl
 
-# Converts a columnar cluster file to a final source file. The input file must
-# be a file of the type that clustab.pl produces.
+# Converts a file it this format of to a final source file:
+#
+#                                                           Table "pc.excl20x"
+# Column |     Type     | Modifiers | Storage  |               Description                                       
+#--------+--------------+-----------+----------+-----------------------------------------------------
+# cl     | smallint     | not null  | plain    | cluster
+# uid    | character(7) | not null  | extended | UID of the language variety of an expression that
+#                                              | has at least 1 meaning in the cluster
+# tt     | text         | not null  | extended | text of the expression
+# q      | integer      | not null  | plain    | sum of the estimated qualities of the sources of
+#                                              | the expression’s meanings
+#Indexes:
+#    "excl20x_pkey" PRIMARY KEY, btree (cl, uid, tt)
+#
+# Additional documentation in clustab.pl describes the creation of such a table.
+#
 # Arguments:
 #   0: basename of file to be converted. It extension must be “.txt”.
 
