@@ -2,7 +2,7 @@
 
 # clusser.pl
 
-# Converts a file it this format of to a final source file:
+# Converts a file in this format of to a final source file:
 #
 #                                                           Table "pc.excl20x"
 # Column |     Type     | Modifiers | Storage  |               Description                                       
@@ -20,6 +20,8 @@
 #
 # Arguments:
 #   0: basename of file to be converted. It extension must be “.txt”.
+#   1: 3-digit vc of the concepticon language variety, whose lc is “art”.
+#   2: count of digits in expressions of that variety.
 
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
@@ -30,10 +32,7 @@ use strict;
 use utf8;
 # Make Perl interpret the script as UTF-8 rather than bytes.
 
-my ($in) = @ARGV;
-# Identify the arguments.
-
-my $inf = "$in.txt";
+my $inf = "$ARGV[0].txt";
 # Identify the name of the file to be converted.
 
 (-r $inf) || (die "could not find file $inf");
@@ -42,7 +41,7 @@ my $inf = "$in.txt";
 (open my $infh, '<:utf8', $inf) || (die $!);
 # Open it for reading.
 
-open my $outfh, '>:utf8', "$in-final.txt";
+open my $outfh, '>:utf8', "$ARGV[0]-final.txt";
 # Create or truncate the output file and open it for writing.
 
 my @col;
@@ -50,9 +49,9 @@ my @col;
 my $cl= 0;
 # Initialize the cluster as 0.
 
-print $outfh ":\n1\nart-282\n";
-# Output a full-text centrilingual file header declaring art-282 as the central
-# language variety.
+print $outfh ":\n1\nart-$ARGV[1]\n";
+# Output a full-text centrilingual file header declaring the concepticon language
+# variety as the central language variety.
 
 while (<$infh>) {
 # For each line of the input file:
@@ -69,8 +68,8 @@ while (<$infh>) {
         $cl = $col[0];
         # Make its cluster the current one.
 
-        print $outfh ("\nex\n" . (substr "000$cl", -4) . "\n");
-        # Output the expression in art-282.
+        print $outfh ("\nex\n" . (substr "000000$cl", -$ARGV[2]) . "\n");
+        # Output the expression in the concepticon language variety.
 
     }
 
