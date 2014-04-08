@@ -176,6 +176,7 @@ sbd.	conj:sbd.
 sf.	noun:sf.
 sm.	noun:sm.
 spn	pron:spn
+suf	affx:suf
 suf.	affx:suf.
 Suf.	affx:Suf.
 suffix	affx:suffix
