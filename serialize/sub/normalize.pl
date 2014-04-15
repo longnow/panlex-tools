@@ -97,7 +97,7 @@ sub process {
         if (length $col[$excol]) {
         # If the column containing proposed expressions is nonblank:
 
-            my @seg = ($col[$excol] =~ /($tagre.+?(?=$tagre|$))/go);
+            my @seg = ($col[$excol] =~ /($tagre.+?(?=$tagre|$))/g);
             # Identify the tagged items, including tags, in it.
 
             foreach my $seg (@seg) {
@@ -120,7 +120,7 @@ sub process {
 
                             $ex{$ex} = '';
                             # Add it to the table of proposed expression texts, if not
-                            # already in it.                            
+                            # already in it.
                         }
                     }
                 }
@@ -163,7 +163,7 @@ sub process {
         if (length $col[$excol]) {
         # If the column containing proposed expressions is nonblank:
 
-            my @seg = ($col[$excol] =~ m/($tagre.+?(?=$tagre|$))/go);
+            my @seg = ($col[$excol] =~ m/($tagre.+?(?=$tagre|$))/g);
             # Identify the tagged items, including tags, in it.
 
             foreach my $seg (@seg) {
@@ -240,15 +240,15 @@ sub process {
 
                         if (length $failtag) {
                         # If proposed expressions not classifiable as expressions
-                        # are to be converted to definitions:
+                        # are to be converted to another tag:
 
                             $seg = "$failtag$seg";
-                            # Prepend a definition tag to the concatenation.
+                            # Prepend the tag to the concatenation.
                         }
 
                         else {
                         # Otherwise, i.e. if such proposed expressions are not
-                        # to be converted to definitions:
+                        # to be converted to another tag:
 
                             $seg = "$exptag$seg";
                             # Prepend a pre-normalized expression tag to the
