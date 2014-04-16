@@ -140,6 +140,8 @@ my @TOOLS = (
 #   extag:    expression tag. default '⫷ex⫸'.
 #   exptag:   pre-normalized expression tag. default '⫷exp⫸'.
 #   tagre:    regex identifying any tag. default '⫷[a-z:]+⫸'.
+#   log:      set to 1 to log normalize scores to normalize.json, 0 otherwise.
+#               default: 0.
 
 #'retag'      => { cols => [1, 2], oldtag => '⫷fail⫸', newtag => '⫷ex⫸' },
 # Retags a tag in a tab-delimited source file.

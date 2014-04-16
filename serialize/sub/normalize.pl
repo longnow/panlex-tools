@@ -26,6 +26,8 @@
 #   extag:    expression tag. default '⫷ex⫸'.
 #   exptag:   pre-normalized expression tag. default '⫷exp⫸'.
 #   tagre:    regex identifying any tag. default '⫷[a-z:]+⫸'.
+#   log:      set to 1 to log normalize scores to normalize.json, 0 otherwise.
+#               default: 0.
 
 package PanLex::Serialize::normalize;
 
@@ -42,14 +44,14 @@ use PanLex;
 use PanLex::Validation;
 
 use Unicode::Normalize;
-# Import the Unicode normalization module.
+use JSON;
 
 sub process {
     my $in = shift;
     my $out = shift;
     my $args = ref $_[0] ? $_[0] : \@_;
     
-    my ($excol, $uid, $min, $mindeg, $failtag, $ignore, $delim, $extag, $exptag, $tagre, @propcols);
+    my ($excol, $uid, $min, $mindeg, $failtag, $ignore, $delim, $extag, $exptag, $tagre, @propcols, $log);
     
     if (ref $args eq 'HASH') {
         $excol      = $args->{col};
@@ -63,9 +65,17 @@ sub process {
         $exptag     = $args->{exptag} // '⫷exp⫸';
         $tagre      = $args->{tagre} // '⫷[a-z:]+⫸';
         @propcols   = @{$args->{propcols} || []};
+        $log        = $args->{log} // 0;
     } else {
         ($tagre, $extag, $excol, $min, $mindeg, $uid, $exptag, $failtag, $delim) = @$args;
         $ignore = '';
+        $log = 0;
+    }
+
+    my ($log_fh, $json);
+    if ($log) {
+        open $log_fh, '>:utf8', 'normalize.json' if $log;
+        $json = JSON->new->pretty->canonical;
     }
 
     validate_col($excol);
@@ -132,7 +142,12 @@ sub process {
     }
 
     my $result = norm($uid, [keys %ex], 0);
-        
+
+    if ($log) {
+        print $log_fh "Exact normalize scores:\n\n";
+        print $log_fh munge_json($json->encode($result)), "\n";
+    }
+
     while (my ($tt,$norm) = each %$result) {
         # For each proposed expression that has a score and whose score is sufficient for
         # outright acceptance as an expression:
@@ -142,6 +157,11 @@ sub process {
     }
 
     $result = norm($uid, [keys %ex], 1);
+
+    if ($log) {
+        print $log_fh "Degraded normalize scores:\n\n";
+        print $log_fh munge_json($json->encode($result)), "\n";
+    }
 
     my %ttto;
 
@@ -273,6 +293,8 @@ sub process {
         print $out join("\t", @col), "\n";
         # Output the line.
     }
+
+    close $log_fh if $log;
 }
 
 #### norm
@@ -304,6 +326,19 @@ sub norm {
     return $result;
 }
 
+# Make JSON output a bit less pretty.
+sub munge_json {
+    my ($json) = @_;
+    $json =~ s/(?<= : \{)\n([^}]+)(?=\})/munge_json_lines($1)/ge;
+    return $json;
+}
+
+sub munge_json_lines {
+    my ($lines) = @_;
+    $lines =~ s/\n/ /g;
+    $lines =~ s/ +/ /g;
+    return $lines;
+}
 
 #### PsList
 # Return a list of items in the specified prefixed pseudo-list.
