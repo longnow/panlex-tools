@@ -128,6 +128,8 @@ my @TOOLS = (
 #               expressions and not having replacements accepted as expressions; 
 #               '' (blank) if they are to be converted to pre-normalized 
 #               expressions. default '⫷df⫸'.
+#   propcols: array of columns to which the extag to failtag replacement should
+#               be propagated when it takes place; [] if none. default [].
 #   ignore:   regex matching expressions to be ignored in normalization; or ''
 #               (blank) if none. default ''.
 #   delim:    regex matching the synonym delimiter, if each proposed expression

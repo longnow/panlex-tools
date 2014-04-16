@@ -16,6 +16,8 @@
 #               expressions. default '⫷df⫸'.
 #   ignore:   regex matching expressions to be ignored in normalization; or ''
 #               (blank) if none. default ''.
+#   propcols: array of columns to which the extag to failtag replacement should
+#               be propagated when it takes place; [] if none. default [].
 #   delim:    regex matching the synonym delimiter, if each proposed expression
 #               containing such a delimiter is to be treated as a list of
 #               synonymous proposed expressions and they are to be normalized if
@@ -47,19 +49,20 @@ sub process {
     my $out = shift;
     my $args = ref $_[0] ? $_[0] : \@_;
     
-    my ($excol, $uid, $min, $mindeg, $failtag, $ignore, $delim, $extag, $exptag, $tagre);
+    my ($excol, $uid, $min, $mindeg, $failtag, $ignore, $delim, $extag, $exptag, $tagre, @propcols);
     
     if (ref $args eq 'HASH') {
-        $excol    = $args->{col};
-        $uid      = $args->{uid};
-        $min      = $args->{min};
-        $mindeg   = $args->{mindeg};
-        $failtag  = $args->{failtag} // $args->{dftag} // '⫷df⫸';
-        $ignore   = $args->{ignore} // '';
-        $delim    = $args->{delim} // '';
-        $extag    = $args->{extag} // '⫷ex⫸';
-        $exptag   = $args->{exptag} // '⫷exp⫸';
-        $tagre    = $args->{tagre} // '⫷[a-z:]+⫸';      
+        $excol      = $args->{col};
+        $uid        = $args->{uid};
+        $min        = $args->{min};
+        $mindeg     = $args->{mindeg};
+        $failtag    = $args->{failtag} // $args->{dftag} // '⫷df⫸';
+        $ignore     = $args->{ignore} // '';
+        $delim      = $args->{delim} // '';
+        $extag      = $args->{extag} // '⫷ex⫸';
+        $exptag     = $args->{exptag} // '⫷exp⫸';
+        $tagre      = $args->{tagre} // '⫷[a-z:]+⫸';
+        @propcols   = @{$args->{propcols} || []};
     } else {
         ($tagre, $extag, $excol, $min, $mindeg, $uid, $exptag, $failtag, $delim) = @$args;
         $ignore = '';
@@ -244,6 +247,10 @@ sub process {
 
                             $seg = "$failtag$seg";
                             # Prepend the tag to the concatenation.
+
+                            foreach my $propcol (@propcols) {
+                                $col[$propcol] =~ s/$extag/$failtag/g;
+                            }
                         }
 
                         else {
