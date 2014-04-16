@@ -10,7 +10,7 @@ use vars qw/@EXPORT/;
 
 $PanLex::ARRAY_MAX = 10000;
 
-my $API_URL = "http://api.panlex.org";
+my $API_URL = $ENV{PANLEX_API} || "http://api.panlex.org";
 
 # Send a query to the PanLex API at $url, with request body in $body.
 # $body will automatically be converted to JSON, and the JSON response
