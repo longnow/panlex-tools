@@ -74,7 +74,7 @@ sub process {
 
     my ($log_fh, $json);
     if ($log) {
-        open $log_fh, '>:utf8', 'normalize.json' if $log;
+        open $log_fh, '>:utf8', 'normalize.log' if $log;
         $json = JSON->new->pretty->canonical;
     }
 
