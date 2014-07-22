@@ -1,0 +1,32 @@
+## WARNING: This map is only partial.
+
+## NOTE: “X” is recoded into Greek chi, which looks somewhat more similar to the LaPHolia glyph than does modifier letter x. “ﬁ” is the standard Unicode Latin ligutare small fi, not the U+f001 Private Use Area character that is actually in the Lapholia font, because the character that has been observed has been the former.
+
+∂	2202	0257
+B	0042	03b2
+E	0045	025b
+ê	00ea	0259
+G	0047	0263
+H	0048	02b0
+I	0049	026a
+ı	0131	0272
+î	00ee	0131
+ï	00ef	0268
+N	004e	014b
+O	004f	0254
+ø	00f8	00d8
+P	0050	0278
+R	0052	027e
+S	0053	0283
+ß	00df	0253
+U	0055	028a
+W	0057	02b7
+X	0058	03c7
+Y	0059	02b8
+Ÿ	0178	0265
+Z	005a	0292
+ˆ	005e	02b2
+◊	25ca	028c
+º	00ba	0289
+ﬁ	fb01	0260
+

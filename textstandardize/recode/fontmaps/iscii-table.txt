@@ -1,0 +1,272 @@
+* ----------------------------------------------------------------------
+* Copyright IBM Corporation 1998. All rights reserved.
+* C-H 3-3220-050       : REGISTRY, Graphic Character Sets and Code Pages
+* Code Page (CPGID)    : 00806
+* Common Name          : PC Indian Script Code (ISCII-91)
+* Registration Date    : 1998
+* Last Revision Date   :
+* Default Encoding     : 2100
+* Code                 : IBM-PC
+* Maximal Character
+* Set (GCSGID)         : 01354
+* Other GCSGIDs        : 01351
+* ----------------------------------------------------------------------
+*- GCGID --------- GCGID Name ------------------------------------------
+00
+01
+02
+03
+04
+05
+06
+07
+08
+09
+0A
+0B
+0C
+0D
+0E
+0F
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+1A
+1B
+1C
+1D
+1E
+1F
+20 SP010000        Space
+21 SP020000        Exclamation Point
+22 SP040000        Quotation Marks
+23 SM010000        Number Sign
+24 SC030000        Dollar Sign
+25 SM020000        Percent Sign
+26 SM030000        Ampersand
+27 SP050000        Apostrophe
+28 SP060000        Left Parenthesis
+29 SP070000        Right Parenthesis
+2A SM040000        Asterisk
+2B SA010000        Plus Sign
+2C SP080000        Comma
+2D SP100000        Hyphen/Minus Sign
+2E SP110000        Period/Full Stop
+2F SP120000        Slash
+30 ND100000        Zero
+31 ND010000        One
+32 ND020000        Two
+33 ND030000        Three
+34 ND040000        Four
+35 ND050000        Five
+36 ND060000        Six
+37 ND070000        Seven
+38 ND080000        Eight
+39 ND090000        Nine
+3A SP130000        Colon
+3B SP140000        Semicolon
+3C SA030000        Less Than Sign/Greater Than Sign (Arabic)
+3D SA040000        Equal Sign
+3E SA050000        Greater Than Sign/Less Than Sign (Arabic)
+3F SP150000        Question Mark
+40 SM050000        At Sign
+41 LA020000        A Capital
+42 LB020000        B Capital
+43 LC020000        C Capital
+44 LD020000        D Capital
+45 LE020000        E Capital
+46 LF020000        F Capital
+47 LG020000        G Capital
+48 LH020000        H Capital
+49 LI020000        I Capital
+4A LJ020000        J Capital
+4B LK020000        K Capital
+4C LL020000        L Capital
+4D LM020000        M Capital
+4E LN020000        N Capital
+4F LO020000        O Capital
+50 LP020000        P Capital
+51 LQ020000        Q Capital
+52 LR020000        R Capital
+53 LS020000        S Capital
+54 LT020000        T Capital
+55 LU020000        U Capital
+56 LV020000        V Capital
+57 LW020000        W Capital
+58 LX020000        X Capital
+59 LY020000        Y Capital
+5A LZ020000        Z Capital
+5B SM060000        Left Bracket
+5C SM070000        Backslash
+5D SM080000        Right Bracket
+5E SD150000        Circumflex Accent
+5F SP090000        Underline/Continuous Underscore
+60 SD130000        Grave Accent
+61 LA010000        a Small
+62 LB010000        b Small
+63 LC010000        c Small
+64 LD010000        d Small
+65 LE010000        e Small
+66 LF010000        f Small
+67 LG010000        g Small
+68 LH010000        h Small
+69 LI010000        i Small
+6A LJ010000        j Small
+6B LK010000        k Small
+6C LL010000        l Small
+6D LM010000        m Small
+6E LN010000        n Small
+6F LO010000        o Small
+70 LP010000        p Small
+71 LQ010000        q Small
+72 LR010000        r Small
+73 LS010000        s Small
+74 LT010000        t Small
+75 LU010000        u Small
+76 LV010000        v Small
+77 LW010000        w Small
+78 LX010000        x Small
+79 LY010000        y Small
+7A LZ010000        z Small
+7B SM110000        Left Brace
+7C SM130000        Vertical Line/Logical OR
+7D SM140000        Right Brace
+7E SD190000        Tilde Accent
+7F
+80 SF110000        Center Box Bar Vertical
+81 SF090000        Right Middle Box Side
+82 SF230000        Right Box Side Double
+83 SF240000        Center Box Bar Vertical Double
+84 SF250000        Upper Right Box Corner Double
+85 SF260000        Lower Right Box Corner Double
+86 SF030000        Upper Right Box Corner
+87 SF020000        Lower Left Box Corner
+88 SF070000        Middle Box Bottom
+89 SF060000        Middle Box Top
+8A SF080000        Left Middle Box Side
+8B SF100000        Center Box Bar Horizontal
+8C SF050000        Box Intersection
+8D SF380000        Lower Left Box Corner Double
+8E SF390000        Upper Left Box Corner Double
+8F SF400000        Middle Box Bottom Double
+90 SF410000        Middle Box Top Double
+91 SF420000        Left Box Side Double
+92 SF430000        Center Box Bar Horizontal Double
+93 SF440000        Box Intersection Double
+94 SF040000        Lower Right Box Corner
+95 SF010000        Upper Left Box Corner
+96
+97
+98
+99
+9A
+9B
+9C
+9D
+9E
+9F
+A0
+A1 U0000901        DEVANAGARI SIGN CANDRABINDU
+A2 U0000902        DEVANAGARI SIGN ANUSVARA
+A3 U0000903        DEVANAGARI SIGN VISARGA
+A4 U0000905        DEVANAGARI LETTER A
+A5 U0000906        DEVANAGARI LETTER AA
+A6 U0000907        DEVANAGARI LETTER I
+A7 U0000908        DEVANAGARI LETTER II
+A8 U0000909        DEVANAGARI LETTER U
+A9 U000090A        DEVANAGARI LETTER UU
+AA U000090B        DEVANAGARI LETTER VOCALIC R
+AB U000090E        DEVANAGARI LETTER SHORT E
+AC U000090F        DEVANAGARI LETTER E
+AD U0000910        DEVANAGARI LETTER AI
+AE U000090D        DEVANAGARI LETTER CANDRA E
+AF U0000912        DEVANAGARI LETTER SHORT O
+B0 U0000913        DEVANAGARI LETTER O
+B1 U0000914        DEVANAGARI LETTER AU
+B2 U0000911        DEVANAGARI LETTER CANDRA O
+B3 U0000915        DEVANAGARI LETTER KA
+B4 U0000916        DEVANAGARI LETTER KHA
+B5 U0000917        DEVANAGARI LETTER GA
+B6 U0000918        DEVANAGARI LETTER GHA
+B7 U0000919        DEVANAGARI LETTER NGA
+B8 U000091A        DEVANAGARI LETTER CA
+B9 U000091B        DEVANAGARI LETTER CHA
+BA U000091C        DEVANAGARI LETTER JA
+BB U000091D        DEVANAGARI LETTER JHA
+BC U000091E        DEVANAGARI LETTER NYA
+BD U000091F        DEVANAGARI LETTER TTA
+BE U0000920        DEVANAGARI LETTER TTHA
+BF U0000921        DEVANAGARI LETTER DDA
+C0 U0000922        DEVANAGARI LETTER DDHA
+C1 U0000923        DEVANAGARI LETTER NNA
+C2 U0000924        DEVANAGARI LETTER TA
+C3 U0000925        DEVANAGARI LETTER THA
+C4 U0000926        DEVANAGARI LETTER DA
+C5 U0000927        DEVANAGARI LETTER DHA
+C6 U0000928        DEVANAGARI LETTER NA
+C7 U0000929        DEVANAGARI LETTER NNNA
+C8 U000092A        DEVANAGARI LETTER PA
+C9 U000092B        DEVANAGARI LETTER PHA
+CA U000092C        DEVANAGARI LETTER BA
+CB U000092D        DEVANAGARI LETTER BHA
+CC U000092E        DEVANAGARI LETTER MA
+CD U000092F        DEVANAGARI LETTER YA
+CE U000095F        DEVANAGARI LETTER YYA
+CF U0000930        DEVANAGARI LETTER RA
+D0 U0000931        DEVANAGARI LETTER RRA
+D1 U0000932        DEVANAGARI LETTER LA
+D2 U0000933        DEVANAGARI LETTER LLA
+D3 U0000934        DEVANAGARI LETTER LLLA
+D4 U0000935        DEVANAGARI LETTER VA
+D5 U0000936        DEVANAGARI LETTER SHA
+D6 U0000937        DEVANAGARI LETTER SSA
+D7 U0000938        DEVANAGARI LETTER SA
+D8 U0000939        DEVANAGARI LETTER HA
+D9
+DA U000093E        DEVANAGARI VOWEL SIGN AA
+DB U000093F        DEVANAGARI VOWEL SIGN I
+DC U0000940        DEVANAGARI VOWEL SIGN II
+DD U0000941        DEVANAGARI VOWEL SIGN U
+DE U0000942        DEVANAGARI VOWEL SIGN UU
+DF U0000943        DEVANAGARI VOWEL SIGN VOCALIC R
+E0 U0000946        DEVANAGARI VOWEL SIGN SHORT E
+E1 U0000947        DEVANAGARI VOWEL SIGN E
+E2 U0000948        DEVANAGARI VOWEL SIGN AI
+E3 U0000945        DEVANAGARI VOWEL SIGN CANDRA E
+E4 U000094A        DEVANAGARI VOWEL SIGN SHORT O
+E5 U000094B        DEVANAGARI VOWEL SIGN O
+E6 U000094C        DEVANAGARI VOWEL SIGN AU
+E7 U0000949        DEVANAGARI VOWEL SIGN CANDRA O
+E8 U000094D        DEVANAGARI SIGN VIRAMA (HALANT IN ISCII)
+E9 U000093C        DEVANAGARI SIGN NUKTA
+EA U0000964        DEVANAGARI DANDA (VIRAM IN ISCII)
+EB
+EC
+ED
+EE
+EF
+F0
+F1 U0000966        DEVANAGARI DIGIT ZERO
+F2 U0000967        DEVANAGARI DIGIT ONE
+F3 U0000968        DEVANAGARI DIGIT TWO
+F4 U0000969        DEVANAGARI DIGIT THREE
+F5 U000096A        DEVANAGARI DIGIT FOUR
+F6 U000096B        DEVANAGARI DIGIT FIVE
+F7 U000096C        DEVANAGARI DIGIT SIX
+F8 U000096D        DEVANAGARI DIGIT SEVEN
+F9 U000096E        DEVANAGARI DIGIT EIGHT
+FA U000096F        DEVANAGARI DIGIT NINE
+FB
+FC
+FD
+FE
+FF
+/* END of table --------------------------------------------------------
+

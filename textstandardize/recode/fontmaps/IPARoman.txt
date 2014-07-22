@@ -1,0 +1,16 @@
+IPARoman map from original character to correct character:
+
+From bri-eng-Connell and eng-bri-Connell:
+
+From	To
+
+^	̂
+@	̄
+*	̆
+&	̌
+~	̀
+2	̱
+E	ɛ
+N	ŋ
+O	ɔ
+Ÿ	̀	(combined with capital letter)
