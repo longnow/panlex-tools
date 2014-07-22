@@ -12,7 +12,7 @@ use utf8;
 
 binmode STDOUT, ':encoding(utf8)';
 binmode STDERR, ':encoding(utf8)';
-# make STDOUT and STDERR print in UTF-8.
+# Make STDOUT and STDERR print in UTF-8.
 
 #######################################################
 
