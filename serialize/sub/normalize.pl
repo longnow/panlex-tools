@@ -82,7 +82,11 @@ sub process {
     validate_uid($uid);
 
     foreach my $score ($min, $mindeg) {
+    # For each of the score minima:
+
         die "invalid minimum score" unless valid_int($score) && $score >= 0;
+        # If it is not a non-negative integer, report the error and quit.
+
     }
         
     my (%ex, %exok);
@@ -106,15 +110,17 @@ sub process {
         # Identify its columns.
 
         die "column $excol not present in line" unless defined $col[$excol];
+        # If the column containing proposed expressions isn’t among them, report the
+        # error and quit.
 
         if (length $col[$excol]) {
         # If the column containing proposed expressions is nonblank:
 
             my @seg = ($col[$excol] =~ /($tagre.+?(?=$tagre|$))/g);
-            # Identify the tagged items, including tags, in it.
+            # Identify the tagged items, each item including its tag, in it.
 
             foreach my $seg (@seg) {
-            # For each of them:
+            # For each of the tagged items:
 
                 if (index($seg, $extag) == 0) {
                 # If it is tagged as an expression:
@@ -126,14 +132,16 @@ sub process {
                         # If the expression is to be ignored:
 
                             $exok{$ex} = '';
-                            # mark the expression as valid.
+                            # Add it to the table of valid expressions, if not already in it.
+
                         }
+
                         else {
-                        # Otherwise:
+                        # Otherwise, i.e. if the expression is not to be ignored:
 
                             $ex{$ex} = '';
-                            # Add it to the table of proposed expression texts, if not
-                            # already in it.
+                            # Add it to the table of proposed expressions, if not already in it.
+
                         }
                     }
                 }
@@ -172,7 +180,7 @@ sub process {
             if ($tt eq $norm->{ttNorm}) {
                 $exok{$tt} = '';
             } else {
-                $ttto{$tt} = $norm->{ttNorm};                    
+                $ttto{$tt} = $norm->{ttNorm};
             }
         }
     }
@@ -269,7 +277,11 @@ sub process {
                             # Prepend the tag to the concatenation.
 
                             foreach my $propcol (@propcols) {
+                            # For each column to which the conversion is to be propagated:
+
                                 $col[$propcol] =~ s/$extag/$failtag/g;
+                                # Convert all expression tags in it to the other tag.
+
                             }
                         }
 
@@ -280,6 +292,7 @@ sub process {
                             $seg = "$exptag$seg";
                             # Prepend a pre-normalized expression tag to the
                             # concatenation.
+
                         }
                     }
                 }
@@ -305,6 +318,7 @@ sub process {
 #   2: degrade parameter (boolean).
 
 sub norm {
+
     my ($uid, $tt, $degrade) = @_;
     my $result = {};
         
@@ -324,6 +338,7 @@ sub norm {
     }
     
     return $result;
+
 }
 
 # Make JSON output a bit less pretty.
@@ -352,27 +367,28 @@ sub PsList {
     my @ex;
 
     my $tt  = substr $_[0], $_[1];
-    # Identify the specified pseudo-list without its tag.
+    # Identify the specified pseudo-list without its prefix.
 
     if (length $_[2] && $tt =~ /$_[2]/) {
-    # If expressions are to be classified as single or pseudo-list
-    # and it contains a pseudo-list delimiter:
+    # If the pseudo-list is to be partitioned and contains at least 1 delimiter:
 
         @ex = split /$_[2]/, $tt;
-        # Identify the expressions in the pseudo-list.
+        # Partition it and identify its elements.
+
     }
 
     else {
-    # Otherwise, i.e. if expressions are not to be classified as
-    # single or pseudo-list or they are but it contains no
-    # pseudo-list delimiter:
+    # Otherwise, i.e. if the pseudo-list is not to be partitioned or it contains no
+    # delimiter:
 
         @ex = ($tt);
-        # Identify a list of the sole expression.
+        # Identify it as a 1-element list.
+
     }
 
     return @ex;
-    # Return a list
+    # Return the list.
+
 }
 
 1;

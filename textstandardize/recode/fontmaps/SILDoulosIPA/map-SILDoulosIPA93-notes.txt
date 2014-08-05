@@ -1,0 +1,13 @@
+This file maps from the SILDoulosIPA font, copyrighted by SIL in 1993, to Unicode. The font differs from the map in AMPHON-map.txt. The map is partly identical to and partly different from SIL-IPA-1990-map.txt. The map is partly identical to and partly different from that of SIL-IPA93-2001.txt, with the differences including 0067.
+
+The SIL maps map from codepoints within the fonts to Unicode names. This file maps from Unicode codepoints, assuming the text file is Unicode-encoded, to Unicode codepoints.
+
+No mapping file provided by SIL appears to duplicate this file. Searches through the entire collection found differences between this and all others.
+
+Map constructed by Susan Colowick, with amendments by Jonathan Pool.
+
+Format:
+from	to
+SD	Unicode
+
+In the Unicode column, some values are “+”-delimited pairs. These are based on the understanding that the glyphs in the font represent transitions between two tones. Those characters don’t exist in Unicode. They are recoded as a sequence of 2 characters that represent the starting and ending tones that we understand these glyphs represent a transition between. The SIL map SIL-IPA93-2001.txt indicates that all such transitions are between middle and extreme tones.

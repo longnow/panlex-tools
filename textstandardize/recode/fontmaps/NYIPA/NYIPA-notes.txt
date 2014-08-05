@@ -1,0 +1,16 @@
+NY IPA (font received from Larry Hyman, 2011/01)
+
+Larry Hyman was asked about this font on 2011/01/08 and delivered a copy of the font, which is bitmap-only and not installable. To access it, it was necessary to copy the hqx code out of the raw source of the email message and save it as an .hqx file, which Archiver could convert. The resulting FFIL font suitcase could not be installed with Font Book, but FontForge (not Fontographer 4.7 or 5 or TypeTool) was able to open and display it. FontForge could also generate a bitmap Mac-only dfont file, which was installable, but its encodings were wrong, so it was not usable in documents. Also Font Book crashed when asked to display a repertoire preview of it.
+
+Normal and preposed-diacritic recodings are in accompanying files.
+
+Confirmation of some of those encodings:
+
+02c6	014b	combining letter circumflex: eng (http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.52.9240&rep=rep1&type=pdf, p. 11, example 22, Hyman Number 178)
+
+a9	0263	copyright sign: Latin small letter gamma
+		(http://www.ddl.ish-lyon.cnrs.fr/fulltext/Hombert/Hombert_1979_bantu_iron_metallurgy.pdf, section 3)
+		(http://www.ddl.ish-lyon.cnrs.fr/fulltext/Hombert/Hombert_1976_Nounclasses.pdf, p. 10)
+		http://comparalex.canil.ca/index.php?page=query&wdl=133&col=1,2,4,5,15&flt=1&lst=18&egl=on&fgl=on
+
+a3	0272	pound sign: n with left hook (http://comparalex.canil.ca/index.php?page=query&wdl=133&col=1,2,4,5,15&flt=1&lst=18&egl=on&fgl=on)
