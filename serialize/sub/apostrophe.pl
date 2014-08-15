@@ -32,23 +32,20 @@ sub process {
         validate_specs(\@specs);
     }
 
-    my (@pcol, %uid_col, %apos);
+    my (@pcol, %col_uid, %apos);
     
     foreach my $spec (@specs) {
         my ($col, $uid) = split /:/, $spec;
         $col = int($col);
         push @pcol, $col;
-        $uid_col{$uid} = $col;
+        $col_uid{$col} = $uid;
     }
     
-    my $result = panlex_query_all('/lv', { uid => [keys %uid_col], include => 'cp' });
+    my $result = panlex_query_all('/lv', { uid => [values %col_uid], include => 'cp' });
     
     # Add data on the best apostrophe, making it U+02bc for varieties without any data on
     # editor-approved characters.
     foreach my $lv (@{$result->{result}}) {
-        my $uid = sprintf('%s-%03d', $lv->{lc}, $lv->{vc});
-        my $col = $uid_col{$uid};
-                 
         my $best;
         if (@{$lv->{cp}}) {
             my ($rq, $ma, $mtc);
@@ -72,7 +69,7 @@ sub process {
             }
         }
 
-        $apos{$col} = $best || 'ʼ';
+        $apos{$lv->{uid}} = $best || 'ʼ';
     }
 
     my %noncon;
@@ -94,10 +91,10 @@ sub process {
                 if (index($col[$i], "'") > -1) {
                 # If it contains any apostrophes:
 
-                    if (exists $apos{$i}) {
+                    if (exists $apos{$col_uid{$i}}) {
                     # If its variety's apostrophes are convertible:
 
-                        $col[$i] =~ s/'/$apos{$i}/g;
+                        $col[$i] =~ s/'/$apos{$col_uid{$i}}/g;
                         # Convert them.
                     }
 
