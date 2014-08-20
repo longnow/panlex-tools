@@ -4,6 +4,7 @@ Adj	adjv
 ADJ	adjv
 adj.	adjv
 Adj.	adjv
+adj.pred.	adjv:adj.pred.
 Adj. poss.	adjv:poss.
 Adjective	adjv
 ADJECTIVE	adjv
@@ -28,6 +29,7 @@ afx	affx
 agg.	adjv
 agg.	adjv
 art.	detr:art.
+aux.	auxv
 Aux.	auxv
 auxv	auxv
 avv.	advb
@@ -51,6 +53,7 @@ coord.	conj:coord.
 dem	detr:dem
 DEM	detr:DEM
 dem.	detr:dem.
+dem.pro.	detr:dem.pro.
 Demonstrative	detr:Demonstrative
 det	detr
 Det	detr
@@ -61,10 +64,13 @@ detr	detr
 disc	misc:disc
 epn	pron:epn
 exc	ijec:exc
+excl.	ijec:excl.
 Excl	ijec:Excl
 EXCL	ijec:EXCL
+expr.	misc:expr.
 f.v.	verb:f.v./frase di verbo
 frac	detr:frac
+ideo.	misc:ideo.
 ijec	ijec
 inj	ijec
 INSTR	advb:INSTR
@@ -87,6 +93,7 @@ misc	misc
 MOD	advb:MOD
 mod.avv.	advb:mod.avv.
 n	noun
+n adj.	noun:n adj.
 N	noun
 N Próprio.	name
 n:	noun
@@ -101,6 +108,7 @@ n.loc.	noun:n.loc.
 n.m.	noun:m.
 n.manner.	noun:n.manner.
 n.n.	noun:n.
+n.pro.	name
 n.qual.	noun:n.qual.
 n.quant.	noun:n.quant.
 n.time.	noun:n.time.
@@ -122,6 +130,7 @@ num.	detr:num.
 Numeral	detr:Numeral
 ord	detr:ord
 P	prep
+part.	misc:part.
 pcl	:pcl
 phr: v	verb:phr
 pn.	pron
@@ -131,10 +140,12 @@ Posp.	post
 post	post
 Post	post
 POST	post
+postp.	post
 pp	prep
 pp.	prep
 pr	prep
 preadv	prep:preadv
+pref.	affx:pref.
 prefix	affx:prefix
 prep	prep
 prep.	prep
@@ -145,6 +156,7 @@ pro	pron
 Pro	pron
 PRO	pron
 pro.	pron
+pro.rel.	pron:pro.rel.
 pron	pron
 pron.	pron
 Pron.	pron
@@ -156,7 +168,6 @@ Pron. Imp.	pron
 Pron. Independente.	pron:Independente.
 Pron.Pess.	pron:Pess./pronome pessoal
 Pronoun	pron
-prop	n.	name
 prop n.	name
 prop. n.	name
 prop.n.	name
@@ -202,6 +213,7 @@ V.	verb
 v. aux.	auxv
 v.i.	verb:v.i.
 v.impers.	verb:v.impers.
+v.ref.	verb:v.ref.
 v.rif.	verb:v.rif./verbo riflessivo
 v.t.	verb:v.t.
 va.	auxv
