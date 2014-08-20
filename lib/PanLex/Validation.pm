@@ -13,6 +13,7 @@ sub validate_spec {
 # dies if the argument is not a valid column index.
 sub validate_col {
     die "invalid column: $_[0]" unless $_[0] =~ /^\d+$/;
+    $_[0] += 0; # un-stringify scalar (affects JSON encoding)
 }
 
 # dies if the argument is not a valid language uid.
