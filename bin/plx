@@ -5,6 +5,9 @@ use encoding 'utf8';
 
 use File::Spec::Functions qw/catdir catfile curdir rel2abs splitdir/;
 use File::Copy qw/copy/;
+use LWP::UserAgent;
+
+my $SOURCE_ARCHIVE_URL = 'http://dev.panlex.org/sources/download';
 
 usage(), exit(0) unless @ARGV;
 
@@ -76,18 +79,65 @@ sub cp_file {
     chmod $mode, $target_file;
 }
 
+sub cmd_fetch {
+    my ($source) = @_;
+
+    print(STDERR "You need to specify a source.\n"), return unless $source;
+    check_env(qw/PANLEX_ARCHIVE_USERNAME PANLEX_ARCHIVE_PASSWORD/);
+
+    $source =~ s/:/-/g;
+
+    my $ua = LWP::UserAgent->new;
+    $ua->credentials('dev.panlex.org:80', 'PanLex source browser', $ENV{PANLEX_ARCHIVE_USERNAME}, $ENV{PANLEX_ARCHIVE_PASSWORD});
+
+    my ($r, $url);
+
+    foreach my $dir (qw/ main incoming /) {
+        $url = "${SOURCE_ARCHIVE_URL}/${dir}/${source}.zip";
+        $r = $ua->get($url);
+
+        if ($r->is_success) {
+            print "Fetched $url\n";
+
+            my $zip = $r->filename;
+            open my $out, '>', $zip or die $!;
+            print $out $r->decoded_content;
+            close $out;
+
+            my $dir = $zip;
+            $dir =~ s/\.zip$//;
+
+            if (-e $dir) {
+                print STDERR "Directory $dir already exists, not extracting $zip\n";
+            }
+            else {
+                print STDERR "Extracting $zip ...\n";
+                system('unzip', $zip) == 0 && unlink $zip;
+            }
+
+            return;
+        }
+    }
+
+    print STDERR 'Could not fetch source $source: ', $r->code, ' ', $r->message, "\n";
+}
+
 sub usage {
     print STDERR <<EOF;
-Usage: $0 <command> [options]
+Usage: $0 <command> [arguments]
 
 Commands:
 
 cp <tool>
-    copy panlex tool into the current directory
-    
+    copy PanLex tool into the current directory
+fetch <source>
+    fetch PanLex source from archive into the current directory and unzip it
+
 Environment variables:
 
-PANLEX_TOOLDIR      local directory containing panlex-tools
+PANLEX_TOOLDIR              local directory containing panlex-tools
+PANLEX_ARCHIVE_USERNAME     username for PanLex source archive
+PANLEX_ARCHIVE_PASSWORD     password for PanLex source archive
 EOF
 }
 
