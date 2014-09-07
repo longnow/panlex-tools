@@ -10,6 +10,10 @@
 #   mindeg:   minimum score a proposed expression that is not accepted outright 
 #               as an expression, or its replacement, must have in order to be
 #               accepted as an expression.
+#   ap:       array of source IDs whose denotations are to be ignored 
+#               in normalization; [] if none. default [].
+#   log:      set to 1 to log normalize scores to normalize.json, 0 otherwise.
+#               default: 0.
 #   failtag:  tag with which to retag proposed expressions not accepted as 
 #               expressions and not having replacements accepted as expressions; 
 #               '' (blank) if they are to be converted to pre-normalized 
@@ -26,8 +30,6 @@
 #   extag:    expression tag. default '⫷ex⫸'.
 #   exptag:   pre-normalized expression tag. default '⫷exp⫸'.
 #   tagre:    regex identifying any tag. default '⫷[a-z:]+⫸'.
-#   log:      set to 1 to log normalize scores to normalize.json, 0 otherwise.
-#               default: 0.
 
 package PanLex::Serialize::normalize;
 
@@ -51,21 +53,22 @@ sub process {
     my $out = shift;
     my $args = ref $_[0] ? $_[0] : \@_;
     
-    my ($excol, $uid, $min, $mindeg, $failtag, $ignore, $delim, $extag, $exptag, $tagre, @propcols, $log);
+    my ($excol, $uid, $min, $mindeg, $ap, $log, $failtag, $ignore, @propcols, $delim, $extag, $exptag, $tagre);
     
     if (ref $args eq 'HASH') {
         $excol      = $args->{col};
         $uid        = $args->{uid};
         $min        = $args->{min};
         $mindeg     = $args->{mindeg};
+        $ap         = $args->{ap} // [];
+        $log        = $args->{log} // 0;
         $failtag    = $args->{failtag} // $args->{dftag} // '⫷df⫸';
         $ignore     = $args->{ignore} // '';
+        @propcols   = @{$args->{propcols} || []};
         $delim      = $args->{delim} // '';
         $extag      = $args->{extag} // '⫷ex⫸';
         $exptag     = $args->{exptag} // '⫷exp⫸';
         $tagre      = $args->{tagre} // '⫷[a-z:]+⫸';
-        @propcols   = @{$args->{propcols} || []};
-        $log        = $args->{log} // 0;
     } else {
         ($tagre, $extag, $excol, $min, $mindeg, $uid, $exptag, $failtag, $delim) = @$args;
         $ignore = '';
@@ -74,7 +77,7 @@ sub process {
 
     my ($log_fh, $json);
     if ($log) {
-        open $log_fh, '>:utf8', 'normalize.log' if $log;
+        open $log_fh, '>:utf8', 'normalize.log' or die $!;
         $json = JSON->new->pretty->canonical;
     }
 
@@ -149,7 +152,7 @@ sub process {
         }
     }
 
-    my $result = norm($uid, [keys %ex], 0);
+    my $result = norm($uid, [keys %ex], 0, $ap);
 
     if ($log) {
         print $log_fh "Exact normalize scores:\n\n";
@@ -164,7 +167,7 @@ sub process {
         }
     }
 
-    $result = norm($uid, [keys %ex], 1);
+    $result = norm($uid, [keys %ex], 1, $ap);
 
     if ($log) {
         print $log_fh "Degraded normalize scores:\n\n";
@@ -314,12 +317,12 @@ sub process {
 # Iteratively query the PanLex api at /norm and return the results.
 # Arguments:
 #   0: variety UID.
-#   1: arrayref containing expression texts.
+#   1: tt parameter containing expression texts (arrayref).
 #   2: degrade parameter (boolean).
+#   3: ap parameter (arrayref).
 
 sub norm {
-
-    my ($uid, $tt, $degrade) = @_;
+    my ($uid, $tt, $degrade, $ap) = @_;
     my $result = {};
         
     for (my $i = 0; $i < @$tt; $i += $PanLex::ARRAY_MAX) {
@@ -328,9 +331,10 @@ sub norm {
         
         # get the next set of results.
         my $this_result = panlex_query("/norm/$uid", { 
-            tt => [@{$tt}[$i .. $last]], 
+            tt => [@{$tt}[$i .. $last]],
+            ap => $ap,
             degrade => $degrade,
-            cache => 0 
+            cache => 0,
         });
                 
         # merge with the previous results, if any.
@@ -338,7 +342,6 @@ sub norm {
     }
     
     return $result;
-
 }
 
 # Make JSON output a bit less pretty.

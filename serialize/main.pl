@@ -124,14 +124,18 @@ my @TOOLS = (
 #   mindeg:   minimum score a proposed expression that is not accepted outright 
 #               as an expression, or its replacement, must have in order to be
 #               accepted as an expression.
+#   ap:       array of source IDs whose denotations are to be ignored 
+#               in normalization; [] if none. default [].
+#   log:      set to 1 to log normalize scores to normalize.json, 0 otherwise.
+#               default: 0.
 #   failtag:  tag with which to retag proposed expressions not accepted as 
 #               expressions and not having replacements accepted as expressions; 
 #               '' (blank) if they are to be converted to pre-normalized 
 #               expressions. default '⫷df⫸'.
-#   propcols: array of columns to which the extag to failtag replacement should
-#               be propagated when it takes place; [] if none. default [].
 #   ignore:   regex matching expressions to be ignored in normalization; or ''
 #               (blank) if none. default ''.
+#   propcols: array of columns to which the extag to failtag replacement should
+#               be propagated when it takes place; [] if none. default [].
 #   delim:    regex matching the synonym delimiter, if each proposed expression
 #               containing such a delimiter is to be treated as a list of
 #               synonymous proposed expressions and they are to be normalized if
@@ -140,8 +144,6 @@ my @TOOLS = (
 #   extag:    expression tag. default '⫷ex⫸'.
 #   exptag:   pre-normalized expression tag. default '⫷exp⫸'.
 #   tagre:    regex identifying any tag. default '⫷[a-z:]+⫸'.
-#   log:      set to 1 to log normalize scores to normalize.json, 0 otherwise.
-#               default: 0.
 
 #'retag'      => { cols => [1, 2], oldtag => '⫷fail⫸', newtag => '⫷ex⫸' },
 # Retags a tag in a tab-delimited source file.
