@@ -119,7 +119,7 @@ sub cmd_fetch {
         }
     }
 
-    print STDERR 'Could not fetch source $source: ', $r->code, ' ', $r->message, "\n";
+    print STDERR "Could not fetch source $source: ", $r->code, ' ', $r->message, "\n";
 }
 
 sub usage {
