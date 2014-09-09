@@ -35,7 +35,7 @@ sub run {
 
         my $input = "$BASENAME-$VERSION.txt";
         die "could not find file $input" unless -e $input;
-        open my $in, '<:utf8', $input or die $!;
+        open my $in, '<:encoding(utf8)', $input or die $!;
 
         {   
             no strict 'refs';
@@ -43,7 +43,7 @@ sub run {
         }
 
         my $output = "$BASENAME-$VERSION.txt";
-        open my $out, '>:utf8', "$BASENAME-$VERSION.txt" or die $!;
+        open my $out, '>:encoding(utf8)', "$BASENAME-$VERSION.txt" or die $!;
 
         printf "%-13s %s => %s\n", $tool.':', $input, $output;
 
@@ -64,7 +64,7 @@ sub run {
 
     $log->{time} = time();
 
-    open my $fh, '>:utf8', 'log.json' or die $!;
+    open my $fh, '>:encoding(utf8)', 'log.json' or die $!;
     print $fh JSON->new->pretty->canonical->encode($log);
     close $fh;
 
