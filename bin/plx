@@ -32,6 +32,8 @@ sub cmd_cp {
     $tool .= '.pl' unless $tool =~ /\./;
     $dest .= '.pl' unless $dest =~ /\./;
 
+    print(STDERR "$dest already exists, aborting\n"), return if -e $dest;
+
     my $sourcedir = rel2abs(curdir());
 
     my $source;
