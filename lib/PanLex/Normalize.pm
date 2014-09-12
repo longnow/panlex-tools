@@ -25,11 +25,11 @@ sub panlex_norm {
         # get the next set of results.
         my $this_result = panlex_query("/norm/$uid", { 
             tt => [@{$tt}[$i .. $last]],
-            ap => $ap,
+            ap => $ap || [],
             degrade => $degrade,
             cache => 0,
         });
-                
+        
         # merge with the previous results, if any.
         $result = { %$result, %{$this_result->{norm}} };
     }
