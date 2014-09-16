@@ -18,8 +18,8 @@ sub panlex_norm {
     my ($uid, $tt, $degrade, $ap) = @_;
     my $result = {};
         
-    for (my $i = 0; $i < @$tt; $i += $PanLex::ARRAY_MAX) {
-        my $last = $i + $PanLex::ARRAY_MAX - 1;
+    for (my $i = 0; $i < @$tt; $i += $PanLex::Client::ARRAY_MAX) {
+        my $last = $i + $PanLex::Client::ARRAY_MAX - 1;
         $last = $#{$tt} if $last > $#{$tt};
         
         # get the next set of results.
