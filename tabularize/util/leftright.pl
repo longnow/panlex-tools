@@ -1,12 +1,14 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl
+use strict;
+use warnings;
 
 # Combines two files as the left and right columns of a new file.
 
-open LEFT, 'leftfile.txt';
+open LEFT, '<:encoding(utf8)', 'leftfile.txt';
 
-open RIGHT, 'rightfile.txt';
+open RIGHT, '<:encoding(utf8)', 'rightfile.txt';
 
-open COMBO, '>combinedfile.txt';
+open COMBO, '>:encoding(utf8)', 'combinedfile.txt';
 
 my $line = '';
 # Initialize the line as blank.
@@ -17,9 +19,7 @@ my $left = '';
 my $right = '';
 # Initialize the right side as blank.
 
-my (@col, $i);
-
-foreach $i (0, 1, 2) {
+foreach my $i (0, 1, 2) {
 # 3 times:
 
 	<LEFT>;
@@ -46,7 +46,7 @@ while (defined $line) {
 		chomp $right;
 		# Remove the trailing newline of the right line.
 
-		@col = ((split /\t/, $left, 4), (split /\t/, $right));
+		my @col = ((split /\t/, $left, 4), (split /\t/, $right));
 		# Identify the lines’ columns.
 
 		print COMBO ((join "\t", @col[0, 1, 4, 9, 2, 3]) . "\n");
