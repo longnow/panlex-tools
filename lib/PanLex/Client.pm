@@ -1,4 +1,4 @@
-package PanLex;
+package PanLex::Client;
 use strict;
 use base 'Exporter';
 use JSON;

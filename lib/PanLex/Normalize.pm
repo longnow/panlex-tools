@@ -1,7 +1,7 @@
 package PanLex::Normalize;
 use strict;
 use base 'Exporter';
-use PanLex;
+use PanLex::Client;
 
 use vars qw/@EXPORT/;
 @EXPORT = qw/panlex_norm/;

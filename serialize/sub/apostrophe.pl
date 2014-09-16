@@ -14,7 +14,7 @@ use strict;
 use utf8;
 # Make Perl interpret the script as UTF-8 rather than bytes.
 
-use PanLex;
+use PanLex::Client;
 use PanLex::Validation;
 
 sub process {
