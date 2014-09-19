@@ -118,7 +118,7 @@ sub process {
             # Convert every expression in the column that exceeds the maximum character
             # count, if there is one, to a definition, omitting any preposed annotation.
 
-            $col[$i] =~ s/$extag(?:$prere)?((?:$postwre+ ){$tmw})/$dftag$1/g
+            $col[$i] =~ s/$extag(?:$prere)?((?:$postwre+ +){$tmw})/$dftag$1/g
                 if $tmw;
             # Convert every expression in the column that exceeds a maximum word count,
             # if there is one, to a definition, omitting any preposed annotation.
