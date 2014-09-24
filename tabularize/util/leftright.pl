@@ -4,11 +4,11 @@ use warnings;
 
 # Combines two files as the left and right columns of a new file.
 
-open LEFT, '<:encoding(utf8)', 'leftfile.txt';
+open my $left, '<:encoding(utf8)', 'leftfile.txt';
 
-open RIGHT, '<:encoding(utf8)', 'rightfile.txt';
+open my $right, '<:encoding(utf8)', 'rightfile.txt';
 
-open COMBO, '>:encoding(utf8)', 'combinedfile.txt';
+open my $combo, '>:encoding(utf8)', 'combinedfile.txt';
 
 my $line = '';
 # Initialize the line as blank.
@@ -22,8 +22,8 @@ my $right = '';
 foreach my $i (0, 1, 2) {
 # 3 times:
 
-	<LEFT>;
-	<RIGHT>;
+	<$left>;
+	<$right>;
 	# Discard the input files’ lines.
 
 }
@@ -31,10 +31,10 @@ foreach my $i (0, 1, 2) {
 while (defined $line) {
 # Until either of the input files is exhausted:
 
-	$left = <LEFT>;
+	$left = <$left>;
 	# Identify the next left line.
 
-	$right = <RIGHT>;
+	$right = <$right>;
 	# Identify the next right line.
 
 	if ((defined $left) && (defined $right)) {
@@ -49,7 +49,7 @@ while (defined $line) {
 		my @col = ((split /\t/, $left, 4), (split /\t/, $right));
 		# Identify the lines’ columns.
 
-		print COMBO ((join "\t", @col[0, 1, 4, 9, 2, 3]) . "\n");
+		print $combo ((join "\t", @col[0, 1, 4, 9, 2, 3]) . "\n");
 		# Output the combined line.
 
 	}
@@ -64,8 +64,8 @@ while (defined $line) {
 
 }
 
-close LEFT;
+close $left;
 
-close RIGHT;
+close $right;
 
-close COMBO;
+close $combo;

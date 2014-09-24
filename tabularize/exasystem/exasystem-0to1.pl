@@ -24,11 +24,11 @@ my $VERSION = 0;
 
 #######################################################
 
-open my $in, '<:bytes', "$BASENAME-$VERSION.dk" or die $!;
-# Open the input file for reading.
-
 open my $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt') or die $!;
 # Create or truncate the output file and open it for writing.
+
+open my $in, '<:bytes', "$BASENAME-$VERSION.dk" or die $!;
+# Open the input file for reading.
 
 my $ret = join('', <$in>);
 # Initialize the result as a concatenation of all lines in the input file.

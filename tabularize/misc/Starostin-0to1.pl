@@ -27,11 +27,11 @@ my %lv = (
 
 #######################################################
 
-open my $in, '<:encoding(utf8)', "$BASENAME-$VERSION.txt";
-# Open the input file for reading.
-
 open my $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
 # Create or truncate the output file and open it for writing.
+
+open my $in, '<:encoding(utf8)', "$BASENAME-$VERSION.txt";
+# Open the input file for reading.
 
 my ($app, @col, $col, $eng, %entry, $entry, $extt, $lvtt, @out);
 

@@ -1,4 +1,5 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl
+use warnings 'FATAL', 'all';
 
 # Processes a source containing distinct “dict” and “index” files with the first
 # column of the index file useless. Uses the index files to discover the entries in the dict files.
@@ -6,14 +7,14 @@
 my $name = $ARGV[0];
 # Identify the stem of the file names.
 
-open INDEX, '<:utf8', "$name.index";
+open my $out, '>:unix', "$name.txt" or die $!;
+# Create an output file and open it for writing.
+
+open my $index, '<:encoding(utf8)', "$name.index" or die $!;
 # Open the index file for reading.
 
-open DICTIN, '<:unix', "$name.dict";
+open my $in, '<:unix', "$name.dict" or die $!;
 # Open the dict file for reading.
-
-open DICTOUT, '>:unix', "$name.txt";
-# Create an output file and open it for writing.
 
 my $main = '';
 # Initialize the line as being in the file header.
@@ -23,7 +24,7 @@ my (@sl64, @s64, @l64, $i, $start, @start, $length, @length);
 my $alph64 = (join '', (('A' .. 'Z'), ('a' .. 'z'), ('0' .. '9'), '+', '/'));
 # Identify the 64 digits of the number system.
 
-while (<INDEX>) {
+while (<$index>) {
 # For each line in the index file:
 
 	unless ($main) {
@@ -86,7 +87,7 @@ my $dict = '';
 
 my ($entry, $prior);
 
-while (<DICTIN>) {
+while (<$in>) {
 # For each line in the dict file:
 
 	$dict .= $_;
@@ -109,13 +110,14 @@ foreach $i (0 .. $#start) {
 	$entry =~ s/\n/<&>/g;
 	# Replace all newlines in the entry with “<&>”.
 
-	print DICTOUT "$entry\n";
+	print $out "$entry\n";
 	# Output the entry.
 
 }
 
-close INDEX;
+close $in;
 
-close DICTIN;
+close $index;
 
-close DICTOUT;
+close $out;
+

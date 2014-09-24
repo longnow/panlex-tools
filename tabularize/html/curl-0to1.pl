@@ -27,11 +27,11 @@ my $VERSION = 0;
 
 #######################################################
 
-open my $in, '<:encoding(utf8)', "$BASENAME-$VERSION.txt" or die $!;
-# Open the input file for reading.
-
 open my $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt') or die $!;
 # Create or truncate the output file and open it for writing.
+
+open my $in, '<:encoding(utf8)', "$BASENAME-$VERSION.txt" or die $!;
+# Open the input file for reading.
 
 my $all = join('', <$in>);
 # Identify a concatenation of all lines of the input file.

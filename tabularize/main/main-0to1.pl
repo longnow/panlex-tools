@@ -13,6 +13,9 @@ binmode STDOUT, ':encoding(utf8)';
 binmode STDERR, ':encoding(utf8)';
 # make STDOUT and STDERR print in UTF-8.
 
+use lib "$ENV{PANLEX_TOOLDIR}/lib";
+use PanLex::Util;
+
 #######################################################
 
 my $BASENAME = 'aaa-bbb-Author';
@@ -23,17 +26,20 @@ my $VERSION = 0;
 
 #######################################################
 
-open my $in, '<:encoding(utf8)', "$BASENAME-$VERSION.txt" or die $!;
-# Open the input file for reading.
-
 open my $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt') or die $!;
 # Create or truncate the output file and open it for writing.
+
+open my $in, '<:encoding(utf8)', "$BASENAME-$VERSION.txt" or die $!;
+# Open the input file for reading.
 
 while (<$in>) {
 # For each line of the input file:
 
+    chomp;
+    # remove its trailing newline, if present.
+
     # while (s/, *(?![^()]*\))/‣/) {}
-    s/ *, *(?![^()]*\))/‣/g;
+    $_ = Delimiter($_, ',', '‣');
     # Convert all unparenthesized commas in it to synonym delimiters.
 
     s/(?:^|\t|‣)\K +| +(?=$|\t|‣)//g;
@@ -51,7 +57,7 @@ while (<$in>) {
 
     }
 
-    print $out $_;
+    print $out $_, "\n";
     # Output it.
 
 }

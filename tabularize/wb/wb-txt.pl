@@ -1,16 +1,17 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl
+use warnings 'FATAL', 'all';
 
 # Deletes trailing nul characters and reformats .wb file as tab-delimited lines without changing
 # encoding. Various wb files use various encodings.
 
-open DICIN, 'inputfile.wb';
+open my $in, '<', 'inputfile.wb' or die $!;
 
-open DICOUT, '>outputfile.txt';
+open my $out, '>', 'outputfile.txt' or die $!;
 
 $ret = '';
 # Initialize the result as blank.
 
-while (<DICIN>) {
+while (<$in>) {
 # For each line in the input file (normally only 1 in a wb file):
 
 	$ret .= $_;
@@ -25,9 +26,9 @@ $ret =~ s/(.{31})(.{53})/$1\t$2\n/g;
 $ret =~ s/[\x00][^\t\n]*//g;
 # Delete every nul and every character after any null before the next tab or newline.
 
-print DICOUT $ret;
+print $out $ret;
 # Output the result.
 
-close DICIN;
+close $in;
 
-close DICOUT;
+close $out;

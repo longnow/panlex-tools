@@ -1,17 +1,18 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl
+use warnings 'FATAL', 'all';
 
 # Deletes trailing nul characters and reformats long-wb file as tab-delimited lines without
 # changing encoding. Various .wb files use various encodings. Some use one encoding for the source
 # expression and another encoding for the target expression.
 
-open DICIN, 'Español_Arabela.wb';
+open my $in, '<', 'Español_Arabela.wb' or die $!;
 
-open DICOUT, '>Español_Arabela.txt';
+open my $out, '>', 'Español_Arabela.txt' or die $!;
 
 $ret = '';
 # Initialize the result as blank.
 
-while (<DICIN>) {
+while (<$in>) {
 # For each line in the input file (normally only 1 in a wb file):
 
 	$ret .= $_;
@@ -26,9 +27,9 @@ $ret =~ s/(.{201})(.{253})/$1\t$2\n/g;
 $ret =~ s/[\x00][^\t\n]*//g;
 # Delete every nul and every character after any null before the next tab or newline.
 
-print DICOUT $ret;
+print $out $ret;
 # Output the result.
 
-close DICIN;
+close $in;
 
-close DICOUT;
+close $out;
