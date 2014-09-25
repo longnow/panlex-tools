@@ -54,7 +54,7 @@ sub validate_specs {
 # also calls validate_uid on each element of the array.
 sub validate_uids {
     die "expected a uids argument with at least one column" unless ref $_[0] eq 'ARRAY' && @{$_[0]};
-    validate_uids($_) for @{$_[0]};
+    validate_uid($_) for @{$_[0]};
 }
 
 1;
