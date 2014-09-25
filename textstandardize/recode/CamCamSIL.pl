@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl
 
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
@@ -11,36 +11,36 @@ use utf8;
 
 #######################################################
 
-my $fnbase = 'filenamebase';
+my $BASENAME = 'filenamebase';
 # Identify the filename base. Originally developed for gnd-fra-fub-Haller.
 
-my $ver = 1;
+my $VERSION = 1;
 # Identify the input file’s version.
 
 #######################################################
 
-open DICIN, '<:encoding(utf8)', "$fnbase-$ver.txt";
-# Open the input file for reading.
-
-open DICOUT, '>:encoding(utf8)', ("$fnbase-" . ($ver + 1) . '.txt');
+open my $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
 # Create or truncate the output file and open it for writing.
 
-while (<DICIN>) {
+open my $in, '<:encoding(utf8)', "$BASENAME-$VERSION.txt";
+# Open the input file for reading.
+
+while (<$in>) {
 # For each line of the input file:
 
 	tr/ãäàèëéêïìîñùÜ/\x{0327}ɓ\x{0301}\x{0300}ɗə\x{0302}i\x{0300}\x{0302}ŋ\x{0301}ʼ/;
 	# Correct its encoding per Cam Cam SIL DoulosL and Cam Cam SIL SophiaL fonts.
 
-	s/\.\.\./ … /g;
+	s/\.{3}/ … /g;
 	# Convert all triple periods in it to diereses.
 
-	print DICOUT;
+	print $out;
 	# Output it.
 
 }
 
-close DICIN;
+close $in;
 # Close the input file.
 
-close DICOUT;
+close $out;
 # Close the output file.

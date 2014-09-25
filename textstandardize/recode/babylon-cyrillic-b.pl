@@ -1,12 +1,19 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl
 
-use encoding 'utf8';
+use warnings 'FATAL', 'all';
+# Make every warning fatal.
 
-open DICIN, '<:utf8', 'eng-khk-Temuka.txt';
+use strict;
+# Require strict checking of variable references, etc.
 
-open DICOUT, '>:utf8', 'eng-khk-Temuka-0.txt';
+use utf8;
+# Make Perl interpret the script as UTF-8.
 
-while (<DICIN>) {
+open my $out, '>:encoding(utf8)', 'eng-khk-Temuka-0.txt';
+
+open my $in, '<:encoding(utf8)', 'eng-khk-Temuka.txt';
+
+while (<$in>) {
 # For each line in the input file:
 
 	tr/№§ИПК/ѐѝѡҿӹ/;
@@ -17,11 +24,11 @@ while (<DICIN>) {
 	# Decrease the codepoint of every Cyrillic character by 16 except the first 16 Cyrillic
 	# characters. Combining both “tr” statements fails, contrary to Perl documentation.
 
-	print DICOUT;
+	print $out;
 	# Output the line.
 
 }
 
-close DICIN;
+close $in;
 
-close DICOUT;
+close $out;

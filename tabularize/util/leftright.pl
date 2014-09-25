@@ -1,14 +1,18 @@
 #!/usr/bin/env perl
-use strict;
-use warnings;
 
 # Combines two files as the left and right columns of a new file.
 
-open my $left, '<:encoding(utf8)', 'leftfile.txt';
+use warnings 'FATAL', 'all';
+# Make every warning fatal.
 
-open my $right, '<:encoding(utf8)', 'rightfile.txt';
+use strict;
+# Require strict checking of variable references, etc.
 
-open my $combo, '>:encoding(utf8)', 'combinedfile.txt';
+open my $combo, '>:encoding(utf8)', $ARGV[2];
+
+open my $left, '<:encoding(utf8)', $ARGV[0];
+
+open my $right, '<:encoding(utf8)', $ARGV[1];
 
 my $line = '';
 # Initialize the line as blank.
@@ -64,8 +68,8 @@ while (defined $line) {
 
 }
 
-close $left;
-
 close $right;
+
+close $left;
 
 close $combo;

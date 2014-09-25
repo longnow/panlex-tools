@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl
 
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
@@ -9,15 +9,15 @@ use strict;
 use encoding 'utf8';
 # Make Perl interpret the script and standard files as UTF-8 rather than bytes.
 
-open MAP, 'NYIPA/NYIPA-map-nml.txt';
-# Open the map file.
-
-open OUT, '>:utf8', 'NYIPA/NYIPA-mapcheck-nml.txt';
+open my $out, '>:utf8', 'NYIPA/NYIPA-mapcheck-nml.txt';
 # Open the output file.
+
+open my $map, '<', 'NYIPA/NYIPA-map-nml.txt';
+# Open the map file.
 
 my @col;
 
-while (<MAP>) {
+while (<$map>) {
 # For each line in the map file:
 
 	chomp;
@@ -26,11 +26,11 @@ while (<MAP>) {
 	@col = (split /\t/);
 	# Identiify its columns.
 
-	print OUT $col[0], "\t", $col[1], "\t", (chr (hex $col[1])), "\n";
+	print $out $col[0], "\t", $col[1], "\t", (chr (hex $col[1])), "\n";
 	# Output the combined line.
 
 }
 
-close MAP;
+close $map;
 
-close OUT;
+close $out;
