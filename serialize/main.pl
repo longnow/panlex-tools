@@ -7,7 +7,7 @@ use utf8;
 my $BASENAME = 'aaa-bbb-Author';
 
 # The initial version to use.
-my $VERSION = 0;
+my $VERSION = 1;
 
 # The panlex-tools directory containing the serialize scripts. If unset here,
 # will look next in env var PANLEX_TOOLDIR, otherwise use current directory.
