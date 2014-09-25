@@ -1,8 +1,13 @@
 #!/usr/bin/env perl
-use warnings 'FATAL', 'all';
 
 # Processes a “quick” source containing distinct “dict” and “index” files. Uses the
 # “index” files to discover the entries in the “dict” files.
+
+use warnings 'FATAL', 'all';
+# Make every warning fatal.
+
+use strict;
+# Require strict checking of variable references, etc.
 
 use Encode 'decode';
 # Import the library subroutine to decode octets.

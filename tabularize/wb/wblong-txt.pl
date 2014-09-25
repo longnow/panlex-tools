@@ -1,9 +1,14 @@
 #!/usr/bin/env perl
-use warnings 'FATAL', 'all';
 
 # Deletes trailing nul characters and reformats long-wb file as tab-delimited lines without
 # changing encoding. Various .wb files use various encodings. Some use one encoding for the source
 # expression and another encoding for the target expression.
+
+use warnings 'FATAL', 'all';
+# Make every warning fatal.
+
+use strict;
+# Require strict checking of variable references, etc.
 
 open my $in, '<', 'Español_Arabela.wb' or die $!;
 

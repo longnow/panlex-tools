@@ -1,8 +1,15 @@
 #!/usr/bin/env perl
-use strict;
-use warnings;
 
 # Converts HTML decimal character entities to characters.
+
+use warnings 'FATAL', 'all';
+# Make every warning fatal.
+
+use strict;
+# Require strict checking of variable references, etc.
+
+use utf8;
+# Make Perl interpret the script as UTF-8.
 
 use HTML::Entities;
 # Import a library for HTML entity conversion.

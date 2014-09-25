@@ -17,7 +17,8 @@ binmode STDOUT, ':encoding(utf8)';
 binmode STDERR, ':encoding(utf8)';
 # make STDOUT and STDERR print in UTF-8.
 
-require 'trim.pl';
+use lib "$ENV{PANLEX_TOOLDIR}/lib";
+use PanLex::Util;
 
 #######################################################
 

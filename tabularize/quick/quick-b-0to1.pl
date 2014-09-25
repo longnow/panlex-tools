@@ -1,8 +1,13 @@
 #!/usr/bin/env perl
-use warnings 'FATAL', 'all';
 
 # Processes a source containing distinct “dict” and “index” files with the first
 # column of the index file useless. Uses the index files to discover the entries in the dict files.
+
+use warnings 'FATAL', 'all';
+# Make every warning fatal.
+
+use strict;
+# Require strict checking of variable references, etc.
 
 my $name = $ARGV[0];
 # Identify the stem of the file names.
