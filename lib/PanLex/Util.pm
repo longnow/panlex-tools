@@ -60,13 +60,13 @@ sub NormTrim {
     # Delete any sequence of 1 or more characters in it with Other Unicode General Category
     # properties.
 
-    @seg = (split /\t/, $ret, -1);
+    my @seg = (split /\t/, $ret, -1);
     # Identify its tab-delimited segments.
 
-    foreach $i (0 .. $#seg) {
+    foreach my $s (@seg) {
     # For each of them:
 
-        $seg[$i] =~ s/\p{Z}+/ /g;
+        $s =~ s/\p{Z}+/ /g;
         # Replace any sequence of 1 or more characters in it with the Separator Unicode
         # General Category properties with a single space.
 
