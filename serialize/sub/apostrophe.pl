@@ -48,29 +48,27 @@ sub process {
     foreach my $lv (@{$result->{result}}) {
         my $best;
         if (@{$lv->{cp}}) {
-            my ($rq, $ma, $mtc, $slt);
+            my ($slt, $mtc, $rq);
 
             foreach my $cp (@{$lv->{cp}}) {
-                $rq = 1 if $cp->[0] <= 0x2019 && $cp->[1] >= 0x2019; # right single quotation mark
-                $ma = 1 if $cp->[0] <= 0x02bc && $cp->[1] >= 0x02bc; # modifier letter apostrophe
-                $mtc = 1 if $cp->[0] <= 0x02bb && $cp->[1] >= 0x02bb; # modifier letter turned comma
                 $slt = 1 if $cp->[0] <= 0xa78c && $cp->[1] >= 0xa78c; # lowercase saltillo
+                $mtc = 1 if $cp->[0] <= 0x02bb && $cp->[1] >= 0x02bb; # modifier letter turned comma
+                $rq = 1 if $cp->[0] <= 0x2019 && $cp->[1] >= 0x2019; # right single quotation mark
+                #$ma = 1 if $cp->[0] <= 0x02bc && $cp->[1] >= 0x02bc; # modifier letter apostrophe
             }
             
-            if ($mtc) {
-                $best = 'ʻ' unless $rq || $ma;
+            if ($slt) {
+                $best = "\x{a78c}";
+            }
+            elsif ($mtc) {
+                $best = "\x{02bb}";
             } 
-            else {
-                if ($rq) {
-                    $best = '’' unless $ma;
-                }
-                else {
-                    $best = 'ʼ';
-                }
+            elsif ($rq) {
+                $best = "\x{2019}";
             }
         }
 
-        $apos{$lv->{uid}} = $best || 'ʼ';
+        $apos{$lv->{uid}} = $best || "\x{02bc}";
     }
 
     my %noncon;
