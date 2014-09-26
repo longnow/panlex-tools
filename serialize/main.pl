@@ -123,7 +123,7 @@ my @TOOLS = (
 #               degradation, if any such expression has a higher score than it.
 #   mindeg:   minimum score a proposed expression that is not accepted outright 
 #               as an expression, or its replacement, must have in order to be
-#               accepted as an expression.
+#               accepted as an expression. pass '' to disable replacement.
 #   ap:       array of source IDs whose denotations are to be ignored 
 #               in normalization; [] if none. default [].
 #   log:      set to 1 to log normalize scores to normalize.json, 0 otherwise.

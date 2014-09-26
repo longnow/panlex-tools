@@ -9,7 +9,7 @@
 #               degradation, if any such expression has a higher score than it.
 #   mindeg:   minimum score a proposed expression that is not accepted outright 
 #               as an expression, or its replacement, must have in order to be
-#               accepted as an expression.
+#               accepted as an expression. pass '' to disable replacement.
 #   ap:       array of source IDs whose denotations are to be ignored 
 #               in normalization; [] if none. default [].
 #   log:      set to 1 to log normalize scores to normalize.json, 0 otherwise.
@@ -84,13 +84,8 @@ sub process {
     validate_col($excol);
     validate_uid($uid);
 
-    foreach my $score ($min, $mindeg) {
-    # For each of the score minima:
-
-        die "invalid minimum score" unless valid_int($score) && $score >= 0;
-        # If it is not a non-negative integer, report the error and quit.
-
-    }
+    die "invalid min value: $min" unless valid_int($min) && $min >= 0;
+    die "invalid mindeg value: $mindeg" unless $mindeg eq '' || (valid_int($mindeg) && $mindeg >= 0);
         
     my (%ex, %exok);
 
@@ -167,23 +162,25 @@ sub process {
         }
     }
 
-    $result = panlex_norm($uid, [keys %ex], 1, $ap);
-
-    if ($log) {
-        print $log_fh "Degraded normalize scores:\n\n";
-        print $log_fh munge_json($json->encode($result)), "\n";
-    }
-
     my %ttto;
 
-    while (my ($tt,$norm) = each %$result) {
-        # For each proposed expression that is a highest-scoring expression in the variety with
-        # its degradation and whose score is sufficient for acceptance as an expression:
-        if ($norm->{score} >= $mindeg && defined $norm->{ttNorm}) {
-            if ($tt eq $norm->{ttNorm}) {
-                $exok{$tt} = '';
-            } else {
-                $ttto{$tt} = $norm->{ttNorm};
+    if ($mindeg ne '') {
+        $result = panlex_norm($uid, [keys %ex], 1, $ap);
+
+        if ($log) {
+            print $log_fh "Degraded normalize scores:\n\n";
+            print $log_fh munge_json($json->encode($result)), "\n";
+        }
+
+        while (my ($tt,$norm) = each %$result) {
+            # For each proposed expression that is a highest-scoring expression in the variety with
+            # its degradation and whose score is sufficient for acceptance as an expression:
+            if ($norm->{score} >= $mindeg && defined $norm->{ttNorm}) {
+                if ($tt eq $norm->{ttNorm}) {
+                    $exok{$tt} = '';
+                } else {
+                    $ttto{$tt} = $norm->{ttNorm};
+                }
             }
         }
     }
