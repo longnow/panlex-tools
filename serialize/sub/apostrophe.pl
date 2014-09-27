@@ -48,16 +48,21 @@ sub process {
     foreach my $lv (@{$result->{result}}) {
         my $best;
         if (@{$lv->{cp}}) {
-            my ($slt, $mtc, $rq);
+
+            my ($hpg, $slt, $mtc, $rq);
 
             foreach my $cp (@{$lv->{cp}}) {
+                $hpg = 1 if $cp->[0] <= 0x05f3 && $cp->[1] >= 0x05f3; # Hebrew punctuation geresh
                 $slt = 1 if $cp->[0] <= 0xa78c && $cp->[1] >= 0xa78c; # lowercase saltillo
                 $mtc = 1 if $cp->[0] <= 0x02bb && $cp->[1] >= 0x02bb; # modifier letter turned comma
                 $rq = 1 if $cp->[0] <= 0x2019 && $cp->[1] >= 0x2019; # right single quotation mark
                 #$ma = 1 if $cp->[0] <= 0x02bc && $cp->[1] >= 0x02bc; # modifier letter apostrophe
             }
             
-            if ($slt) {
+            if ($hpg) {
+                $best = "\x{05f3}";
+            }
+            elsif ($slt) {
                 $best = "\x{a78c}";
             }
             elsif ($mtc) {
