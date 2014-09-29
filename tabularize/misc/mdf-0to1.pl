@@ -45,14 +45,17 @@ while (<$in>) {
     chomp;
     # remove its trailing newline, if present.
 
-    if (/^\\([a-z]+) +(.+)$/) {
-        handle_marker($1, $2);
-    }
-    elsif (/^\s*$/) {
-        output_line();
-        %rec = ();
+    if (my ($marker, $txt) = /^\\([a-z]+) +(.+)$/) {
+        if ($marker eq 'lx') {
+            output_line();
+            %rec = ();
+        }
+
+        handle_marker($marker, $txt);
     }
 }
+
+output_line();
 
 close $in;
 # Close the input file.
@@ -78,5 +81,6 @@ sub handle_marker {
 
 # outputs a single line. called at the end of every record and can also be called within records.
 sub output_line {
+    return unless defined $rec{lx};
     print $out join("\t", map { $rec{$_}||'' } qw(lx ps ge)), "\n";
 }
