@@ -13,6 +13,8 @@ binmode STDOUT, ':encoding(utf8)';
 binmode STDERR, ':encoding(utf8)';
 # make STDOUT and STDERR print in UTF-8.
 
+use lib "$ENV{PANLEX_TOOLDIR}/lib";
+use PanLex::Util;
 use Mojo::DOM;
 
 #######################################################
