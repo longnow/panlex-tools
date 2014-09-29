@@ -75,12 +75,12 @@ sub handle_marker {
     }
     elsif ($marker eq 'sn' && $txt > 1) {
         output_line();
-        $rec{$_} = '' for qw(ps ge gr gn);
+        delete $rec{$_} for qw(ps ge gr gn);
     }
 }
 
 # outputs a single line. called at the end of every record and can also be called within records.
 sub output_line {
-    return unless defined $rec{lx};
-    print $out join("\t", map { $rec{$_}||'' } qw(lx ps ge)), "\n";
+    return unless exists $rec{lx};
+    print $out join("\t", map { exists $rec{$_} ? Trim($rec{$_}) : '' } qw(lx ps ge)), "\n";
 }
