@@ -64,8 +64,11 @@ close $out;
 sub handle_marker {
     my ($marker, $txt) = @_;
 
-    if ($marker =~ /^(lx|ps|g[ern])$/) {
-        $rec{$marker} = Trim($txt);
+    if ($marker =~ /^(lx|ps|g[ern])$/) { # lexeme, part of speech, glosses
+        $rec{$marker} = $txt;
+    }
+    elsif ($marker eq 'lc') { # citation form
+        $rec{lx} = $txt;
     }
     elsif ($marker eq 'sn' && $txt > 1) {
         output_line();
