@@ -5,7 +5,7 @@ use base 'Exporter';
 use Unicode::Normalize 'NFC';
 
 use vars qw/@EXPORT/;
-@EXPORT = qw/Trim NormTrim Dedup Delimiter DelimiterIf/;
+@EXPORT = qw/Trim NormTrim Dedup Delimiter DelimiterIf ExpandParens/;
 
 ### Trim
 # Delete superfluous spaces in the specified string.
@@ -28,7 +28,7 @@ sub Trim {
     # Return the modified string.
 }
 
-#### NormTrim
+### NormTrim
 # Normalize the specified string according to the PanLex standard and trim leading
 # and trailing spaces.
 # Normalization:
@@ -142,6 +142,35 @@ sub DelimiterIf {
     }
 
     return join $outdelim, @ex;
+}
+
+### ExpandParens
+# Expand expressions with an optional parenthesized portion into two expressions
+# separated by the standard synonym delimiter, one with and one without the 
+# parenthesized portion. The input is a list of expressions separated by the
+# standard synonym delimiter.
+# Arguments:
+#   0: input string.
+
+sub ExpandParens {
+    my ($txt) = @_;
+
+    return join('‣', _ExpandParens(split '‣', $txt));
+}
+
+sub _ExpandParens {
+    return map { 
+        my @pieces;
+        if (@pieces = /(^.*[^ ])\(([^ ]+)\)(.*$)/) {
+            _ExpandParens("$pieces[0]$pieces[1]$pieces[2]", "$pieces[0]$pieces[2]");
+        }
+        elsif (@pieces = /(^.*)\(([^ ]+)\)([^ ].*$)/) {
+            _ExpandParens("$pieces[0]$pieces[1]$pieces[2]", "$pieces[0]$pieces[2]");
+        }
+        else {
+            ($_);
+        }
+    } @_;
 }
 
 1;
