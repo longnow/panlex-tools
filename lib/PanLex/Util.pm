@@ -162,15 +162,25 @@ sub _ExpandParens {
     return map { 
         my @pieces;
         if (@pieces = /(^.*[^ ])\(([^ ]+)\)(.*$)/) {
-            _ExpandParens("$pieces[0]$pieces[1]$pieces[2]", "$pieces[0]$pieces[2]");
+            _ExpandParens("$pieces[0]$pieces[1]$pieces[2]", _JoinPieces(@pieces));
         }
         elsif (@pieces = /(^.*)\(([^ ]+)\)([^ ].*$)/) {
-            _ExpandParens("$pieces[0]$pieces[1]$pieces[2]", "$pieces[0]$pieces[2]");
+            _ExpandParens("$pieces[0]$pieces[1]$pieces[2]", _JoinPieces(@pieces));
         }
         else {
             ($_);
         }
     } @_;
+}
+
+sub _JoinPieces {
+    my ($before, $inside, $after) = @_;
+
+    if ($inside =~ /^\p{Uppercase}/ && ($before eq '' || $before =~ /\W$/u)) {
+        $after = ucfirst $after;
+    }
+
+    return "$before$after";
 }
 
 1;
