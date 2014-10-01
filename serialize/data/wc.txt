@@ -6,6 +6,7 @@ adj.	adjv
 Adj.	adjv
 adj.pred.	adjv:adj.pred.
 Adj. poss.	adjv:poss.
+adjective	adjv
 Adjective	adjv
 ADJECTIVE	adjv
 adjectives	adjv
