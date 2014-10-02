@@ -1,17 +1,20 @@
 #!/usr/bin/env perl
 use strict;
+use utf8;
 no strict 'refs';
-use encoding 'utf8';
 
 use File::Spec::Functions qw/catdir catfile curdir rel2abs splitdir/;
 use File::Copy qw/copy/;
 use LWP::UserAgent;
 
+binmode STDOUT, ':encoding(utf8)';
+binmode STDERR, ':encoding(utf8)';
+
 my $SOURCE_ARCHIVE_URL = 'http://dev.panlex.org/sources/download';
 
 usage(), exit(0) unless @ARGV;
 
-utf8::upgrade($_) for @ARGV;
+utf8::decode($_) for @ARGV;
 my $cmd = shift @ARGV;
 my $cmd_sub = 'cmd_'.$cmd;
 
@@ -102,6 +105,7 @@ sub cmd_fetch {
             print "Fetched $url\n";
 
             my $zip = $r->filename;
+            utf8::decode($zip);
             open my $out, '>', $zip or die $!;
             print $out $r->decoded_content;
             close $out;
