@@ -43,6 +43,7 @@ sub cmd_cp {
     foreach my $dir (reverse splitdir($sourcedir)) {
         if ($dir =~ /^[a-z]{3}-/) {
             $source = $dir;
+            utf8::decode($source);
             last;
         }
     }
