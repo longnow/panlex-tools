@@ -129,6 +129,27 @@ sub cmd_fetch {
     print STDERR "Could not fetch source $source: ", $r->code, ' ', $r->message, "\n";
 }
 
+sub cmd_server {
+    my ($port) = @_;
+    $port ||= 5050;
+
+    use lib "$ENV{PANLEX_TOOLDIR}/lib";
+    require PanLex::Normalize;
+    require DNode;
+
+    my $d = DNode->new({
+        norm_ex => sub { $_[2]->(PanLex::Normalize::norm_ex($_[0], $_[1])) }
+    });
+
+    $d->on->{error} = sub {
+        my ($msg) = @_;
+        print STDERR $msg, "\n";
+    };
+
+    print STDERR "DNode server listening on port $port\n";
+    $d->listen($port);
+}
+
 sub usage {
     print STDERR <<EOF;
 Usage: $0 <command> [arguments]
@@ -139,6 +160,8 @@ cp <tool>
     copy PanLex tool into the current directory
 fetch <source>
     fetch PanLex source from archive into the current directory and unzip it
+server <port>
+    run DNode server
 
 Environment variables:
 
