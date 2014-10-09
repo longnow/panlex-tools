@@ -42,7 +42,7 @@ use strict;
 use utf8;
 # Make Perl interpret the script as UTF-8 rather than bytes.
 
-use PanLex::Normalize;
+use PanLex::Client::Normalize;
 use PanLex::Validation;
 
 use Unicode::Normalize;
