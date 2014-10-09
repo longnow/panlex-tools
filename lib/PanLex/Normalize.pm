@@ -1,24 +1,27 @@
 package PanLex::Normalize;
 use strict;
-use base 'Exporter';
 use Unicode::Normalize;
-
-use vars qw/@EXPORT/;
-@EXPORT = qw/norm_ex/;
 
 my %UID;
 
 foreach my $pm (glob(__FILE__ =~ s/\.pm$//r . '/*.pm')) {
-    if ($pm =~ m|/[a-z]{3}\d{3}\.pm$|) {
+    if ($pm =~ m|/([a-z]{3}\d{3})\.pm$|) {
         $UID{$1} = 1;
         require $pm;
     }
 }
 
-sub norm_ex {
-    my ($str, $uid) = @_;
-    my $module = 'PanLex::Normalize::' . $uid =~ s/-//r;
-    return $module->norm($str);
+sub ex {
+    my ($self, $str, $uid) = @_;
+    $uid =~ s/-//;
+
+    if ($UID{$uid}) {
+        my $module = "PanLex::Normalize::$uid";
+        return $module->ex($str);
+    }
+    else {
+        return $str;
+    }
 }
 
 sub strip_all_accents {

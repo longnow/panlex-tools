@@ -2,7 +2,7 @@ package PanLex::Normalize::StripAcute;
 use strict;
 use base 'PanLex::Normalize';
 
-sub norm {
+sub ex {
     my ($self, $str) = @_;
     return $self->strip_specified_accents($str, "\x{301}");
 }
