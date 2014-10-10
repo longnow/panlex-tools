@@ -38,4 +38,11 @@ sub strip_specified_accents {
     return NFC($str);
 }
 
+sub convert_chars {
+    my ($self, $str, $from, $to) = @_;
+    $str = NFD($str);
+    eval "\$str =~ tr/$from/$to/";
+    return NFC($str);
+}
+
 1;
