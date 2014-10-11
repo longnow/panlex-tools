@@ -133,6 +133,7 @@ sub cmd_server {
     my ($port) = @_;
     $port ||= 5050;
 
+    check_env(qw/PANLEX_TOOLDIR/);
     use lib "$ENV{PANLEX_TOOLDIR}/lib";
     require PanLex::Normalize;
     require DNode;
