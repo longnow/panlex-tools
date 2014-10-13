@@ -89,6 +89,7 @@ intr	verb:intr
 intr.	verb:intr.
 INTRJCT	ijec
 IV	verb:IV
+loc.	advb:loc.
 LOC	advb:LOC
 misc	misc
 MOD	advb:MOD
@@ -116,6 +117,7 @@ n.time.	noun:n.time.
 na.	noun:na.
 name	name
 NAME	name
+neg.	misc:neg.
 ni.	noun:ni.
 nm	noun:m
 noun	noun
