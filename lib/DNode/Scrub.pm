@@ -38,16 +38,28 @@ sub unscrub {
     
     return DNode::Walk->new($req->{arguments})->walk(sub {
         my $node = shift;
-        my $ref = ref $node->value;
+        my $path = [ $node->path ];
         
         my $id = first {
-            [ $node->path ] ~~ $req->{callbacks}{$_}
+            elementwise_eq($path, $req->{callbacks}{$_})
         } keys %{ $req->{callbacks} };
         
         if (defined $id) {
             $node->update($cb->($id));
         }
     });
+}
+
+sub elementwise_eq {
+    use List::MoreUtils qw/each_arrayref/;
+    my ($xref, $yref) = @_;
+    return unless  @$xref == @$yref;
+
+    my $it = each_arrayref($xref, $yref);
+    while ( my ($x, $y) = $it->() ) {
+        return unless $x eq $y;
+    }
+    return 1;
 }
 
 1;

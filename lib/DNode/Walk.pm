@@ -15,7 +15,7 @@ sub walk {
 
 sub _walk {
     my ($self, $obj, $cb) = @_;
-    my $node = Node->new(
+    my $node = DNode::Node->new(
         value => $obj,
         path => $self->{path},
     );
@@ -62,7 +62,7 @@ sub _walk {
     }
 }
 
-package Node;
+package DNode::Node;
 
 sub new {
     my $class = shift;
