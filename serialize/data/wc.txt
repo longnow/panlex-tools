@@ -125,6 +125,7 @@ Noun	noun
 NOUN	noun
 nouns	noun
 Nouns	noun
+nprop.	name
 ntr	verb:ntr
 num	detr:num
 Num	detr:Num
