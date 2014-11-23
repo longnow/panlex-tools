@@ -17,43 +17,31 @@ open my $right, '<:encoding(utf8)', $ARGV[1];
 my $line = '';
 # Initialize the line as blank.
 
-my $left = '';
+my $leftside = '';
 # Initialize the left side as blank.
 
-my $right = '';
+my $rightside = '';
 # Initialize the right side as blank.
-
-foreach my $i (0, 1, 2) {
-# 3 times:
-
-	<$left>;
-	<$right>;
-	# Discard the input files’ lines.
-
-}
 
 while (defined $line) {
 # Until either of the input files is exhausted:
 
-	$left = <$left>;
+	$leftside = <$left>;
 	# Identify the next left line.
 
-	$right = <$right>;
+	$rightside = <$right>;
 	# Identify the next right line.
 
-	if ((defined $left) && (defined $right)) {
+	if ((defined $leftside) && (defined $rightside)) {
 	# If both exist:
 
-		chomp $left;
+		chomp $leftside;
 		# Remove the trailing newline of the left line.
 
-		chomp $right;
+		chomp $rightside;
 		# Remove the trailing newline of the right line.
 
-		my @col = ((split /\t/, $left, 4), (split /\t/, $right));
-		# Identify the lines’ columns.
-
-		print $combo ((join "\t", @col[0, 1, 4, 9, 2, 3]) . "\n");
+		print $combo "$leftside\t$rightside\n";
 		# Output the combined line.
 
 	}
