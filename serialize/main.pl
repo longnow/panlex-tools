@@ -30,6 +30,8 @@ my @TOOLS = (
 #   mndelim:  meaning delimiter (regex), or '' if none. default '⁋'.
 #   extag:    expression tag. default '⫷ex⫸'.
 #   mntag:    meaning tag. default '⫷mn⫸'.
+#   tagged:   whether columns may contain already tagged contents (with standard
+#               tag delimiters). default 0.
 
 #'exdftag'      => { cols => [0, 1], re => '(?:\([^()]+\)|（[^（）]+）)', subre => '[][/,;?!~]' },
 # Splits definitional expressions into reduced expressions and definitions in 

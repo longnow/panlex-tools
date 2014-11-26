@@ -6,6 +6,8 @@
 #   mndelim:  meaning delimiter (regex), or '' if none. default '⁋'.
 #   extag:    expression tag. default '⫷ex⫸'.
 #   mntag:    meaning tag. default '⫷mn⫸'.
+#   tagged:   whether columns may contain already tagged contents (with standard
+#               tag delimiters). default 0.
 
 package PanLex::Serialize::extag;
 
@@ -25,7 +27,7 @@ sub process {
     my $out = shift;
     my $args = ref $_[0] ? $_[0] : \@_;
 
-    my (@excol, $syndelim, $mndelim, $extag, $mntag);
+    my (@excol, $syndelim, $mndelim, $extag, $mntag, $tagged);
     
     if (ref $args eq 'HASH') {
         validate_cols($args->{cols});
@@ -35,8 +37,10 @@ sub process {
         $mndelim  = $args->{mndelim} // '⁋';
         $extag    = $args->{extag} // '⫷ex⫸';
         $mntag    = $args->{mntag} //  '⫷mn⫸';
+        $tagged   = $args->{tagged} // 0;
     } else {
         ($syndelim, $mndelim, $extag, $mntag, @excol) = @$args;
+        $tagged = 0;
         validate_cols(\@excol);
     }
     
@@ -67,6 +71,11 @@ sub process {
 
             $col[$i] =~ s/$extag(?=$extag|$mntag|$)//g;
             # Delete all expression tags with blank contents.
+
+            if ($tagged) {
+                $col[$i] =~ s/$extag(?=⫷[^⫸]+⫸)//g;
+                # Delete additional expression tags with blank contents.
+            }
 
             $col[$i] =~ s/$mntag(?=$mntag|$)//g;
             # Delete all meaning tags with blank contents.
