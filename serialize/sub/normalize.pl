@@ -147,7 +147,7 @@ sub process {
         }
     }
 
-    my $result = panlex_norm($uid, [keys %ex], 0, $ap);
+    my $result = panlex_norm_ex($uid, [keys %ex], 0, $ap);
 
     if ($log) {
         print $log_fh "Exact normalize scores:\n\n";
@@ -165,7 +165,7 @@ sub process {
     my %ttto;
 
     if ($mindeg ne '') {
-        $result = panlex_norm($uid, [keys %ex], 1, $ap);
+        $result = panlex_norm_ex($uid, [keys %ex], 1, $ap);
 
         if ($log) {
             print $log_fh "Degraded normalize scores:\n\n";
