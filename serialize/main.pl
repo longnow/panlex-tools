@@ -33,6 +33,23 @@ my @TOOLS = (
 #   tagged:   whether columns may contain already tagged contents (with standard
 #               tag delimiters). default 0.
 
+#'normalizedf'  => { col => 0, uid => 'eng-000', mindeg => 10 },
+# Normalizes expressions in a tagged source file by matching them against definitions.
+# Arguments:
+#   col:      column containing expressions to be normalized.
+#   uid:      variety UID of expressions to be normalized.
+#   mindeg:   minimum score a proposed expression or its replacement must have in 
+#               order to be accepted as an expression.
+#   ap:       array of source IDs whose meanings are to be ignored 
+#               in normalization; [] if none. default [].
+#   log:      set to 1 to log normalize scores to normalizedf.json, 0 otherwise.
+#               default: 0.
+#   ignore:   regex matching expressions to be ignored in normalization; or ''
+#               (blank) if none. default ''.
+#   extag:    expression tag. default '⫷ex⫸'.
+#   exptag:   pre-normalized expression tag. default '⫷exp⫸'.
+#   tagre:    regex identifying any tag. default '⫷[a-z:]+⫸'.
+
 #'exdftag'      => { cols => [0, 1], re => '(?:\([^()]+\)|（[^（）]+）)', subre => '[][/,;?!~]' },
 # Splits definitional expressions into reduced expressions and definitions in 
 # a source file with already-tagged expressions and tags the added definitions.
@@ -126,7 +143,7 @@ my @TOOLS = (
 #   mindeg:   minimum score a proposed expression that is not accepted outright 
 #               as an expression, or its replacement, must have in order to be
 #               accepted as an expression. pass '' to disable replacement.
-#   ap:       array of source IDs whose denotations are to be ignored 
+#   ap:       array of source IDs whose meanings are to be ignored 
 #               in normalization; [] if none. default [].
 #   log:      set to 1 to log normalize scores to normalize.json, 0 otherwise.
 #               default: 0.

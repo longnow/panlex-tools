@@ -10,7 +10,7 @@
 #   mindeg:   minimum score a proposed expression that is not accepted outright 
 #               as an expression, or its replacement, must have in order to be
 #               accepted as an expression. pass '' to disable replacement.
-#   ap:       array of source IDs whose denotations are to be ignored 
+#   ap:       array of source IDs whose meanings are to be ignored 
 #               in normalization; [] if none. default [].
 #   log:      set to 1 to log normalize scores to normalize.json, 0 otherwise.
 #               default: 0.
@@ -147,7 +147,7 @@ sub process {
         }
     }
 
-    my $result = panlex_norm_ex($uid, [keys %ex], 0, $ap);
+    my $result = panlex_norm('ex', $uid, [keys %ex], 0, $ap);
 
     if ($log) {
         print $log_fh "Exact normalize scores:\n\n";
@@ -165,7 +165,7 @@ sub process {
     my %ttto;
 
     if ($mindeg ne '') {
-        $result = panlex_norm_ex($uid, [keys %ex], 1, $ap);
+        $result = panlex_norm('ex', $uid, [keys %ex], 1, $ap);
 
         if ($log) {
             print $log_fh "Degraded normalize scores:\n\n";
