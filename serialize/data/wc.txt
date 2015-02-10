@@ -110,9 +110,11 @@ n.loc.	noun:n.loc.
 n.m.	noun:m.
 n.manner.	noun:n.manner.
 n.n.	noun:n.
+n.pl.	noun:n.pl.
 n.pro.	name
 n.qual.	noun:n.qual.
 n.quant.	noun:n.quant.
+n.s.	noun:n.s.
 n.time.	noun:n.time.
 na.	noun:na.
 name	name
