@@ -73,7 +73,7 @@ sub process {
             # Delete all expression tags with blank contents.
 
             if ($tagged) {
-                $col[$i] =~ s/$extag(?=⫷[^⫸]+⫸)//g;
+                $col[$i] =~ s/$extag(?=⫷df)//g;
                 # Delete additional expression tags with blank contents.
             }
 
