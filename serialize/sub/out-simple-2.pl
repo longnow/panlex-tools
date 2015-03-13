@@ -50,6 +50,9 @@ sub process {
         s/⫷exp⫸[^⫷]+//g;
         # Delete all unnormalized expressions.
 
+        $en =~ s/⫷rm⫸[^⫷]+//g;
+        # Delete all tags that are marked as to be removed.
+
         unless (exists $all{$_}) {
         # If it is not a duplicate:
 

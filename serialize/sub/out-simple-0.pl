@@ -76,6 +76,9 @@ sub process {
         $en =~ s/⫷exp⫸.+?(?=⫷ex:)//g;
         # Delete all deprecated (i.e. pre-normalized) expressions in it.
 
+        $en =~ s/⫷rm⫸[^⫷]+//g;
+        # Delete all tags that are marked as to be removed.
+
         unless (exists $all{$en}) {
         # If it is not a duplicate:
 

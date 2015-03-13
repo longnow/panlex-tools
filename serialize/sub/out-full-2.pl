@@ -102,6 +102,9 @@ sub process {
         $en =~ s/⫷exp⫸.+?(?=⫷ex)//g;
         # Delete all deprecated (i.e. pre-normalized) expressions in it.
 
+        $en =~ s/⫷rm⫸[^⫷]+//g;
+        # Delete all tags that are marked as to be removed.
+
         while ($en =~ s/(⫷df:[a-z]{3}-\d{3}⫸[^⫷]+)⫷(?:wc|md:[^⫸]+)⫸[^⫷]+/$1/) {}
         # Delete all word classifications or metadata following definitions.
         # Such wc and md elements followed ex elements and became invalid when
