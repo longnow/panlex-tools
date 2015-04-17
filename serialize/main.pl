@@ -15,7 +15,7 @@ my $PANLEX_TOOLDIR;
 
 my @TOOLS = (
     
-#'apostrophe'   => { specs => ['1:gyd-000', '3:nny-000', '5:eng-000'] },
+#'apostrophe'   => { specs => [ '0:eng-000', '1:rus-000' ] },
 # Converts a tab-delimited source file's apostrophes.
 # Arguments:
 #   specs:  array of specifications (column index + colon + variety UID) of
@@ -171,20 +171,20 @@ my @TOOLS = (
 #   oldtag:   regex matching any tag(s) to be retagged.
 #   newtag:   new tag to use.
 
-#'out-simple-0' => { specs => [ '0:rus-000', '1:eng-000' ] },
+#'out-simple-0' => { specs => [ '0:eng-000', '1:rus-000' ] },
 # Converts a normally tagged source file to a simple-text varilingual source file,
 # eliminating duplicates.
 # Arguments:
 #   specs:  array of specifications (column index + colon + variety UID) of
 #             columns containing expressions.
 
-#'out-simple-2' => { uids => [ 'rus-000', 'eng-000' ] },
+#'out-simple-2' => { uids => [ 'eng-000', 'rus-000' ] },
 # Converts a normally tagged source file to a simple-text bilingual source file,
 # eliminating duplicates.
 # Arguments:
 #   uids:   two-element array containing variety UIDs of columns 0 and 1.
 
-#'out-full-0'   => { specs => [ '0:rus-000', '1:eng-000' ] },
+#'out-full-0'   => { specs => [ '0:eng-000', '1:rus-000' ] },
 # Converts a standard tagged source file to a full-text varilingual source file.
 # Arguments:
 #   specs:  array of specifications (column index + colon + variety UID) of
@@ -197,7 +197,7 @@ my @TOOLS = (
 #   wc:     word classification to annotate all expressions as that have no 
 #             tagged wc, or '' if none. default ''.
 
-#'out-full-2'   => { specs => [ '0:rus-259', '1:eng-000' ] },
+#'out-full-2'   => { specs => [ '0:eng-000', '1:rus-000' ] },
 # Converts a standard tagged source file to a full-text bilingual source file, 
 # eliminating duplicates. Risky if exdftag or normalize has been used.
 # Arguments:
