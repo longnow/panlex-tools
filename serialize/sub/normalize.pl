@@ -44,6 +44,7 @@ use utf8;
 
 use PanLex::Client::Normalize;
 use PanLex::Validation;
+use PanLex::MungeJson;
 
 use Unicode::Normalize;
 use JSON;
@@ -75,7 +76,7 @@ sub process {
         $log = 0;
     }
 
-    my ($log_fh, $json);
+    my ($log_fh, $log_obj, $json);
     if ($log) {
         open $log_fh, '>:utf8', 'normalize.log' or die $!;
         $json = JSON->new->pretty->canonical;
@@ -148,11 +149,7 @@ sub process {
     }
 
     my $result = panlex_norm('ex', $uid, [keys %ex], 0, $ap);
-
-    if ($log) {
-        print $log_fh "Exact normalize scores:\n\n";
-        print $log_fh munge_json($json->encode($result)), "\n";
-    }
+    $log_obj->{stage1} = $result if $log;
 
     while (my ($tt,$norm) = each %$result) {
         # For each proposed expression that has a score and whose score is sufficient for
@@ -166,11 +163,7 @@ sub process {
 
     if ($mindeg ne '') {
         $result = panlex_norm('ex', $uid, [keys %ex], 1, $ap);
-
-        if ($log) {
-            print $log_fh "Degraded normalize scores:\n\n";
-            print $log_fh munge_json($json->encode($result)), "\n";
-        }
+        $log_obj->{stage2} = $result if $log;
 
         while (my ($tt,$norm) = each %$result) {
             # For each proposed expression that is a highest-scoring expression in the variety with
@@ -307,21 +300,10 @@ sub process {
         # Output the line.
     }
 
-    close $log_fh if $log;
-}
-
-# Make JSON output a bit less pretty.
-sub munge_json {
-    my ($json) = @_;
-    $json =~ s/(?<= : \{)\n([^}]+)(?=\})/munge_json_lines($1)/ge;
-    return $json;
-}
-
-sub munge_json_lines {
-    my ($lines) = @_;
-    $lines =~ s/\n/ /g;
-    $lines =~ s/ +/ /g;
-    return $lines;
+    if ($log) {
+        print $log_fh munge_json($json->encode($log_obj)), "\n";
+        close $log_fh;
+    }
 }
 
 #### PsList
