@@ -14,7 +14,7 @@ my $VERSION = 1;
 my $PANLEX_TOOLDIR;
 
 my @TOOLS = (
-    
+
 #'apostrophe'   => { specs => [ '0:eng-000', '1:rus-000' ] },
 # Converts a tab-delimited source file's apostrophes.
 # Arguments:
