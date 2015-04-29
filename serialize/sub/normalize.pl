@@ -151,7 +151,9 @@ sub process {
     my $result = panlex_norm('ex', $uid, [keys %ex], 0, $ap);
     $log_obj->{stage1} = $result if $log;
 
-    while (my ($tt,$norm) = each %$result) {
+    foreach my $tt (keys %$result) {
+        my $norm = $result->{$tt};
+
         # For each proposed expression that has a score and whose score is sufficient for
         # outright acceptance as an expression:
         if ($norm->{score} >= $min) {
@@ -165,14 +167,19 @@ sub process {
         $result = panlex_norm('ex', $uid, [keys %ex], 1, $ap);
         $log_obj->{stage2} = $result if $log;
 
-        while (my ($tt,$norm) = each %$result) {
+        foreach my $tt (keys %$result) {
+            # Identify the highest-scoring expression.
+            $result->{$tt} = $result->{$tt}[0];
+
+            my $norm = $result->{$tt};
+
             # For each proposed expression that is a highest-scoring expression in the variety with
             # its degradation and whose score is sufficient for acceptance as an expression:
-            if ($norm->{score} >= $mindeg && defined $norm->{ttNorm}) {
-                if ($tt eq $norm->{ttNorm}) {
+            if ($norm->{score} >= $mindeg && defined $norm->{tt}) {
+                if ($tt eq $norm->{tt}) {
                     $exok{$tt} = '';
                 } else {
-                    $ttto{$tt} = $norm->{ttNorm};
+                    $ttto{$tt} = $norm->{tt};
                 }
             }
         }
