@@ -34,7 +34,8 @@ open my $in, '<:encoding(utf8)', "$BASENAME-$VERSION.html" or die $!;
 # Open the input file for reading.
 
 my $html = do { local $/; <$in> };
-# Read in the whole HTML input.
+# Make the line-break variable temporarily undefined, then read 1 line (which is
+# therefore the whole file) from the input file, and identify it as $html.
 
 my $dom = Mojo::DOM->new($html);
 # Create a Mojo::DOM object to query the HTML document.
