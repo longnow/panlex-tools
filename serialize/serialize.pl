@@ -164,7 +164,7 @@ my @TOOLS = (
 #   exptag:   pre-normalized expression tag. default '⫷exp⫸'.
 #   tagre:    regex identifying any tag. default '⫷[a-z:]+⫸'.
 
-#'retag'      => { cols => [1, 2], oldtag => '⫷fail⫸', newtag => '⫷ex⫸' },
+#'retag'        => { cols => [1, 2], oldtag => '⫷fail⫸', newtag => '⫷ex⫸' },
 # Retags a tag in a tab-delimited source file.
 # Arguments:
 #   cols:     array of columns to be retagged.
