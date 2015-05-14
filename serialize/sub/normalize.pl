@@ -194,14 +194,22 @@ sub process {
         if (length $col[$excol]) {
         # If the column containing proposed expressions is nonblank:
 
+            my $excount = 0;
+            my $failcount = 0;
+            # Initialize counts of the number of expressions and normalization
+            # failures in the column (needed for propcols).
+
             my @seg = ($col[$excol] =~ m/($tagre.+?(?=$tagre|$))/g);
-            # Identify the tagged items, including tags, in it.
+            # Identify the tagged items, including tags, in the column.
 
             foreach my $seg (@seg) {
             # For each item:
 
                 if (index($seg, $extag) == 0) {
                 # If it is tagged as an expression:
+
+                    $excount++;
+                    # Count it as a single expression for the purpose of propcols.
 
                     my $allok = 1;
                     # Initialize the list's elements as all classifiable as
@@ -276,13 +284,9 @@ sub process {
                             $seg = "$failtag$seg";
                             # Prepend the tag to the concatenation.
 
-                            foreach my $propcol (@propcols) {
-                            # For each column to which the conversion is to be propagated:
+                            $failcount++;
+                            # Note the failure for the purpose of propcols.
 
-                                $col[$propcol] =~ s/$extag/$failtag/g;
-                                # Convert all expression tags in it to the other tag.
-
-                            }
                         }
 
                         else {
@@ -300,6 +304,19 @@ sub process {
 
             $col[$excol] = join('', @seg);
             # Identify the column with all expression reclassifications.
+
+            if (@propcols and $excount == $failcount) {
+            # If failures are to be propagated to other columns and every 
+            # expression in the column failed normalization:
+
+                foreach my $propcol (@propcols) {
+                # For each column to which the conversion is to be propagated:
+
+                    $col[$propcol] =~ s/$extag/$failtag/g;
+                    # Convert all expression tags in it to the other tag.
+
+                }
+            }
 
         }
 
