@@ -142,16 +142,16 @@ sub DelimiterIf {
 }
 
 ### ExpandParens
-# Expand expressions with an optional parenthesized portion into two expressions
-# separated by the standard synonym delimiter, one with and one without the 
-# parenthesized portion. The input is a list of expressions separated by the
-# standard synonym delimiter.
+# Expand expression with an optional parenthesized portion or portions into two 
+# or more expressions separated by the standard synonym delimiter, both with and 
+# without the parenthesized portion(s).
 # Arguments:
-#   0: input string.
+#   0: input string containing a single expression with zero or more optional
+#       parenthesized portions.
 sub ExpandParens {
     my ($txt) = @_;
 
-    return join('‣', _ExpandParens(split '‣', $txt));
+    return join('‣', _ExpandParens($txt));
 }
 
 sub _ExpandParens {
