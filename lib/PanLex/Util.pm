@@ -5,7 +5,7 @@ use base 'Exporter';
 use Unicode::Normalize 'NFC';
 
 use vars qw/@EXPORT/;
-@EXPORT = qw/Trim NormTrim Dedup Delimiter DelimiterIf ExpandParens/;
+@EXPORT = qw/Trim NormTrim Dedup Delimiter DelimiterIf ExpandParens EachEx/;
 
 ### Trim
 # Delete superfluous spaces in the specified string.
@@ -46,7 +46,6 @@ sub Trim {
 # of the string.
 # Arguments:
 #   0: a string.
-
 sub NormTrim {
 
     my $ret = (&NFC ($_[0]));
@@ -114,7 +113,6 @@ sub Dedup {
 #   0: input string.
 #   1: string containing a set of non-standard delimiters to match.
 #   2: standard delimiter.
-
 sub Delimiter {
     my ($txt, $indelim, $outdelim) = @_;
 
@@ -131,7 +129,6 @@ sub Delimiter {
 #   1: string containing a set of non-standard delimiters to match.
 #   2: standard delimiter.
 #   3: regular expression to apply to each expression.
-
 sub DelimiterIf {
     my ($txt, $indelim, $outdelim, $re) = @_;
 
@@ -151,7 +148,6 @@ sub DelimiterIf {
 # standard synonym delimiter.
 # Arguments:
 #   0: input string.
-
 sub ExpandParens {
     my ($txt) = @_;
 
@@ -181,6 +177,24 @@ sub _JoinPieces {
     }
 
     return "$before$after";
+}
+
+### EachEx
+# Apply a function to each expression in a list of expressions delimited by the
+# standard synonym and meaning delimiters.
+# Arguments:
+#   0: input string.
+#   1: reference to a sub that will transform each expression and return the result.
+sub EachEx {
+    my ($txt, $sub) = @_;
+
+    my @ex = split /([‣⁋])/, $txt;
+
+    for (my $i = 0; $i < @ex; $i += 2) {
+        $ex[$i] = $sub->($ex[$i]);
+    }
+
+    return join('', @ex);
 }
 
 1;
