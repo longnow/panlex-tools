@@ -116,7 +116,7 @@ sub Dedup {
 sub Delimiter {
     my ($txt, $indelim, $outdelim) = @_;
 
-    $txt =~ s/ *[$indelim] *(?![^()]*\))/$outdelim/g;
+    $txt =~ s/ *[$indelim] *(?![^()（）]*[)）])/$outdelim/g;
 
     return $txt;
 }
@@ -132,7 +132,7 @@ sub Delimiter {
 sub DelimiterIf {
     my ($txt, $indelim, $outdelim, $re) = @_;
 
-    my @ex = split / *[$indelim] *(?![^()]*\))/, $txt, -1;
+    my @ex = split / *[$indelim] *(?![^()（）]*[)）])/, $txt, -1;
 
     foreach my $ex (@ex) {
         return $txt unless $ex =~ /$re/;
