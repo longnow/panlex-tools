@@ -37,7 +37,7 @@ while (<$in>) {
     last if /^\s*$/;
 }
 
-my %rec;
+my (%rec, $lastmarker, $lasttxt);
 
 while (<$in>) {
 # For each line of the input file:
@@ -46,15 +46,22 @@ while (<$in>) {
     # remove its trailing newline, if present.
 
     if (my ($marker, $txt) = /^\\([a-z]+) +(.+)$/) {
-        if ($marker eq 'lx') {
+        # the last marker (if any) is complete, so handle it
+        handle_marker($lastmarker, $lasttxt) if defined $lastmarker;
+
+        if ($marker eq 'lx') { # start of a new entry
             output_line();
             %rec = ();
         }
 
-        handle_marker($marker, $txt);
+        ($lastmarker, $lasttxt) = ($marker, $txt);
+    }
+    elsif (! /^(?:\\[a-z]+)\s*?$/) { # continuation of previous line's marker text
+        $lasttxt .= ' ' . $_;
     }
 }
 
+handle_marker($lastmarker, $lasttxt);
 output_line();
 
 close $in;
