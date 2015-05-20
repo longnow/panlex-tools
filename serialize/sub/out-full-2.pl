@@ -11,8 +11,6 @@
 #   wc:     word classification to annotate all expressions as that have no 
 #             tagged wc, or '' if none. default ''.
 
-package PanLex::Serialize::out_full_2;
-
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
 
@@ -24,7 +22,7 @@ use utf8;
 
 use PanLex::Validation;
 
-sub process {
+sub out_full_2 {
     my $in = shift;
     my $out = shift;
     my $args = ref $_[0] ? $_[0] : \@_;

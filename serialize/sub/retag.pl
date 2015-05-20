@@ -5,8 +5,6 @@
 #   oldtag:   regex matching any tag(s) to be retagged.
 #   newtag:   new tag to use.
 
-package PanLex::Serialize::retag;
-
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
 
@@ -18,7 +16,7 @@ use utf8;
 
 use PanLex::Validation;
 
-sub process {
+sub retag {
     my $in = shift;
     my $out = shift;
     my $args = ref $_[0] ? $_[0] : \@_;

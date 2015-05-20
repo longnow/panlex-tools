@@ -9,8 +9,6 @@
 #   extag:    expression tag. default '⫷ex⫸'.
 #   postre:   regex matching any post-tag character. default '[^⫷]'.
 
-package PanLex::Serialize::wcshift;
-
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
 
@@ -22,7 +20,7 @@ use utf8;
 
 use PanLex::Validation;
 
-sub process {
+sub wcshift {
     my $in = shift;
     my $out = shift;
     my $args = ref $_[0] ? $_[0] : \@_;

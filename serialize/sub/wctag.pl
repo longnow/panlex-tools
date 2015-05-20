@@ -5,8 +5,6 @@
 #   wctag: word-classification tag. default '⫷wc⫸'.
 #   mdtag: metadatum tag. default '⫷md:gram⫸'.
 
-package PanLex::Serialize::wctag;
-
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
 
@@ -20,7 +18,7 @@ use PanLex::Validation;
 use File::Spec::Functions;
 use File::Basename;
 
-sub process {
+sub wctag {
     my $in = shift;
     my $out = shift;
     my $args = ref $_[0] ? $_[0] : \@_;

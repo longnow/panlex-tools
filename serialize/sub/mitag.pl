@@ -3,8 +3,6 @@
 #   col:    column that contains meaning identifiers.
 #   mitag:  meaning-identifier tag. default '⫷mi⫸'.
 
-package PanLex::Serialize::mitag;
-
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
 
@@ -16,7 +14,7 @@ use utf8;
 
 use PanLex::Validation;
 
-sub process {
+sub mitag {
     my $in = shift;
     my $out = shift;
     my $args = ref $_[0] ? $_[0] : \@_;

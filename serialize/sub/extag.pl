@@ -9,8 +9,6 @@
 #   tagged:   whether columns may contain already tagged contents (with standard
 #               tag delimiters). default 0.
 
-package PanLex::Serialize::extag;
-
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
 
@@ -22,7 +20,7 @@ use utf8;
 
 use PanLex::Validation;
 
-sub process {
+sub extag {
     my $in = shift;
     my $out = shift;
     my $args = ref $_[0] ? $_[0] : \@_;

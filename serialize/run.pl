@@ -30,8 +30,6 @@ sub run {
 
         my $tool_path = catfile('sub', $tool . '.pl');
         require $tool_path;
-        my $pkg = 'PanLex::Serialize::' . $tool;
-        $pkg =~ tr/-/_/;
 
         my $input = "$BASENAME-$VERSION.txt";
         die "could not find file $input" unless -e $input;
@@ -53,7 +51,12 @@ sub run {
             $val = ''.$val if defined blessed($val);
         }
 
-        $pkg->can('process')->($in, $out, $args);      
+        my $sub = $tool =~ s/-/_/gr;
+        $sub = __PACKAGE__->can($sub);
+
+        die "tool $tool not found" unless $sub;
+
+        $sub->($in, $out, $args);
 
         close $in;
         close $out;

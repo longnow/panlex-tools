@@ -4,8 +4,6 @@
 #   col:    column that may contain multiple meanings.
 #   delim:  meaning-delimitation tag. default '⫷mn⫸'.
 
-package PanLex::Serialize::mnsplit;
-
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
 
@@ -17,7 +15,7 @@ use utf8;
 
 use PanLex::Validation;
 
-sub process {
+sub mnsplit {
     my $in = shift;
     my $out = shift;
     my $args = ref $_[0] ? $_[0] : \@_;

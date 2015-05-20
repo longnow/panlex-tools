@@ -14,8 +14,6 @@
 #   exptag:   pre-normalized expression tag. default '⫷exp⫸'.
 #   tagre:    regex identifying any tag. default '⫷[a-z:]+⫸'.
 
-package PanLex::Serialize::normalizedf;
-
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
 
@@ -32,7 +30,7 @@ use PanLex::MungeJson;
 use Unicode::Normalize;
 use JSON;
 
-sub process {
+sub normalizedf {
     my $in = shift;
     my $out = shift;
     my $args = ref $_[0] ? $_[0] : \@_;

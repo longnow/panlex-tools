@@ -4,8 +4,6 @@
 #   specs:  array of specifications (column index + colon + variety UID) of
 #             columns containing expressions.
 
-package PanLex::Serialize::out_simple_0;
-
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
 
@@ -17,7 +15,7 @@ use utf8;
 
 use PanLex::Validation;
 
-sub process {
+sub out_simple_0 {
     my $in = shift;
     my $out = shift;
     my $args = ref $_[0] ? $_[0] : \@_;

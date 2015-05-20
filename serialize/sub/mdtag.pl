@@ -3,8 +3,6 @@
 #   col:   column containing metadata.
 #   mdtag: metadatum tag. default '⫷md:gram⫸'.
 
-package PanLex::Serialize::mdtag;
-
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
 
@@ -16,7 +14,7 @@ use utf8;
 
 use PanLex::Validation;
 
-sub process {
+sub mdtag {
     my $in = shift;
     my $out = shift;
     my $args = ref $_[0] ? $_[0] : \@_;

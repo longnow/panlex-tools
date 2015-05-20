@@ -18,8 +18,6 @@
 #   prere:    regex matching a preposed annotation not to be counted, or '' if
 #               none. default '⫷[^⫷⫸]+⫸'.
 
-package PanLex::Serialize::exdftag;
-
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
 
@@ -31,7 +29,7 @@ use utf8;
 
 use PanLex::Validation;
 
-sub process {
+sub exdftag {
     my $in = shift;
     my $out = shift;
     my $args = ref $_[0] ? $_[0] : \@_;

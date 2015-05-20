@@ -3,8 +3,6 @@
 #   specs:  array of specifications (column index + colon + variety UID) of
 #             columns possibly requiring apostrophe normalization.
 
-package PanLex::Serialize::apostrophe;
-
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
 
@@ -17,7 +15,7 @@ use utf8;
 use PanLex::Client;
 use PanLex::Validation;
 
-sub process {
+sub apostrophe {
     my $in = shift;
     my $out = shift;
     my $args = ref $_[0] ? $_[0] : \@_;
