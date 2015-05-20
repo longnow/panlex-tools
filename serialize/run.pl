@@ -37,10 +37,7 @@ sub run {
         die "could not find file $input" unless -e $input;
         open my $in, '<:encoding(utf8)', $input or die $!;
 
-        {   
-            no strict 'refs';
-            $VERSION = ${$pkg.'::final'} ? 'final' : $VERSION+1;
-        }
+        $VERSION = $tool =~ /^out/ ? 'final' : $VERSION+1;
 
         my $output = "$BASENAME-$VERSION.txt";
         open my $out, '>:encoding(utf8)', "$BASENAME-$VERSION.txt" or die $!;

@@ -16,9 +16,6 @@ use utf8;
 
 use PanLex::Validation;
 
-our $final = 1;
-# Declare that this script produces a final source file.
-
 sub process {
     my $in = shift;
     my $out = shift;
