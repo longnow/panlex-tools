@@ -189,8 +189,7 @@ my @TOOLS = (
 # Arguments:
 #   specs:  array of specifications (column index + colon + variety UID) of
 #             columns containing tags (e.g., ex, df, dm) requiring variety
-#             specifications, subject to the requirement that columns 0 and 1
-#             must contain ex tags.
+#             specifications.
 #   mindf:  minimum count (1 or more) of definitions and expressions per entry.
 #             default 2.
 #   minex:  minimum count (0 or more) of expressions per entry. default 1.
@@ -203,7 +202,8 @@ my @TOOLS = (
 # Arguments:
 #   specs:  array of specifications (column index + colon + variety UID) of
 #             columns containing tags (e.g., ex, df, dm) requiring variety
-#             specifications.
+#             specifications, subject to the requirement that columns 0 and 1
+#             must contain ex tags.
 #   mindf:  minimum count (1 or more) of definitions and expressions per entry.
 #             default 2.
 #   minex:  minimum count (0 or more) of expressions per entry. default 1.
