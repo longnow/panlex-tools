@@ -32,7 +32,7 @@ sub out_simple_2 {
     print $out ".\n2\n$uids[0]\n$uids[1]\n";
     # Output the file header.
 
-    my %all;
+    my %seen;
 
     while (<$in>) {
     # For each line of the input file:
@@ -40,19 +40,19 @@ sub out_simple_2 {
         chomp;
         # Delete its trailing newline.
 
-        s/⫷exp⫸[^⫷]+//g;
-        # Delete all unnormalized expressions.
+        s/\t//g;
+        # Delete all tabs.
 
-        s/⫷rm⫸[^⫷]+//g;
-        # Delete all tags that are marked as to be removed.
+        s/⫷(?:exp|rm)⫸[^⫷]*//g;
+        # Delete all pre-normalized expressions and all tags that are marked as to be removed.
 
-        unless (exists $all{$_}) {
+        unless (exists $seen{$_}) {
         # If it is not a duplicate:
 
-            $all{$_} = '';
+            $seen{$_} = '';
             # Add it to the table of entries.
 
-            s/\t?⫷ex⫸/\n/g;
+            s/⫷ex⫸/\n/g;
             # Convert all expression tags and the inter-column tab.
 
             print $out $_, "\n";

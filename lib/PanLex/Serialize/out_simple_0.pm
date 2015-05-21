@@ -13,6 +13,8 @@ use PanLex::Validation;
 
 our @EXPORT = qw/out_simple_0/;
 
+my $UID = qr/[a-z]{3}-\d{3}/;
+
 sub out_simple_0 {
     my $in = shift;
     my $out = shift;
@@ -31,7 +33,7 @@ sub out_simple_0 {
     print $out ".\n0\n";
     # Output the file header.
 
-    my (%all, %col);
+    my (%seen, %col);
 
     foreach my $i (@specs) {
     # For each expression column:
@@ -63,25 +65,22 @@ sub out_simple_0 {
             }
         }
 
-        my $en = join '', @col;
+        my $rec = join '', @col;
         # Identify a concatenation of its modified columns.
 
-        $en =~ s/⫷exp⫸.+?(?=⫷ex:)//g;
-        # Delete all deprecated (i.e. pre-normalized) expressions in it.
+        $rec =~ s/⫷(?:exp|rm)⫸[^⫷]*//g;
+        # Delete all pre-normalized expressions and all tags that are marked as to be removed.
 
-        $en =~ s/⫷rm⫸[^⫷]+//g;
-        # Delete all tags that are marked as to be removed.
-
-        unless (exists $all{$en}) {
+        unless (exists $seen{$rec}) {
         # If it is not a duplicate:
 
-            $all{$en} = '';
+            $seen{$rec} = '';
             # Add it to the table of entries.
 
-            $en =~ s/⫷ex:([a-z]{3}-\d{3})⫸/\n$1\n/g;
+            $rec =~ s/⫷ex:($UID)⫸/\n$1\n/g;
             # Convert all expression tags in it.
 
-            print $out $en, "\n";
+            print $out $rec, "\n";
             # Output the converted line.
         }
     }
