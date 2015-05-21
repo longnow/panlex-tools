@@ -14,7 +14,7 @@ use parent 'Exporter';
 our @EXPORT = qw/wctag/;
 
 use PanLex::Validation;
-use Panlex::Serialize::Util;
+use PanLex::Serialize::Util;
 
 sub wctag {
     my $in = shift;
@@ -33,10 +33,6 @@ sub wctag {
 
     validate_col($wccol);
     
-    my $wctxt = -e 'wc.txt' ? 'wc.txt' : catfile($ENV{PANLEX_TOOLDIR}, 'serialize', 'data', 'wc.txt');
-    open my $wc, '<:utf8', $wctxt or die $!;
-    # Open the wc file for reading.
-
     my $wc = load_wc();
 
     while (<$in>) {
