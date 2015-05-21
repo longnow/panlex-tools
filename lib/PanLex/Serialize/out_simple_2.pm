@@ -9,8 +9,7 @@ use warnings 'FATAL', 'all';
 use utf8;
 use parent 'Exporter';
 
-use vars qw/@EXPORT/;
-@EXPORT = qw/out_simple_2/;
+our @EXPORT = qw/out_simple_2/;
 
 use PanLex::Validation;
 

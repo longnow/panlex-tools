@@ -1,11 +1,10 @@
 package PanLex::Serialize;
 use strict;
+use parent 'Exporter';
 binmode STDOUT, ':encoding(utf8)';
 binmode STDERR, ':encoding(utf8)';
 
-use parent 'Exporter';
-use vars qw/@EXPORT/;
-@EXPORT = qw/serialize/;
+our @EXPORT = qw/serialize/;
 
 use JSON;
 use File::Spec::Functions qw/catfile curdir rel2abs/;

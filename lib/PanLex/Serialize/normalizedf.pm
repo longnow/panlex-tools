@@ -20,8 +20,7 @@ use warnings 'FATAL', 'all';
 use utf8;
 use parent 'Exporter';
 
-use vars qw/@EXPORT/;
-@EXPORT = qw/normalizedf/;
+our @EXPORT = qw/normalizedf/;
 
 use PanLex::Client::Normalize;
 use PanLex::Validation;

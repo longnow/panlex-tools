@@ -10,8 +10,7 @@ use warnings 'FATAL', 'all';
 use utf8;
 use parent 'Exporter';
 
-use vars qw/@EXPORT/;
-@EXPORT = qw/mnsplit/;
+our @EXPORT = qw/mnsplit/;
 
 use PanLex::Validation;
 

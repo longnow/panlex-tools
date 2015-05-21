@@ -11,8 +11,7 @@ use warnings 'FATAL', 'all';
 use utf8;
 use parent 'Exporter';
 
-use vars qw/@EXPORT/;
-@EXPORT = qw/wctag/;
+our @EXPORT = qw/wctag/;
 
 use PanLex::Validation;
 use Panlex::Serialize::Util;

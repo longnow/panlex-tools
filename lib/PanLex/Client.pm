@@ -5,8 +5,7 @@ use JSON;
 use HTTP::Request;
 use LWP::UserAgent;
 
-use vars qw/@EXPORT/;
-@EXPORT = qw/panlex_query panlex_query_all/;
+our @EXPORT = qw/panlex_query panlex_query_all/;
 
 $PanLex::Client::ARRAY_MAX = 10000;
 

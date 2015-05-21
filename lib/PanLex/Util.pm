@@ -4,8 +4,7 @@ use utf8;
 use parent 'Exporter';
 use Unicode::Normalize 'NFC';
 
-use vars qw/@EXPORT/;
-@EXPORT = qw/Trim NormTrim Dedup Delimiter DelimiterIf ExpandParens EachEx/;
+our @EXPORT = qw/Trim NormTrim Dedup Delimiter DelimiterIf ExpandParens EachEx/;
 
 ### Trim
 # Delete superfluous spaces in the specified string.

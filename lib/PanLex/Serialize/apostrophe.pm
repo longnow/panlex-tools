@@ -9,8 +9,7 @@ use warnings 'FATAL', 'all';
 use utf8;
 use parent 'Exporter';
 
-use vars qw/@EXPORT/;
-@EXPORT = qw/apostrophe/;
+our @EXPORT = qw/apostrophe/;
 
 use PanLex::Client;
 use PanLex::Validation;

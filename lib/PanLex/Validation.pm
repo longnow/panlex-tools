@@ -2,8 +2,7 @@ package PanLex::Validation;
 use strict;
 use parent 'Exporter';
 
-use vars qw/@EXPORT/;
-@EXPORT = qw/validate_spec validate_col validate_uid valid_int validate_array validate_hash validate_cols validate_specs validate_uids/;
+our @EXPORT = qw/validate_spec validate_col validate_uid valid_int validate_array validate_hash validate_cols validate_specs validate_uids/;
 
 # dies if the two arguments do not form a valid column and uid spec.
 sub validate_spec {

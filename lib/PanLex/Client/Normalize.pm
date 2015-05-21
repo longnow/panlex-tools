@@ -3,8 +3,7 @@ use strict;
 use parent 'Exporter';
 use PanLex::Client;
 
-use vars qw/@EXPORT/;
-@EXPORT = qw/panlex_norm/;
+our @EXPORT = qw/panlex_norm/;
 
 #### panlex_norm
 # Iteratively query the PanLex api at /norm and return the results.

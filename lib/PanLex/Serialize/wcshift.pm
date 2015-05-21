@@ -15,8 +15,7 @@ use warnings 'FATAL', 'all';
 use utf8;
 use parent 'Exporter';
 
-use vars qw/@EXPORT/;
-@EXPORT = qw/wcshift/;
+our @EXPORT = qw/wcshift/;
 
 use PanLex::Validation;
 

@@ -13,8 +13,7 @@ use warnings 'FATAL', 'all';
 use utf8;
 use parent 'Exporter';
 
-use vars qw/@EXPORT/;
-@EXPORT = qw/wcretag/;
+our @EXPORT = qw/wcretag/;
 
 use PanLex::Validation;
 use PanLex::Serialize::Util;
