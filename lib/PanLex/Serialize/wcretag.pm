@@ -46,7 +46,7 @@ sub wcretag {
         validate_cols(\@wccol);
     }
 
-    my $wctxt = -e 'wc.txt' ? 'wc.txt' : catfile(dirname(__FILE__), '..', 'data', 'wc.txt');
+    my $wctxt = -e 'wc.txt' ? 'wc.txt' : catfile($ENV{PANLEX_TOOLDIR}, 'serialize', 'data', 'wc.txt');
     open my $wc, '<:utf8', $wctxt or die $!;
     # Open the wc file for reading.
 

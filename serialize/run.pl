@@ -15,6 +15,8 @@ sub run {
     die "could not find PANLEX_TOOLDIR" unless -d $PANLEX_TOOLDIR;
     die "odd number of items in \@TOOLS" unless @TOOLS % 2 == 0;
 
+    $ENV{PANLEX_TOOLDIR} = $PANLEX_TOOLDIR; # so data files (e.g. wc.txt) can be more easily located
+
     my $log = { tools => \@TOOLS, basename => $BASENAME, version => $VERSION };
 
     # get the panlex-tools revision.
