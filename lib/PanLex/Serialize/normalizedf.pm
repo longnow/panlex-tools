@@ -19,15 +19,13 @@ use strict;
 use warnings 'FATAL', 'all';
 use utf8;
 use parent 'Exporter';
-
-our @EXPORT = qw/normalizedf/;
-
-use PanLex::Client::Normalize;
 use PanLex::Validation;
+use PanLex::Client::Normalize;
 use PanLex::MungeJson;
-
 use Unicode::Normalize;
 use JSON;
+
+our @EXPORT = qw/normalizedf/;
 
 sub normalizedf {
     my $in = shift;

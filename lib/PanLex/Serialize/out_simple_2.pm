@@ -8,10 +8,9 @@ use strict;
 use warnings 'FATAL', 'all';
 use utf8;
 use parent 'Exporter';
+use PanLex::Validation;
 
 our @EXPORT = qw/out_simple_2/;
-
-use PanLex::Validation;
 
 sub out_simple_2 {
     my $in = shift;

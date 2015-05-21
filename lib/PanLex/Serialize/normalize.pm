@@ -36,15 +36,13 @@ use strict;
 use warnings 'FATAL', 'all';
 use utf8;
 use parent 'Exporter';
-
-our @EXPORT = qw/normalize/;
-
-use PanLex::Client::Normalize;
 use PanLex::Validation;
+use PanLex::Client::Normalize;
 use PanLex::MungeJson;
-
 use Unicode::Normalize;
 use JSON;
+
+our @EXPORT = qw/normalize/;
 
 sub normalize {
     my $in = shift;

@@ -14,10 +14,9 @@ use strict;
 use warnings 'FATAL', 'all';
 use utf8;
 use parent 'Exporter';
+use PanLex::Validation;
 
 our @EXPORT = qw/wcshift/;
-
-use PanLex::Validation;
 
 sub wcshift {
     my $in = shift;

@@ -23,10 +23,9 @@ use strict;
 use warnings 'FATAL', 'all';
 use utf8;
 use parent 'Exporter';
+use PanLex::Validation;
 
 our @EXPORT = qw/exdftag/;
-
-use PanLex::Validation;
 
 sub exdftag {
     my $in = shift;

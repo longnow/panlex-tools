@@ -14,10 +14,9 @@ use strict;
 use warnings 'FATAL', 'all';
 use utf8;
 use parent 'Exporter';
+use PanLex::Validation;
 
 our @EXPORT = qw/extag/;
-
-use PanLex::Validation;
 
 sub extag {
     my $in = shift;

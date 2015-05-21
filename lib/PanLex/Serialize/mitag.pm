@@ -8,10 +8,9 @@ use strict;
 use warnings 'FATAL', 'all';
 use utf8;
 use parent 'Exporter';
+use PanLex::Validation;
 
 our @EXPORT = qw/mitag/;
-
-use PanLex::Validation;
 
 sub mitag {
     my $in = shift;

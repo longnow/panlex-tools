@@ -10,11 +10,10 @@ use strict;
 use warnings 'FATAL', 'all';
 use utf8;
 use parent 'Exporter';
-
-our @EXPORT = qw/wctag/;
-
 use PanLex::Validation;
 use PanLex::Serialize::Util;
+
+our @EXPORT = qw/wctag/;
 
 sub wctag {
     my $in = shift;

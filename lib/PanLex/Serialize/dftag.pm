@@ -8,10 +8,9 @@ use strict;
 use warnings 'FATAL', 'all';
 use utf8;
 use parent 'Exporter';
+use PanLex::Validation;
 
 our @EXPORT = qw/dftag/;
-
-use PanLex::Validation;
 
 sub dftag {
     my $in = shift;

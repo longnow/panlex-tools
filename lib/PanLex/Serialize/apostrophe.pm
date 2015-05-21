@@ -8,11 +8,10 @@ use strict;
 use warnings 'FATAL', 'all';
 use utf8;
 use parent 'Exporter';
-
-our @EXPORT = qw/apostrophe/;
-
 use PanLex::Client;
 use PanLex::Validation;
+
+our @EXPORT = qw/apostrophe/;
 
 sub apostrophe {
     my $in = shift;
