@@ -3,6 +3,8 @@
 #   col:   column containing metadata.
 #   mdtag: metadatum tag. default '⫷md:gram⫸'.
 
+package PanLex::Serialize::mdtag;
+
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
 
@@ -11,6 +13,10 @@ use strict;
 
 use utf8;
 # Make Perl interpret the script as UTF-8 rather than bytes.
+
+use base 'Exporter';
+use vars qw/@EXPORT/;
+@EXPORT = qw/mdtag/;
 
 use PanLex::Validation;
 

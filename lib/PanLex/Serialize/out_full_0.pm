@@ -1,15 +1,15 @@
-# Converts a standard tagged source file to a full-text bilingual source file, 
-# eliminating duplicates.
+# Converts a standard tagged source file to a full-text varilingual source file.
 # Arguments:
 #   specs:  array of specifications (column index + colon + variety UID) of
 #             columns containing tags (e.g., ex, df, dm) requiring variety
-#             specifications, subject to the requirement that columns 0 and 1
-#             must contain ex tags.
+#             specifications.
 #   mindf:  minimum count (1 or more) of definitions and expressions per entry.
 #             default 2.
 #   minex:  minimum count (0 or more) of expressions per entry. default 1.
 #   wc:     word classification to annotate all expressions as that have no 
 #             tagged wc, or '' if none. default ''.
+
+package PanLex::Serialize::out_full_0;
 
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
@@ -20,9 +20,13 @@ use strict;
 use utf8;
 # Make Perl interpret the script as UTF-8 rather than bytes.
 
+use base 'Exporter';
+use vars qw/@EXPORT/;
+@EXPORT = qw/out_full_0/;
+
 use PanLex::Validation;
 
-sub out_full_2 {
+sub out_full_0 {
     my $in = shift;
     my $out = shift;
     my $args = ref $_[0] ? $_[0] : \@_;
@@ -40,11 +44,14 @@ sub out_full_2 {
         ($wc, $mindf, $minex, @specs) = @$args;
         validate_specs(\@specs);
     }
-
+        
     die "invalid minimum count\n" if ($mindf < 1) || ($minex < 0);
     # If either minimum count is too small, quit and notify the user.
 
-    my (%col, %en, @cols);
+    print $out ":\n0\n";
+    # Output the file header.
+
+    my (%col, %en);
 
     foreach my $i (@specs) {
     # For each variety-specific column:
@@ -55,13 +62,7 @@ sub out_full_2 {
         $col{$col[0]} = $col[1];
         # Add its index and variety UID to the table of variety-specific columns.
 
-        push @cols, $col[0];
-        # Append its index to the list of variety-specific column indices.
-
     }
-
-    print $out ":\n2\n$col{$cols[0]}\n$col{$cols[1]}\n";
-    # Output the file header.
 
     while (<$in>) {
     # For each line of the input file:
@@ -76,7 +77,7 @@ sub out_full_2 {
         # For each of them:
 
             if (exists $col{$i}) {
-                # If it is variety-specific:
+            # If it is variety-specific:
 
                 $col[$i] =~ s/⫷ex⫸/⫷ex:$col{$i}⫸/g;
                 # Insert the column's variety UID into each expression tag in it.
@@ -94,7 +95,7 @@ sub out_full_2 {
         my $en = join '', @col;
         # Identify a concatenation of its modified columns.
 
-        $en =~ s/⫷exp⫸.+?(?=⫷ex)//g;
+        $en =~ s/⫷exp⫸.+?(?=⫷ex:|⫷df|⫷dm|⫷mi|$)//g;
         # Delete all deprecated (i.e. pre-normalized) expressions in it.
 
         $en =~ s/⫷rm⫸[^⫷]+//g;
@@ -102,16 +103,19 @@ sub out_full_2 {
 
         while ($en =~ s/(⫷df:[a-z]{3}-\d{3}⫸[^⫷]+)⫷(?:wc|md:[^⫸]+)⫸[^⫷]+/$1/) {}
         # Delete all word classifications or metadata following definitions.
-        # Such wc and md elements followed ex elements and became invalid when
-        # the ex elements were converted to df elements.
 
-        $en =~ s/((⫷ex:[a-z]{3}-\d{3}⫸[^⫷⫸]+)(?:⫷.+?)?)\2/$1/g;
-        # Delete all duplicate expressions in it.
+        while ($en =~ s/((⫷(?:wc|md:[^⫸]+)⫸[^⫷⫸]+)(?:⫷(?:wc|md:[^⫸]+)⫸[^⫷⫸]+)*)\2(?=⫷|$)/$1/) {}
+        # Delete all duplicate wc and md elements of any ex element in it.
 
-        my @exdf;
+        while ($en =~ s/((⫷((?:df|dm):[^⫸]+)⫸[^⫷⫸]+)(?:⫷.+?)?)\2(?=⫷|$)/$1/) {}
+        # Delete all duplicate df and dm elements in it.
+
+        while ($en =~ s/((⫷ex:[^⫸]+⫸[^⫷⫸]+)(?:⫷.+?)?)\K\2(?:⫷(?:wc|md:[^⫸]+)⫸[^⫷⫸]+)*(?=⫷|$)//) {}
+        # Delete all duplicate ex elements in it.
+
         next if (
-            ((@exdf = ($en =~ /(⫷(?:ex|df):)/g)) < $mindf)
-            || ((@exdf = ($en =~ /(⫷ex:)/g)) < $minex)
+            (() = $en =~ /(⫷(?:ex|df):)/g) < $mindf
+            || (() = $en =~ /(⫷ex:)/g) < $minex
         );
         # If the count of remaining expressions and definitions or the count of remaining
         # expressions is smaller than the minimum, disregard the line.
@@ -119,11 +123,8 @@ sub out_full_2 {
         $en =~ s/⫷mi⫸/\nmi\n/g;
         # Convert all meaning-identifier tags in it.
 
-        $en =~ s/⫷ex:[a-z]{3}-\d{3}⫸/\nex\n/g;
-        # Convert all expression tags in it.
-
-        $en =~ s/⫷(df|dm):([a-z]{3}-\d{3})⫸/\n$1\n$2\n/g;
-        # Convert all definition and domain tags in it.
+        $en =~ s/⫷(ex|df|dm):([a-z]{3}-\d{3})⫸/\n$1\n$2\n/g;
+        # Convert all expression, definition, and domain tags in it.
 
         $en =~ s/⫷wc⫸/\nwc\n/g;
         # Convert all word-classification tags in it.
@@ -139,8 +140,11 @@ sub out_full_2 {
 
             print $out $en, "\n";
             # Output it.
+
         }
-    }    
+
+    }
+
 }
 
 1;

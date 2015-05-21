@@ -1,10 +1,11 @@
 use strict;
+binmode STDOUT, ':encoding(utf8)';
+binmode STDERR, ':encoding(utf8)';
+
 use JSON;
 use File::Spec::Functions qw/catfile curdir rel2abs/;
 use Scalar::Util 'blessed';
-use PanLex::Validation;
-binmode STDOUT, ':encoding(utf8)';
-binmode STDERR, ':encoding(utf8)';
+use PanLex::Serialize;
 
 sub run {
     my ($PANLEX_TOOLDIR, $BASENAME, $VERSION, $TOOLS) = @_;
@@ -23,11 +24,6 @@ sub run {
     chomp $rev;
     chdir $pwd;
     $log->{git_revision} = $rev;
-
-    foreach my $tool_path (glob(catfile($PANLEX_TOOLDIR, 'serialize', 'sub', '*'))) {
-        next unless $tool_path =~ /\.pl$/;
-        require $tool_path;
-    }
 
     for (my $i = 0; $i < @TOOLS; $i += 2) {
         my ($tool, $args) = @TOOLS[$i, $i+1];

@@ -3,6 +3,8 @@
 #   col:    column that contains meaning identifiers.
 #   mitag:  meaning-identifier tag. default '⫷mi⫸'.
 
+package PanLex::Serialize::mitag;
+
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
 
@@ -11,6 +13,10 @@ use strict;
 
 use utf8;
 # Make Perl interpret the script as UTF-8 rather than bytes.
+
+use base 'Exporter';
+use vars qw/@EXPORT/;
+@EXPORT = qw/mitag/;
 
 use PanLex::Validation;
 

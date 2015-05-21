@@ -3,6 +3,8 @@
 #   specs:  array of specifications (column index + colon + variety UID) of
 #             columns possibly requiring apostrophe normalization.
 
+package PanLex::Serialize::apostrophe;
+
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
 
@@ -11,6 +13,10 @@ use strict;
 
 use utf8;
 # Make Perl interpret the script as UTF-8 rather than bytes.
+
+use base 'Exporter';
+use vars qw/@EXPORT/;
+@EXPORT = qw/apostrophe/;
 
 use PanLex::Client;
 use PanLex::Validation;

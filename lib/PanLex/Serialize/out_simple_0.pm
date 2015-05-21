@@ -4,6 +4,8 @@
 #   specs:  array of specifications (column index + colon + variety UID) of
 #             columns containing expressions.
 
+package PanLex::Serialize::out_simple_0;
+
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
 
@@ -12,6 +14,10 @@ use strict;
 
 use utf8;
 # Make Perl interpret the script as UTF-8 rather than bytes.
+
+use base 'Exporter';
+use vars qw/@EXPORT/;
+@EXPORT = qw/out_simple_0/;
 
 use PanLex::Validation;
 

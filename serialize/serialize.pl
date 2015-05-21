@@ -196,20 +196,6 @@ my @TOOLS = (
 #   wc:     word classification to annotate all expressions as that have no 
 #             tagged wc, or '' if none. default ''.
 
-#'out-full-2'   => { specs => [ '0:eng-000', '1:rus-000' ] },
-# Converts a standard tagged source file to a full-text bilingual source file, 
-# eliminating duplicates. Risky if exdftag or normalize has been used.
-# Arguments:
-#   specs:  array of specifications (column index + colon + variety UID) of
-#             columns containing tags (e.g., ex, df, dm) requiring variety
-#             specifications, subject to the requirement that columns 0 and 1
-#             must contain ex tags.
-#   mindf:  minimum count (1 or more) of definitions and expressions per entry.
-#             default 2.
-#   minex:  minimum count (0 or more) of expressions per entry. default 1.
-#   wc:     word classification to annotate all expressions as that have no 
-#             tagged wc, or '' if none. default ''.
-
 );
 
 ### DO NOT MODIFY BELOW THIS LINE ###

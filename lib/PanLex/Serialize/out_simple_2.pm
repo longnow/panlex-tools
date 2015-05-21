@@ -3,6 +3,8 @@
 # Arguments:
 #   uids:   two-element array containing variety UIDs of columns 0 and 1.
 
+package PanLex::Serialize::out_simple_2;
+
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
 
@@ -11,6 +13,10 @@ use strict;
 
 use utf8;
 # Make Perl interpret the script as UTF-8 rather than bytes.
+
+use base 'Exporter';
+use vars qw/@EXPORT/;
+@EXPORT = qw/out_simple_2/;
 
 use PanLex::Validation;
 

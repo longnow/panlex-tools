@@ -4,6 +4,8 @@
 #   col:    column that may contain multiple meanings.
 #   delim:  meaning-delimitation tag. default '⫷mn⫸'.
 
+package PanLex::Serialize::mnsplit;
+
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
 
@@ -12,6 +14,10 @@ use strict;
 
 use utf8;
 # Make Perl interpret the script as UTF-8 rather than bytes.
+
+use base 'Exporter';
+use vars qw/@EXPORT/;
+@EXPORT = qw/mnsplit/;
 
 use PanLex::Validation;
 

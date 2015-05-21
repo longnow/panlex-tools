@@ -18,6 +18,8 @@
 #   prere:    regex matching a preposed annotation not to be counted, or '' if
 #               none. default '⫷[^⫷⫸]+⫸'.
 
+package PanLex::Serialize::exdftag;
+
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
 
@@ -26,6 +28,10 @@ use strict;
 
 use utf8;
 # Make Perl interpret the script as UTF-8 rather than bytes.
+
+use base 'Exporter';
+use vars qw/@EXPORT/;
+@EXPORT = qw/exdftag/;
 
 use PanLex::Validation;
 

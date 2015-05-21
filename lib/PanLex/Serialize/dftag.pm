@@ -3,6 +3,8 @@
 #   cols:   array of columns containing definitions.
 #   dftag:  definition tag. default '⫷df⫸'.
 
+package PanLex::Serialize::dftag;
+
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
 
@@ -11,6 +13,10 @@ use strict;
 
 use utf8;
 # Make Perl interpret the script as UTF-8 rather than bytes.
+
+use base 'Exporter';
+use vars qw/@EXPORT/;
+@EXPORT = qw/dftag/;
 
 use PanLex::Validation;
 

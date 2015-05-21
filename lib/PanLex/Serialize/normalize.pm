@@ -31,6 +31,8 @@
 #   exptag:   pre-normalized expression tag. default '⫷exp⫸'.
 #   tagre:    regex identifying any tag. default '⫷[a-z:]+⫸'.
 
+package PanLex::Serialize::normalize;
+
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
 
@@ -39,6 +41,10 @@ use strict;
 
 use utf8;
 # Make Perl interpret the script as UTF-8 rather than bytes.
+
+use base 'Exporter';
+use vars qw/@EXPORT/;
+@EXPORT = qw/normalize/;
 
 use PanLex::Client::Normalize;
 use PanLex::Validation;

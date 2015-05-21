@@ -4,6 +4,8 @@
 #   dmtag:  domain-expression tag. default '⫷dm⫸'.
 #   delim:  inter-expression delimiter, or '' if none. default '‣'.
 
+package PanLex::Serialize::dmtag;
+
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
 
@@ -12,6 +14,10 @@ use strict;
 
 use utf8;
 # Make Perl interpret the script as UTF-8 rather than bytes.
+
+use base 'Exporter';
+use vars qw/@EXPORT/;
+@EXPORT = qw/dmtag/;
 
 use PanLex::Validation;
 

@@ -7,6 +7,8 @@
 #   wctag:    output file's word-classification tag. default '⫷wc⫸'
 #   mdtag:    metadatum tag. default '⫷md:gram⫸'.
 
+package PanLex::Serialize::wcretag;
+
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
 
@@ -15,6 +17,10 @@ use strict;
 
 use utf8;
 # Make Perl interpret the script as UTF-8 rather than bytes.
+
+use base 'Exporter';
+use vars qw/@EXPORT/;
+@EXPORT = qw/wcretag/;
 
 use PanLex::Validation;
 use File::Spec::Functions;
