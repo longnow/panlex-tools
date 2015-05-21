@@ -11,25 +11,26 @@ sub run {
     my @TOOLS = @$TOOLS;
 
     print "\n";
+    die "could not find PANLEX_TOOLDIR" unless -d $PANLEX_TOOLDIR;
     die "odd number of items in \@TOOLS" unless @TOOLS % 2 == 0;
 
     my $log = { tools => \@TOOLS, basename => $BASENAME, version => $VERSION };
 
-    if (-d $PANLEX_TOOLDIR) {    
-        # get the panlex-tools revision.
-        my $pwd = rel2abs(curdir());
-        chdir $PANLEX_TOOLDIR;
-        my $rev = `git rev-parse HEAD`;
-        chomp $rev;
-        chdir $pwd;
-        $log->{git_revision} = $rev;
+    # get the panlex-tools revision.
+    my $pwd = rel2abs(curdir());
+    chdir $PANLEX_TOOLDIR;
+    my $rev = `git rev-parse HEAD`;
+    chomp $rev;
+    chdir $pwd;
+    $log->{git_revision} = $rev;
+
+    foreach my $tool_path (glob(catfile($PANLEX_TOOLDIR, 'serialize', 'sub', '*'))) {
+        next unless $tool_path =~ /\.pl$/;
+        require $tool_path;
     }
 
     for (my $i = 0; $i < @TOOLS; $i += 2) {
         my ($tool, $args) = @TOOLS[$i, $i+1];
-
-        my $tool_path = catfile('sub', $tool . '.pl');
-        require $tool_path;
 
         my $input = "$BASENAME-$VERSION.txt";
         die "could not find file $input" unless -e $input;
