@@ -1,7 +1,7 @@
 package PanLex::Serialize;
 use strict;
 
-use base 'Exporter';
+use parent 'Exporter';
 use vars qw/@EXPORT/;
 @EXPORT = qw/apostrophe dftag dmtag exdftag extag mdtag mitag mnsplit normalize normalizedf out_full_0 out_simple_0 out_simple_2 retag wcretag wcshift wctag/;
 

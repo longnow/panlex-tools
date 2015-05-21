@@ -1,6 +1,6 @@
 package PanLex::Normalize::StripAcute;
 use strict;
-use base 'PanLex::Normalize';
+use parent 'PanLex::Normalize';
 
 sub ex {
     my ($self, $str) = @_;

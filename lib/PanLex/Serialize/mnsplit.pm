@@ -5,17 +5,11 @@
 #   delim:  meaning-delimitation tag. default '⫷mn⫸'.
 
 package PanLex::Serialize::mnsplit;
-
-use warnings 'FATAL', 'all';
-# Make every warning fatal.
-
 use strict;
-# Require strict checking of variable references, etc.
-
+use warnings 'FATAL', 'all';
 use utf8;
-# Make Perl interpret the script as UTF-8 rather than bytes.
+use parent 'Exporter';
 
-use base 'Exporter';
 use vars qw/@EXPORT/;
 @EXPORT = qw/mnsplit/;
 

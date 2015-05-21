@@ -6,23 +6,16 @@
 #   mdtag: metadatum tag. default '⫷md:gram⫸'.
 
 package PanLex::Serialize::wctag;
-
-use warnings 'FATAL', 'all';
-# Make every warning fatal.
-
 use strict;
-# Require strict checking of variable references, etc.
-
+use warnings 'FATAL', 'all';
 use utf8;
-# Make Perl interpret the script as UTF-8 rather than bytes.
+use parent 'Exporter';
 
-use base 'Exporter';
 use vars qw/@EXPORT/;
 @EXPORT = qw/wctag/;
 
 use PanLex::Validation;
-use File::Spec::Functions;
-use File::Basename;
+use Panlex::Serialize::Util;
 
 sub wctag {
     my $in = shift;
@@ -45,22 +38,7 @@ sub wctag {
     open my $wc, '<:utf8', $wctxt or die $!;
     # Open the wc file for reading.
 
-    my %wc;
-
-    while (<$wc>) {
-    # For each line of the wc file:
-
-        chomp;
-        # Delete its trailing newline.
-
-        my @col = split /\t/, $_, -1;
-        # Identify its columns.
-
-        $wc{$col[0]} = $col[1];
-        # Add it to the table of wc conversions.
-    }
-    
-    close $wc;
+    my $wc = load_wc();
 
     while (<$in>) {
     # For each line of the input file:
@@ -73,10 +51,10 @@ sub wctag {
 
         die "column $wccol not present in line" unless defined $col[$wccol];
 
-        if (exists $wc{$col[$wccol]}) {
+        if (exists $wc->{$col[$wccol]}) {
         # If the content of the column containing word classifications is a convertible one:
 
-            my @wcmd = split /:/, $wc{$col[$wccol]};
+            my @wcmd = @{$wc->{$col[$wccol]}};
             # Identify the wc and the md values of its conversion.
 
             if (@wcmd == 1) {

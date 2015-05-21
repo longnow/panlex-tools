@@ -1,6 +1,6 @@
 package PanLex::Client;
 use strict;
-use base 'Exporter';
+use parent 'Exporter';
 use JSON;
 use HTTP::Request;
 use LWP::UserAgent;

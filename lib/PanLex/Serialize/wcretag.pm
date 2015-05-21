@@ -8,23 +8,16 @@
 #   mdtag:    metadatum tag. default '⫷md:gram⫸'.
 
 package PanLex::Serialize::wcretag;
-
-use warnings 'FATAL', 'all';
-# Make every warning fatal.
-
 use strict;
-# Require strict checking of variable references, etc.
-
+use warnings 'FATAL', 'all';
 use utf8;
-# Make Perl interpret the script as UTF-8 rather than bytes.
+use parent 'Exporter';
 
-use base 'Exporter';
 use vars qw/@EXPORT/;
 @EXPORT = qw/wcretag/;
 
 use PanLex::Validation;
-use File::Spec::Functions;
-use File::Basename;
+use PanLex::Serialize::Util;
 
 sub wcretag {
     my $in = shift;
@@ -46,26 +39,7 @@ sub wcretag {
         validate_cols(\@wccol);
     }
 
-    my $wctxt = -e 'wc.txt' ? 'wc.txt' : catfile($ENV{PANLEX_TOOLDIR}, 'serialize', 'data', 'wc.txt');
-    open my $wc, '<:utf8', $wctxt or die $!;
-    # Open the wc file for reading.
-
-    my %wc;
-
-    while (<$wc>) {
-    # For each line of the wc file:
-
-        chomp;
-        # Delete its trailing newline.
-
-        my @col = split /\t/, $_, -1;
-        # Identify its columns.
-
-        $wc{$col[0]} = $col[1];
-        # Add it to the table of wc conversions.
-    }
-    
-    close $wc;
+    my $wc = load_wc();
 
     while (<$in>) {
     # For each line of the input file:
@@ -84,10 +58,10 @@ sub wcretag {
             while ($col[$i] =~ /$pretag(.+?)$posttag/) {
             # As long as any remains unretagged:
 
-                if (exists $wc{$1}) {
+                if (exists $wc->{$1}) {
                 # If the first one's content is convertible:
 
-                    my @wcmd = split /:/, $wc{$1};
+                    my @wcmd = @{$wc->{$1}};
                     # Identify the wc and the md values of its conversion.
 
                     if (@wcmd == 1) {

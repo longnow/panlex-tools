@@ -1,6 +1,6 @@
 package PanLex::MungeJson;
 use strict;
-use base 'Exporter';
+use parent 'Exporter';
 
 use vars qw/@EXPORT/;
 @EXPORT = qw/munge_json/;

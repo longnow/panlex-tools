@@ -1,7 +1,7 @@
 package PanLex::Util;
 use strict;
 use utf8;
-use base 'Exporter';
+use parent 'Exporter';
 use Unicode::Normalize 'NFC';
 
 use vars qw/@EXPORT/;

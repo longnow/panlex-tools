@@ -1,6 +1,6 @@
 package PanLex::Client::Normalize;
 use strict;
-use base 'Exporter';
+use parent 'Exporter';
 use PanLex::Client;
 
 use vars qw/@EXPORT/;
