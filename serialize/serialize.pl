@@ -198,4 +198,4 @@ my @TOOLS = (
 
 use lib "$ENV{PANLEX_TOOLDIR}/lib";
 use PanLex::Serialize;
-serialize($PANLEX_TOOLDIR || $ENV{PANLEX_TOOLDIR}, $BASENAME, $VERSION, \@TOOLS);
+serialize($BASENAME, $VERSION, \@TOOLS);

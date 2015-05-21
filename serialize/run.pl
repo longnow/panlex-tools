@@ -1,3 +1,5 @@
+# this file is needed for backwards compat only
+
 use strict;
 use PanLex::Serialize;
 
