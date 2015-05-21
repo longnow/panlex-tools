@@ -9,10 +9,6 @@ my $BASENAME = 'aaa-bbb-Author';
 # The initial version to use.
 my $VERSION = 1;
 
-# The panlex-tools directory containing the serialize scripts. If unset here,
-# will look in the env var PANLEX_TOOLDIR.
-my $PANLEX_TOOLDIR;
-
 my @TOOLS = (
 
 #'apostrophe'   => { specs => [ '0:eng-000', '1:rus-000' ] },
@@ -200,12 +196,6 @@ my @TOOLS = (
 
 ### DO NOT MODIFY BELOW THIS LINE ###
 
-use File::Spec::Functions;
-
-foreach my $dir (grep { $_ && -d $_ } ($ENV{PANLEX_TOOLDIR}, $PANLEX_TOOLDIR)) {
-    unshift @INC, catfile($dir, 'serialize');    
-    unshift @INC, catfile($dir, 'lib');    
-}
-
-require 'run.pl';
-run($PANLEX_TOOLDIR || $ENV{PANLEX_TOOLDIR}, $BASENAME, $VERSION, \@TOOLS);
+use lib "$ENV{PANLEX_TOOLDIR}/lib";
+use PanLex::Serialize;
+serialize($PANLEX_TOOLDIR || $ENV{PANLEX_TOOLDIR}, $BASENAME, $VERSION, \@TOOLS);
