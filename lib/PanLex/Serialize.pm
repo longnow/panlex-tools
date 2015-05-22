@@ -11,13 +11,17 @@ use File::Spec::Functions qw/catfile curdir rel2abs/;
 use Scalar::Util 'blessed';
 
 use PanLex::Serialize::apostrophe;
+use PanLex::Serialize::dcstag;
 use PanLex::Serialize::dftag;
 use PanLex::Serialize::dmtag;
+use PanLex::Serialize::dpptag;
 use PanLex::Serialize::exdftag;
 use PanLex::Serialize::extag;
+use PanLex::Serialize::mcstag;
 use PanLex::Serialize::mdtag;
 use PanLex::Serialize::mitag;
 use PanLex::Serialize::mnsplit;
+use PanLex::Serialize::mpptag;
 use PanLex::Serialize::normalize;
 use PanLex::Serialize::normalizedf;
 use PanLex::Serialize::out_full_0;

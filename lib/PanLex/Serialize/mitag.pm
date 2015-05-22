@@ -31,6 +31,9 @@ sub mitag {
     while (<$in>) {
     # For each line of the input file:
 
+        chomp;
+        # Delete its trailing newline.
+
         my @col = split /\t/, $_, -1;
         # Identify its columns.
 
@@ -40,7 +43,7 @@ sub mitag {
         # Prefix a meaning-identifier tag to the meaning-identifier column's content,
         # if not blank.
 
-        print $out join("\t", @col);
+        print $out join("\t", @col), "\n";
         # Output the line.
     }    
 }
