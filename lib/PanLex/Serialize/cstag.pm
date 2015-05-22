@@ -28,6 +28,9 @@ sub cstag {
             next unless length $col[$i];
             # skip the column if it is blank.
 
+            die "column $i does not begin with a UID and delimiter: $col[$i]"
+                unless $col[$i] =~ /^[a-z]{3}-\d{3}./;
+
             my $delim = substr($col[$i], 7, 1);
             # identify the column delimiter as the first character following the UID.
 
