@@ -160,12 +160,12 @@ my @TOOLS = (
 #   exptag:   pre-normalized expression tag. default '⫷exp⫸'.
 #   tagre:    regex identifying any tag. default '⫷[a-z:]+⫸'.
 
-#'retag'        => { cols => [1, 2], oldtag => '⫷fail⫸', newtag => '⫷ex⫸' },
+#'replace'      => { cols => [1, 2], old => '⫷fail⫸', new => '⫷ex⫸' },
 # Retags a tag in a tab-delimited source file.
 # Arguments:
-#   cols:     array of columns to be retagged.
-#   oldtag:   regex matching any tag(s) to be retagged.
-#   newtag:   new tag to use.
+#   cols:     array of columns to be processed.
+#   old:      regex matching any string(s) to be replaced.
+#   new:      new string to use.
 
 #'out-full-0'   => { specs => [ '0:eng-000', '1:rus-000' ] },
 # Converts a standard tagged source file to a full-text varilingual source file.

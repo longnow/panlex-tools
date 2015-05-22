@@ -1,20 +1,20 @@
-#'retag'      => { cols => [1, 2], oldtag => '⫷fail⫸', newtag => '⫷ex⫸' },
+#'replace'      => { cols => [1, 2], old => '⫷fail⫸', new => '⫷ex⫸' },
 # Retags a tag in a tab-delimited source file.
 # Arguments:
-#   cols:     array of columns to be retagged.
-#   oldtag:   regex matching any tag(s) to be retagged.
-#   newtag:   new tag to use.
+#   cols:     array of columns to be processed.
+#   old:      regex matching any string(s) to be replaced.
+#   new:      new string to use.
 
-package PanLex::Serialize::retag;
+package PanLex::Serialize::replace;
 use strict;
 use warnings 'FATAL', 'all';
 use utf8;
 use parent 'Exporter';
 use PanLex::Validation;
 
-our @EXPORT = qw/retag/;
+our @EXPORT = qw/replace/;
 
-sub retag {
+sub replace {
     my $in = shift;
     my $out = shift;
     my $args = ref $_[0] ? $_[0] : \@_;
