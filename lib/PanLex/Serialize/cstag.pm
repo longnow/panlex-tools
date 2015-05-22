@@ -10,8 +10,11 @@ our @EXPORT = qw/cstag/;
 sub cstag {
     my ($in, $out, $args) = @_;
 
-    my ($cscol, $tag) = ($args->{cols}, $args->{tag});
-    validate_cols($cscol);
+    validate_cols($args->{cols});
+
+    my @cscol   = @{$args->{cols}};
+    my $tag     = $args->{tag};
+    my $delim   = $args->{delim} // '';
     
     while (<$in>) {
     # For each line of the input file:
@@ -22,32 +25,42 @@ sub cstag {
         my @col = split /\t/, $_, -1;
         # Identify its columns.
 
-        foreach my $i (@$cscol) {
+        foreach my $i (@cscol) {
             die "column $i not present in line" unless defined $col[$i];
 
             next unless length $col[$i];
-            # skip the column if it is blank.
+            # Skip the column if it is blank.
 
-            die "column $i does not begin with a UID and delimiter: $col[$i]"
-                unless $col[$i] =~ /^[a-z]{3}-\d{3}./;
+            my @csseg = $delim eq '' ? ($col[$i]) : split /$delim/, $col[$i];
+            # Identify a list of classifications in this column.
 
-            my $delim = substr($col[$i], 7, 1);
-            # identify the column delimiter as the first character following the UID.
+            foreach my $cs (@csseg) {
+                die "classification does not begin with a UID and delimiter: $cs"
+                    unless $cs =~ /^[a-z]{3}-\d{3}./;
 
-            my @seg = split /$delim/, $col[$i];
+                my $delim2 = substr($cs, 7, 1);
+                # Identify the within-classification delimiter as the first character following the UID.
 
-            die "invalid number of segments in column $i: $col[$i]" unless @seg >= 2 && @seg <= 4;
-            validate_uid($seg[0]);
+                my @seg = split /$delim2/, $cs;
 
-            if (@seg == 2) {
-                $col[$i] = "⫷${tag}1:$seg[0]⫸$seg[1]";
-            } elsif (@seg == 3) {
-                $col[$i] = "⫷${tag}2:$seg[0]⫸$seg[1]⫷${tag}⫸$seg[2]";
-            } else {
-                validate_uid($seg[2]);
-                $col[$i] = "⫷${tag}2:$seg[0]⫸$seg[1]⫷${tag}:$seg[2]⫸$seg[3]";
+                die "invalid number of segments in classification: $cs" unless @seg >= 2 && @seg <= 4;
+                validate_uid($seg[0]);
+
+                if (@seg == 2) {
+                    $cs = "⫷${tag}1:$seg[0]⫸$seg[1]";
+                } elsif (@seg == 3) {
+                    $cs = "⫷${tag}2:$seg[0]⫸$seg[1]⫷${tag}⫸$seg[2]";
+                } else {
+                    validate_uid($seg[2]);
+                    $cs = "⫷${tag}2:$seg[0]⫸$seg[1]⫷${tag}:$seg[2]⫸$seg[3]";
+                }
+                # Tag the classification.
+
             }
-            # tag the column.
+
+            $col[$i] = join '', @csseg;
+            # Identify the tagged column.
+
         } 
 
         print $out join("\t", @col), "\n";

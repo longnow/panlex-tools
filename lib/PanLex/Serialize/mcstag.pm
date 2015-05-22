@@ -1,6 +1,7 @@
 # Tags meaning classifications.
 # Arguments:
 #   cols:   array of columns containing meaning classifications.
+#   delim:  inter-classification delimiter, '' if none. default ''.
 
 package PanLex::Serialize::mcstag;
 use strict;

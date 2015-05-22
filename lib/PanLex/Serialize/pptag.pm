@@ -10,8 +10,11 @@ our @EXPORT = qw/pptag/;
 sub pptag {
     my ($in, $out, $args) = @_;
 
-    my ($ppcol, $tag) = ($args->{cols}, $args->{tag});
-    validate_cols($ppcol);
+    validate_cols($args->{cols});
+
+    my @ppcol   = @{$args->{cols}};
+    my $tag     = $args->{tag};
+    my $delim   = $args->{delim} // '';
     
     while (<$in>) {
     # For each line of the input file:
@@ -22,25 +25,36 @@ sub pptag {
         my @col = split /\t/, $_, -1;
         # Identify its columns.
 
-        foreach my $i (@$ppcol) {
+        foreach my $i (@ppcol) {
             die "column $i not present in line" unless defined $col[$i];
 
             next unless length $col[$i];
             # skip the column if it is blank.
 
-            die "column $i does not begin with a UID and delimiter: $col[$i]"
-                unless $col[$i] =~ /^[a-z]{3}-\d{3}./;
+            my @ppseg = $delim eq '' ? ($col[$i]) : split /$delim/, $col[$i];
+            # Identify a list of properties in this column.
 
-            my $delim = substr($col[$i], 7, 1);
-            # identify the column delimiter as the first character following the UID.
+            foreach my $pp (@ppseg) {
+                die "property does not begin with a UID and delimiter: $pp"
+                    unless $pp =~ /^[a-z]{3}-\d{3}./;
 
-            my @seg = split /$delim/, $col[$i];
+                my $delim2 = substr($pp, 7, 1);
+                # Identify the within-property delimiter as the first character following the UID.
 
-            die "invalid number of segments in column $i" unless @seg == 3;
+                my @seg = split /$delim2/, $pp;
 
-            $col[$i] = "⫷$tag:$seg[0]⫸$seg[1]⫷$tag⫸$seg[2]";
-            # tag the column.
-        } 
+                die "invalid number of segments in property: $pp" unless @seg == 3;
+                validate_uid($seg[0]);
+
+                $pp = "⫷$tag:$seg[0]⫸$seg[1]⫷$tag⫸$seg[2]";
+                # Tag the property.
+
+            }
+
+            $col[$i] = join '', @ppseg;
+            # Identify the tagged column.
+
+        }
 
         print $out join("\t", @col), "\n";
         # Output the line.
