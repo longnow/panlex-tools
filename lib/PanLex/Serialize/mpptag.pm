@@ -14,6 +14,7 @@ our @EXPORT = qw/mpptag/;
 sub mpptag {
     my ($in, $out, $args) = @_;
 
+    $args = { %$args }; # don't pollute log.json
     $args->{tag} //= 'mpp';
 
     pptag($in, $out, $args);

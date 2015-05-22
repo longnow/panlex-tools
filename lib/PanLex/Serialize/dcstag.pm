@@ -14,6 +14,7 @@ our @EXPORT = qw/dcstag/;
 sub dcstag {
     my ($in, $out, $args) = @_;
 
+    $args = { %$args }; # don't pollute log.json
     $args->{tag} //= 'dcs';
 
     cstag($in, $out, $args);
