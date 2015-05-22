@@ -1,7 +1,7 @@
 # Tags denotation properties.
 # Arguments:
 #   cols:   array of columns containing denotation properties.
-#   delim:  inter-property delimiter, '' if none. default ''.
+#   delim:  inter-property delimiter, or '' if none. default ''.
 
 package PanLex::Serialize::mpptag;
 use strict;

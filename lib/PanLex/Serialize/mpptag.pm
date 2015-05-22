@@ -1,7 +1,7 @@
 # Tags meaning properties.
 # Arguments:
 #   cols:   array of columns containing meaning properties.
-#   delim:  inter-classification delimiter, '' if none. default ''.
+#   delim:  inter-classification delimiter, or '' if none. default ''.
 
 package PanLex::Serialize::mpptag;
 use strict;

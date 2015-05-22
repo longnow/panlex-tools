@@ -1,7 +1,7 @@
 # Tags denotation classifications.
 # Arguments:
 #   cols:   array of columns containing denotation classifications.
-#   delim:  inter-classification delimiter, '' if none. default ''.
+#   delim:  inter-classification delimiter, or '' if none. default ''.
 
 package PanLex::Serialize::dcstag;
 use strict;
