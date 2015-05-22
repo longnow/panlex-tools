@@ -9,8 +9,13 @@ use warnings 'FATAL', 'all';
 use utf8;
 use parent 'Exporter';
 use PanLex::Validation;
+use PanLex::Serialize::replace;
+use PanLex::Serialize::dpptag;
 
 our @EXPORT = qw/mdtag/;
+
+my %VARMAP = (
+);
 
 sub mdtag {
     my $in = shift;
@@ -27,25 +32,24 @@ sub mdtag {
     }
     validate_col($mdcol);
 
-    while (<$in>) {
-    # For each line of the input file:
+    my $var;
 
-        chomp;
-        # Delete its trailing newline.
+    if ($mdtag =~ /^⫷md:(.+)⫸$/) {
+        die "don't know how to convert old md var: $1" unless exists $VARMAP{$1};
+        $var = $VARMAP{$1};
+    } else {
+        die "don't know how to convert old mdtag: $mdtag";
+    }
 
-        my @col = split /\t/, $_, -1;
-        # Identify its columns.
+    my $temp;
 
-        die "column $mdcol not present in line" unless defined $col[$mdcol];
-        # If the specified column does not exist or has an undefined value, quit and
-        # report the error.
+    open my $fh, '>:encoding(utf8)', \$temp or die $!;
+    replace($in, $fh, { cols => [$mdcol], from => '^', to => $var });
+    close $fh;
 
-        $col[$mdcol] = "$mdtag$col[$mdcol]" if length $col[$mdcol];
-        # Prefix a metadatum tag to the metadatum column's content, if not blank.
-
-        print $out join("\t", @col), "\n";
-        # Output the line.
-    }    
+    open $fh, '<:encoding(utf8)', \$temp or die $!;
+    dpptag($fh, $out, { cols => [$mdcol] });
+    close $fh;
 }
 
 1;
