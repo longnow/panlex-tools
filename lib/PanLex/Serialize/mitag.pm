@@ -19,13 +19,12 @@ sub mitag {
     my $out = shift;
     my $args = ref $_[0] ? $_[0] : \@_;
     
-    my ($micol, $mitag);
+    my ($micol);
     
     if (ref $args eq 'HASH') {
         $micol    = $args->{col};
-        $mitag    = $args->{mitag} // '⫷mi⫸';      
     } else {
-        ($micol, $mitag) = @$args;
+        ($micol) = @$args;
     }
 
     validate_col($micol);    
