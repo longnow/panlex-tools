@@ -16,14 +16,12 @@ our @EXPORT = qw/replace retag/;
 
 sub replace {
     my ($in, $out, $args) = @_;
-
-    my (@retagcol, $from, $to);
     
     validate_cols($args->{cols});
 
-    @retagcol   = @{$args->{cols}};
-    $from       = $args->{from};
-    $to         = $args->{to};
+    my @retagcol    = @{$args->{cols}};
+    my $from        = $args->{from};
+    my $to          = $args->{to};
 
     while (<$in>) {
     # For each line of the input file:
@@ -35,12 +33,12 @@ sub replace {
         # Identify its columns.
 
         foreach my $i (@retagcol) {
-        # For each column to be retagged:
+        # For each column to be processed:
 
             die "column $i not present in line" unless defined $col[$i];
 
             $col[$i] =~ s/$from/$to/g;
-            # replace the old tag(s) with the new one.
+            # replace the old string(s) with the new one.
 
         }
 
