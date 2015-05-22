@@ -3,7 +3,6 @@ use strict;
 use warnings 'FATAL', 'all';
 use utf8;
 use parent 'Exporter';
-use PanLex::Serialize::cstag;
 use PanLex::Validation;
 
 our @EXPORT = qw/cstag/;
