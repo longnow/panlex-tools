@@ -1,9 +1,9 @@
-#'replace'      => { cols => [1, 2], old => '⫷fail⫸', new => '⫷ex⫸' },
-# Retags a tag in a tab-delimited source file.
+#'replace'      => { cols => [1, 2], from => '⫷fail⫸', to => '⫷ex⫸' },
+# Replaces strings in a tab-delimited source file.
 # Arguments:
 #   cols:     array of columns to be processed.
-#   old:      regex matching any string(s) to be replaced.
-#   new:      new string to use.
+#   from:     regex matching any string(s) to be replaced.
+#   to:       new string to use.
 
 package PanLex::Serialize::replace;
 use strict;
@@ -12,24 +12,18 @@ use utf8;
 use parent 'Exporter';
 use PanLex::Validation;
 
-our @EXPORT = qw/replace/;
+our @EXPORT = qw/replace retag/;
 
 sub replace {
-    my $in = shift;
-    my $out = shift;
-    my $args = ref $_[0] ? $_[0] : \@_;
+    my ($in, $out, $args) = @_;
 
-    my (@retagcol, $oldtag, $newtag);
+    my (@retagcol, $from, $to);
     
-    if (ref $args eq 'HASH') {
-        validate_cols($args->{cols});
+    validate_cols($args->{cols});
 
-        @retagcol    = @{$args->{cols}};
-        $oldtag      = $args->{oldtag};
-        $newtag      = $args->{newtag};
-    } else {
-        die "array arguments are not supported";
-    }
+    @retagcol   = @{$args->{cols}};
+    $from       = $args->{from};
+    $to         = $args->{to};
 
     while (<$in>) {
     # For each line of the input file:
@@ -45,7 +39,7 @@ sub replace {
 
             die "column $i not present in line" unless defined $col[$i];
 
-            $col[$i] =~ s/$oldtag/$newtag/g;
+            $col[$i] =~ s/$from/$to/g;
             # replace the old tag(s) with the new one.
 
         }
@@ -53,6 +47,13 @@ sub replace {
         print $out join("\t", @col), "\n";
         # Output the line.
     }    
+}
+
+# backwards compat
+sub retag {
+    my ($in, $out, $args) = @_;
+
+    replace($in, $out, { cols => $args->{cols}, from => $args->{oldtag}, to => $args->{newtag} });
 }
 
 1;
