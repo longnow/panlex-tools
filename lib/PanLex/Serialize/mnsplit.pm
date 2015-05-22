@@ -29,7 +29,7 @@ sub mnsplit {
 
     validate_col($mncol);
 
-    my %line;
+    my %seen;
 
     while (<$in>) {
     # For each line of the input file:
@@ -45,10 +45,10 @@ sub mnsplit {
         if (index($col[$mncol], $delim) < 0) {
         # If the potentially multimeaning column is one-meaning:
 
-            unless (exists $line{$_}) {
+            unless (exists $seen{$_}) {
             # If the line isn't a duplicate:
 
-                $line{$_} = '';
+                $seen{$_} = '';
                 # Add it to the table of output lines.
 
                 print $out $_, "\n";
@@ -62,22 +62,22 @@ sub mnsplit {
             foreach my $mn (split /$delim/, $col[$mncol]) {
             # For each of its meaning segments:
 
-                my @line = @col;
+                my @newcol = @col;
                 # Identify its line's columns, with the multimeaning column unchanged.
 
-                $line[$mncol] = $mn;
+                $newcol[$mncol] = $mn;
                 # Replace the multimeaning column with the meaning segment.
 
-                my $ln = join("\t", @line);
+                my $line = join("\t", @newcol);
                 # Identify the meaning's line.
 
-                unless (exists $line{$ln}) {
+                unless (exists $seen{$line}) {
                 # If it isn't a duplicate:
 
-                    $line{$ln} = '';
+                    $seen{$line} = '';
                     # Add it to the table of output lines.
 
-                    print $out $ln, "\n";
+                    print $out $line, "\n";
                     # Output it.
                 }
             }
