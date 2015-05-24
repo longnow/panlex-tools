@@ -15,6 +15,7 @@ sub pptag {
     my @ppcol   = @{$args->{cols}};
     my $tag     = $args->{tag};
     my $delim   = $args->{delim} // '';
+    my $prefix  = $args->{prefix} // '';
     
     while (<$in>) {
     # For each line of the input file:
@@ -29,12 +30,15 @@ sub pptag {
             die "column $i not present in line" unless defined $col[$i];
 
             next unless length $col[$i];
-            # skip the column if it is blank.
+            # Skip the column if it is blank.
 
             my @ppseg = $delim eq '' ? ($col[$i]) : split /$delim/, $col[$i];
             # Identify a list of properties in this column.
 
             foreach my $pp (@ppseg) {
+                $pp = $prefix . $pp;
+                # Apply the prefix (if any) to the segment.
+
                 die "property does not begin with a UID and delimiter: $pp"
                     unless $pp =~ /^[a-z]{3}-\d{3}./;
 

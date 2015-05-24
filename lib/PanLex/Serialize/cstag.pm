@@ -15,6 +15,7 @@ sub cstag {
     my @cscol   = @{$args->{cols}};
     my $tag     = $args->{tag};
     my $delim   = $args->{delim} // '';
+    my $prefix  = $args->{prefix} // '';
     
     while (<$in>) {
     # For each line of the input file:
@@ -35,6 +36,9 @@ sub cstag {
             # Identify a list of classifications in this column.
 
             foreach my $cs (@csseg) {
+                $cs = $prefix . $cs;
+                # Apply the prefix (if any) to the segment.
+
                 die "classification does not begin with a UID and delimiter: $cs"
                     unless $cs =~ /^[a-z]{3}-\d{3}./;
 

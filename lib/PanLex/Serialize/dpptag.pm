@@ -2,6 +2,8 @@
 # Arguments:
 #   cols:   array of columns containing denotation properties.
 #   delim:  inter-property delimiter, or '' if none. default ''.
+#   prefix: string to prefix to each property before parsing, or '' if none.
+#       default ''.
 
 package PanLex::Serialize::mpptag;
 use strict;
