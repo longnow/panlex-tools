@@ -8,7 +8,6 @@ use warnings 'FATAL', 'all';
 use utf8;
 use parent 'Exporter';
 use PanLex::Validation;
-use PanLex::Serialize::replace;
 use PanLex::Serialize::mpptag;
 
 our @EXPORT = qw/mitag/;
@@ -28,15 +27,7 @@ sub mitag {
 
     validate_col($micol);    
 
-    my $temp;
-
-    open my $fh, '>:encoding(utf8)', \$temp or die $!;
-    replace($in, $fh, { cols => [$micol], from => '^', to => 'art-301⁋identifier⁋' });
-    close $fh;
-
-    open $fh, '<:encoding(utf8)', \$temp or die $!;
-    mpptag($fh, $out, { cols => [$micol] });
-    close $fh;
+    mpptag($in, $out, { cols => [$micol], prefix => 'art-301⁋identifier⁋' });
 }
 
 1;

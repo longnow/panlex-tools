@@ -9,7 +9,6 @@ use warnings 'FATAL', 'all';
 use utf8;
 use parent 'Exporter';
 use PanLex::Validation;
-use PanLex::Serialize::replace;
 use PanLex::Serialize::mcstag;
 
 our @EXPORT = qw/dmtag/;
@@ -31,15 +30,7 @@ sub dmtag {
         validate_cols(\@dmcol);
     }
     
-    my $temp;
-
-    open my $fh, '>:encoding(utf8)', \$temp or die $!;
-    replace($in, $fh, { cols => \@dmcol, from => "^|$delim\\K", to => 'art-300⁋HasContext⁋' });
-    close $fh;
-
-    open $fh, '<:encoding(utf8)', \$temp or die $!;
-    mcstag($fh, $out, { cols => \@dmcol, delim => $delim });
-    close $fh;
+    mcstag($in, $out, { cols => \@dmcol, delim => $delim, prefix => 'art-300⁋HasContext⁋' });
 }
 
 1;
