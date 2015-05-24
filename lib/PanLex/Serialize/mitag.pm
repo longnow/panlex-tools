@@ -9,8 +9,6 @@ use warnings 'FATAL', 'all';
 use utf8;
 use parent 'Exporter';
 use PanLex::Validation;
-use PanLex::Serialize::replace;
-use PanLex::Serialize::mpptag;
 
 our @EXPORT = qw/mitag/;
 
@@ -29,16 +27,25 @@ sub mitag {
     }
 
     validate_col($micol);    
+    
+    while (<$in>) {
+    # For each line of the input file:
 
-    my $temp;
+        chomp;
+        # Delete its trailing newline.
 
-    open my $fh, '>:encoding(utf8)', \$temp or die $!;
-    replace($in, $fh, { cols => [$micol], from => '^', to => 'art-301⁋identifier⁋' });
-    close $fh;
+        my @col = split /\t/, $_, -1;
+        # Identify its columns.
 
-    open $fh, '<:encoding(utf8)', \$temp or die $!;
-    mpptag($fh, $out, { cols => [$micol] });
-    close $fh;
+        die "column $micol not present in line" unless defined $col[$micol];
+
+        $col[$micol] = "$mitag$col[$micol]" if length $col[$micol];
+        # Prefix a meaning-identifier tag to the meaning-identifier column's content,
+        # if not blank.
+
+        print $out join("\t", @col), "\n";
+        # Output the line.
+    }    
 }
 
 1;
