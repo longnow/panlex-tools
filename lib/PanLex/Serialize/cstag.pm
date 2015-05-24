@@ -44,7 +44,6 @@ sub cstag {
                 my @seg = split /$delim2/, $cs;
 
                 die "invalid number of segments in classification: $cs" unless @seg >= 2 && @seg <= 4;
-                validate_uid($seg[0]);
 
                 if (@seg == 2) {
                     $cs = "⫷${tag}1:$seg[0]⫸$seg[1]";

@@ -44,7 +44,6 @@ sub pptag {
                 my @seg = split /$delim2/, $pp;
 
                 die "invalid number of segments in property: $pp" unless @seg == 3;
-                validate_uid($seg[0]);
 
                 $pp = "⫷$tag:$seg[0]⫸$seg[1]⫷$tag⫸$seg[2]";
                 # Tag the property.
