@@ -73,7 +73,7 @@ sub normalize {
 
     my ($log_fh, $log_obj, $json);
     if ($log) {
-        open $log_fh, '>:utf8', 'normalize.log' or die $!;
+        open $log_fh, '>:encoding(utf8)', 'normalize.log' or die $!;
         $json = JSON->new->pretty->canonical;
     }
 

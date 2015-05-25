@@ -45,12 +45,12 @@ sub normalizedf {
         $exptag     = $args->{exptag} // '⫷exp⫸';
         $tagre      = $args->{tagre} // '⫷[a-z:]+⫸';
     } else {
-        die "invalid argument: you must pass a hashref";
+        die "invalid arguments: you must pass a hashref";
     }
 
     my ($log_fh, $log_obj, $json);
     if ($log) {
-        open $log_fh, '>:utf8', 'normalizedf.log' or die $!;
+        open $log_fh, '>:encoding(utf8)', 'normalizedf.log' or die $!;
         $json = JSON->new->pretty->canonical;
     }
 
