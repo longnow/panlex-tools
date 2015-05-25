@@ -19,7 +19,7 @@ sub replace {
     
     validate_cols($args->{cols});
 
-    my @retagcol    = @{$args->{cols}};
+    my @replacecol  = @{$args->{cols}};
     my $from        = $args->{from};
     my $to          = $args->{to};
 
@@ -32,7 +32,7 @@ sub replace {
         my @col = split /\t/, $_, -1;
         # Identify its columns.
 
-        foreach my $i (@retagcol) {
+        foreach my $i (@replacecol) {
         # For each column to be processed:
 
             die "column $i not present in line" unless defined $col[$i];
