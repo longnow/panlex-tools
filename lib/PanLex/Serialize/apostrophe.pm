@@ -19,18 +19,23 @@ sub apostrophe {
     my $out = shift;
     my $args = ref $_[0] ? $_[0] : \@_;
 
-    my ($col_uid, %apos);
+    my @specs;
     
     if (ref $args eq 'HASH') {
         validate_specs($args->{specs});
+        @specs = @{$args->specs};
         $col_uid = parse_specs($args->{specs});
     } else {
         validate_specs($args);
-        $col_uid = parse_specs($args);
+        @specs = @$args;
     }
+
+    my $col_uid = parse_specs($args);
     
     my $result = panlex_query_all('/lv', { uid => [values %$col_uid], include => 'cp' });
     
+    my %apos;
+
     # Add data on the best apostrophe, making it U+02bc for varieties without any data on
     # editor-approved characters.
     foreach my $lv (@{$result->{result}}) {

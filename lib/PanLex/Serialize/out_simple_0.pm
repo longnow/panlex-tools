@@ -10,6 +10,7 @@ use warnings 'FATAL', 'all';
 use utf8;
 use parent 'Exporter';
 use PanLex::Validation;
+use PanLex::Serialize::Util;
 
 our @EXPORT = qw/out_simple_0/;
 
@@ -33,17 +34,9 @@ sub out_simple_0 {
     print $out ".\n0\n";
     # Output the file header.
 
-    my (%seen, %col);
+    my $col_uid = parse_specs(\@specs);
 
-    foreach my $i (@specs) {
-    # For each expression column:
-
-        my @col = split /:/, $i;
-        # Identify its specification parts.
-
-        $col{$col[0]} = $col[1];
-        # Add its index and variety UID to the table of expression columns.
-    }
+    my %seen;
 
     while (<$in>) {
     # For each line of the input file:
@@ -57,10 +50,10 @@ sub out_simple_0 {
         for (my $i = 0; $i < @col; $i++) {
         # For each of them:
 
-            if (exists $col{$i}) {
+            if (exists $col_uid{$i}) {
                 # If it is an expression column:
 
-                $col[$i] =~ s/⫷ex⫸/⫷ex:$col{$i}⫸/g;
+                $col[$i] =~ s/⫷ex⫸/⫷ex:$col_uid{$i}⫸/g;
                 # Insert the column's variety UID into each expression tag in it.
             }
         }
