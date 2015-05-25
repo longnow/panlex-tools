@@ -56,47 +56,31 @@ sub wcretag {
             while ($col[$i] =~ /$pretag(.+?)$posttag/) {
             # As long as any remains unretagged:
 
+                my $replacement;
+
                 if (exists $wc->{$1}) {
                 # If the first one's content is convertible:
 
                     my @wcmd = @{$wc->{$1}};
                     # Identify the wc and the md values of its conversion.
 
-                    if (@wcmd == 1) {
-                    # If there is no md value:
+                    $replacement .= "$wctag$wcmd[0]" if length $wcmd[0];
+                    # Identify the tagged wc value, if any.
 
-                        $col[$i] =~ s/$pretag.+?$posttag/$wctag$wcmd[0]/;
-                        # Retag the wc.
-                    }
+                    $replacement .= "$mdtag$wcmd[1]" if @wcmd == 2;
+                    # Identify the tagged md value, if any.
 
-                    else {
-                    # Otherwise, i.e. if there is an md value:
-
-                        if (length $wcmd[0]) {
-                        # If there is a wc value:
-
-                            $col[$i] =~ s/$pretag.+?$posttag/$wctag$wcmd[0]$mdtag$wcmd[1]/;
-                            # Retag the wc.
-                        }
-
-                        else {
-                        # Otherwise, i.e. if there is no wc value:
-
-                            $col[$i] =~ s/$pretag.+?$posttag/$mdtag$wcmd[1]/;
-                            # Retag the wc.
-                        }
-                    }
                 }
 
                 else {
                 # Otherwise, i.e. if the first one's content is not convertible:
 
-                    my $md = $1;
-                    # Identify it.
+                    $replacement = "$mdtag$1";
+                    # Identify the tagged md value.
 
-                    $col[$i] =~ s/$pretag.+?$posttag/$mdtag$md/;
-                    # Retag the wc.
                 }
+
+                $col[$i] =~ s/$pretag.+?$posttag/$replacement/;
             }
         }
 
