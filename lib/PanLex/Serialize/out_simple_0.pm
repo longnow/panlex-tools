@@ -50,10 +50,10 @@ sub out_simple_0 {
         for (my $i = 0; $i < @col; $i++) {
         # For each of them:
 
-            if (exists $col_uid{$i}) {
+            if (exists $col_uid->{$i}) {
                 # If it is an expression column:
 
-                $col[$i] =~ s/⫷ex⫸/⫷ex:$col_uid{$i}⫸/g;
+                $col[$i] =~ s/⫷ex⫸/⫷ex:$col_uid->{$i}⫸/g;
                 # Insert the column's variety UID into each expression tag in it.
             }
         }

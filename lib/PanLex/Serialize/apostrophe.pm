@@ -23,14 +23,13 @@ sub apostrophe {
     
     if (ref $args eq 'HASH') {
         validate_specs($args->{specs});
-        @specs = @{$args->specs};
-        $col_uid = parse_specs($args->{specs});
+        @specs = @{$args->{specs}};
     } else {
-        validate_specs($args);
         @specs = @$args;
+        validate_specs(\@specs);
     }
 
-    my $col_uid = parse_specs($args);
+    my $col_uid = parse_specs(\@specs);
     
     my $result = panlex_query_all('/lv', { uid => [values %$col_uid], include => 'cp' });
     
