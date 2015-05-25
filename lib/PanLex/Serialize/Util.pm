@@ -5,7 +5,7 @@ use utf8;
 use parent 'Exporter';
 use File::Spec::Functions;
 
-our @EXPORT = qw/load_wc/;
+our @EXPORT = qw/load_wc parse_specs/;
 
 sub load_wc {
     my $wctxt = -e 'wc.txt' ? 'wc.txt' : catfile($ENV{PANLEX_TOOLDIR}, 'serialize', 'data', 'wc.txt');
@@ -31,6 +31,19 @@ sub load_wc {
     close $fh;
 
     return $wc;
+}
+
+sub parse_specs {
+    my ($specs) = @_;
+
+    my %col_uid;
+
+    foreach my $spec (@$specs) {
+        my ($col, $uid) = split /:/, $spec;
+        $col_uid{$col} = $uid;
+    }
+
+    return \%col_uid;
 }
 
 1;

@@ -35,7 +35,7 @@ sub wcshift {
     } else {
         ($wccol, $pretag, $posttag, $wctag, $extag, $postre) = @$args;
     }
-        
+    
     validate_col($wccol);
 
     while (<$in>) {

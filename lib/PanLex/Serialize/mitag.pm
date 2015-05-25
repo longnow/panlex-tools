@@ -26,6 +26,15 @@ sub mitag {
     }
 
     validate_col($micol);    
+    
+    while (<$in>) {
+    # For each line of the input file:
+
+        chomp;
+        # Delete its trailing newline.
+
+        my @col = split /\t/, $_, -1;
+        # Identify its columns.
 
     mpptag($in, $out, { cols => [$micol], prefix => 'art-301⁋identifier⁋' });
 }
