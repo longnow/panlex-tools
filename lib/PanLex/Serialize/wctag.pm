@@ -45,45 +45,31 @@ sub wctag {
 
         die "column $wccol not present in line" unless defined $col[$wccol];
 
+        my $replacement = '';
+
         if (exists $wc->{$col[$wccol]}) {
         # If the content of the column containing word classifications is a convertible one:
 
             my @wcmd = @{$wc->{$col[$wccol]}};
             # Identify the wc and the md values of its conversion.
 
-            if (@wcmd == 1) {
-            # If there is no md value:
+            $replacement .= "$wctag$wcmd[0]" if length $wcmd[0];
+            # Identify the tagged wc value, if any.
 
-                $col[$wccol] = "$wctag$wcmd[0]";
-                # Convert the wc to a tagged wc.
-            }
+            $replacement .= "$mdtag$wcmd[1]" if @wcmd == 2;
+            # Identify the tagged md value, if any.
 
-            elsif (@wcmd == 2) {
-            # Otherwise, if there is an md value:
-
-                if (length $wcmd[0]) {
-                # If there is a wc value:
-
-                    $col[$wccol] = "$wctag$wcmd[0]$mdtag$wcmd[1]";
-                    # Convert the wc to a wc and an md, each tagged.
-                }
-
-                else {
-                # Otherwise, i.e. if there is no wc value:
-
-                    $col[$wccol] = "$mdtag$wcmd[1]";
-                    # Convert the wc to a tagged md.
-                }
-            }
         }
 
         elsif (length $col[$wccol]) {
         # Otherwise, if the content of the column containing word classifications is
         # not blank:
 
-            $col[$wccol] = "$mdtag$col[$wccol]";
+            $replacement = "$mdtag$col[$wccol]";
             # Convert the content to a tagged md.
         }
+
+        $col[$wccol] = $replacement;
 
         print $out join("\t", @col), "\n";
         # Output the line.

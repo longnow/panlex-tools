@@ -39,8 +39,8 @@ sub apostrophe {
     # editor-approved characters.
     foreach my $lv (@{$result->{result}}) {
         my $best;
-        if (@{$lv->{cp}}) {
 
+        if (@{$lv->{cp}}) {
             my ($hpg, $slt, $mtc, $rq);
 
             foreach my $cp (@{$lv->{cp}}) {
@@ -68,59 +68,34 @@ sub apostrophe {
         $apos{$lv->{uid}} = $best || "\x{02bc}";
     }
 
-    my %noncon;
+    my @convertible_col = keys %$col_uid;
+
+    die "could not find an apostrophe conversion for all language varieties"
+        unless @convertible_col == keys %apos;
 
     while (<$in>) {
     # For each line of the input file:
         
-        if (index($_, "'") > -1) {
-        # If it contains any apostrophes:
+        chomp;
+        # Remove its trailing newline.
 
-            my @col = split /\t/, $_, -1;
-            # Identify its columns.
+        my @col = split /\t/, $_, -1;
+        # Identify its columns.
 
-            foreach my $i (keys %$col_uid) {
-            # For each column to be processed:
+        foreach my $i (@convertible_col) {
+        # For each column to be processed:
 
-                die "column $i not present in line" unless defined $col[$i];
+            die "column $i not present in line" unless defined $col[$i];
 
-                if (index($col[$i], "'") > -1) {
-                # If it contains any apostrophes:
+            $col[$i] =~ s/'/$apos{$col_uid->{$i}}/g;
+            # Convert any apostrophes.
 
-                    if (exists $apos{$col_uid->{$i}}) {
-                    # If its variety's apostrophes are convertible:
-
-                        $col[$i] =~ s/'/$apos{$col_uid->{$i}}/g;
-                        # Convert them.
-                    }
-
-                    else {
-                    # Otherwise, i.e. if its variety's apostrophes are not convertible:
-
-                        $noncon{$i} = '';
-                        # Add the column to the table of columns containing nonconvertible
-                        # apostrophes, if not already in it.
-                    }
-                }
-            }
-
-            $_ = join "\t", @col;
-            # Save the modified line.
         }
 
-        print $out $_;
-        # Output the line.
+        print $out join("\t", @col), "\n";
+        # Output the modified line.
     }
 
-    if (keys %noncon) {
-    # If any column contained nonconvertible apostrophes:
-
-        warn (
-            'Could not convert apostrophes found in column(s) '
-            . join(', ', sort { $a <=> $b } keys %noncon) . "\n"
-        );
-        # Report them.
-    }
 }
 
 1;
