@@ -108,7 +108,7 @@ sub out_full_0 {
             # tags in it.
 
             $rec =~ s/⫷(?:[dm]cs):($UID)⫸/\n$1\n/g;
-            # Convert all remaining classification  tags in it.
+            # Convert all remaining classification tags in it.
 
             $rec =~ s/⫷(?:[dm]pp)⫸/\n/g;
             # Convert all remaining property tags in it.
