@@ -10,6 +10,7 @@ use utf8;
 use parent 'Exporter';
 use PanLex::Client;
 use PanLex::Validation;
+use PanLex::Serialize::Util;
 
 our @EXPORT = qw/apostrophe/;
 
@@ -18,26 +19,17 @@ sub apostrophe {
     my $out = shift;
     my $args = ref $_[0] ? $_[0] : \@_;
 
-    my @specs;
+    my ($col_uid, %apos);
     
     if (ref $args eq 'HASH') {
         validate_specs($args->{specs});
-        @specs = @{$args->{specs}};
+        $col_uid = parse_specs($args->{specs});
     } else {
-        @specs = @$args;
-        validate_specs(\@specs);
-    }
-
-    my (@pcol, %col_uid, %apos);
-    
-    foreach my $spec (@specs) {
-        my ($col, $uid) = split /:/, $spec;
-        $col = int($col);
-        push @pcol, $col;
-        $col_uid{$col} = $uid;
+        validate_specs($args);
+        $col_uid = parse_specs($args);
     }
     
-    my $result = panlex_query_all('/lv', { uid => [values %col_uid], include => 'cp' });
+    my $result = panlex_query_all('/lv', { uid => [values %$col_uid], include => 'cp' });
     
     # Add data on the best apostrophe, making it U+02bc for varieties without any data on
     # editor-approved characters.
@@ -83,7 +75,7 @@ sub apostrophe {
             my @col = split /\t/, $_, -1;
             # Identify its columns.
 
-            foreach my $i (@pcol) {
+            foreach my $i (keys %$col_uid) {
             # For each column to be processed:
 
                 die "column $i not present in line" unless defined $col[$i];
@@ -91,10 +83,10 @@ sub apostrophe {
                 if (index($col[$i], "'") > -1) {
                 # If it contains any apostrophes:
 
-                    if (exists $apos{$col_uid{$i}}) {
+                    if (exists $apos{$col_uid->{$i}}) {
                     # If its variety's apostrophes are convertible:
 
-                        $col[$i] =~ s/'/$apos{$col_uid{$i}}/g;
+                        $col[$i] =~ s/'/$apos{$col_uid->{$i}}/g;
                         # Convert them.
                     }
 
