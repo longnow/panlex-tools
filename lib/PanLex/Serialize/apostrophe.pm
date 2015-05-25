@@ -39,8 +39,8 @@ sub apostrophe {
     # editor-approved characters.
     foreach my $lv (@{$result->{result}}) {
         my $best;
-        if (@{$lv->{cp}}) {
 
+        if (@{$lv->{cp}}) {
             my ($hpg, $slt, $mtc, $rq);
 
             foreach my $cp (@{$lv->{cp}}) {
