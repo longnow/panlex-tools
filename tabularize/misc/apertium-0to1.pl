@@ -23,7 +23,7 @@ use Mojo::DOM;
 
 #######################################################
 
-my $BASENAME = 'afr-nld-Trosterud';
+my $BASENAME = 'aaa-bbb-Author';
 # Identify the filename base.
 
 my $VERSION = 0;
