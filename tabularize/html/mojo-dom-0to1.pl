@@ -40,6 +40,8 @@ my $html = do { local $/; <$in> };
 my $dom = Mojo::DOM->new($html);
 # Create a Mojo::DOM object to query the HTML document.
 
+# CUSTOM CODE GOES HERE
+
 close $in;
 # Close the input file.
 

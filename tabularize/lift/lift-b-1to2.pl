@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 
-# tab-lift-1to2.pl
+# lift-1to2.pl
 # Finishes tabularizing a lift file.
 # Requires adaptation to the structure of each file.
 

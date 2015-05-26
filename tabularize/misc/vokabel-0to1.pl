@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 
-# tab-Vokabel-0to1.pl
+# Vokabel-0to1.pl
 # Tabularizes a Vokabeltrainer html file.
 
 use warnings 'FATAL', 'all';

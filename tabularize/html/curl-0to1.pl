@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 
-# tab-curl-0to1.pl
+# curl-0to1.pl
 # Tabularizes an html-curl file.
 # Requires adaptation to the structure of each file.
 

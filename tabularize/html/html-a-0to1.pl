@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 
-# tab-html-0to1.pl
+# html-0to1.pl
 # Tabularizes an html file.
 # Requires adaptation to the structure of each file.
 
