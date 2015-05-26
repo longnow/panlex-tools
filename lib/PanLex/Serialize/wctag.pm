@@ -4,6 +4,8 @@
 #   col:   column containing word classifications.
 #   wctag: word-classification tag. default '⫷wc⫸'.
 #   mdtag: metadatum tag. default '⫷md:gram⫸'.
+#   log:   set to 1 to log unconvertible word classes to wc.log, 0 otherwise.
+#            default: 0.
 
 package PanLex::Serialize::wctag;
 use strict;
@@ -20,19 +22,23 @@ sub wctag {
     my $out = shift;
     my $args = ref $_[0] ? $_[0] : \@_;
     
-    my ($wccol, $wctag, $mdtag);
+    my ($wccol, $wctag, $mdtag, $log);
     
     if (ref $args eq 'HASH') {
-        $wccol    = $args->{col};
-        $wctag    = $args->{wctag} // '⫷wc⫸';
-        $mdtag    = $args->{mdtag} // '⫷md:gram⫸';      
+        $wccol  = $args->{col};
+        $wctag  = $args->{wctag} // '⫷wc⫸';
+        $mdtag  = $args->{mdtag} // '⫷md:gram⫸';
+        $log    = $args->{log} // 0; 
     } else {
         ($wccol, $wctag, $mdtag) = @$args;
+        $log = 0;
     }
 
     validate_col($wccol);
     
     my $wc = load_wc();
+
+    my %notfound;
 
     while (<$in>) {
     # For each line of the input file:
@@ -67,13 +73,22 @@ sub wctag {
 
             $replacement = "$mdtag$col[$wccol]";
             # Convert the content to a tagged md.
+
+            $notfound{$col[$wccol]} = '';
+            # Mark the word class as not found.
         }
 
         $col[$wccol] = $replacement;
 
         print $out join("\t", @col), "\n";
         # Output the line.
-    }    
+    }
+
+    if ($log) {
+        open my $log_fh, '>:encoding(utf8)', 'wc.log' or die $!;
+        print $log_fh join("\n", sort keys %notfound), "\n";
+        close $log_fh;
+    }
 }
 
 1;

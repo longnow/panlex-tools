@@ -94,6 +94,8 @@ my @TOOLS = (
 #   col:   column containing word classifications.
 #   wctag: word-classification tag. default '⫷wc⫸'.
 #   mdtag: metadatum tag. default '⫷md:gram⫸'.
+#   log:   set to 1 to log unconvertible word classes to wc.log, 0 otherwise.
+#            default: 0.
 
 #'mdtag'        => { col => 2 },
 # Tags metadata in a tab-delimited source file.
