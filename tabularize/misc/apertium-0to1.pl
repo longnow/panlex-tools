@@ -17,9 +17,13 @@ binmode STDOUT, ':encoding(utf8)';
 binmode STDERR, ':encoding(utf8)';
 # make STDOUT and STDERR print in UTF-8.
 
+use lib "$ENV{PANLEX_TOOLDIR}/lib";
+use PanLex::Util;
+use Mojo::DOM;
+
 #######################################################
 
-my $BASENAME = 'aaa-bbb-Author';
+my $BASENAME = 'afr-nld-Trosterud';
 # Identify the filename base.
 
 my $VERSION = 0;
@@ -33,33 +37,32 @@ open my $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt') or di
 open my $in, '<:encoding(utf8)', "$BASENAME-$VERSION.dix" or die $!;
 # Open the input file for reading.
 
-my %st;
+my $xml = do { local $/; <$in> };
+# Make the line-break variable temporarily undefined, then read 1 line (which is
+# therefore the whole file) from the input file, and identify it as $xml.
 
-while (<$in>) {
-# For each line of the input file:
+my $dom = Mojo::DOM->new($xml);
+# Create a Mojo::DOM object to query the document.
 
-    s#<b/># #g;
-    # Replace all “b” tags in it with spaces.
+my %seen;
 
-    s#</?g>##g;
-    # Delete all “g” tags in it.
+foreach my $entry ($dom->find('section e p')->each) {
+    my @col;
 
-    if (m#^ +<e><p><l>([^!-@].*?)<s n="([^"]+)"/>.*?</l><r>(.+?)<s n="([^"]+)"/>.*?</r></p></e>#) {
-    # If it is an entry:
+    foreach my $side (qw/l r/) {
+        my $el = $entry->at($side);
+        push @col, $el->text; # the side's expression
 
-        unless (exists $st{"$1•$2•$3•$4"}) {
-        # If it isn't a duplicate:
-
-            $st{"$1•$2•$3•$4"} = '';
-            # Add it to the table of entries.
-
-            print $out "$1\t$2\t$3\t$4\n";
-            # Output its columns.
-
-        }
-
+        $el = $el->at('s'); # the side's wc (if any)
+        push @col, $el ? $el->attr('n') : ''; 
     }
 
+    my $line = join("\t", @col);
+
+    unless (exists $seen{$line}) {
+        $seen{$line} = '';
+        print $out $line, "\n";
+    }
 }
 
 close $in;
