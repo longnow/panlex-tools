@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 
-# tab-apertium-0to1.pl
+# apertium-0to1.pl
 # Tabularizes an Apertium .dix file, eliminating duplicate entries.
 # Outputs a 4-column table with columns ex, wc, ex, wc.
 
