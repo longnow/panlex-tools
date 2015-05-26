@@ -72,6 +72,7 @@ expr.	misc:expr.
 f.v.	verb:f.v./frase di verbo
 frac	detr:frac
 ideo.	misc:ideo.
+ij	ijec
 ijec	ijec
 inj	ijec
 INSTR	advb:INSTR
@@ -224,6 +225,7 @@ v.ref.	verb:v.ref.
 v.rif.	verb:v.rif./verbo riflessivo
 v.t.	verb:v.t.
 va.	auxv
+vaux	auxv
 VAux.	auxv
 vbhaver	verb:vbhaver
 vblex	verb
