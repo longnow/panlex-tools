@@ -2,6 +2,7 @@
 # Arguments:
 #   col:   column containing metadata.
 #   mdtag: metadatum tag. default '⫷md:gram⫸'.
+#   delim: metadatum delimiter, or '' if none. default ''.
 
 package PanLex::Serialize::mdtag;
 use strict;
@@ -9,7 +10,6 @@ use warnings 'FATAL', 'all';
 use utf8;
 use parent 'Exporter';
 use PanLex::Validation;
-use PanLex::Serialize::replace;
 use PanLex::Serialize::dpptag;
 
 our @EXPORT = qw/mdtag/;
@@ -22,13 +22,15 @@ sub mdtag {
     my $out = shift;
     my $args = ref $_[0] ? $_[0] : \@_;
 
-    my ($mdcol, $mdtag);
+    my ($mdcol, $mdtag, $delim);
     
     if (ref $args eq 'HASH') {
         $mdcol    = $args->{col};
-        $mdtag    = $args->{mdtag} // '⫷md:gram⫸';      
+        $mdtag    = $args->{mdtag} // '⫷md:gram⫸';
+        $delim    = $args->{delim} // '';
     } else {
         ($mdcol, $mdtag) = @$args;
+        $delim = '';
     }
     validate_col($mdcol);
 
@@ -41,15 +43,7 @@ sub mdtag {
         die "don't know how to convert old mdtag: $mdtag";
     }
 
-    my $temp;
-
-    open my $fh, '>:encoding(utf8)', \$temp or die $!;
-    replace($in, $fh, { cols => [$mdcol], from => '^', to => $var });
-    close $fh;
-
-    open $fh, '<:encoding(utf8)', \$temp or die $!;
-    dpptag($fh, $out, { cols => [$mdcol] });
-    close $fh;
+    dpptag($fh, $out, { cols => [$mdcol], delim => $delim, prefix => $var });
 }
 
 1;
