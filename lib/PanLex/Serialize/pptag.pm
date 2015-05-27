@@ -6,6 +6,7 @@ use parent 'Exporter';
 use PanLex::Validation;
 
 our @EXPORT = qw/pptag/;
+our @EXPORT_OK = qw/pptag_item/;
 
 sub pptag {
     my ($in, $out, $args) = @_;
@@ -39,17 +40,7 @@ sub pptag {
                 $pp = $prefix . $pp;
                 # Apply the prefix (if any) to the segment.
 
-                die "property does not begin with a UID and delimiter: $pp"
-                    unless $pp =~ /^[a-z]{3}-\d{3}./;
-
-                my $delim2 = substr($pp, 7, 1);
-                # Identify the within-property delimiter as the first character following the UID.
-
-                my @seg = split /$delim2/, $pp;
-
-                die "invalid number of segments in property: $pp" unless @seg == 3;
-
-                $pp = "⫷$tag:$seg[0]⫸$seg[1]⫷$tag⫸$seg[2]";
+                $pp = pptag_item($tag, $pp);
                 # Tag the property.
 
             }
@@ -62,6 +53,24 @@ sub pptag {
         print $out join("\t", @col), "\n";
         # Output the line.
     }    
+}
+
+sub pptag_item {
+    my ($tag, $pp) = @_;
+
+    die "property does not begin with a UID and delimiter: $pp"
+        unless $pp =~ /^[a-z]{3}-\d{3}./;
+
+    my $delim2 = substr($pp, 7, 1);
+    # Identify the within-property delimiter as the first character following the UID.
+
+    my @seg = split /$delim2/, $pp;
+
+    die "invalid number of segments in property: $pp" unless @seg == 3;
+
+    $pp = "⫷$tag:$seg[0]⫸$seg[1]⫷$tag⫸$seg[2]";
+
+    return $pp;    
 }
 
 1;
