@@ -57,7 +57,7 @@ foreach my $entry ($dom->find('section e p')->each) {
 
         if (@wcmd) {
             push @col, shift @wcmd;
-            push @col, join('; ', @wcmd);
+            push @col, join('‣', @wcmd);
         } else {
             push @col, '', '';            
         }

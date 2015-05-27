@@ -2,6 +2,7 @@
 # Arguments:
 #   col:   column containing metadata.
 #   mdtag: metadatum tag. default '⫷md:gram⫸'.
+#   delim: metadatum delimiter, or '' if none. default ''.
 
 package PanLex::Serialize::mdtag;
 use strict;
@@ -17,13 +18,15 @@ sub mdtag {
     my $out = shift;
     my $args = ref $_[0] ? $_[0] : \@_;
 
-    my ($mdcol, $mdtag);
+    my ($mdcol, $mdtag, $delim);
     
     if (ref $args eq 'HASH') {
         $mdcol    = $args->{col};
-        $mdtag    = $args->{mdtag} // '⫷md:gram⫸';      
+        $mdtag    = $args->{mdtag} // '⫷md:gram⫸';
+        $delim    = $args->{delim} // '';
     } else {
         ($mdcol, $mdtag) = @$args;
+        $delim = '';
     }
     validate_col($mdcol);
 
@@ -40,8 +43,21 @@ sub mdtag {
         # If the specified column does not exist or has an undefined value, quit and
         # report the error.
 
-        $col[$mdcol] = "$mdtag$col[$mdcol]" if length $col[$mdcol];
-        # Prefix a metadatum tag to the metadatum column's content, if not blank.
+        if (length $col[$mdcol]) {
+        # If the column is not blank:
+
+            if ($delim eq '') {
+            # If there is no delimiter:
+
+                $col[$mdcol] = "$mdtag$col[$mdcol]";
+                # Prefix a metadatum tag to the column's content.
+            } else {
+            # Otherwise, i.e. if there is a delimiter:
+
+                $col[$mdcol] = join('', map { "$mdtag$_" } split /$delim/, $col[$mdcol]);
+                # Prefix a metadatum tag to each item in the column.
+            }
+        }
 
         print $out join("\t", @col), "\n";
         # Output the line.

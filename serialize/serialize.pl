@@ -102,6 +102,7 @@ my @TOOLS = (
 # Arguments:
 #   col:   column containing metadata.
 #   mdtag: metadatum tag. default '⫷md:gram⫸'.
+#   delim: metadatum delimiter, or '' if none. default ''.
 
 #'dmtag'        => { cols => [2, 3] },
 # Tags domain expressions in a tab-delimited source file.
