@@ -11,6 +11,7 @@ use File::Spec::Functions qw/catfile curdir rel2abs/;
 use Scalar::Util 'blessed';
 
 use PanLex::Serialize::apostrophe;
+use PanLex::Serialize::csppmap;
 use PanLex::Serialize::dcstag;
 use PanLex::Serialize::dftag;
 use PanLex::Serialize::dmtag;
