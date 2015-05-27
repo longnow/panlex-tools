@@ -64,6 +64,7 @@ Determiner	detr
 detr	detr
 disc	misc:disc
 en	misc:en
+enc	misc:enc
 epn	pron:epn
 exc	ijec:exc
 excl.	ijec:excl.

@@ -2,7 +2,7 @@
 
 # apertium-0to1.pl
 # Tabularizes an Apertium .dix file, eliminating duplicate entries.
-# Outputs a 4-column table with columns ex, wc, ex, wc.
+# Outputs a 6-column table with columns ex, wc, md, ex, wc, md.
 
 use warnings 'FATAL', 'all';
 # Make every warning fatal.
@@ -53,8 +53,14 @@ foreach my $entry ($dom->find('section e p')->each) {
         my $el = $entry->at($side);
         push @col, $el->text; # the side's expression
 
-        $el = $el->at('s'); # the side's wc (if any)
-        push @col, $el ? $el->attr('n') : ''; 
+        my @wcmd = $el->find('s')->attr('n')->each; # the side's wc and md
+
+        if (@wcmd) {
+            push @col, shift @wcmd;
+            push @col, join('; ', @wcmd);
+        } else {
+            push @col, '', '';            
+        }
     }
 
     my $line = join("\t", @col);
