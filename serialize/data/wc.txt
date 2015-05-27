@@ -63,6 +63,7 @@ Determ.	detr
 Determiner	detr
 detr	detr
 disc	misc:disc
+en	misc:en
 epn	pron:epn
 exc	ijec:exc
 excl.	ijec:excl.
@@ -128,12 +129,14 @@ Noun	noun
 NOUN	noun
 nouns	noun
 Nouns	noun
+np	name
 nprop.	name
 ntr	verb:ntr
 num	detr:num
 Num	detr:Num
 NUM	detr:NUM
 num.	detr:num.
+numeral	detr:numeral
 Numeral	detr:Numeral
 ord	detr:ord
 P	prep
