@@ -63,6 +63,8 @@ foreach my $entry ($dom->find('section e p')->each) {
         }
     }
 
+    next if $col[0] eq 'prpers' && $col[3] eq 'prpers'; # these are not real entries
+
     my $line = join("\t", @col);
 
     unless (exists $seen{$line}) {
