@@ -53,7 +53,7 @@ foreach my $entry ($dom->find('section e p')->each) {
         my $el = $entry->at($side);
         push @col, $el->text; # the side's expression
 
-        my @wcmd = $el->find('s')->attr('n')->each; # the side's wc and md
+        my @wcmd = $el->find('s')->map(attr => 'n')->each; # the side's wc and md
 
         if (@wcmd) {
             push @col, shift @wcmd;
