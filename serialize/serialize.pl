@@ -155,7 +155,7 @@ my @TOOLS = (
 #   exptag:   pre-normalized expression tag. default '⫷exp⫸'.
 #   tagre:    regex identifying any tag. default '⫷[a-z:]+⫸'.
 
-#'replace'      => { cols => [1, 2], from => '⫷fail⫸', to => '⫷ex⫸' },
+#'replace'      => { cols => [1], from => '⫷fail⫸', to => '⫷ex⫸' },
 # Replaces strings in a tab-delimited source file.
 # Arguments:
 #   cols:     array of columns to be processed.
