@@ -61,10 +61,10 @@ sub pptag_item {
     die "property does not begin with a UID and delimiter: $pp"
         unless $pp =~ /^[a-z]{3}-\d{3}./;
 
-    my $delim2 = substr($pp, 7, 1);
+    my $delim = substr($pp, 7, 1);
     # Identify the within-property delimiter as the first character following the UID.
 
-    my @seg = split /$delim2/, $pp;
+    my @seg = split /$delim/, $pp;
 
     die "invalid number of segments in property: $pp" unless @seg == 3;
 

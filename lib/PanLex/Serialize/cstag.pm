@@ -60,10 +60,10 @@ sub cstag_item {
     die "classification does not begin with a UID and delimiter: $cs"
         unless $cs =~ /^[a-z]{3}-\d{3}./;
 
-    my $delim2 = substr($cs, 7, 1);
+    my $delim = substr($cs, 7, 1);
     # Identify the within-classification delimiter as the first character following the UID.
 
-    my @seg = split /$delim2/, $cs;
+    my @seg = split /$delim/, $cs;
 
     die "invalid number of segments in classification: $cs" unless @seg >= 2 && @seg <= 4;
 
