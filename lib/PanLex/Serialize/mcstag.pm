@@ -1,7 +1,7 @@
 # Tags meaning classifications.
 # Arguments:
 #   cols:   array of columns containing meaning classifications.
-#   delim:  inter-classification delimiter, or '' if none. default ''.
+#   delim:  inter-classification delimiter, or '' if none. default '‣'.
 #   prefix: string to prefix to each classification before parsing, or '' if none.
 #       default ''.
 

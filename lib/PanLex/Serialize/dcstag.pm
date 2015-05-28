@@ -1,7 +1,7 @@
 # Tags denotation classifications.
 # Arguments:
 #   cols:   array of columns containing denotation classifications.
-#   delim:  inter-classification delimiter, or '' if none. default ''.
+#   delim:  inter-classification delimiter, or '' if none. default '‣'.
 #   prefix: string to prefix to each classification before parsing, or '' if none.
 #       default ''.
 

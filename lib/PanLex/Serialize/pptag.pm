@@ -15,7 +15,7 @@ sub pptag {
 
     my @ppcol   = @{$args->{cols}};
     my $tag     = $args->{tag};
-    my $delim   = $args->{delim} // '';
+    my $delim   = $args->{delim} // '‣';
     my $prefix  = $args->{prefix} // '';
     
     while (<$in>) {

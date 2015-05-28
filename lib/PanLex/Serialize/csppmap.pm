@@ -1,7 +1,7 @@
 # Converts text to classifications and properties based on a mapping file.
 # Arguments:
 #   cols:   array of columns containing data to be mapped.
-#   file:   name of the mapping file. default ''.
+#   file:   name of the mapping file. default 'csppmap.txt'.
 #   delim:  inter-classification/property delimiter in file. default '‣'.
 #   log:    set to 1 to log unconvertible items to csppmap.log, 0 otherwise.
 #               default: 0.
@@ -24,7 +24,7 @@ sub csppmap {
     validate_cols($args->{cols});
 
     my @csppmapcol  = @{$args->{cols}};
-    my $file        = $args->{file} // '';
+    my $file        = $args->{file} // 'csppmap.txt';
     my $delim       = $args->{delim} // '‣';
     my $log         = $args->{log} // 0;
 
