@@ -213,6 +213,7 @@ PANLEX_ARCHIVE_USERNAME     username for PanLex source archive
 PANLEX_ARCHIVE_PASSWORD     password for PanLex source archive
 PANLEX_ARCHIVE_NAME         full name of PanLex editor
 PANLEX_ARCHIVE_EMAIL        email of PanLex editor
+
 EOF
 }
 
