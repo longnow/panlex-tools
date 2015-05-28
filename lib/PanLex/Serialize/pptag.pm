@@ -42,7 +42,6 @@ sub pptag {
 
                 $pp = pptag_item($tag, $pp);
                 # Tag the property.
-
             }
 
             $col[$i] = join '', @ppseg;
@@ -52,7 +51,7 @@ sub pptag {
 
         print $out join("\t", @col), "\n";
         # Output the line.
-    }    
+    }
 }
 
 sub pptag_item {
@@ -68,9 +67,7 @@ sub pptag_item {
 
     die "invalid number of segments in property: $pp" unless @seg == 3;
 
-    $pp = "⫷$tag:$seg[0]⫸$seg[1]⫷$tag⫸$seg[2]";
-
-    return $pp;    
+    return "⫷$tag:$seg[0]⫸$seg[1]⫷$tag⫸$seg[2]";
 }
 
 1;

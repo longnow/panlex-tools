@@ -68,15 +68,13 @@ sub cstag_item {
     die "invalid number of segments in classification: $cs" unless @seg >= 2 && @seg <= 4;
 
     if (@seg == 2) {
-        $cs = "⫷${tag}1:$seg[0]⫸$seg[1]";
+        return "⫷${tag}1:$seg[0]⫸$seg[1]";
     } elsif (@seg == 3) {
-        $cs = "⫷${tag}2:$seg[0]⫸$seg[1]⫷${tag}⫸$seg[2]";
+        return "⫷${tag}2:$seg[0]⫸$seg[1]⫷${tag}⫸$seg[2]";
     } else {
         validate_uid($seg[2]);
-        $cs = "⫷${tag}2:$seg[0]⫸$seg[1]⫷${tag}:$seg[2]⫸$seg[3]";
+        return "⫷${tag}2:$seg[0]⫸$seg[1]⫷${tag}:$seg[2]⫸$seg[3]";
     }
-
-    return $cs;
 }
 
 1;

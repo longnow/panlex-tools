@@ -24,12 +24,9 @@ sub csppmap {
     validate_cols($args->{cols});
 
     my @csppmapcol  = @{$args->{cols}};
-    my $type        = $args->{type} // 'd';
     my $file        = $args->{file} // '';
     my $delim       = $args->{delim} // '‣';
     my $log         = $args->{log} // 0;
-
-    die "invalid type: $type" unless $type eq 'd' || $type eq 'm';
 
     $file = catfile($ENV{PANLEX_TOOLDIR}, 'serialize', 'data', $file)
         unless -e $file;
