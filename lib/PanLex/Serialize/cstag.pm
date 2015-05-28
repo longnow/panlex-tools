@@ -60,11 +60,11 @@ sub cstag {
             $col[$i] = join '', @csseg;
             # Identify the tagged column.
 
-        } 
+        }
 
         print $out join("\t", @col), "\n";
         # Output the line.
-    }    
+    }
 }
 
 1;
