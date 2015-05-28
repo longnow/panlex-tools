@@ -1,7 +1,6 @@
 #!/usr/bin/env perl
 use strict;
 use utf8;
-no strict 'refs';
 
 use File::Spec::Functions qw/catdir catfile curdir rel2abs splitdir/;
 use File::Copy qw/copy/;
@@ -10,16 +9,16 @@ use LWP::UserAgent;
 binmode STDOUT, ':encoding(utf8)';
 binmode STDERR, ':encoding(utf8)';
 
-my $SOURCE_ARCHIVE_URL = 'http://dev.panlex.org/sources/download';
+my $SOURCE_ARCHIVE_URL = 'http://dev.panlex.org/sources';
 
 usage(), exit(0) unless @ARGV;
 
 utf8::decode($_) for @ARGV;
 my $cmd = shift @ARGV;
-my $cmd_sub = 'cmd_'.$cmd;
+my $cmd_sub = __PACKAGE__->can('cmd_'.$cmd);
 
-if (exists &$cmd_sub) {
-    &$cmd_sub(@ARGV);
+if ($cmd_sub) {
+    $cmd_sub->(@ARGV);
 } else {
     print STDERR "Unknown command: $cmd\n\n";
     usage();
@@ -96,14 +95,14 @@ sub cmd_fetch {
     my $ua = LWP::UserAgent->new;
     $ua->credentials('dev.panlex.org:80', 'PanLex source browser', $ENV{PANLEX_ARCHIVE_USERNAME}, $ENV{PANLEX_ARCHIVE_PASSWORD});
 
-    my ($r, $url);
+    my $r;
 
     foreach my $dir (qw/ main incoming /) {
-        $url = "${SOURCE_ARCHIVE_URL}/${dir}/${source}.zip";
+        my $url = "${SOURCE_ARCHIVE_URL}/download/${dir}/${source}.zip";
         $r = $ua->get($url);
 
         if ($r->is_success) {
-            print "Fetched $url\n";
+            print STDERR "Fetched $url\n";
 
             my $zip = $r->filename;
             utf8::decode($zip);
@@ -127,6 +126,47 @@ sub cmd_fetch {
     }
 
     print STDERR "Could not fetch source $source: ", $r->code, ' ', $r->message, "\n";
+}
+
+sub cmd_upload {
+    my ($dirpath, @note) = @_;
+    my $note = join ' ', @note;
+
+    print(STDERR "You need to specify a valid source directory.\n"), return unless -d $dirpath;
+    print(STDERR "You need to specify a note.\n"), return if $note eq '';
+    check_env(qw/PANLEX_ARCHIVE_USERNAME PANLEX_ARCHIVE_PASSWORD PANLEX_ARCHIVE_NAME PANLEX_ARCHIVE_EMAIL/);
+
+    my @dirs = splitdir(rel2abs($dirpath));
+    my $dirname = pop @dirs; # name of the source dir
+    chdir catdir(@dirs); # change to the parent of the source dir to get the zip archive paths right
+
+    my $zippath = "/tmp/${dirname}.zip";
+    unlink $zippath if -e $zippath;
+
+    print STDERR "Creating $zippath ...\n";
+    system('zip', '-r', $zippath, $dirname);
+
+    my $ua = LWP::UserAgent->new;
+    $ua->credentials('dev.panlex.org:80', 'PanLex source browser', $ENV{PANLEX_ARCHIVE_USERNAME}, $ENV{PANLEX_ARCHIVE_PASSWORD});
+
+    print STDERR "Uploading zip file ...\n";
+    my $r = $ua->post("${SOURCE_ARCHIVE_URL}/upload", 
+        Content_Type => 'form-data',
+        Content => {
+            editor  => $ENV{PANLEX_ARCHIVE_NAME},
+            email   => $ENV{PANLEX_ARCHIVE_EMAIL},
+            notes   => $note,
+            zip     => [$zippath, undef],
+        }
+    );
+
+    if ($r->is_success) {
+        print STDERR "done.\n\n";
+    } else {
+        print STDERR "Could not upload zip file: ", $r->code, ' ', $r->message, "\n\n";
+    }
+
+    unlink $zippath;
 }
 
 sub cmd_server {
@@ -161,6 +201,8 @@ cp <tool>
     copy PanLex tool into the current directory
 fetch <source>
     fetch PanLex source from archive into the current directory and unzip it
+upload <dir> <note>
+    upload PanLex source directory to archive with note
 server <port>
     run DNode server
 
@@ -169,6 +211,8 @@ Environment variables:
 PANLEX_TOOLDIR              local directory containing panlex-tools
 PANLEX_ARCHIVE_USERNAME     username for PanLex source archive
 PANLEX_ARCHIVE_PASSWORD     password for PanLex source archive
+PANLEX_ARCHIVE_NAME         full name of PanLex editor
+PANLEX_ARCHIVE_EMAIL        email of PanLex editor
 EOF
 }
 
