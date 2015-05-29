@@ -133,26 +133,50 @@ sub cmd_fetch {
 }
 
 sub cmd_submit {
-    my ($ap) = @_;
+    my ($final, $ap, $aptt);
+    my $dos = 'tot'; # full
+    my $sr = 'dossnd5'; # full
+    my $op = 'ren'; # replace
 
-    print(STDERR "The source id must be a number.\n"), return if defined $ap && $ap !~ /^\d+$/;
+    if (defined $_[0] && -e $_[0]) {
+        $final = shift;
+    } else {
+        ($final) = glob('*-final.txt');
+        print(STDERR "Could not locate final source file.\n"), return unless defined $final;
+        utf8::decode($final);
+    }
+
+    foreach my $arg (@_) {
+        if ($arg eq 'simple') {
+            $dos = 'smp';
+            $sr = 'dossnd3';
+        } elsif ($arg eq 'check') {
+            $op = 'ktr';
+        } elsif ($arg eq 'add') {
+            $op = 'apv';
+        } elsif ($arg =~ /^\d+$/) {
+            $ap //= $arg;
+        } else {
+            $aptt //= $arg;
+        }
+    }
+
     check_env(qw/PANLEX_PANLEM_USER PANLEX_PANLEM_PASSWORD/);
 
-    my ($final) = glob('*-final.txt');
-    print(STDERR "Could not locate final source file in current directory.\n"), return unless defined $final;
-    utf8::decode($final);
-
     if (!defined $ap) {
-        print STDERR "No source id argument provided, trying to guess ...\n";
+        print STDERR "No source id argument provided, trying to look it up ...\n";
 
-        my $dirname = (splitdir(rel2abs(curdir())))[-1];
-        utf8::decode($dirname);
+        if (!defined $aptt) {
+            my $dirname = (splitdir(rel2abs(curdir())))[-1];
+            utf8::decode($dirname);
 
-        print(STDERR "Unable to infer source label from directory name: $dirname\n"), return
-            unless $dirname =~ /^([a-z]{3}(?:-[a-z]{3})*)-(.+?)$/;
-        my $tt = "$1:$2";
+            print(STDERR "Unable to infer source label from directory name: $dirname\n"), return
+                unless $dirname =~ /^([a-z]{3}(?:-[a-z]{3})*)-(.+?)$/;
 
-        my $result = panlex_query("/ap/$tt");
+            $aptt = "$1:$2";            
+        }
+
+        my $result = panlex_query("/ap/$aptt");
         $ap = $result->{ap}{ap};
         print STDERR "$ap\n\n";
     }
@@ -166,8 +190,8 @@ sub cmd_submit {
             us      => $ENV{PANLEX_PANLEM_USER},
             pwd     => $ENV{PANLEX_PANLEM_PASSWORD},
             uslv    => '187', # user's interface lv
-            sr      => 'dossnd5', # upload final source file
-            dos     => 'tot', # full-format final source file
+            sr      => $sr, # state routine
+            dos     => $dos, # full or simple format final source file
             op      => 'ren', # delete - replace - whole
             ap      => $ap, # source id
             ml      => 'res', # multiline parameter (must be ordered before the parameter)
@@ -262,8 +286,8 @@ cp <tool> (<dest>)
     copy PanLex tool into the current directory
 fetch <source>
     fetch PanLex source from archive into the current directory and unzip it
-submit (<source_id>)
-    submit full-text final source file in the current directory to PanLem
+submit (<file>) (<source_id>|<source_label>) (full|simple) (replace|add|check)
+    submit final source file in the current directory to PanLem
 upload (<dir>) <note>
     upload PanLex source directory to archive with note
 server <port>
