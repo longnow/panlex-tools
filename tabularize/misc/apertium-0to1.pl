@@ -55,7 +55,7 @@ foreach my $entry ($dom->find('section e p')->each) {
 
         my @wcmd = $el->find('s')->map(attr => 'n')->each; # the side's wc and md
 
-        if ($col[-1] ne '' @wcmd) {
+        if ($col[-1] ne '' && @wcmd) {
             push @col, shift @wcmd;
             push @col, join('‣', @wcmd);
         } else {

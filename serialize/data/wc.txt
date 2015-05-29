@@ -239,6 +239,7 @@ vaux	auxv
 VAux.	auxv
 vbhaver	verb:vbhaver
 vblex	verb
+vblexestar	verb:vblexestar
 vbloc	verb:vbloc
 vbmod	verb:vbmod
 vbser	verb:vbser
