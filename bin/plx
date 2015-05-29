@@ -162,17 +162,17 @@ sub cmd_submit {
     my $ua = LWP::UserAgent->new;
     my $r = $ua->post($PANLEM_URL,
         Content_Type => 'form-data',
-        Content => {
+        Content => [
             us      => $ENV{PANLEX_PANLEM_USER},
             pwd     => $ENV{PANLEX_PANLEM_PASSWORD},
-            uslv    => '187',
+            uslv    => '187', # user's interface lv
             sr      => 'dossnd5', # upload final source file
             dos     => 'tot', # full-format final source file
             op      => 'ren', # delete - replace - whole
-            ap      => $ap,
-            ml      => 'res',
-            res     => [$final, undef],
-        }
+            ap      => $ap, # source id
+            ml      => 'res', # multiline parameter (must be ordered before the parameter)
+            res     => [$final, undef], # uploaded file
+        ]
     );
 
     if ($r->is_success) {
