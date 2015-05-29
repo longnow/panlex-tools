@@ -16,6 +16,8 @@ adjv	adjv
 adv	advb
 Adv	advb
 ADV	advb
+adv2	advb
+adv3	advb
 adv.	advb
 Adv.	advb
 advb	advb
@@ -42,6 +44,7 @@ card	detr:card
 cnj	conj
 cnjadv	conj:cnjadv
 cnjcoo	conj:cnjcoo
+cnjloc	conj:cnjloc
 cnjsub	conj:cnjsub
 cong.	conj
 conj	conj
@@ -155,6 +158,8 @@ Posp.	post
 post	post
 Post	post
 POST	post
+post2	post
+post3	post
 postadv	misc:postadv
 postp.	post
 pp	prep
@@ -163,6 +168,7 @@ pr	prep
 preadv	prep:preadv
 pred.	misc:pred.
 predet	detr:predet
+pref	affx:pref
 pref.	affx:pref.
 prefix	affx:prefix
 prep	prep
@@ -206,6 +212,7 @@ sbd.	conj:sbd.
 sf.	noun:sf.
 sm.	noun:sm.
 spn	pron:spn
+spost	post:spost
 suf	affx:suf
 suf.	affx:suf.
 Suf.	affx:Suf.
@@ -244,7 +251,12 @@ vblex	verb
 vblexestar	verb:vblexestar
 vbloc	verb:vbloc
 vbmod	verb:vbmod
+vbntr	verb:vbntr
+vbper	verb:vbper
 vbser	verb:vbser
+vbsint	verb:vbsint
+vbtr	verb:vbtr
+vbtr_ntr	verb:vbtr_ntr
 vc	verb:vc
 VCit.	verb
 verb	verb
