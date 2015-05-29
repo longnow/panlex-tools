@@ -76,10 +76,14 @@ my @TOOLS = (
 #'csppmap'      => { cols => [1] },
 # Converts text to classifications and properties based on a mapping file.
 # Arguments:
-#   cols:   array of columns containing data to be mapped.
-#   file:   name of the mapping file. default 'csppmap.txt'.
-#   delim:  inter-classification/property delimiter in file. default '‣'.
-#   log:    set to 1 to log unconvertible items to csppmap.log, 0 otherwise.
+#   cols:     array of columns containing data to be mapped.
+#   file:     name of the mapping file. default 'csppmap.txt'.
+#   delim:    inter-classification/property delimiter in file. default '‣'.
+#   default:  meaning or denotation attribute expression to use for unconviertible
+#               items, or '' if none. default 'd⁋art-300⁋HasProperty', where 'd'
+#               specifies a denotation property (use 'm' for meaning), 'art-300'
+#               is the expression's UID, and 'HasProperty' is its text.
+#   log:      set to 1 to log unconvertible items to csppmap.log, 0 otherwise.
 #               default: 0.
 
 #'dcstag'       => { cols => [1] },
@@ -88,7 +92,7 @@ my @TOOLS = (
 #   cols:   array of columns containing denotation classifications.
 #   delim:  inter-classification delimiter, or '' if none. default '‣'.
 #   prefix: string to prefix to each classification before parsing, or '' if none.
-#       default ''.
+#             default ''.
 
 #'dpptag'       => { cols => [1] },
 # Tags denotation properties.
@@ -96,7 +100,7 @@ my @TOOLS = (
 #   cols:   array of columns containing denotation properties.
 #   delim:  inter-property delimiter, or '' if none. default '‣'.
 #   prefix: string to prefix to each property before parsing, or '' if none.
-#       default ''.
+#             default ''.
 
 #'mcstag'       => { cols => [1] },
 # Tags meaning classifications.
@@ -104,7 +108,7 @@ my @TOOLS = (
 #   cols:   array of columns containing meaning classifications.
 #   delim:  inter-classification delimiter, or '' if none. default '‣'.
 #   prefix: string to prefix to each classification before parsing, or '' if none.
-#       default ''. example 'art-300⁋HasContext⁋'.
+#             default ''. example 'art-300⁋HasContext⁋'.
 
 #'mpptag'       => { cols => [1] },
 # Tags meaning properties.
@@ -112,7 +116,7 @@ my @TOOLS = (
 #   cols:   array of columns containing meaning properties.
 #   delim:  inter-property delimiter, or '' if none. default '‣'.
 #   prefix: string to prefix to each property before parsing, or '' if none.
-#       default ''. example 'art-301⁋identifier⁋'.
+#             default ''. example 'art-301⁋identifier⁋'.
 
 #'mnsplit'      => { col => 2 },
 # Splits multi-meaning lines of a tagged source file, eliminating any duplicate
@@ -158,9 +162,9 @@ my @TOOLS = (
 #'replace'      => { cols => [1], from => '⫷fail⫸', to => '⫷ex⫸' },
 # Replaces strings in a tab-delimited source file.
 # Arguments:
-#   cols:     array of columns to be processed.
-#   from:     regex matching any string(s) to be replaced.
-#   to:       new string to use.
+#   cols:   array of columns to be processed.
+#   from:   regex matching any string(s) to be replaced.
+#   to:     new string to use.
 
 #'out-full-0'   => { specs => [ '0:eng-000', '1:rus-000' ] },
 # Converts a standard tagged source file to a full-text varilingual source file.

@@ -43,7 +43,7 @@ sub mdtag {
         die "don't know how to convert old mdtag: $mdtag";
     }
 
-    dpptag($fh, $out, { cols => [$mdcol], delim => $delim, prefix => $var });
+    dpptag($in, $out, { cols => [$mdcol], delim => $delim, prefix => $var });
 }
 
 1;
