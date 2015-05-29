@@ -8,6 +8,7 @@ binmode STDERR, ':encoding(utf8)';
 use File::Spec::Functions qw/catdir catfile curdir rel2abs splitdir/;
 use File::Copy qw/copy/;
 use LWP::UserAgent;
+use Encode 'encode';
 
 use lib "$ENV{PANLEX_TOOLDIR}/lib";
 use PanLex::Client;
@@ -141,7 +142,7 @@ sub cmd_submit {
     if (defined $_[0] && -e $_[0]) {
         $final = shift;
     } else {
-        ($final) = glob('*-final.txt');
+        $final = glob('*-final.txt');
         print(STDERR "Could not locate final source file.\n"), return unless defined $final;
         utf8::decode($final);
     }
@@ -195,7 +196,7 @@ sub cmd_submit {
             op      => $op, # operation
             ap      => $ap, # source id
             ml      => 'res', # multiline parameter (must be ordered before the parameter)
-            res     => [$final, undef], # uploaded file
+            res     => [encode('utf8', $final), undef], # uploaded file
         ]
     );
 
