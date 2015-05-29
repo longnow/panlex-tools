@@ -216,12 +216,12 @@ sub cmd_upload {
     print STDERR "Uploading zip file ...\n";
     my $r = $ua->post("${SOURCE_ARCHIVE_URL}/upload", 
         Content_Type => 'form-data',
-        Content => {
+        Content => [
             editor  => $ENV{PANLEX_ARCHIVE_NAME},
             email   => $ENV{PANLEX_ARCHIVE_EMAIL},
             notes   => $note,
             zip     => [$zippath, undef],
-        }
+        ]
     );
 
     if ($r->is_success) {
