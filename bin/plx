@@ -134,8 +134,8 @@ sub cmd_fetch {
 
 sub cmd_submit {
     my ($final, $ap, $aptt);
-    my $dos = 'tot'; # full
-    my $sr = 'dossnd5'; # full
+    my $dos = 'tot'; # whole
+    my $sr = 'dossnd5'; # whole
     my $op = 'ren'; # replace
 
     if (defined $_[0] && -e $_[0]) {
@@ -191,8 +191,8 @@ sub cmd_submit {
             pwd     => $ENV{PANLEX_PANLEM_PASSWORD},
             uslv    => '187', # user's interface lv
             sr      => $sr, # state routine
-            dos     => $dos, # full or simple format final source file
-            op      => 'ren', # delete - replace - whole
+            dos     => $dos, # final source file format
+            op      => $op, # operation
             ap      => $ap, # source id
             ml      => 'res', # multiline parameter (must be ordered before the parameter)
             res     => [$final, undef], # uploaded file
