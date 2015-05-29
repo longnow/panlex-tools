@@ -37,10 +37,10 @@ sub csppmap {
 
     if ($default ne '') {
         die "default parameter must take the form 'd⁋UID⁋text' or 'm⁋UID⁋text' (delimiter is arbitrary)"
-            unless $default =~ /^([dm])(.)/;
+            unless $default =~ /^([dm])(.)([a-z]{3}-\d{3}\2.+)$/;
 
         $default_type = $1;
-        $default = substr($default, 2) . $2;
+        $default = $3 . $2;
     }
 
     $file = catfile($ENV{PANLEX_TOOLDIR}, 'serialize', 'data', $file)
@@ -75,22 +75,24 @@ sub csppmap {
         my @col = split /\t/, $_, -1;
 
         foreach my $i (@csppmapcol) {
+            die "column $i not present in line" unless defined $col[$i];
+
             next unless length $col[$i];
 
-            my $newval = ''; 
+            my $tagged = ''; 
 
             if (exists $map{$col[$i]}) {
-                my $val = $map{$col[$i]};
+                my $mapped = $map{$col[$i]};
 
-                $newval .= cstag_item($val->{type} . 'cs', $_) for @{$val->{cs}};
-                $newval .= pptag_item($val->{type} . 'pp', $_) for @{$val->{pp}};
+                $tagged .= cstag_item($mapped->{type} . 'cs', $_) for @{$mapped->{cs}};
+                $tagged .= pptag_item($mapped->{type} . 'pp', $_) for @{$mapped->{pp}};
             } else {
                 $notfound{$col[$i]} = '';
 
-                $newval = pptag_item($default_type . 'pp', $default . $col[$i]) if $default_type;
+                $tagged = pptag_item($default_type . 'pp', $default . $col[$i]) if $default_type;
             }
 
-            $col[$i] = $newval;
+            $col[$i] = $tagged;
         }
 
         print $out join("\t", @col), "\n";
