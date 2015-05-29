@@ -140,11 +140,14 @@ sub cmd_submit {
 
     my ($final) = glob('*-final.txt');
     print(STDERR "Could not locate final source file in current directory.\n"), return unless defined $final;
+    utf8::decode($final);
 
     if (!defined $ap) {
         print STDERR "No source id argument provided, trying to guess ...\n";
 
         my $dirname = (splitdir(rel2abs(curdir())))[-1];
+        utf8::decode($dirname);
+
         print(STDERR "Unable to infer source label from directory name: $dirname\n"), return
             unless $dirname =~ /^([a-z]{3}(?:-[a-z]{3})*)-(.+?)$/;
         my $tt = "$1:$2";
@@ -189,6 +192,8 @@ sub cmd_upload {
 
     my @dirs = splitdir(rel2abs($dirpath));
     my $dirname = pop @dirs; # name of the source dir
+    utf8::decode($dirname);
+
     chdir catdir(@dirs); # change to the parent of the source dir to get the zip archive paths right
 
     my $zippath = "/tmp/${dirname}.zip";
