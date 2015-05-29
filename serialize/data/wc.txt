@@ -238,6 +238,7 @@ v.t.	verb:v.t.
 va.	auxv
 vaux	auxv
 VAux.	auxv
+vbdo	verb:vbdo
 vbhaver	verb:vbhaver
 vblex	verb
 vblexestar	verb:vblexestar
