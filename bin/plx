@@ -1,15 +1,20 @@
 #!/usr/bin/env perl
 use strict;
+use warnings 'FATAL', 'all';
 use utf8;
+binmode STDOUT, ':encoding(utf8)';
+binmode STDERR, ':encoding(utf8)';
 
 use File::Spec::Functions qw/catdir catfile curdir rel2abs splitdir/;
 use File::Copy qw/copy/;
 use LWP::UserAgent;
 
-binmode STDOUT, ':encoding(utf8)';
-binmode STDERR, ':encoding(utf8)';
+use lib "$ENV{PANLEX_TOOLDIR}/lib";
+use PanLex::Client;
+use PanLex::Normalize;
 
 my $SOURCE_ARCHIVE_URL = 'http://dev.panlex.org/sources';
+my $PANLEM_URL = 'http://panlex.org/u';
 
 usage(), exit(0) unless @ARGV;
 
@@ -28,7 +33,6 @@ sub cmd_cp {
     my ($tool, $dest) = @_;
 
     print(STDERR "You need to specify a tool.\n"), return unless $tool;
-    check_env(qw/PANLEX_TOOLDIR/);
 
     $dest ||= $tool;
     $tool .= '.pl' unless $tool =~ /\./;
@@ -128,6 +132,53 @@ sub cmd_fetch {
     print STDERR "Could not fetch source $source: ", $r->code, ' ', $r->message, "\n";
 }
 
+sub cmd_submit {
+    my ($ap) = @_;
+
+    print(STDERR "The source id must be a number.\n"), return if defined $ap && $ap !~ /^\d+$/;
+    check_env(qw/PANLEX_PANLEM_USER PANLEX_PANLEM_PASSWORD/);
+
+    my ($final) = glob('*-final.txt');
+    print(STDERR "Could not locate final source file in current directory.\n"), return unless defined $final;
+
+    if (!defined $ap) {
+        print STDERR "No source id argument provided, trying to guess ...\n";
+
+        my $dirname = (splitdir(rel2abs(curdir())))[-1];
+        print(STDERR "Unable to infer source label from directory name: $dirname\n"), return
+            unless $dirname =~ /^([a-z]{3}(?:-[a-z]{3})*)-(.+?)$/;
+        my $tt = "$1:$2";
+
+        my $result = panlex_query("/ap/$tt");
+        $ap = $result->{ap}{ap};
+        print STDERR "$ap\n\n";
+    }
+
+    print "Submitting $final to PanLem ...\n";
+
+    my $ua = LWP::UserAgent->new;
+    my $r = $ua->post($PANLEM_URL,
+        Content_Type => 'form-data',
+        Content => {
+            us      => $ENV{PANLEX_PANLEM_USER},
+            pwd     => $ENV{PANLEX_PANLEM_PASSWORD},
+            uslv    => '187',
+            sr      => 'dossnd5', # upload final source file
+            dos     => 'tot', # full-format final source file
+            op      => 'ren', # delete - replace - whole
+            ap      => $ap,
+            ml      => 'res',
+            res     => [$final, undef],
+        }
+    );
+
+    if ($r->is_success) {
+        print STDERR "done.\n\n";
+    } else {
+        print STDERR "failed: ", $r->code, ' ', $r->message, "\n\n";
+    }
+}
+
 sub cmd_upload {
     my ($dirpath, @note) = @_;
     my $note = join ' ', @note;
@@ -173,9 +224,6 @@ sub cmd_server {
     my ($port) = @_;
     $port ||= 5050;
 
-    check_env(qw/PANLEX_TOOLDIR/);
-    use lib "$ENV{PANLEX_TOOLDIR}/lib";
-    require PanLex::Normalize;
     require DNode;
 
     my $d = DNode->new({
@@ -201,6 +249,8 @@ cp <tool>
     copy PanLex tool into the current directory
 fetch <source>
     fetch PanLex source from archive into the current directory and unzip it
+submit [source_id]
+    submit full-text final source file in the current directory to PanLem
 upload <dir> <note>
     upload PanLex source directory to archive with note
 server <port>
@@ -208,11 +258,13 @@ server <port>
 
 Environment variables:
 
-PANLEX_TOOLDIR              local directory containing panlex-tools
+PANLEX_TOOLDIR              panlex-tools directory path
 PANLEX_ARCHIVE_USERNAME     username for PanLex source archive
 PANLEX_ARCHIVE_PASSWORD     password for PanLex source archive
 PANLEX_ARCHIVE_NAME         full name of PanLex editor
 PANLEX_ARCHIVE_EMAIL        email of PanLex editor
+PANLEX_PANLEM_USER          PanLem numeric user id
+PANLEX_PANLEM_PASSWORD      PanLem hashed password
 
 EOF
 }
