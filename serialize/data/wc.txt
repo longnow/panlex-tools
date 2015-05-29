@@ -64,6 +64,7 @@ Determ.	detr
 Determiner	detr
 detr	detr
 disc	misc:disc
+emph	misc:emph
 en	misc:en
 enc	misc:enc
 epn	pron:epn
@@ -142,6 +143,7 @@ numeral	detr:numeral
 Numeral	detr:Numeral
 ord	detr:ord
 P	prep
+part	misc:part
 part.	misc:part.
 pcl	:pcl
 phr: v	verb:phr
