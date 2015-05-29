@@ -93,6 +93,7 @@ intj.	ijec
 intr	verb:intr
 intr.	verb:intr.
 INTRJCT	ijec
+itg	misc:itg
 IV	verb:IV
 loc.	advb:loc.
 LOC	advb:LOC
