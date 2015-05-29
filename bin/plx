@@ -245,7 +245,7 @@ sub cmd_upload {
             editor  => $ENV{PANLEX_ARCHIVE_NAME},
             email   => $ENV{PANLEX_ARCHIVE_EMAIL},
             notes   => $note,
-            zip     => [$zippath, undef],
+            zip     => [encode('utf8', $zippath), undef],
         ]
     );
 
