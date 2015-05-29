@@ -156,7 +156,7 @@ sub cmd_submit {
             $op = 'apv';
         } elsif ($arg =~ /^\d+$/) {
             $ap //= $arg;
-        } else {
+        } elsif ($arg =~ /:/) {
             $aptt //= $arg;
         }
     }
