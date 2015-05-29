@@ -42,9 +42,9 @@ sub cmd_cp {
 
     my $source;
     foreach my $dir (reverse splitdir($sourcedir)) {
+        utf8::decode($dir);
         if ($dir =~ /^[a-z]{3}-/) {
             $source = $dir;
-            utf8::decode($source);
             last;
         }
     }
@@ -74,13 +74,13 @@ sub cp_file {
 
     print(STDERR "$target_file already exists, aborting\n"), return if -e $target_file;
 
-    open my $fd, '<:utf8', $source_file or die $!;
+    open my $fd, '<:encoding(utf8)', $source_file or die $!;
     my $data = do { local $/; <$fd> };
     close $fd;
     
     $data =~ s/aaa-bbb-Author/$source_label/;
     
-    open $fd, '>:utf8', $target_file or die $!;
+    open $fd, '>:encoding(utf8)', $target_file or die $!;
     print $fd $data;
     close $fd;
     
