@@ -1,4 +1,5 @@
 a	adjv
+A	adjv
 adj	adjv
 Adj	adjv
 ADJ	adjv
@@ -41,6 +42,7 @@ bnd pfx	affx:bnd pfx
 bnd sfx	affx:bnd sfx
 c	conj
 card	detr:card
+CC	conj:CC
 cnj	conj
 cnjadv	conj:cnjadv
 cnjcoo	conj:cnjcoo
@@ -77,6 +79,7 @@ Excl	ijec:Excl
 EXCL	ijec:EXCL
 expr.	misc:expr.
 f.v.	verb:f.v./frase di verbo
+foc	misc:foc
 frac	detr:frac
 ideo.	misc:ideo.
 ij	ijec
@@ -152,6 +155,7 @@ part.	misc:part.
 pcl	:pcl
 phr: v	verb:phr
 pn.	pron
+Po	post:Po
 pos	pron:pos
 pos.	advb:pos.
 Posp.	post
@@ -182,6 +186,7 @@ PRO	pron
 pro.	pron
 pro.rel.	pron:pro.rel.
 pron	pron
+Pron	pron
 pron.	pron
 Pron.	pron
 Pron. Ab.	pron:Ab.
