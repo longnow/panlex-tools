@@ -79,7 +79,7 @@ my @TOOLS = (
 #   cols:     array of columns containing data to be mapped.
 #   file:     name of the mapping file. default 'csppmap.txt'.
 #   delim:    inter-classification/property delimiter in file. default '‣'.
-#   default:  meaning or denotation attribute expression to use for unconviertible
+#   default:  meaning or denotation attribute expression to use for unconvertible
 #               items, or '' if none. default 'd⁋art-300⁋HasProperty', where 'd'
 #               specifies a denotation property (use 'm' for meaning), 'art-300'
 #               is the expression's UID, and 'HasProperty' is its text.
