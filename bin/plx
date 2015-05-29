@@ -287,7 +287,7 @@ cp <tool> (<dest>)
 fetch <source>
     fetch PanLex source from archive into the current directory and unzip it
 submit (<file>) (<source_id>|<source_label>) (full|simple) (replace|add|check)
-    submit final source file in the current directory to PanLem
+    submit final source file to PanLem
 upload (<dir>) <note>
     upload PanLex source directory to archive with note
 server <port>
