@@ -34,21 +34,21 @@ sub cmd_cp {
 
     print(STDERR "You need to specify a tool.\n"), return unless $tool;
 
-    $dest ||= $tool;
+    $dest //= $tool;
     $tool .= '.pl' unless $tool =~ /\./;
     $dest .= '.pl' unless $dest =~ /\./;
 
     my $sourcedir = rel2abs(curdir());
+    utf8::decode($sourcedir);
 
     my $source;
     foreach my $dir (reverse splitdir($sourcedir)) {
-        utf8::decode($dir);
         if ($dir =~ /^[a-z]{3}-/) {
             $source = $dir;
             last;
         }
     }
-    $source ||= 'aaa-bbb-Author';
+    $source //= 'aaa-bbb-Author';
 
     foreach my $dir ( ['serialize'], ['serialize', 'data'], ['tabularize', 'util'] ) {
         my $file = catfile($ENV{PANLEX_TOOLDIR}, @$dir, $tool);
@@ -183,11 +183,19 @@ sub cmd_submit {
 }
 
 sub cmd_upload {
-    my ($dirpath, @note) = @_;
-    my $note = join ' ', @note;
+    my $dirpath;
 
-    print(STDERR "You need to specify a valid source directory.\n"), return unless -d $dirpath;
+    if (defined $_[0] and -d $_[0]) {
+        $dirpath = shift;
+    } elsif (-e 'log.json') {
+        $dirpath = curdir();
+    } else {
+        print(STDERR "You need to specify a valid source directory.\n"), return;        
+    }
+
+    my $note = join ' ', @_;
     print(STDERR "You need to specify a note.\n"), return if $note eq '';
+
     check_env(qw/PANLEX_ARCHIVE_USERNAME PANLEX_ARCHIVE_PASSWORD PANLEX_ARCHIVE_NAME PANLEX_ARCHIVE_EMAIL/);
 
     my @dirs = splitdir(rel2abs($dirpath));
@@ -227,7 +235,7 @@ sub cmd_upload {
 
 sub cmd_server {
     my ($port) = @_;
-    $port ||= 5050;
+    $port //= 5050;
 
     require DNode;
 
@@ -246,20 +254,20 @@ sub cmd_server {
 
 sub usage {
     print STDERR <<EOF;
-Usage: $0 <command> [arguments]
+Usage: $0 <command> (<arguments> ...)
 
 Commands:
 
-cp <tool>
+cp <tool> (<dest>)
     copy PanLex tool into the current directory
 fetch <source>
     fetch PanLex source from archive into the current directory and unzip it
-submit [source_id]
+submit (<source_id>)
     submit full-text final source file in the current directory to PanLem
-upload <dir> <note>
+upload (<dir>) <note>
     upload PanLex source directory to archive with note
 server <port>
-    run DNode server
+    run DNode server (experimental)
 
 Environment variables:
 
