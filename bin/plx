@@ -259,8 +259,8 @@ server <port>
 Environment variables:
 
 PANLEX_TOOLDIR              panlex-tools directory path
-PANLEX_ARCHIVE_USERNAME     username for PanLex source archive
-PANLEX_ARCHIVE_PASSWORD     password for PanLex source archive
+PANLEX_ARCHIVE_USERNAME     PanLex source archive username
+PANLEX_ARCHIVE_PASSWORD     PanLex source archive password
 PANLEX_ARCHIVE_NAME         full name of PanLex editor
 PANLEX_ARCHIVE_EMAIL        email of PanLex editor
 PANLEX_PANLEM_USER          PanLem numeric user id
