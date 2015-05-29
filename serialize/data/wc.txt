@@ -51,6 +51,7 @@ conj.	conj
 Conj.	conj
 Conjunction	conj
 coord.	conj:coord.
+cop	misc:cop
 dem	detr:dem
 DEM	detr:DEM
 dem.	detr:dem.
@@ -151,6 +152,7 @@ Posp.	post
 post	post
 Post	post
 POST	post
+postadv	misc:postadv
 postp.	post
 pp	prep
 pp.	prep
@@ -185,6 +187,7 @@ prop n.	name
 prop. n.	name
 prop.n.	name
 Proper Noun	name
+qst	misc:qst
 QT	detr:QT
 quant	detr:quant
 quant.	detr:quant.
