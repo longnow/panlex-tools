@@ -139,7 +139,7 @@ sub cmd_submit {
     my $sr = 'dossnd5'; # whole
     my $op = 'ren'; # replace
 
-    if (defined $_[0] && -e $_[0]) {
+    if (defined $_[0] && -f $_[0]) {
         $final = shift;
     } else {
         $final = glob('*-final.txt');
