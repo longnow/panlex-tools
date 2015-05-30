@@ -43,6 +43,7 @@ bnd pfx	affx:bnd pfx
 bnd sfx	affx:bnd sfx
 c	conj
 card	detr:card
+cc	conj:cc
 CC	conj:CC
 clitic	misc:clitic
 cnj	conj
@@ -156,10 +157,12 @@ ord	detr:ord
 P	prep
 part	misc:part
 part.	misc:part.
-pcl	:pcl
+pcl	misc:pcl
+pcle	misc:pcle
 phr: v	verb:phr
 pn.	pron
-Po	post:Po
+po	post
+Po	post
 pos	pron:pos
 pos.	advb:pos.
 Posp.	post
