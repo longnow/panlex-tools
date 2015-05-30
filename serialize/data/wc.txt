@@ -1,5 +1,6 @@
 a	adjv
 A	adjv
+ad	adjv
 adj	adjv
 Adj	adjv
 ADJ	adjv
@@ -43,6 +44,7 @@ bnd sfx	affx:bnd sfx
 c	conj
 card	detr:card
 CC	conj:CC
+clitic	misc:clitic
 cnj	conj
 cnjadv	conj:cnjadv
 cnjcoo	conj:cnjcoo
@@ -77,6 +79,7 @@ exc	ijec:exc
 excl.	ijec:excl.
 Excl	ijec:Excl
 EXCL	ijec:EXCL
+expr	misc:expr
 expr.	misc:expr.
 f.v.	verb:f.v./frase di verbo
 foc	misc:foc
@@ -131,6 +134,7 @@ n.time.	noun:n.time.
 na.	noun:na.
 name	name
 NAME	name
+neg	misc:neg
 neg.	misc:neg.
 ni.	noun:ni.
 nm	noun:m
@@ -250,6 +254,7 @@ v.t.	verb:v.t.
 va.	auxv
 vaux	auxv
 VAux.	auxv
+vbcop	verb:vbcop
 vbdo	verb:vbdo
 vbhaver	verb:vbhaver
 vblex	verb
