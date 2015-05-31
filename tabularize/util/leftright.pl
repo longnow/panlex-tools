@@ -8,7 +8,7 @@ use warnings 'FATAL', 'all';
 use strict;
 # Require strict checking of variable references, etc.
 
-use open IO => ':raw:encoding(utf8)';
+use open IO => ':raw :encoding(utf8)';
 # Set UTF-8 as the default for opening files, and turn off automatic newline conversion.
 
 open my $combo, '>', $ARGV[2];

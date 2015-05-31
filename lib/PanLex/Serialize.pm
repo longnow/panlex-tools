@@ -1,7 +1,7 @@
 package PanLex::Serialize;
 use strict;
 use parent 'Exporter';
-use open IO => ':raw:encoding(utf8)';
+use open IO => ':raw :encoding(utf8)';
 binmode STDOUT, ':encoding(utf8)';
 binmode STDERR, ':encoding(utf8)';
 

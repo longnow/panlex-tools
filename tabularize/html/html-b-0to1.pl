@@ -14,7 +14,7 @@ use strict;
 use utf8;
 # Make Perl interpret the script as UTF-8.
 
-use open IO => ':raw:encoding(utf8)';
+use open IO => ':raw :encoding(utf8)';
 # Set UTF-8 as the default for opening files, and turn off automatic newline conversion.
 
 use HTML::Entities 'decode_entities';

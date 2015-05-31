@@ -32,7 +32,7 @@ use strict;
 use utf8;
 # Make Perl interpret the script as UTF-8 rather than bytes.
 
-use open IO => ':raw:encoding(utf8)';
+use open IO => ':raw :encoding(utf8)';
 
 my $inf = "$ARGV[0].txt";
 # Identify the name of the file to be converted.

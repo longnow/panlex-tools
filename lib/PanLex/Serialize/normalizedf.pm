@@ -18,7 +18,7 @@ package PanLex::Serialize::normalizedf;
 use strict;
 use warnings 'FATAL', 'all';
 use utf8;
-use open IO => ':raw:encoding(utf8)';
+use open IO => ':raw :encoding(utf8)';
 use parent 'Exporter';
 use PanLex::Validation;
 use PanLex::Client::Normalize;
