@@ -14,7 +14,7 @@ package PanLex::Serialize::csppmap;
 use strict;
 use warnings 'FATAL', 'all';
 use utf8;
-use open ':raw:encoding(utf8)';
+use open IO => ':raw:encoding(utf8)';
 use parent 'Exporter';
 use File::Spec::Functions;
 use PanLex::Validation;
