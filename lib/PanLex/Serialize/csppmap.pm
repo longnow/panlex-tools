@@ -14,6 +14,7 @@ package PanLex::Serialize::csppmap;
 use strict;
 use warnings 'FATAL', 'all';
 use utf8;
+use open ':raw:encoding(utf8)';
 use parent 'Exporter';
 use File::Spec::Functions;
 use PanLex::Validation;
@@ -48,7 +49,7 @@ sub csppmap {
 
     my %map;
 
-    open my $mapin, '<:encoding(utf8)', $file or die $!;
+    open my $mapin, '<', $file or die $!;
 
     while (<$mapin>) {
         chomp;
@@ -99,7 +100,7 @@ sub csppmap {
     }
 
     if ($log) {
-        open my $log_fh, '>:encoding(utf8)', 'csppmap.log' or die $!;
+        open my $log_fh, '>', 'csppmap.log' or die $!;
         print $log_fh join("\n", sort keys %notfound), "\n";
         close $log_fh;
     }
