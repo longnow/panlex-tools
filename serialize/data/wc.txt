@@ -177,6 +177,7 @@ pp	prep
 pp.	prep
 pr	prep
 preadv	prep:preadv
+pred	misc:pred
 pred.	misc:pred.
 predet	detr:predet
 pref	affx:pref
@@ -259,6 +260,7 @@ vaux	auxv
 VAux.	auxv
 vbcop	verb:vbcop
 vbdo	verb:vbdo
+vbex	verb:vbex
 vbhaver	verb:vbhaver
 vblex	verb
 vblexestar	verb:vblexestar
