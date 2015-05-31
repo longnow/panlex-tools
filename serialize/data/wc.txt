@@ -283,6 +283,7 @@ vi.	verb:vi.
 vin.	verb:vin.
 Vint.	verb:vi
 vpart	misc:vpart
+vr	verb:vr
 vr.	verb:vr.
 vt	verb:vt
 Vt	verb:Vt

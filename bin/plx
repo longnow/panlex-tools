@@ -2,6 +2,7 @@
 use strict;
 use warnings 'FATAL', 'all';
 use utf8;
+use open ':raw:encoding(utf8)';
 binmode STDOUT, ':encoding(utf8)';
 binmode STDERR, ':encoding(utf8)';
 
@@ -75,13 +76,13 @@ sub cp_file {
 
     print(STDERR "$target_file already exists, aborting\n"), return if -e $target_file;
 
-    open my $fd, '<:encoding(utf8)', $source_file or die $!;
+    open my $fd, '<', $source_file or die $!;
     my $data = do { local $/; <$fd> };
     close $fd;
     
     $data =~ s/aaa-bbb-Author/$source_label/;
     
-    open $fd, '>:encoding(utf8)', $target_file or die $!;
+    open $fd, '>', $target_file or die $!;
     print $fd $data;
     close $fd;
     

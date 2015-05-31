@@ -9,6 +9,9 @@ use strict;
 use utf8;
 # Make Perl interpret the script as UTF-8.
 
+use open ':raw:encoding(utf8)';
+# Set UTF-8 as the default for opening files, and turn off automatic newline conversion.
+
 #######################################################
 
 my $BASENAME = 'aaa-bbb-Author';
@@ -27,10 +30,10 @@ my %lv = (
 
 #######################################################
 
-open my $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt');
+open my $out, '>', ("$BASENAME-" . ($VERSION + 1) . '.txt');
 # Create or truncate the output file and open it for writing.
 
-open my $in, '<:encoding(utf8)', "$BASENAME-$VERSION.txt";
+open my $in, '<', "$BASENAME-$VERSION.txt";
 # Open the input file for reading.
 
 my ($app, @col, $col, $eng, %entry, $entry, $extt, $lvtt, @out);

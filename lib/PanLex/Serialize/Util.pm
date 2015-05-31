@@ -2,6 +2,7 @@ package PanLex::Serialize::Util;
 use strict;
 use warnings 'FATAL', 'all';
 use utf8;
+use open ':raw:encoding(utf8)';
 use parent 'Exporter';
 use File::Spec::Functions;
 
@@ -10,7 +11,7 @@ our @EXPORT = qw/load_wc parse_specs/;
 sub load_wc {
     my $wctxt = -e 'wc.txt' ? 'wc.txt' : catfile($ENV{PANLEX_TOOLDIR}, 'serialize', 'data', 'wc.txt');
 
-    open my $fh, '<:encoding(utf8)', $wctxt or die $!;
+    open my $fh, '<', $wctxt or die $!;
     # Open the wc file for reading.
 
     my $wc;

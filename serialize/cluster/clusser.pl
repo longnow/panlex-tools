@@ -32,16 +32,18 @@ use strict;
 use utf8;
 # Make Perl interpret the script as UTF-8 rather than bytes.
 
+use open ':raw:encoding(utf8)';
+
 my $inf = "$ARGV[0].txt";
 # Identify the name of the file to be converted.
 
 (-r $inf) || (die "could not find file $inf");
 # Verify that it exists and is readable.
 
-(open my $infh, '<:utf8', $inf) || (die $!);
+(open my $infh, '<', $inf) || (die $!);
 # Open it for reading.
 
-open my $outfh, '>:utf8', "$ARGV[0]-final.txt";
+open my $outfh, '>', "$ARGV[0]-final.txt";
 # Create or truncate the output file and open it for writing.
 
 my @col;

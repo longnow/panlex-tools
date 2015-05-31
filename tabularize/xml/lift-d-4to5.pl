@@ -9,6 +9,9 @@ use strict;
 use utf8;
 # Make Perl interpret the script as UTF-8.
 
+use open ':raw:encoding(utf8)';
+# Set UTF-8 as the default for opening files, and turn off automatic newline conversion.
+
 binmode STDOUT, ':encoding(utf8)';
 binmode STDERR, ':encoding(utf8)';
 # make STDOUT and STDERR print in UTF-8.
@@ -23,10 +26,10 @@ my $VERSION = 4;
 
 #######################################################
 
-open my $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt') or die $!;
+open my $out, '>', ("$BASENAME-" . ($VERSION + 1) . '.txt') or die $!;
 # Create or truncate the output file and open it for writing.
 
-open my $in, '<:encoding(utf8)', "$BASENAME-$VERSION.txt" or die $!;
+open my $in, '<', "$BASENAME-$VERSION.txt" or die $!;
 # Open the input file for reading.
 
 while (<$in>) {

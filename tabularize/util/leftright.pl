@@ -8,11 +8,14 @@ use warnings 'FATAL', 'all';
 use strict;
 # Require strict checking of variable references, etc.
 
-open my $combo, '>:encoding(utf8)', $ARGV[2];
+use open ':raw:encoding(utf8)';
+# Set UTF-8 as the default for opening files, and turn off automatic newline conversion.
 
-open my $left, '<:encoding(utf8)', $ARGV[0];
+open my $combo, '>', $ARGV[2];
 
-open my $right, '<:encoding(utf8)', $ARGV[1];
+open my $left, '<', $ARGV[0];
+
+open my $right, '<', $ARGV[1];
 
 my $line = '';
 # Initialize the line as blank.

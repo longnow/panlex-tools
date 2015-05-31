@@ -9,16 +9,19 @@ use warnings 'FATAL', 'all';
 use strict;
 # Require strict checking of variable references, etc.
 
+use open ':raw:encoding(utf8)';
+# Set UTF-8 as the default for opening files, and turn off automatic newline conversion.
+
 use Encode 'decode';
 # Import the library subroutine to decode octets.
 
 my $name = $ARGV[0];
 # Identify the stem of the file names.
 
-open my $out, '>:encoding(utf8)', "$name.txt" or die $!;
+open my $out, '>', "$name.txt" or die $!;
 # Create an output file and open it for writing.
 
-open my $index, '<:encoding(utf8)', "$name.index" or die $!;
+open my $index, '<', "$name.index" or die $!;
 # Open the index file for reading.
 
 open my $in, '<:unix', "$name.dict" or die $!;
@@ -109,7 +112,7 @@ while (<$in>) {
 foreach $i (0 .. $#start) {
 # For each start:
 
-	$tail = (&decode ('utf8', (substr $dict, $start[$i], $length[$i])));
+	$tail = (decode('utf8', (substr $dict, $start[$i], $length[$i])));
 	# Identify and UTF8-encode the entry tail in the dict file.
 
 	$tail =~ s/\r/\n/g;

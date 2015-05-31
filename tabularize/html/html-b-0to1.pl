@@ -14,6 +14,9 @@ use strict;
 use utf8;
 # Make Perl interpret the script as UTF-8.
 
+use open ':raw:encoding(utf8)';
+# Set UTF-8 as the default for opening files, and turn off automatic newline conversion.
+
 use HTML::Entities 'decode_entities';
 # Import subroutines to decode HTML character entities.
 
@@ -31,10 +34,10 @@ my $VERSION = 0;
 
 #######################################################
 
-open my $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt') or die $!;
+open my $out, '>', ("$BASENAME-" . ($VERSION + 1) . '.txt') or die $!;
 # Create or truncate the output file and open it for writing.
 
-open my $in, '<:encoding(utf8)', "$BASENAME-$VERSION.html" or die $!;
+open my $in, '<', "$BASENAME-$VERSION.html" or die $!;
 # Open the input file for reading.
 
 my @all = <$in>;

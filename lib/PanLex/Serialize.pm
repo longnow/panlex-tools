@@ -1,6 +1,7 @@
 package PanLex::Serialize;
 use strict;
 use parent 'Exporter';
+use open ':raw:encoding(utf8)';
 binmode STDOUT, ':encoding(utf8)';
 binmode STDERR, ':encoding(utf8)';
 
@@ -55,12 +56,12 @@ sub serialize {
 
         my $input = "$BASENAME-$VERSION.txt";
         die "could not find file $input" unless -e $input;
-        open my $in, '<:encoding(utf8)', $input or die $!;
+        open my $in, '<', $input or die $!;
 
         $VERSION = $tool =~ /^out/ ? 'final' : $VERSION+1;
 
         my $output = "$BASENAME-$VERSION.txt";
-        open my $out, '>:encoding(utf8)', "$BASENAME-$VERSION.txt" or die $!;
+        open my $out, '>', "$BASENAME-$VERSION.txt" or die $!;
 
         printf "%-13s %s => %s\n", $tool.':', $input, $output;
 
@@ -86,7 +87,7 @@ sub serialize {
 
     $log->{time} = time();
 
-    open my $fh, '>:encoding(utf8)', 'log.json' or die $!;
+    open my $fh, '>', 'log.json' or die $!;
     print $fh JSON->new->pretty->canonical->encode($log);
     close $fh;
 

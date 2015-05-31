@@ -9,6 +9,9 @@ use strict;
 use utf8;
 # Make Perl interpret the script as UTF-8.
 
+use open ':raw:encoding(utf8)';
+# Set UTF-8 as the default for opening files, and turn off automatic newline conversion.
+
 binmode STDOUT, ':encoding(utf8)';
 binmode STDERR, ':encoding(utf8)';
 # make STDOUT and STDERR print in UTF-8.
@@ -28,13 +31,13 @@ my $VERSION = 0;
 
 my ($in);
 
-open my $out, '>:encoding(utf8)', ("$BASENAME-" . ($VERSION + 1) . '.txt') or die $!;
+open my $out, '>', ("$BASENAME-" . ($VERSION + 1) . '.txt') or die $!;
 # Create or truncate the output file and open it for writing.
 
-open my $in, '<:encoding(utf8)', "$BASENAME-$VERSION.txt";
+open my $in, '<', "$BASENAME-$VERSION.txt";
 # Open the input file for reading.
 
-open my $seg2old, '>:encoding(utf8)', ("$BASENAME-seg2-$VERSION.txt") or die $!;
+open my $seg2old, '>', ("$BASENAME-seg2-$VERSION.txt") or die $!;
 # Create or truncate the recoding input file and open it for writing.
 
 while (<$in>) {
@@ -54,7 +57,7 @@ my $newver = $VERSION + 1;
 system "txtconv -t secondary/kantipur.tec -i '$BASENAME-seg2-$VERSION.txt' -o '$BASENAME-seg2-$newver.txt'";
 # Recode the recoding input file.
 
-open my $seg2new, '<:encoding(utf8)', "$BASENAME-seg2-$newver.txt" or die $!;
+open my $seg2new, '<', "$BASENAME-seg2-$newver.txt" or die $!;
 # Open the recoding output file for reading.
 
 seek $in, 0, 0;

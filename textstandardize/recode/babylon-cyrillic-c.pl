@@ -9,9 +9,12 @@ use strict;
 use utf8;
 # Make Perl interpret the script as UTF-8.
 
-open my $out, '>:encoding(utf8)', 'eng-ukr-BlekhmanMEUL-0.txt';
+use open ':raw:encoding(utf8)';
+# Set UTF-8 as the default for opening files, and turn off automatic newline conversion.
 
-open my $in, '<:encoding(utf8)', 'eng-ukr-BlekhmanMEUL.txt';
+open my $out, '>', 'eng-ukr-BlekhmanMEUL-0.txt';
+
+open my $in, '<', 'eng-ukr-BlekhmanMEUL.txt';
 
 while (<$in>) {
 # For each line in the input file:

@@ -47,7 +47,7 @@ sub Trim {
 #   0: a string.
 sub NormTrim {
 
-    my $ret = (&NFC ($_[0]));
+    my $ret = NFC($_[0]);
     # Identify the normalization form C (canonical decomposition followed by canonical
     # composition) of the specified string. (The normalization form was changed from KC to K,
     # and so the function was changed from NFKC to NFC, on 2010/01/30 because it was judged that

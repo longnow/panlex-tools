@@ -11,6 +11,7 @@ package PanLex::Serialize::wctag;
 use strict;
 use warnings 'FATAL', 'all';
 use utf8;
+use open ':raw:encoding(utf8)';
 use parent 'Exporter';
 use PanLex::Validation;
 use PanLex::Serialize::Util;
@@ -85,7 +86,7 @@ sub wctag {
     }
 
     if ($log) {
-        open my $log_fh, '>:encoding(utf8)', 'wc.log' or die $!;
+        open my $log_fh, '>', 'wc.log' or die $!;
         print $log_fh join("\n", sort keys %notfound), "\n";
         close $log_fh;
     }

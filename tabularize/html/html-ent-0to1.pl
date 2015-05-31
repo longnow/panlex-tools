@@ -11,12 +11,15 @@ use strict;
 use utf8;
 # Make Perl interpret the script as UTF-8.
 
+use open ':raw:encoding(utf8)';
+# Set UTF-8 as the default for opening files, and turn off automatic newline conversion.
+
 use HTML::Entities;
 # Import a library for HTML entity conversion.
 
-open my $out, '>:encoding(utf8)', "$ARGV[1].txt" or die $!;
+open my $out, '>', "$ARGV[1].txt" or die $!;
 
-open my $in, '<:encoding(utf8)', "$ARGV[0].txt" or die $!;
+open my $in, '<', "$ARGV[0].txt" or die $!;
 
 while (<$in>) {
 # For each line in the input file:

@@ -9,13 +9,16 @@ use warnings 'FATAL', 'all';
 use strict;
 # Require strict checking of variable references, etc.
 
+use open ':raw:encoding(utf8)';
+# Set UTF-8 as the default for opening files, and turn off automatic newline conversion.
+
 my $name = $ARGV[0];
 # Identify the stem of the file names.
 
 open my $out, '>:unix', "$name.txt" or die $!;
 # Create an output file and open it for writing.
 
-open my $index, '<:encoding(utf8)', "$name.index" or die $!;
+open my $index, '<', "$name.index" or die $!;
 # Open the index file for reading.
 
 open my $in, '<:unix', "$name.dict" or die $!;

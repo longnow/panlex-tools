@@ -1,5 +1,6 @@
 package PanLex::Normalize;
 use strict;
+use utf8;
 use Unicode::Normalize;
 
 my %UID;

@@ -55,6 +55,9 @@ use strict;
 use utf8;
 # Make Perl interpret the script as UTF-8 rather than bytes.
 
+use open ':raw:encoding(utf8)';
+# Set UTF-8 as the default for opening files, and turn off automatic newline conversion.
+
 my ($in) = @ARGV;
 # Identify the arguments.
 
@@ -64,10 +67,10 @@ my $inf = "$in.txt";
 (-r $inf) || (die "could not find file $inf");
 # Verify that it exists and is readable.
 
-(open my $infh, '<:utf8', $inf) || (die $!);
+(open my $infh, '<', $inf) || (die $!);
 # Open it for reading.
 
-open my $outfh, '>:utf8', "${in}t.txt";
+open my $outfh, '>', "${in}t.txt";
 # Create or truncate the output file and open it for writing.
 
 my $ln = 0;

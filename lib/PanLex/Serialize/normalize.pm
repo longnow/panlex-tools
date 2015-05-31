@@ -35,6 +35,7 @@ package PanLex::Serialize::normalize;
 use strict;
 use warnings 'FATAL', 'all';
 use utf8;
+use open ':raw:encoding(utf8)';
 use parent 'Exporter';
 use PanLex::Validation;
 use PanLex::Client::Normalize;
@@ -73,7 +74,7 @@ sub normalize {
 
     my ($log_fh, $log_obj, $json);
     if ($log) {
-        open $log_fh, '>:encoding(utf8)', 'normalize.log' or die $!;
+        open $log_fh, '>', 'normalize.log' or die $!;
         $json = JSON->new->pretty->canonical;
     }
 
