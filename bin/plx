@@ -10,6 +10,7 @@ use File::Spec::Functions qw/catdir catfile curdir rel2abs splitdir/;
 use File::Copy qw/copy/;
 use LWP::UserAgent;
 use Encode 'encode';
+use Unicode::Normalize;
 
 use lib "$ENV{PANLEX_TOOLDIR}/lib";
 use PanLex::Client;
@@ -181,7 +182,7 @@ sub cmd_submit {
             print(STDERR "Unable to infer source label from directory name: $dirname\n"), return
                 unless $dirname =~ /^([a-z]{3}(?:-[a-z]{3})*)-(.+?)$/;
 
-            $aptt = "$1:$2";            
+            $aptt = NFC("$1:$2");
         }
 
         my $result = panlex_query("/ap/$aptt");
