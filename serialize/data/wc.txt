@@ -70,6 +70,7 @@ Det	detr
 det.	detr
 Determ.	detr
 Determiner	detr
+detnt	detr:detnt
 detr	detr
 disc	misc:disc
 emph	misc:emph
