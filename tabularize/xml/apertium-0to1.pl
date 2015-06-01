@@ -52,29 +52,19 @@ my %seen;
 foreach my $entry ($dom->find('section e p')->each) {
     my @col;
 
-    foreach my $side (qw/l r/) {
-        my $el = $entry->at($side);
-        push @col, $el->text; # the side's expression
+    push @col, extract_side($entry->at($_)) for qw/l r/;
 
-        my @wcmd = $el->find('s')->map(attr => 'n')->each; # the side's wc and md
+    next if skip(@col);
 
-        if ($col[-1] ne '' && @wcmd) {
-            push @col, shift @wcmd;
-            push @col, join('‣', @wcmd);
-        } else {
-            push @col, '', '';            
-        }
-    }
+    output(@col);
+}
 
-    next if $col[0] =~ /^\d+$/ && $col[3] =~ /^\d+$/;
-    next if $col[0] eq 'prpers' || $col[3] eq 'prpers'; # these are not real entries
+foreach my $entry ($dom->find('section e i')->each) {
+    my @col = (extract_side($entry)) x 2;
 
-    my $line = join("\t", @col);
+    next if skip(@col);
 
-    unless (exists $seen{$line}) {
-        $seen{$line} = '';
-        print $out $line, "\n";
-    }
+    output(@col);
 }
 
 close $in;
@@ -82,3 +72,32 @@ close $in;
 
 close $out;
 # Close the output file.
+
+sub extract_side {
+    my ($el) = @_;
+
+    my @col = ($el->text, '', '');
+    my @wcmd = $el->find('s')->map(attr => 'n')->each; # the side's wc and md
+
+    if ($col[0] ne '' && @wcmd) {
+        $col[1] = shift @wcmd;
+        $col[2] = join('‣', @wcmd);
+    }
+
+    return @col;
+}
+
+sub skip {
+    return 1 if $_[0] =~ /^\d+$/ && $_[3] =~ /^\d+$/;
+    return 1 if $_[0] eq 'prpers' || $_[3] eq 'prpers'; # these are not real entries
+    return 0;
+}
+
+sub output {
+    my $line = join("\t", @_);
+
+    unless (exists $seen{$line}) {
+        $seen{$line} = '';
+        print $out $line, "\n";
+    }
+}
