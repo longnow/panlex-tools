@@ -93,10 +93,16 @@ sub cp_file {
 sub cmd_fetch {
     my ($source) = @_;
 
-    print(STDERR "You need to specify a source.\n"), return unless $source;
+    print(STDERR "You need to specify a source directory or label.\n"), return unless $source;
     check_env(qw/PANLEX_ARCHIVE_USERNAME PANLEX_ARCHIVE_PASSWORD/);
 
-    $source =~ s/:/-/g;
+    if ($source =~ /:/) {
+        print(STDERR "Looking up source directory from label ...\n");
+
+        my $result = panlex_query("/ap/$source");
+        $source = $result->{ap}{fp};
+        print STDERR "$source\n\n";
+    }
 
     my $ua = LWP::UserAgent->new;
     $ua->credentials('dev.panlex.org:80', 'PanLex source browser', $ENV{PANLEX_ARCHIVE_USERNAME}, $ENV{PANLEX_ARCHIVE_PASSWORD});
@@ -112,7 +118,7 @@ sub cmd_fetch {
 
             my $zip = $r->filename;
             utf8::decode($zip);
-            open my $out, '>', $zip or die $!;
+            open my $out, '>:raw', $zip or die $!;
             print $out $r->decoded_content;
             close $out;
 
