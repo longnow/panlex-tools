@@ -16,6 +16,9 @@ use strict;
 use utf8;
 # Make Perl interpret the script as UTF-8 rather than bytes.
 
+use open IO => ':raw :encoding(utf8)';
+# Set UTF-8 as the default for opening files, and turn off automatic newline conversion.
+
 my ($inb, $inv) = @ARGV;
 # Identify the arguments.
 
@@ -25,10 +28,10 @@ my $in = "$inb-$inv.txt";
 (-r $in) || (die "could not find file $in");
 # Verify that it exists and is readable.
 
-(open my $infh, '<:utf8', $in) || (die $!);
+(open my $infh, '<', $in) || (die $!);
 # Open it for reading.
 
-open my $outfh, '>:utf8', ("$inb-" . ($inv + 1) . '.txt');
+open my $outfh, '>', ("$inb-" . ($inv + 1) . '.txt');
 # Create or truncate the output file and open it for writing.
 
 my $ln = 0;
@@ -145,7 +148,7 @@ foreach $col (keys %col) {
 print $outfh ((join "\t", @hd) . "\n");
 # Output the header line of the output file.
 
-(open $infh, '<:utf8', $in) || (die $!);
+(open $infh, '<', $in) || (die $!);
 # Open the input file again for reading.
 
 my ($excol, @out, @pfbd);

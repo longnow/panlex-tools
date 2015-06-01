@@ -16,6 +16,9 @@ use strict;
 use utf8;
 # Make Perl interpret the script as UTF-8 rather than bytes.
 
+use open IO => ':raw :encoding(utf8)';
+# Set UTF-8 as the default for opening files, and turn off automatic newline conversion.
+
 my ($inb, $inv) = @ARGV;
 # Identify the arguments.
 
@@ -25,10 +28,10 @@ my $in = "$inb-$inv.txt";
 (-r $in) || (die "could not find file $in");
 # Verify that it exists and is readable.
 
-(open my $infh, '<:utf8', $in) || (die $!);
+(open my $infh, '<', $in) || (die $!);
 # Open it for reading.
 
-open my $outfh, '>:utf8', ("$inb-" . ($inv + 1) . '.txt');
+open my $outfh, '>', ("$inb-" . ($inv + 1) . '.txt');
 # Create or truncate the output file and open it for writing.
 
 print $outfh ":\n0\n";
@@ -36,8 +39,6 @@ print $outfh ":\n0\n";
 
 my $ln = 0;
 # Initialize the line index as 0.
-
-my (@col, $col, @pb, @pb12);
 
 while (<$infh>) {
 # For each line of the input file:
@@ -51,16 +52,16 @@ while (<$infh>) {
     print $outfh "\n";
     # Output a newline preceding the line’s new entry.
 
-    @col = (split /\t/, $_, -1);
+    my @col = (split /\t/, $_, -1);
     # Ientify the line’s columns.
 
     shift @col;
     # Delete the first of them, i.e. the meaning ID.
 
-    foreach $col (@col) {
+    foreach my $col (@col) {
     # For each of the line’s remaining columns:
 
-        (@pb = ($col =~ /^([^:]+):(.+)$/)) || (die "Error parsing a column ($col) on line $ln\n");
+        my @pb = ($col =~ /^([^:]+):(.+)$/) || (die "Error parsing a column ($col) on line $ln\n");
         # Identify its first or only prefix and the remainder of it.
 
         if ($pb[0] =~ /^(?:mi|wc)$/) {
@@ -75,7 +76,7 @@ while (<$infh>) {
         else {
         # Otherwise, i.e. if the column has two prefixes:
 
-            ((@pb12 = ($pb[1] =~ /^([^:]+):(.+)$/)) == 2)
+            ((my @pb12 = ($pb[1] =~ /^([^:]+):(.+)$/)) == 2)
                 || (die "Error identifying a second prefix on line $ln\n");
             # Identify the second prefix and the body.
 

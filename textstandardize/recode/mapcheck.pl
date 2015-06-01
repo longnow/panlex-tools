@@ -6,16 +6,17 @@ use warnings 'FATAL', 'all';
 use strict;
 # Require strict checking of variable references, etc.
 
-use encoding 'utf8';
-# Make Perl interpret the script and standard files as UTF-8 rather than bytes.
+use utf8;
+# Make Perl interpret the script as UTF-8 rather than bytes.
 
-open my $out, '>:utf8', 'NYIPA/NYIPA-mapcheck-nml.txt';
+use open IO => ':raw :encoding(utf8)';
+# Set UTF-8 as the default for opening files, and turn off automatic newline conversion.
+
+open my $out, '>', 'NYIPA/NYIPA-mapcheck-nml.txt';
 # Open the output file.
 
 open my $map, '<', 'NYIPA/NYIPA-map-nml.txt';
 # Open the map file.
-
-my @col;
 
 while (<$map>) {
 # For each line in the map file:
@@ -23,7 +24,7 @@ while (<$map>) {
 	chomp;
 	# Delete its trailing newline.
 
-	@col = (split /\t/);
+	my @col = split /\t/, $_, -1;
 	# Identiify its columns.
 
 	print $out $col[0], "\t", $col[1], "\t", (chr (hex $col[1])), "\n";
