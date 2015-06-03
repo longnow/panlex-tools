@@ -72,7 +72,7 @@ sub out_full_0 {
         my $rec = join '', @col;
         # Identify a concatenation of its modified columns.
 
-        s/⫷(?:exp|rm)⫸[^⫷]*//g;
+        $rec =~ s/⫷(?:exp|rm)⫸[^⫷]*//g;
         # Delete all pre-normalized expressions and all tags that are marked as to be removed.
 
         while ($rec =~ s/(⫷df:$UID⫸[^⫷]+)⫷(?:wc|md:[^⫸]+)⫸[^⫷]+/$1/) {}
