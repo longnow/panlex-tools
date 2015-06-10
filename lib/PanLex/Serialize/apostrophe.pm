@@ -70,8 +70,16 @@ sub apostrophe {
 
     my @convertible_col = keys %$col_uid;
 
-    die "could not find an apostrophe conversion for all language varieties"
-        unless @convertible_col == keys %apos;
+    if (@convertible_col != keys %apos) {
+        my @not_found;
+
+        foreach my $uid (sort values %$col_uid) {
+            push @not_found, $uid unless exists $apos{$uid};
+        }
+
+        die "could not find an apostrophe conversion for the following language varieties: "
+            . join(', ', @not_found);
+    }
 
     while (<$in>) {
     # For each line of the input file:
