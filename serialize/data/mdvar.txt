@@ -1,0 +1,46 @@
+%mdvb	art-303:GenderProperty	?
+?	art-253:tone(icl>pitch)	1131
+@	art-301:source	
+POS	art-303:PartOfSpeechProperty	
+RN	art-253:identifier(icl>symbol>thing)	
+Sinón	art-303:synonym	?
+Uso	art-253:note(icl>piece of information)	
+chron	art-253:pragmatics(icl>linguistics>thing)	
+class	art-303:Class	
+class-sing	art-303:Class	
+conf	art-303:acousticRealization	jpn-002?
+deriv	art-303:derivedForm	?
+dial	art-303:Dialect	
+dialect	art-303:Dialect	
+etym	art-253:etymology(icl>linguistics>thing)	
+etymology	art-253:etymology(icl>linguistics>thing)	
+gloss	art-253:gloss(icl>explanation>thing)	Convert vl's to df's?
+gram	art-303:LinguisticProperty	
+gram&prag	art-303:LinguisticProperty	
+graph	art-303:acousticRealization	kor-002?
+id	art-253:identifier(icl>symbol>thing)	
+index	art-253:identifier(icl>symbol>thing)	
+item	art-253:identifier(icl>symbol>thing)	
+literal	art-303:literalTranslation	Convert vl's to df's?
+lo	art-303:Dialect	390 (por-bra,cmn-twn...); 400 (Dsrt,PT,IN...)
+loc	art-303:Dialect	135: vl's are NL (Netherlands) and BE nl (Flanders); all others:  vl's are англ. , амер., шотл. брит.; maybe convert to eng-005, 004, sco-000?
+meta	art-253:unknown(icl>unknown factor)	
+misc	art-253:miscellaneous(icl>adj,equ>assorted)	
+morph	art-303:hasMorphologicalConstituent	
+norm	art-283:quality(icl>caliber)	
+note	art-253:note(icl>piece of information)	
+numclass	art-303:Class	
+orth	art-303:OrthographicSystem	
+phon	art-303:acousticRealization	
+phon-LC	art-303:acousticRealization	lao-001?
+phon-hir	art-303:acousticRealization	jpn-002?
+phon-lat	art-303:acousticRealization	jpn-001?
+pl	art-303:PluralNumber	
+prag	art-253:pragmatics(icl>linguistics>thing)	
+prob		? (vl='?')
+pron	art-303:acousticRealization	
+q	art-283:quality(icl>caliber)	3991
+rafsi	art-303:Affix	
+sem	art-253:note(icl>piece of information)	
+tone	art-253:tone(icl>pitch)	
+var	art-303:Dialect	
