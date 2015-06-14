@@ -122,19 +122,20 @@ sub Delimiter {
 
 ### DelimiterIf
 # Replace non-parenthesized delimiters in a string with a standard delimiter, 
-# if all delimited expressions match a particular regular expression.
+# if all delimited expressions match a particular condition.
 # Arguments:
 #   0: input string.
 #   1: string containing a set of non-standard delimiters to match.
 #   2: standard delimiter.
-#   3: regular expression to apply to each expression.
+#   3: reference to a sub returning true if the condition is met. the sub receives
+#        one argument, the expression.
 sub DelimiterIf {
-    my ($txt, $indelim, $outdelim, $re) = @_;
+    my ($txt, $indelim, $outdelim, $sub) = @_;
 
     my @ex = split / *[$indelim] *(?![^()（）]*[)）])/, $txt, -1;
 
     foreach my $ex (@ex) {
-        return $txt unless $ex =~ /$re/;
+        return $txt unless $sub->($ex);
     }
 
     return join $outdelim, @ex;
@@ -184,6 +185,7 @@ sub _JoinPieces {
 # Arguments:
 #   0: input string.
 #   1: reference to a sub that will transform each expression and return the result.
+#        the sub receives one argument, the expression.
 sub EachEx {
     my ($txt, $sub) = @_;
 
