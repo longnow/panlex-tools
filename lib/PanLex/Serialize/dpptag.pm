@@ -5,7 +5,7 @@
 #   prefix: string to prefix to each property before parsing, or '' if none.
 #             default ''.
 
-package PanLex::Serialize::mpptag;
+package PanLex::Serialize::dpptag;
 use strict;
 use warnings 'FATAL', 'all';
 use utf8;
