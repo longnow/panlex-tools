@@ -83,6 +83,9 @@ my @TOOLS = (
 #               items, or '' if none. default 'd⁋art-300⁋HasProperty', where 'd'
 #               specifies a denotation property (use 'm' for meaning), 'art-300'
 #               is the expression's UID, and 'HasProperty' is its text.
+#   mapattr:  attribute expression to use when the mapping file property column
+#               is '*'. default 'art-300⁋HasProperty', where 'art-300' is the
+#               expression's UID, and 'HasProperty' is its text.
 #   log:      set to 1 to log unconvertible items to csppmap.log, 0 otherwise.
 #               default: 0.
 
