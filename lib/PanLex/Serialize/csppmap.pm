@@ -1,17 +1,17 @@
 # Converts text to classifications and properties based on a mapping file.
 # Arguments:
-#   cols:     array of columns containing data to be mapped.
-#   file:     name of the mapping file. default 'csppmap.txt'.
-#   delim:    inter-classification/property delimiter in file. default '‣'.
-#   default:  meaning or denotation attribute expression to use for unconvertible
-#               items, or '' if none. default 'd⁋art-300⁋HasProperty', where 'd'
-#               specifies a denotation property (use 'm' for meaning), 'art-300'
-#               is the expression's UID, and 'HasProperty' is its text.
-#   mapattr:  attribute expression to use when the mapping file property column
-#               is '*'. default 'art-300⁋HasProperty', where 'art-300' is the
-#               expression's UID, and 'HasProperty' is its text.
-#   log:      set to 1 to log unconvertible items to csppmap.log, 0 otherwise.
-#               default: 0.
+#   cols:       array of columns containing data to be mapped.
+#   file:       name of the mapping file. default 'csppmap.txt'.
+#   delim:      inter-classification/property delimiter in file. default '‣'.
+#   default:    meaning or denotation attribute expression to use for unconvertible
+#                 items, or '' if none. default 'd⁋art-300⁋HasProperty', where 'd'
+#                 specifies a denotation property (use 'm' for meaning), 'art-300'
+#                 is the expression's UID, and 'HasProperty' is its text.
+#   mapdefault: attribute expression to use when the mapping file property column
+#                 is '*'. default 'art-300⁋HasProperty', where 'art-300' is the
+#                 expression's UID, and 'HasProperty' is its text.
+#   log:        set to 1 to log unconvertible items to csppmap.log, 0 otherwise.
+#                 default: 0.
 
 package PanLex::Serialize::csppmap;
 use strict;
@@ -35,7 +35,7 @@ sub csppmap {
     my $file        = $args->{file} // 'csppmap.txt';
     my $delim       = $args->{delim} // '‣';
     my $default     = $args->{default} // 'd⁋art-300⁋HasProperty';
-    my $mapattr     = $args->{mapattr} // 'art-300⁋HasProperty';
+    my $mapdefault   = $args->{mapdefault} // 'art-300⁋HasProperty';
     my $log         = $args->{log} // 0;
 
     my $default_type;
@@ -48,9 +48,9 @@ sub csppmap {
         $default = $3 . $2;
     }
 
-    die "mapattr parameter must take the form 'UID⁋text' (delimiter is arbitrary)"
-        unless $mapattr =~ /^[a-z]{3}-\d{3}(.).+$/;
-    $mapattr .= $1;
+    die "mapdefault parameter must take the form 'UID⁋text' (delimiter is arbitrary)"
+        unless $mapdefault =~ /^[a-z]{3}-\d{3}(.).+$/;
+    $mapdefault .= $1;
 
     $file = catfile($ENV{PANLEX_TOOLDIR}, 'serialize', 'data', $file)
         unless -e $file;
@@ -67,7 +67,7 @@ sub csppmap {
         die "map file line does not have four columns" unless @col == 4;
         die "invalid type column: $col[1] (must be 'd' or 'm')" unless $col[1] eq 'd' || $col[1] eq 'm';
 
-        $col[3] = $mapattr . $col[0] if $col[3] eq '*';
+        $col[3] = $mapdefault . $col[0] if $col[3] eq '*';
 
         $map{$col[0]} = { 
             type => $col[1], 
