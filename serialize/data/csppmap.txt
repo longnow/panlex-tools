@@ -7,7 +7,7 @@ ADJ	d	art-303:PartOfSpeechProperty:art-303:Adjectival
 adj.	d	art-303:PartOfSpeechProperty:art-303:Adjectival	
 Adj.	d	art-303:PartOfSpeechProperty:art-303:Adjectival	
 adj.pred.	d	art-303:PartOfSpeechProperty:art-303:Adjectival‣art-302:PRED	
-Adj. poss.	d	art-303:PartOfSpeechProperty:art-303:Adjectival	
+Adj. poss.	d	art-303:PartOfSpeechProperty:art-303:Adjectival‣art-302:POSS	
 adjective	d	art-303:PartOfSpeechProperty:art-303:Adjectival	
 Adjective	d	art-303:PartOfSpeechProperty:art-303:Adjectival	
 ADJECTIVE	d	art-303:PartOfSpeechProperty:art-303:Adjectival	
