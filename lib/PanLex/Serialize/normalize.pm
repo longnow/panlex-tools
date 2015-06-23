@@ -10,8 +10,8 @@
 #   mindeg:   minimum score a proposed expression that is not accepted outright 
 #               as an expression, or its replacement, must have in order to be
 #               accepted as an expression. pass '' to disable replacement.
-#   ap:       array of source IDs whose meanings are to be ignored 
-#               in normalization; [] if none. default [].
+#   ui:       array of source group IDs whose meanings are to be ignored in
+#               normalization; [] if none. default [].
 #   log:      set to 1 to log normalize scores to normalize.json, 0 otherwise.
 #               default: 0.
 #   failtag:  tag with which to retag proposed expressions not accepted as 
@@ -50,14 +50,14 @@ sub normalize {
     my $out = shift;
     my $args = ref $_[0] ? $_[0] : \@_;
     
-    my ($excol, $uid, $min, $mindeg, $ap, $log, $failtag, $ignore, @propcols, $delim, $extag, $exptag, $tagre);
+    my ($excol, $uid, $min, $mindeg, $ui, $log, $failtag, $ignore, @propcols, $delim, $extag, $exptag, $tagre);
     
     if (ref $args eq 'HASH') {
         $excol      = $args->{col};
         $uid        = $args->{uid};
         $min        = $args->{min};
         $mindeg     = $args->{mindeg};
-        $ap         = $args->{ap} // [];
+        $ui         = $args->{ui} // $args->{ap} // [];
         $log        = $args->{log} // 0;
         $failtag    = $args->{failtag} // $args->{dftag} // '⫷df⫸';
         $ignore     = $args->{ignore} // '';
@@ -144,7 +144,7 @@ sub normalize {
         }
     }
 
-    my $result = panlex_norm('ex', $uid, [keys %ex], 0, $ap);
+    my $result = panlex_norm('ex', $uid, [keys %ex], 0, $ui);
     $log_obj->{stage1} = $result if $log;
 
     foreach my $tt (keys %$result) {
@@ -160,7 +160,7 @@ sub normalize {
     my %ttto;
 
     if ($mindeg ne '') {
-        $result = panlex_norm('ex', $uid, [keys %ex], 1, $ap);
+        $result = panlex_norm('ex', $uid, [keys %ex], 1, $ui);
         $log_obj->{stage2} = $result if $log;
 
         foreach my $tt (keys %$result) {

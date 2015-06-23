@@ -4,8 +4,8 @@
 #   uid:      variety UID of expressions to be normalized.
 #   mindeg:   minimum score a proposed expression or its replacement must have in 
 #               order to be accepted as an expression.
-#   ap:       array of source IDs whose meanings are to be ignored 
-#               in normalization; [] if none. default [].
+#   ui:       array of source group IDs whose meanings are to be ignored in
+#               normalization; [] if none. default [].
 #   log:      set to 1 to log normalize scores to normalizedf.json, 0 otherwise.
 #               default: 0.
 #   ignore:   regex matching expressions to be ignored in normalization; or ''
@@ -33,13 +33,13 @@ sub normalizedf {
     my $out = shift;
     my $args = ref $_[0] ? $_[0] : \@_;
     
-    my ($excol, $uid, $mindeg, $ap, $log, $ignore, $extag, $exptag, $tagre);
+    my ($excol, $uid, $mindeg, $ui, $log, $ignore, $extag, $exptag, $tagre);
     
     if (ref $args eq 'HASH') {
         $excol      = $args->{col};
         $uid        = $args->{uid};
         $mindeg     = $args->{mindeg};
-        $ap         = $args->{ap} // [];
+        $ui         = $args->{ui} // $args->{ap} // [];
         $log        = $args->{log} // 0;
         $ignore     = $args->{ignore} // '';
         $extag      = $args->{extag} // '⫷ex⫸';
@@ -120,7 +120,7 @@ sub normalizedf {
 
     my %ttto;
 
-    my $result = panlex_norm('df', $uid, [keys %ex], 1, $ap);
+    my $result = panlex_norm('df', $uid, [keys %ex], 1, $ui);
 
     $log_obj = $result if $log;
 

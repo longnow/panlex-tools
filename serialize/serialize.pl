@@ -36,8 +36,8 @@ my @TOOLS = (
 #   uid:      variety UID of expressions to be normalized.
 #   mindeg:   minimum score a proposed expression or its replacement must have in 
 #               order to be accepted as an expression.
-#   ap:       array of source IDs whose meanings are to be ignored 
-#               in normalization; [] if none. default [].
+#   ui:       array of source group IDs whose meanings are to be ignored in
+#               normalization; [] if none. default [].
 #   log:      set to 1 to log normalize scores to normalizedf.json, 0 otherwise.
 #               default: 0.
 #   ignore:   regex matching expressions to be ignored in normalization; or ''
@@ -142,8 +142,8 @@ my @TOOLS = (
 #   mindeg:   minimum score a proposed expression that is not accepted outright 
 #               as an expression, or its replacement, must have in order to be
 #               accepted as an expression. pass '' to disable replacement.
-#   ap:       array of source IDs whose meanings are to be ignored 
-#               in normalization; [] if none. default [].
+#   ui:       array of source group IDs whose meanings are to be ignored in
+#               normalization; [] if none. default [].
 #   log:      set to 1 to log normalize scores to normalize.json, 0 otherwise.
 #               default: 0.
 #   failtag:  tag with which to retag proposed expressions not accepted as 

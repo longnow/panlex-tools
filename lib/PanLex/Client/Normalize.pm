@@ -12,10 +12,10 @@ our @EXPORT = qw/panlex_norm/;
 #   1: variety UID.
 #   2: tt parameter containing expression texts (arrayref).
 #   3: degrade parameter (boolean).
-#   4: ap parameter (arrayref).
+#   4: ui parameter (arrayref).
 
 sub panlex_norm {
-    my ($type, $uid, $tt, $degrade, $ap) = @_;
+    my ($type, $uid, $tt, $degrade, $ui) = @_;
     my $result = {};
         
     for (my $i = 0; $i < @$tt; $i += $PanLex::Client::ARRAY_MAX) {
@@ -25,7 +25,7 @@ sub panlex_norm {
         # get the next set of results.
         my $this_result = panlex_query("/norm/${type}/$uid", { 
             tt => [@{$tt}[$i .. $last]],
-            ap => $ap || [],
+            ui => $ui // [],
             degrade => $degrade,
             cache => 0,
         });
