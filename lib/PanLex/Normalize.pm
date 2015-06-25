@@ -2,23 +2,28 @@ package PanLex::Normalize;
 use strict;
 use utf8;
 use Unicode::Normalize;
+use File::Spec::Functions;
 
 my %UID;
 
-foreach my $pm (glob(__FILE__ =~ s/\.pm$//r . '/*.pm')) {
-    if ($pm =~ m|/([a-z]{3}\d{3})\.pm$|) {
-        $UID{$1} = 1;
-        require $pm;
+{
+    my $basename = __FILE__ =~ s/\.pm$//r;
+
+    foreach my $pm (glob(catfile($basename, '*.pm'))) {
+        if ($pm =~ m|/([a-z]{3}\d{3})\.pm$|) {
+            $UID{$1} = 1;
+            require $pm;
+        }
     }
 }
 
-sub ex {
+sub text {
     my ($self, $str, $uid) = @_;
     $uid =~ s/-//;
 
     if ($UID{$uid}) {
         my $module = "PanLex::Normalize::$uid";
-        return $module->ex($str);
+        return $module->text($str);
     }
     else {
         return $str;

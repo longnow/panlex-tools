@@ -14,7 +14,6 @@ use Unicode::Normalize;
 
 use lib "$ENV{PANLEX_TOOLDIR}/lib";
 use PanLex::Client;
-use PanLex::Normalize;
 
 my $SOURCE_ARCHIVE_URL = 'http://dev.panlex.org/sources';
 my $PANLEM_URL = 'http://panlex.org/u';
@@ -269,20 +268,12 @@ sub cmd_upload {
 sub cmd_server {
     my ($port) = @_;
     $port //= 5050;
+    $ENV{MOJO_MODE} = 'production';
 
-    require DNode;
+    require PanLex::Server;
 
-    my $d = DNode->new({
-        norm_ex => sub { $_[2]->(PanLex::Normalize->ex($_[0], $_[1])) }
-    });
-
-    $d->on->{error} = sub {
-        my ($msg) = @_;
-        print STDERR $msg, "\n";
-    };
-
-    print "DNode server listening on port $port\n";
-    $d->listen($port);
+    my $app = PanLex::Server->new;
+    $app->start('daemon', '-l', "http://*:$port");
 }
 
 sub usage {
@@ -300,7 +291,7 @@ submit (<file>) (<source_id>|<source_label>) (whole|simple) (replace|add|check)
 upload (<dir>) <note>
     upload PanLex source directory to archive with note
 server <port>
-    run DNode server (experimental)
+    run HTTP server (experimental)
 
 Environment variables:
 
