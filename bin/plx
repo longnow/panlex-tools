@@ -7,7 +7,6 @@ binmode STDOUT, ':encoding(utf8)';
 binmode STDERR, ':encoding(utf8)';
 
 use File::Spec::Functions qw/catdir catfile curdir rel2abs splitdir/;
-use File::Copy qw/copy/;
 use LWP::UserAgent;
 use Encode 'encode';
 use Unicode::Normalize;
