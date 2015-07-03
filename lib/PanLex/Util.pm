@@ -1,10 +1,11 @@
 package PanLex::Util;
 use strict;
 use utf8;
+use open IO => ':raw :encoding(utf8)';
 use parent 'Exporter';
 use Unicode::Normalize 'NFC';
 
-our @EXPORT = qw/Trim NormTrim Dedup Delimiter DelimiterIf ExpandParens EachEx/;
+our @EXPORT = qw/Trim NormTrim Dedup Delimiter DelimiterIf ExpandParens EachEx LoadMap MapStr/;
 
 ### Trim
 # Delete superfluous spaces in the specified string.
@@ -196,6 +197,47 @@ sub EachEx {
     }
 
     return join('', @ex);
+}
+
+### LoadMap
+# Loads a map file, returning a hashref.
+# Arguments:
+#   0: map file path.
+#   1: column delimiter (default "\t").
+sub LoadMap {
+    my ($path, $delim) = @_;
+    $delim //= "\t";
+
+    my $map;
+
+    open my $fh, '<', $path or die $!;
+
+    while (<$fh>) {
+        chomp;
+
+        my ($from, $to) = split $delim, $_, 2;
+
+        $map->{$from} = $to;
+    }
+
+    return $map;
+}
+
+### MapStr
+# Converts string characters according to a supplied mapping.
+# Arguments:
+#   0: the string.
+#   1: the mapping (hashref).
+sub MapStr {
+    my ($str, $map) = @_;
+
+    my $output = '';
+
+    foreach my $chr (split //, $str) {
+        $output .= exists $map->{$chr} ? $map->{$chr} : $chr;
+    }
+
+    return $output;
 }
 
 1;
