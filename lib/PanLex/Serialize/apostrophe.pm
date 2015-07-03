@@ -73,7 +73,7 @@ sub apostrophe {
     if (@uniq_uid != keys %apos) {
         my @not_found;
 
-        foreach my $uid (sort values %$col_uid) {
+        foreach my $uid (sort @uniq_uid) {
             push @not_found, $uid unless exists $apos{$uid};
         }
 
