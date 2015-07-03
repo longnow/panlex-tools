@@ -8,6 +8,7 @@ use strict;
 use warnings 'FATAL', 'all';
 use utf8;
 use parent 'Exporter';
+use List::MoreUtils 'uniq';
 use PanLex::Client;
 use PanLex::Validation;
 use PanLex::Serialize::Util;
@@ -30,8 +31,9 @@ sub apostrophe {
     }
 
     my $col_uid = parse_specs(\@specs);
+    my @uniq_uid = uniq values %$col_uid;
     
-    my $result = panlex_query_all('/lv', { uid => [values %$col_uid], include => 'cp' });
+    my $result = panlex_query_all('/lv', { uid => \@uniq_uid, include => 'cp' });
     
     my %apos;
 
@@ -68,9 +70,7 @@ sub apostrophe {
         $apos{$lv->{uid}} = $best || "\x{02bc}";
     }
 
-    my @convertible_col = keys %$col_uid;
-
-    if (@convertible_col != keys %apos) {
+    if (@uniq_uid != keys %apos) {
         my @not_found;
 
         foreach my $uid (sort values %$col_uid) {
@@ -80,6 +80,8 @@ sub apostrophe {
         die "could not find an apostrophe conversion for the following language varieties: "
             . join(', ', @not_found);
     }
+
+    my @convertible_col = keys %$col_uid;
 
     while (<$in>) {
     # For each line of the input file:
