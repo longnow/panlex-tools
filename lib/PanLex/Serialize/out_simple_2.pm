@@ -43,7 +43,7 @@ sub out_simple_2 {
         s/\t//g;
         # Delete all tabs.
 
-        s/⫷(?:exp|rm)⫸[^⫷]*//g;
+        s/⫷(?:dnp|rm)⫸[^⫷]*//g;
         # Delete all pre-normalized expressions and all tags that are marked as to be removed.
 
         unless (exists $seen{$_}) {
@@ -52,7 +52,7 @@ sub out_simple_2 {
             $seen{$_} = '';
             # Add it to the table of entries.
 
-            s/⫷ex⫸/\n/g;
+            s/⫷dn⫸/\n/g;
             # Convert all expression tags and the inter-column tab.
 
             print $out $_, "\n";

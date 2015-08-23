@@ -1,7 +1,7 @@
 # Converts a standard tagged source file to a full-text varilingual source file.
 # Arguments:
 #   specs:  array of specifications (column index + colon + variety UID) of
-#             columns containing tags (e.g., ex, df, dm) requiring variety
+#             columns containing tags (e.g., dn, df, dm) requiring variety
 #             specifications.
 #   mindf:  minimum count (1 or more) of definitions and expressions per entry.
 #             default 2.
@@ -75,7 +75,7 @@ sub out_full_0 {
         my $rec = join '', @col;
         # Identify a concatenation of its modified columns.
 
-        $rec =~ s/⫷(?:exp|rm)⫸[^⫷]*//g;
+        $rec =~ s/⫷(?:dnp|rm)⫸[^⫷]*//g;
         # Delete all pre-normalized expressions and all tags that are marked as to be removed.
 
         while ($rec =~ s/($DF)(?:$DCSDPP)/$1/) {}
@@ -87,12 +87,12 @@ sub out_full_0 {
         while ($rec =~ s/(($DF|$MCSMPP)(?:⫷.+?)?)\2(?=⫷|$)/$1/) {}
         # Delete all duplicate df elements and meaning classifications and properties in it.
 
-        while ($rec =~ s/((⫷ex:$UID+⫸[^⫷]+)(?:⫷.+?)?)\K\2(?:$DCSDPP)*(?=⫷|$)//) {}
-        # Delete all duplicate ex elements in it.
+        while ($rec =~ s/((⫷dn:$UID+⫸[^⫷]+)(?:⫷.+?)?)\K\2(?:$DCSDPP)*(?=⫷|$)//) {}
+        # Delete all duplicate dn elements in it.
 
         next if (
-            (() = $rec =~ /(⫷(?:ex|df):)/g) < $mindf
-            || (() = $rec =~ /(⫷ex:)/g) < $minex
+            (() = $rec =~ /(⫷(?:dn|df):)/g) < $mindf
+            || (() = $rec =~ /(⫷dn:)/g) < $minex
         );
         # If the count of remaining expressions and definitions or the count of remaining
         # expressions is smaller than the minimum, disregard the line.
@@ -103,7 +103,7 @@ sub out_full_0 {
             $seen{$rec} = '';
             # Add it to the table of lines.
 
-            $rec =~ s/⫷(ex|df|[dm]cs[12]|[dm]pp):($UID)⫸/\n$1\n$2\n/g;
+            $rec =~ s/⫷(dn|df|[dm]cs[12]|[dm]pp):($UID)⫸/\n$1\n$2\n/g;
             # Convert all expression, definition, and initial classification and property 
             # tags in it.
 
@@ -113,7 +113,7 @@ sub out_full_0 {
             $rec =~ s/⫷(?:[dm]pp)⫸/\n/g;
             # Convert all remaining property tags in it.
 
-            print $out $rec, "\n";
+            print $out "mn\n$rec\n";
             # Output it.
 
         }

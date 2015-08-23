@@ -10,8 +10,8 @@
 #               default: 0.
 #   ignore:   regex matching expressions to be ignored in normalization; or ''
 #               (blank) if none. default ''.
-#   extag:    expression tag. default '⫷ex⫸'.
-#   exptag:   pre-normalized expression tag. default '⫷exp⫸'.
+#   extag:    expression tag. default '⫷dn⫸'.
+#   exptag:   pre-normalized expression tag. default '⫷dnp⫸'.
 #   tagre:    regex identifying any tag. default '⫷[a-z:]+⫸'.
 
 package PanLex::Serialize::normalizedf;
@@ -42,8 +42,8 @@ sub normalizedf {
         $ui         = $args->{ui} // $args->{ap} // [];
         $log        = $args->{log} // 0;
         $ignore     = $args->{ignore} // '';
-        $extag      = $args->{extag} // '⫷ex⫸';
-        $exptag     = $args->{exptag} // '⫷exp⫸';
+        $extag      = $args->{extag} // '⫷dn⫸';
+        $exptag     = $args->{exptag} // '⫷dnp⫸';
         $tagre      = $args->{tagre} // '⫷[a-z:]+⫸';
     } else {
         die "invalid arguments: you must pass a hashref";

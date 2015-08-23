@@ -27,8 +27,8 @@
 #               synonymous proposed expressions and they are to be normalized if
 #               and only if all expressions in the list are normalizable; or ''
 #               (blank) if not. default ''. example: ', '.
-#   extag:    expression tag. default '⫷ex⫸'.
-#   exptag:   pre-normalized expression tag. default '⫷exp⫸'.
+#   extag:    expression tag. default '⫷dn⫸'.
+#   exptag:   pre-normalized expression tag. default '⫷dnp⫸'.
 #   tagre:    regex identifying any tag. default '⫷[a-z:]+⫸'.
 
 package PanLex::Serialize::normalize;
@@ -63,8 +63,8 @@ sub normalize {
         $ignore     = $args->{ignore} // '';
         @propcols   = @{$args->{propcols} || []};
         $delim      = $args->{delim} // '';
-        $extag      = $args->{extag} // '⫷ex⫸';
-        $exptag     = $args->{exptag} // '⫷exp⫸';
+        $extag      = $args->{extag} // '⫷dn⫸';
+        $exptag     = $args->{exptag} // '⫷dnp⫸';
         $tagre      = $args->{tagre} // '⫷[a-z:]+⫸';
     } else {
         ($tagre, $extag, $excol, $min, $mindeg, $uid, $exptag, $failtag, $delim) = @$args;

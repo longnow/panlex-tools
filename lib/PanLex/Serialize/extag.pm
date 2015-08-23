@@ -4,7 +4,7 @@
 #   cols:     array of columns containing expressions.
 #   syndelim: synonym delimiter (regex), or '' if none. default '‣'.
 #   mndelim:  meaning delimiter (regex), or '' if none. default '⁋'.
-#   extag:    expression tag. default '⫷ex⫸'.
+#   extag:    expression tag. default '⫷dn⫸'.
 #   mntag:    meaning tag. default '⫷mn⫸'.
 #   tagged:   whether columns may contain already tagged contents (with standard
 #               tag delimiters). default 0.
@@ -31,7 +31,7 @@ sub extag {
         @excol    = @{$args->{cols}};
         $syndelim = $args->{syndelim} // '‣';
         $mndelim  = $args->{mndelim} // '⁋';
-        $extag    = $args->{extag} // '⫷ex⫸';
+        $extag    = $args->{extag} // '⫷dn⫸';
         $mntag    = $args->{mntag} //  '⫷mn⫸';
         $tagged   = $args->{tagged} // 0;
     } else {
