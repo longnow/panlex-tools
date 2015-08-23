@@ -8,10 +8,17 @@ package PanLex::Serialize::mdtag;
 use strict;
 use warnings 'FATAL', 'all';
 use utf8;
+use open IO => ':raw :encoding(utf8)';
 use parent 'Exporter';
+use File::Spec::Functions;
 use PanLex::Validation;
+use PanLex::Serialize::dpptag;
 
 our @EXPORT = qw/mdtag/;
+
+my %varmap;
+
+load_map();
 
 sub mdtag {
     my $in = shift;
@@ -30,38 +37,36 @@ sub mdtag {
     }
     validate_col($mdcol);
 
-    while (<$in>) {
-    # For each line of the input file:
+    my $var;
 
+    if ($mdtag =~ /^⫷md:(.+)⫸$/) {
+        die "don't know how to convert old md var: $1" unless exists $varmap{$1};
+        $var = $varmap{$1};
+    } else {
+        die "don't know how to convert old mdtag: $mdtag";
+    }
+
+    dpptag($in, $out, { cols => [$mdcol], delim => $delim, prefix => $var });
+}
+
+sub load_map {
+    my $mapfile = 'mdvar.txt';
+
+    $mapfile = catfile($ENV{PANLEX_TOOLDIR}, 'serialize', 'data', $mapfile)
+        unless -e $mapfile;
+
+    open my $mapin, '<', $mapfile or die $!;
+
+    while (<$mapin>) {
         chomp;
-        # Delete its trailing newline.
 
-        my @col = split /\t/, $_, -1;
-        # Identify its columns.
+        my ($from, $to) = split /\t/, $_, -1;
+        next if $to eq '';
 
-        die "column $mdcol not present in line" unless defined $col[$mdcol];
-        # If the specified column does not exist or has an undefined value, quit and
-        # report the error.
+        $varmap{$from} = $to;
+    }
 
-        if (length $col[$mdcol]) {
-        # If the column is not blank:
-
-            if ($delim eq '') {
-            # If there is no delimiter:
-
-                $col[$mdcol] = "$mdtag$col[$mdcol]";
-                # Prefix a metadatum tag to the column's content.
-            } else {
-            # Otherwise, i.e. if there is a delimiter:
-
-                $col[$mdcol] = join('', map { "$mdtag$_" } split /$delim/, $col[$mdcol]);
-                # Prefix a metadatum tag to each item in the column.
-            }
-        }
-
-        print $out join("\t", @col), "\n";
-        # Output the line.
-    }    
+    close $mapfile;
 }
 
 1;

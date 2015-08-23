@@ -1,9 +1,9 @@
 #'replace'      => { cols => [1, 2], from => '⫷fail⫸', to => '⫷ex⫸' },
 # Replaces strings in a tab-delimited source file.
 # Arguments:
-#   cols:     array of columns to be processed.
-#   from:     regex matching any string(s) to be replaced.
-#   to:       new string to use.
+#   cols:   array of columns to be processed.
+#   from:   regex matching any string(s) to be replaced.
+#   to:     new string to use.
 
 package PanLex::Serialize::replace;
 use strict;

@@ -1,7 +1,6 @@
 # Tags meaning identifiers.
 # Arguments:
 #   col:    column that contains meaning identifiers.
-#   mitag:  meaning-identifier tag. default '⫷mi⫸'.
 
 package PanLex::Serialize::mitag;
 use strict;
@@ -9,6 +8,7 @@ use warnings 'FATAL', 'all';
 use utf8;
 use parent 'Exporter';
 use PanLex::Validation;
+use PanLex::Serialize::mpptag;
 
 our @EXPORT = qw/mitag/;
 
@@ -17,35 +17,17 @@ sub mitag {
     my $out = shift;
     my $args = ref $_[0] ? $_[0] : \@_;
     
-    my ($micol, $mitag);
+    my ($micol);
     
     if (ref $args eq 'HASH') {
         $micol    = $args->{col};
-        $mitag    = $args->{mitag} // '⫷mi⫸';      
     } else {
-        ($micol, $mitag) = @$args;
+        ($micol) = @$args;
     }
 
     validate_col($micol);    
     
-    while (<$in>) {
-    # For each line of the input file:
-
-        chomp;
-        # Delete its trailing newline.
-
-        my @col = split /\t/, $_, -1;
-        # Identify its columns.
-
-        die "column $micol not present in line" unless defined $col[$micol];
-
-        $col[$micol] = "$mitag$col[$micol]" if length $col[$micol];
-        # Prefix a meaning-identifier tag to the meaning-identifier column's content,
-        # if not blank.
-
-        print $out join("\t", @col), "\n";
-        # Output the line.
-    }    
+    mpptag($in, $out, { cols => [$micol], prefix => 'art-301⁋identifier⁋' });
 }
 
 1;

@@ -67,49 +67,59 @@ my @TOOLS = (
 #   prere:    regex matching a preposed annotation not to be counted, or '' if
 #               none. default '⫷[^⫷⫸]+⫸'.
 
-#'dftag'        => { cols => [1, 2] },
+#'dftag'        => { cols => [1] },
 # Tags all column-based definitions in a tab-delimited source file.
 # Arguments:
 #   cols:   array of columns containing definitions.
 #   dftag:  definition tag. default '⫷df⫸'.
 
-#'mitag'        => { col => 2 },
-# Tags meaning identifiers.
+#'csppmap'      => { cols => [1] },
+# Converts text to classifications and properties based on a mapping file.
 # Arguments:
-#   col:    column that contains meaning identifiers.
-#   mitag:  meaning-identifier tag. default '⫷mi⫸'.
+#   cols:       array of columns containing data to be mapped.
+#   file:       name of the mapping file. default 'csppmap.txt'.
+#   delim:      inter-classification/property delimiter in file. default '‣'.
+#   default:    meaning or denotation attribute expression to use for unconvertible
+#                 items, or '' if none. default 'd⁋art-300⁋HasProperty', where 'd'
+#                 specifies a denotation property (use 'm' for meaning), 'art-300'
+#                 is the expression's UID, and 'HasProperty' is its text.
+#   mapdefault: attribute expression to use when the mapping file property column
+#                 is '*'. default 'art-300⁋HasProperty', where 'art-300' is the
+#                 expression's UID, and 'HasProperty' is its text.
+#   log:        set to 1 to log unconvertible items to csppmap.log, 0 otherwise.
+#                 default: 0.
 
-#'wcretag'      => { cols => [1, 2] },
-# Retags word classifications in a tab-delimited source file.
+#'dcstag'       => { cols => [1] },
+# Tags denotation classifications.
 # Arguments:
-#   cols:     array of columns containing word classifications.
-#   pretag:   input file's wc tag before its content. default '⫷wc:'.
-#   posttag:  input file's wc tag after its content. default '⫸'.
-#   wctag:    output file's word-classification tag. default '⫷wc⫸'
-#   mdtag:    metadatum tag. default '⫷md:gram⫸'.
+#   cols:   array of columns containing denotation classifications.
+#   delim:  inter-classification delimiter, or '' if none. default '‣'.
+#   prefix: string to prefix to each classification before parsing, or '' if none.
+#             default ''.
 
-#'wctag'        => { col => 1 },
-# Converts and tags word classifications in a tab-delimited source file.
+#'dpptag'       => { cols => [1] },
+# Tags denotation properties.
 # Arguments:
-#   col:   column containing word classifications.
-#   wctag: word-classification tag. default '⫷wc⫸'.
-#   mdtag: metadatum tag. default '⫷md:gram⫸'.
-#   log:   set to 1 to log unconvertible word classes to wc.log, 0 otherwise.
-#            default: 0.
+#   cols:   array of columns containing denotation properties.
+#   delim:  inter-property delimiter, or '' if none. default '‣'.
+#   prefix: string to prefix to each property before parsing, or '' if none.
+#             default ''.
 
-#'mdtag'        => { col => 2 },
-# Tags metadata in a tab-delimited source file.
+#'mcstag'       => { cols => [1] },
+# Tags meaning classifications.
 # Arguments:
-#   col:   column containing metadata.
-#   mdtag: metadatum tag. default '⫷md:gram⫸'.
-#   delim: metadatum delimiter, or '' if none. default ''.
+#   cols:   array of columns containing meaning classifications.
+#   delim:  inter-classification delimiter, or '' if none. default '‣'.
+#   prefix: string to prefix to each classification before parsing, or '' if none.
+#             default ''. example 'art-300⁋HasContext⁋'.
 
-#'dmtag'        => { cols => [2, 3] },
-# Tags domain expressions in a tab-delimited source file.
+#'mpptag'       => { cols => [1] },
+# Tags meaning properties.
 # Arguments:
-#   cols:   array of columns containing domain expressions.
-#   dmtag:  domain-expression tag. default '⫷dm⫸'.
-#   delim:  inter-expression delimiter, or '' if none. default '‣'.
+#   cols:   array of columns containing meaning properties.
+#   delim:  inter-property delimiter, or '' if none. default '‣'.
+#   prefix: string to prefix to each property before parsing, or '' if none.
+#             default ''. example 'art-301⁋identifier⁋'.
 
 #'mnsplit'      => { col => 2 },
 # Splits multi-meaning lines of a tagged source file, eliminating any duplicate
@@ -117,17 +127,6 @@ my @TOOLS = (
 # Arguments:
 #   col:    column that may contain multiple meanings.
 #   delim:  meaning-delimitation tag. default '⫷mn⫸'.
-
-#'wcshift'      => { col => 2 },
-# Replaces prepended word class specifications with post-ex wc tags in a
-# tab-delimited source file.
-# Arguments:
-#   col:      column containing prepended word class specifications.
-#   pretag:   start of word-class specification. default '⫷wc:'.
-#   posttag:  end of word-class specification. default '⫸'.
-#   wctag:    word-classification tag. default '⫷wc⫸'.
-#   extag:    expression tag. default '⫷ex⫸'.
-#   postre:   regex matching any post-tag character. default '[^⫷]'.
 
 #'normalize'    => { col => 0, uid => 'eng-000', min => 50, mindeg => 10 },
 # Normalizes expressions in a tagged source file.
@@ -163,12 +162,12 @@ my @TOOLS = (
 #   exptag:   pre-normalized expression tag. default '⫷exp⫸'.
 #   tagre:    regex identifying any tag. default '⫷[a-z:]+⫸'.
 
-#'replace'      => { cols => [1, 2], from => '⫷fail⫸', to => '⫷ex⫸' },
+#'replace'      => { cols => [1], from => '⫷fail⫸', to => '⫷ex⫸' },
 # Replaces strings in a tab-delimited source file.
 # Arguments:
-#   cols:     array of columns to be processed.
-#   from:     regex matching any string(s) to be replaced.
-#   to:       new string to use.
+#   cols:   array of columns to be processed.
+#   from:   regex matching any string(s) to be replaced.
+#   to:     new string to use.
 
 #'out-full-0'   => { specs => [ '0:eng-000', '1:rus-000' ] },
 # Converts a standard tagged source file to a full-text varilingual source file.
