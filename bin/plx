@@ -141,9 +141,8 @@ sub cmd_fetch {
 
 sub cmd_submit {
     my ($final, $ap, $aptt);
-    my $dos = 'tot'; # whole
-    my $sr = 'dossnd5'; # whole
-    my $op = 'ren'; # replace
+    my $sr = 'dossnd1'; # submit file
+    my $op = '2'; # replace
 
     if (defined $_[0] && -f $_[0]) {
         $final = shift;
@@ -154,13 +153,10 @@ sub cmd_submit {
     }
 
     foreach my $arg (@_) {
-        if ($arg eq 'simple') {
-            $dos = 'smp';
-            $sr = 'dossnd3';
-        } elsif ($arg eq 'check') {
-            $op = 'ktr';
+        if ($arg eq 'check') {
+            $op = '0';
         } elsif ($arg eq 'add') {
-            $op = 'apv';
+            $op = '1';
         } elsif ($arg =~ /^\d+$/) {
             $ap //= $arg;
         } elsif ($arg =~ /:/) {
@@ -198,9 +194,9 @@ sub cmd_submit {
             pwd     => $ENV{PANLEX_PANLEM_PASSWORD},
             uslv    => '187', # user's interface lv
             sr      => $sr, # state routine
-            dos     => $dos, # final source file format
             op      => $op, # operation
             ap      => $ap, # source id
+            dbg     => '', # whole - see
             ml      => 'res', # multiline parameter (must be ordered before the parameter)
             res     => [encode('utf8', $final), undef], # uploaded file
         ]
