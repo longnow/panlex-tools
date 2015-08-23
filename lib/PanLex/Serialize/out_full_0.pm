@@ -65,7 +65,7 @@ sub out_full_0 {
             if (exists $col_uid->{$i}) {
             # If it is variety-specific:
 
-                $col[$i] =~ s/⫷(ex|df|[dm]cs)⫸/⫷$1:$col_uid->{$i}⫸/g;
+                $col[$i] =~ s/⫷(dn|df|[dm]cs)⫸/⫷$1:$col_uid->{$i}⫸/g;
                 # Insert the column's variety UID into each tag in it.
 
             }
@@ -82,7 +82,7 @@ sub out_full_0 {
         # Delete all denotation classifications and properties following definitions.
 
         while ($rec =~ s/(($DCSDPP)(?:$DCSDPP)*)\2(?=⫷|$)/$1/) {}
-        # Delete all duplicate denotation classifications and properties of any ex element in it.
+        # Delete all duplicate denotation classifications and properties of any dn element in it.
 
         while ($rec =~ s/(($DF|$MCSMPP)(?:⫷.+?)?)\2(?=⫷|$)/$1/) {}
         # Delete all duplicate df elements and meaning classifications and properties in it.
@@ -113,7 +113,7 @@ sub out_full_0 {
             $rec =~ s/⫷(?:[dm]pp)⫸/\n/g;
             # Convert all remaining property tags in it.
 
-            print $out "mn\n$rec\n";
+            print $out "\nmn$rec\n";
             # Output it.
 
         }
