@@ -10,7 +10,7 @@
 #               default ''. example: 25.
 #   maxword:  maximum word count permitted in an expression, or '' if none.
 #               default ''. example: 3.
-#   extag:    expression tag. default '⫷dn⫸'.
+#   extag:    expression tag. default '⫷ex⫸'.
 #   dftag:    definition tag. default '⫷df⫸'.
 #   postre:   regex matching any post-tag character. default '[^⫷]'.
 #   postwre:  regex matching any post-tag character that is not a space;
@@ -42,7 +42,7 @@ sub exdftag {
         $subre    = $args->{subre} // '';
         $tmc      = $args->{maxchar} // '';
         $tmw      = $args->{maxword} // '';
-        $extag    = $args->{extag} // '⫷dn⫸';
+        $extag    = $args->{extag} // '⫷ex⫸';
         $dftag    = $args->{dftag} // '⫷df⫸';
         $postre   = $args->{postre} // '[^⫷]';
         $postwre  = $args->{postwre} // '[^⫷ ]';

@@ -24,7 +24,7 @@ my @TOOLS = (
 #   cols:     array of columns containing expressions.
 #   syndelim: synonym delimiter (regex), or '' if none. default '‣'.
 #   mndelim:  meaning delimiter (regex), or '' if none. default '⁋'.
-#   extag:    expression tag. default '⫷dn⫸'.
+#   extag:    expression tag. default '⫷ex⫸'.
 #   mntag:    meaning tag. default '⫷mn⫸'.
 #   tagged:   whether columns may contain already tagged contents (with standard
 #               tag delimiters). default 0.
@@ -42,8 +42,8 @@ my @TOOLS = (
 #               default: 0.
 #   ignore:   regex matching expressions to be ignored in normalization; or ''
 #               (blank) if none. default ''.
-#   extag:    expression tag. default '⫷dn⫸'.
-#   exptag:   pre-normalized expression tag. default '⫷dnp⫸'.
+#   extag:    expression tag. default '⫷ex⫸'.
+#   exptag:   pre-normalized expression tag. default '⫷exp⫸'.
 #   tagre:    regex identifying any tag. default '⫷[a-z:]+⫸'.
 
 #'exdftag'      => { cols => [0, 1], re => '(?:\([^()]+\)|（[^（）]+）)', subre => '[][/,;?!~]' },
@@ -59,7 +59,7 @@ my @TOOLS = (
 #               default ''. example: 25.
 #   maxword:  maximum word count permitted in an expression, or '' if none.
 #               default ''. example: 3.
-#   extag:    expression tag. default '⫷dn⫸'.
+#   extag:    expression tag. default '⫷ex⫸'.
 #   dftag:    definition tag. default '⫷df⫸'.
 #   postre:   regex matching any post-tag character. default '[^⫷]'.
 #   postwre:  regex matching any post-tag character that is not a space;
@@ -158,11 +158,11 @@ my @TOOLS = (
 #               synonymous proposed expressions and they are to be normalized if
 #               and only if all expressions in the list are normalizable; or ''
 #               (blank) if not. default ''. example: ', '.
-#   extag:    expression tag. default '⫷dn⫸'.
-#   exptag:   pre-normalized expression tag. default '⫷dnp⫸'.
+#   extag:    expression tag. default '⫷ex⫸'.
+#   exptag:   pre-normalized expression tag. default '⫷exp⫸'.
 #   tagre:    regex identifying any tag. default '⫷[a-z:]+⫸'.
 
-#'replace'      => { cols => [1], from => '⫷fail⫸', to => '⫷dn⫸' },
+#'replace'      => { cols => [1], from => '⫷fail⫸', to => '⫷ex⫸' },
 # Replaces strings in a tab-delimited source file.
 # Arguments:
 #   cols:   array of columns to be processed.

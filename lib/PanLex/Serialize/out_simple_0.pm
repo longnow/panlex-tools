@@ -53,7 +53,7 @@ sub out_simple_0 {
             if (exists $col_uid->{$i}) {
                 # If it is an expression column:
 
-                $col[$i] =~ s/⫷dn⫸/⫷dn:$col_uid->{$i}⫸/g;
+                $col[$i] =~ s/⫷ex⫸/⫷ex:$col_uid->{$i}⫸/g;
                 # Insert the column's variety UID into each expression tag in it.
             }
         }
@@ -70,7 +70,7 @@ sub out_simple_0 {
             $seen{$rec} = '';
             # Add it to the table of entries.
 
-            $rec =~ s/⫷dn:($UID)⫸/\n$1\n/g;
+            $rec =~ s/⫷ex:($UID)⫸/\n$1\n/g;
             # Convert all expression tags in it.
 
             print $out $rec, "\n";

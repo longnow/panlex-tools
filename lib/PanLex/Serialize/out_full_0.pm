@@ -1,7 +1,7 @@
 # Converts a standard tagged source file to a full-text varilingual source file.
 # Arguments:
 #   specs:  array of specifications (column index + colon + variety UID) of
-#             columns containing tags (e.g., dn, df, dm) requiring variety
+#             columns containing tags (e.g., ex, df, dm) requiring variety
 #             specifications.
 #   mindf:  minimum count (1 or more) of definitions and expressions per entry.
 #             default 2.
@@ -65,7 +65,7 @@ sub out_full_0 {
             if (exists $col_uid->{$i}) {
             # If it is variety-specific:
 
-                $col[$i] =~ s/⫷(dn|df|[dm]cs)⫸/⫷$1:$col_uid->{$i}⫸/g;
+                $col[$i] =~ s/⫷(ex|df|[dm]cs)⫸/⫷$1:$col_uid->{$i}⫸/g;
                 # Insert the column's variety UID into each tag in it.
 
             }
@@ -77,6 +77,9 @@ sub out_full_0 {
 
         $rec =~ s/⫷(?:dnp|rm)⫸[^⫷]*//g;
         # Delete all pre-normalized expressions and all tags that are marked as to be removed.
+
+        $rec =~ s/⫷ex(?=:)/⫷dn/g;
+        # Convert all ex tags to dn.
 
         while ($rec =~ s/($DF)(?:$DCSDPP)/$1/) {}
         # Delete all denotation classifications and properties following definitions.

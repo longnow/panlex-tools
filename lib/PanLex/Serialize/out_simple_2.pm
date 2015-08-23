@@ -52,7 +52,7 @@ sub out_simple_2 {
             $seen{$_} = '';
             # Add it to the table of entries.
 
-            s/⫷dn⫸/\n/g;
+            s/⫷ex⫸/\n/g;
             # Convert all expression tags and the inter-column tab.
 
             print $out $_, "\n";

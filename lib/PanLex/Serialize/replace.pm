@@ -1,4 +1,4 @@
-#'replace'      => { cols => [1, 2], from => '⫷fail⫸', to => '⫷dn⫸' },
+#'replace'      => { cols => [1, 2], from => '⫷fail⫸', to => '⫷ex⫸' },
 # Replaces strings in a tab-delimited source file.
 # Arguments:
 #   cols:   array of columns to be processed.
