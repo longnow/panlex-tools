@@ -75,7 +75,7 @@ sub out_full_0 {
         my $rec = join '', @col;
         # Identify a concatenation of its modified columns.
 
-        $rec =~ s/⫷(?:dnp|rm)⫸[^⫷]*//g;
+        $rec =~ s/⫷(?:exp|rm)⫸[^⫷]*//g;
         # Delete all pre-normalized expressions and all tags that are marked as to be removed.
 
         $rec =~ s/⫷ex(?=:)/⫷dn/g;

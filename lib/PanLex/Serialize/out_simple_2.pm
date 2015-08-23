@@ -43,7 +43,7 @@ sub out_simple_2 {
         s/\t//g;
         # Delete all tabs.
 
-        s/⫷(?:dnp|rm)⫸[^⫷]*//g;
+        s/⫷(?:exp|rm)⫸[^⫷]*//g;
         # Delete all pre-normalized expressions and all tags that are marked as to be removed.
 
         unless (exists $seen{$_}) {
