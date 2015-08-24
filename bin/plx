@@ -108,7 +108,7 @@ sub cmd_fetch {
 
     my $r;
 
-    foreach my $dir (qw/ main incoming /) {
+    foreach my $dir (qw/ incoming main /) {
         my $url = "${SOURCE_ARCHIVE_URL}/download/${dir}/${source}.zip";
         $r = $ua->get($url);
 
