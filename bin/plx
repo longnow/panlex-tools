@@ -191,7 +191,7 @@ sub cmd_submit {
         Content_Type => 'form-data',
         Content => [
             us      => $ENV{PANLEX_PANLEM_USER},
-            pwd     => $ENV{PANLEX_PANLEM_PASSWORD},
+            pwd     => "'$ENV{PANLEX_PANLEM_PASSWORD}'",
             uslv    => '187', # user's interface lv
             sr      => $sr, # state routine
             op      => $op, # operation
