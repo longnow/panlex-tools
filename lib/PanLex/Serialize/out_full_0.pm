@@ -43,7 +43,7 @@ sub out_full_0 {
     die "invalid minimum count\n" if ($mindf < 1) || ($minex < 0);
     # If either minimum count is too small, quit and notify the user.
 
-    print $out ":\n0\n";
+    print $out ":\n0";
     # Output the file header.
 
     my $col_uid = parse_specs(\@specs);
