@@ -86,7 +86,7 @@ ideo.	d	art-306:IDEO
 ij	d	art-303:PartOfSpeechProperty:art-303:Interjection	
 ijec	d	art-303:PartOfSpeechProperty:art-303:Interjection	
 inj	d	art-303:PartOfSpeechProperty:art-303:Interjection	
-INSTR	d	art-303:PartOfSpeechProperty:art-303:Adverbial	 
+INSTR	d	art-303:PartOfSpeechProperty:art-303:Adverbial	
 inter	d	art-303:PartOfSpeechProperty:art-303:Interjection	
 INTER	d	art-303:PartOfSpeechProperty:art-303:Interjection	
 inter.	d	art-303:PartOfSpeechProperty:art-303:Interjection	
