@@ -117,7 +117,7 @@ n.f.	d	art-303:PartOfSpeechProperty:art-303:Noun‣art-303:GenderProperty:art-30
 n.idiom.	d	art-303:PartOfSpeechProperty:art-303:Noun	
 n.loc.	d	art-303:PartOfSpeechProperty:art-303:Noun	
 n.m.	d	art-303:PartOfSpeechProperty:art-303:Noun‣art-303:GenderProperty:art-303:MasculineGender	
-n.manner.	d	art-303:PartOfSpeechProperty:art-303:Noun.	
+n.manner.	d	art-303:PartOfSpeechProperty:art-303:Noun	
 n.n.	d	art-303:PartOfSpeechProperty:art-303:Noun	
 n.pl.	d	art-303:PartOfSpeechProperty:art-303:Noun‣art-303:NumberProperty:art-303:PluralNumber	
 n.pro.	d	art-303:PartOfSpeechProperty:art-303:ProperNoun	
