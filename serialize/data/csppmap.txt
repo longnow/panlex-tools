@@ -260,10 +260,10 @@ Verb	d	art-303:PartOfSpeechProperty:art-303:Verbal
 VERB	d	art-303:PartOfSpeechProperty:art-303:Verbal	
 verbs	d	art-303:PartOfSpeechProperty:art-303:Verbal	
 Verbs	d	art-303:PartOfSpeechProperty:art-303:Verbal	
-vi	d	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb		
-Vi	d	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb		
-vi.	d	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb		
-vin.	d	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb		
+vi	d	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb	
+Vi	d	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb	
+vi.	d	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb	
+vin.	d	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb	
 Vint.	d	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb	
 vpart	d	art-303:PartOfSpeechProperty:art-303:Particle	
 vr	d	art-303:PartOfSpeechProperty:art-303:Verbal‣art-302:REFL	
