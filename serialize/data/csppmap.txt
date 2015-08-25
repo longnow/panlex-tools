@@ -47,7 +47,7 @@ clitic	d	art-303:PartOfSpeechProperty:art-303:Clitic
 cnj	d	art-303:PartOfSpeechProperty:art-303:Conjunction	
 cnjadv	d	art-303:PartOfSpeechProperty:art-303:Adverbializer	
 cnjcoo	d	art-303:PartOfSpeechProperty:art-303:CoordinatingConnective	
-cnjloc	d	art-303:PartOfSpeechProperty:art-303:Conjunction
+cnjloc	d	art-303:PartOfSpeechProperty:art-303:Conjunction	
 cnjsub	d	art-303:PartOfSpeechProperty:art-303:SubordinatingConnective	
 cong.	d	art-303:PartOfSpeechProperty:art-303:Conjunction	
 conj	d	art-303:PartOfSpeechProperty:art-303:Conjunction	
