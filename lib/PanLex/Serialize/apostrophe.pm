@@ -8,7 +8,6 @@ use strict;
 use warnings 'FATAL', 'all';
 use utf8;
 use parent 'Exporter';
-use List::MoreUtils 'uniq';
 use PanLex::Client;
 use PanLex::Validation;
 use PanLex::Serialize::Util;
@@ -31,7 +30,7 @@ sub apostrophe {
     }
 
     my $col_uid = parse_specs(\@specs);
-    my @uniq_uid = uniq values %$col_uid;
+    my @uniq_uid = uniq(values %$col_uid);
     
     my $result = panlex_query_all('/lv', { uid => \@uniq_uid, include => 'cp' });
     
@@ -106,6 +105,12 @@ sub apostrophe {
         # Output the modified line.
     }
 
+}
+
+sub uniq {
+    my %seen;
+    $seen{$_} = undef for @_;
+    return keys %seen;
 }
 
 1;
