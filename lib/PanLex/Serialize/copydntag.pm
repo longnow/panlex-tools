@@ -1,27 +1,25 @@
-# Copies tag(s) from a column to each tagged item in a list of columns, then 
-#   deletes the column's tag(s).
+# Copies tagged denotation classifications or properties from a column to after each 
+#   expression (standardly tagged) in a list of columns, then sets the column to ''.
 # Arguments:
 #   fromcol:  column containing tag(s) to be copied.
 #   tocols:   array of columns containing tagged items.
-#   delim:    intra-column tagged item delimiter. Default '‣'.
 
-package PanLex::Serialize::copytag;
+package PanLex::Serialize::copydntag;
 use strict;
 use warnings 'FATAL', 'all';
 use utf8;
 use parent 'Exporter';
 use PanLex::Validation;
 
-our @EXPORT = qw/copytag/;
+our @EXPORT = qw/copydntag/;
 
-sub copytag {
+sub copydntag {
     my ($in, $out, $args) = @_;
 
     validate_cols($args->{tocols});
 
     my $fromcol = $args->{fromcol};
     my @tocols = @{$args->{tocols}};
-    my $delim = $args->{delim} // '‣';
 
     validate_col($fromcol);
     
@@ -41,9 +39,9 @@ sub copytag {
 
             die "column $i not present in line" unless defined $col[$i];
 
-            $col[$i] = join($delim, map { "$_$col[$fromcol]" } split $delim, $col[$i], -1)
+            $col[$i] =~ s/(⫷ex⫸[^⫷]+)/$1$col[$fromcol]/g
                 if length $col[$i];
-            # Append the source column's text to each item of the column.
+            # Append the source column's text to each expression in the column.
         }
 
         $col[$fromcol] = '';

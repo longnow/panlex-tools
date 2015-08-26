@@ -106,6 +106,13 @@ my @TOOLS = (
 #   prefix: string to prefix to each property before parsing, or '' if none.
 #             default ''.
 
+#'copydntag'      => { fromcol => 1, tocols => [0] },
+# Copies tagged denotation classifications or properties from a column to after each 
+#   expression (standardly tagged) in a list of columns, then sets the column to ''.
+# Arguments:
+#   fromcol:  column containing tag(s) to be copied.
+#   tocols:   array of columns containing tagged items.
+
 #'mcstag'       => { cols => [1] },
 # Tags meaning classifications.
 # Arguments:
@@ -162,14 +169,6 @@ my @TOOLS = (
 #   extag:    expression tag. default '⫷ex⫸'.
 #   exptag:   pre-normalized expression tag. default '⫷exp⫸'.
 #   tagre:    regex identifying any tag. default '⫷[a-z:]+⫸'.
-
-#'copytag'      => { fromcol => 1, tocols => [0] },
-# Copies tag(s) from a column to each tagged item in a list of columns, then 
-#   deletes the column's tag(s).
-# Arguments:
-#   fromcol:  column containing tag(s) to be copied.
-#   tocols:   array of columns containing tagged items.
-#   delim:    intra-column tagged item delimiter. Default '‣'.
 
 #'replace'      => { cols => [1], from => '⫷fail⫸', to => '⫷ex⫸' },
 # Replaces strings in a tab-delimited source file.
