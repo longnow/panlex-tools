@@ -4,7 +4,8 @@
 #   file:       name of the mapping file. default 'csppmap.txt'.
 #   type:       type of the mapping file ('d' for denotation, 'm' for meaning).
 #                   default 'd'.
-#   delim:      inter-classification/property delimiter in file. default '‣'.
+#   delim:      inter-classification/property delimiter in file and columns.
+#                   default '‣'.
 #   default:    meaning or denotation attribute expression to use for unconvertible
 #                 items, or '' if none. default 'art-300⁋HasProperty', where 
 #                 'art-300' is the expression's UID, and 'HasProperty' is its text.
@@ -89,15 +90,17 @@ sub csppmap {
 
             my $tagged = ''; 
 
-            if (exists $map{$col[$i]}) {
-                my $mapped = $map{$col[$i]};
+            foreach my $el (split $delim, $col[$i]) {
+                if (exists $map{$el}) {
+                    my $mapped = $map{$el};
 
-                $tagged .= cstag_item("${type}cs", $_) for @{$mapped->{cs}};
-                $tagged .= pptag_item("${type}pp", $_) for @{$mapped->{pp}};
-            } else {
-                $notfound{$col[$i]} = '';
+                    $tagged .= cstag_item("${type}cs", $_) for @{$mapped->{cs}};
+                    $tagged .= pptag_item("${type}pp", $_) for @{$mapped->{pp}};
+                } else {
+                    $notfound{$el} = '';
 
-                $tagged = pptag_item("${type}pp", $default . $col[$i]) if $default ne '';
+                    $tagged .= pptag_item("${type}pp", $default . $col[$i]) if $default ne '';
+                }
             }
 
             $col[$i] = $tagged;

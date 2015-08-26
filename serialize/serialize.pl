@@ -79,7 +79,8 @@ my @TOOLS = (
 #   file:       name of the mapping file. default 'csppmap.txt'.
 #   type:       type of the mapping file ('d' for denotation, 'm' for meaning).
 #                   default 'd'.
-#   delim:      inter-classification/property delimiter in file. default '‣'.
+#   delim:      inter-classification/property delimiter in file and columns.
+#                   default '‣'.
 #   default:    meaning or denotation attribute expression to use for unconvertible
 #                 items, or '' if none. default 'art-300⁋HasProperty', where 
 #                 'art-300' is the expression's UID, and 'HasProperty' is its text.
