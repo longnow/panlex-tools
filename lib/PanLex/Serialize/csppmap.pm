@@ -2,11 +2,12 @@
 # Arguments:
 #   cols:       array of columns containing data to be mapped.
 #   file:       name of the mapping file. default 'csppmap.txt'.
+#   type:       type of the mapping file ('d' for denotation, 'm' for meaning).
+#                   default 'd'.
 #   delim:      inter-classification/property delimiter in file. default '‣'.
 #   default:    meaning or denotation attribute expression to use for unconvertible
-#                 items, or '' if none. default 'd⁋art-300⁋HasProperty', where 'd'
-#                 specifies a denotation property (use 'm' for meaning), 'art-300'
-#                 is the expression's UID, and 'HasProperty' is its text.
+#                 items, or '' if none. default 'art-300⁋HasProperty', where 
+#                 'art-300' is the expression's UID, and 'HasProperty' is its text.
 #   mapdefault: attribute expression to use when the mapping file property column
 #                 is '*'. default 'art-300⁋HasProperty', where 'art-300' is the
 #                 expression's UID, and 'HasProperty' is its text.
@@ -33,19 +34,18 @@ sub csppmap {
 
     my @csppmapcol  = @{$args->{cols}};
     my $file        = $args->{file} // 'csppmap.txt';
+    my $type        = $args->{type} // 'd';
     my $delim       = $args->{delim} // '‣';
-    my $default     = $args->{default} // 'd⁋art-300⁋HasProperty';
+    my $default     = $args->{default} // 'art-300⁋HasProperty';
     my $mapdefault   = $args->{mapdefault} // 'art-300⁋HasProperty';
     my $log         = $args->{log} // 0;
 
-    my $default_type;
+    die "type paremeter must be 'd' or 'm'" unless $type =~ /^[dm]$/;
 
     if ($default ne '') {
-        die "default parameter must take the form 'd⁋UID⁋text' or 'm⁋UID⁋text' (delimiter is arbitrary)"
-            unless $default =~ /^([dm])(.)([a-z]{3}-\d{3}\2.+)$/;
-
-        $default_type = $1;
-        $default = $3 . $2;
+        die "default parameter must take the form 'UID⁋text' (delimiter is arbitrary)"
+            unless $default =~ /^[a-z]{3}-\d{3}(.).+$/;
+        $default .= $1;
     }
 
     die "mapdefault parameter must take the form 'UID⁋text' (delimiter is arbitrary)"
@@ -64,15 +64,12 @@ sub csppmap {
 
         my @col = split /\t/, $_, -1;
 
-        die "map file line does not have four columns" unless @col == 4;
-        die "invalid type column: $col[1] (must be 'd' or 'm')" unless $col[1] eq 'd' || $col[1] eq 'm';
-
-        $col[3] = $mapdefault . $col[0] if $col[3] eq '*';
+        die "map file line does not have three columns" unless @col == 3;
+        $col[2] = $mapdefault . $col[0] if $col[2] eq '*';
 
         $map{$col[0]} = { 
-            type => $col[1], 
-            cs => [ split /$delim/, $col[2] ], 
-            pp => [ split /$delim/, $col[3] ],
+            cs => [ split /$delim/, $col[1] ], 
+            pp => [ split /$delim/, $col[2] ],
         };
     }
 
@@ -95,12 +92,12 @@ sub csppmap {
             if (exists $map{$col[$i]}) {
                 my $mapped = $map{$col[$i]};
 
-                $tagged .= cstag_item($mapped->{type} . 'cs', $_) for @{$mapped->{cs}};
-                $tagged .= pptag_item($mapped->{type} . 'pp', $_) for @{$mapped->{pp}};
+                $tagged .= cstag_item("${type}cs", $_) for @{$mapped->{cs}};
+                $tagged .= pptag_item("${type}pp", $_) for @{$mapped->{pp}};
             } else {
                 $notfound{$col[$i]} = '';
 
-                $tagged = pptag_item($default_type . 'pp', $default . $col[$i]) if $default_type;
+                $tagged = pptag_item("${type}pp", $default . $col[$i]) if $default ne '';
             }
 
             $col[$i] = $tagged;

@@ -74,15 +74,15 @@ my @TOOLS = (
 #   dftag:  definition tag. default '⫷df⫸'.
 
 #'csppmap'      => { cols => [1] },
-# Converts text to classifications and properties based on a mapping file.
 # Arguments:
 #   cols:       array of columns containing data to be mapped.
 #   file:       name of the mapping file. default 'csppmap.txt'.
+#   type:       type of the mapping file ('d' for denotation, 'm' for meaning).
+#                   default 'd'.
 #   delim:      inter-classification/property delimiter in file. default '‣'.
 #   default:    meaning or denotation attribute expression to use for unconvertible
-#                 items, or '' if none. default 'd⁋art-300⁋HasProperty', where 'd'
-#                 specifies a denotation property (use 'm' for meaning), 'art-300'
-#                 is the expression's UID, and 'HasProperty' is its text.
+#                 items, or '' if none. default 'art-300⁋HasProperty', where 
+#                 'art-300' is the expression's UID, and 'HasProperty' is its text.
 #   mapdefault: attribute expression to use when the mapping file property column
 #                 is '*'. default 'art-300⁋HasProperty', where 'art-300' is the
 #                 expression's UID, and 'HasProperty' is its text.
