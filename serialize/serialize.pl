@@ -163,6 +163,14 @@ my @TOOLS = (
 #   exptag:   pre-normalized expression tag. default '⫷exp⫸'.
 #   tagre:    regex identifying any tag. default '⫷[a-z:]+⫸'.
 
+#'copytag'      => { fromcol => 1, tocols => [0] },
+# Copies tag(s) from a column to each tagged item in a list of columns, then 
+#   deletes the column's tag(s).
+# Arguments:
+#   fromcol:  column containing tag(s) to be copied.
+#   tocols:   array of columns containing tagged items.
+#   delim:    intra-column tagged item delimiter. Default '‣'.
+
 #'replace'      => { cols => [1], from => '⫷fail⫸', to => '⫷ex⫸' },
 # Replaces strings in a tab-delimited source file.
 # Arguments:
