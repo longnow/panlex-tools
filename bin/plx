@@ -206,7 +206,7 @@ sub cmd_submit {
         my $content = $r->decoded_content;
 
         if ($content =~ /"bad"/) {
-            print STDERR "failed: are your username and password set correctly?\n\n";
+            print STDERR "failed: are your username and password set correctly, and are you approved to edit the source?\n\n";
         } else {
             print STDERR "done.\n\n";
         }
