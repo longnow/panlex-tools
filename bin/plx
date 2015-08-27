@@ -285,9 +285,9 @@ Commands:
 
 cp <tool> (<dest>)
     copy PanLex tool into the current directory
-fetch <source>
+fetch <source_dir>|<source_label>
     fetch PanLex source from archive into the current directory and unzip it
-submit (<file>) (<source_id>|<source_label>) (whole|simple) (replace|add|check)
+submit (<file>) (<source_id>|<source_label>) (replace|add|check)
     submit final source file to PanLem
 upload (<dir>) <note>
     upload PanLex source directory to archive with note
