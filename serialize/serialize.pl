@@ -181,7 +181,7 @@ my @TOOLS = (
 # Converts a standard tagged source file to a full-text varilingual source file.
 # Arguments:
 #   specs:  array of specifications (column index + colon + variety UID) of
-#             columns containing tags (e.g., ex, df, dm) requiring variety
+#             columns containing tags (e.g., ex, df, mcs, dcs) requiring variety
 #             specifications.
 #   mindf:  minimum count (1 or more) of definitions and expressions per entry.
 #             default 2.
