@@ -30,8 +30,8 @@ sub pptag {
         foreach my $i (@ppcol) {
             die "column $i not present in line" unless defined $col[$i];
 
-            next unless length $col[$i];
-            # Skip the column if it is blank.
+            next unless length $col[$i] && $col[$i] !~ /^⫷/;
+            # Skip the column if it is blank or tagged.
 
             my @ppseg = $delim eq '' ? ($col[$i]) : split /$delim/, $col[$i];
             # Identify a list of properties in this column.

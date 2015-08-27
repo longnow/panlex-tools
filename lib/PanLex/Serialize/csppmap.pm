@@ -7,8 +7,9 @@
 #   delim:      inter-classification/property delimiter in file and columns.
 #                   default '‣'.
 #   default:    meaning or denotation attribute expression to use for unconvertible
-#                 items, or '' if none. default 'art-300⁋HasProperty', where 
-#                 'art-300' is the expression's UID, and 'HasProperty' is its text.
+#                 items, or 'pass' if they should be left unchanged, or '' if they 
+#                 should be deleted. default 'art-300⁋HasProperty', where 'art-300' 
+#                 is the expression's UID, and 'HasProperty' is its text.
 #   mapdefault: attribute expression to use when the mapping file property column
 #                 is '*'. default 'art-300⁋HasProperty', where 'art-300' is the
 #                 expression's UID, and 'HasProperty' is its text.
@@ -45,8 +46,8 @@ sub csppmap {
 
     if ($default ne '') {
         die "default parameter must take the form 'UID⁋text' (delimiter is arbitrary)"
-            unless $default =~ /^[a-z]{3}-\d{3}(.).+$/;
-        $default .= $1;
+            unless $default =~ /^[a-z]{3}-\d{3}(.).+$/ || $default eq 'pass';
+        $default .= $1 if $default ne 'pass';
     }
 
     die "mapdefault parameter must take the form 'UID⁋text' (delimiter is arbitrary)"
@@ -99,7 +100,11 @@ sub csppmap {
                 } else {
                     $notfound{$el} = '';
 
-                    $tagged .= pptag_item("${type}pp", $default . $col[$i]) if $default ne '';
+                    if ($default eq 'pass') {
+                        $tagged .= $col[$i];
+                    } elsif ($default ne '') {
+                        $tagged .= pptag_item("${type}pp", $default . $col[$i]);
+                    }
                 }
             }
 
