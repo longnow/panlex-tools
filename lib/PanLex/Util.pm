@@ -5,7 +5,7 @@ use open IO => ':raw :encoding(utf8)';
 use parent 'Exporter';
 use Unicode::Normalize 'NFC';
 
-our @EXPORT = qw/Trim NormTrim Dedup Delimiter DelimiterIf ExpandParens EachEx LoadMap MapStr/;
+our @EXPORT = qw/Trim NormTrim Dedup Delimiter DelimiterIf DelimiterIfRegex ExpandParens ExpandParensEachEx EachEx LoadMap MapStr/;
 
 ### Trim
 # Delete superfluous spaces in the specified string.
@@ -142,6 +142,28 @@ sub DelimiterIf {
     return join $outdelim, @ex;
 }
 
+### DelimiterIfRegex
+# Replace non-parenthesized delimiters in a string with a standard delimiter, 
+# if all delimited expressions match a particular regular expression.
+# Arguments:
+#   0: input string.
+#   1: string containing a set of non-standard delimiters to match.
+#   2: standard delimiter.
+#   3: regular expression.
+sub DelimiterIfRegex {
+    my ($txt, $indelim, $outdelim, $re) = @_;
+
+    $re = qr/$re/;
+
+    my @ex = split / *[$indelim] *(?![^()（）]*[)）])/, $txt, -1;
+
+    foreach my $ex (@ex) {
+        return $txt unless $ex =~ $re;
+    }
+
+    return join $outdelim, @ex;
+}
+
 ### ExpandParens
 # Expand expression with an optional parenthesized portion or portions into two 
 # or more expressions separated by the standard synonym delimiter, both with and 
@@ -179,6 +201,17 @@ sub _JoinPieces {
 
     return "$before$after";
 }
+
+### ExpandParensEachEx
+# Calls ExpandParens on each expression in a list of expressions delimited by the
+# standard synonym and meaning delimiters.
+# Arguments:
+#   0: input string containing a list of expressions with zero or more optional
+#       parenthesized portions.
+sub ExpandParensEachEx {
+    return EachEx($_[0], \&ExpandParens);
+}
+
 
 ### EachEx
 # Apply a function to each expression in a list of expressions delimited by the
