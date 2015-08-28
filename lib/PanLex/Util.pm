@@ -155,13 +155,7 @@ sub DelimiterIfRegex {
 
     $re = qr/$re/;
 
-    my @ex = split / *[$indelim] *(?![^()（）]*[)）])/, $txt, -1;
-
-    foreach my $ex (@ex) {
-        return $txt unless $ex =~ $re;
-    }
-
-    return join $outdelim, @ex;
+    return DelimiterIf($txt, $indelim, $outdelim, sub { $_[0] =~ $re });
 }
 
 ### ExpandParens
