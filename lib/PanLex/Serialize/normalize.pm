@@ -29,7 +29,7 @@
 #               (blank) if not. default ''. example: ', '.
 #   extag:    expression tag. default '⫷ex⫸'.
 #   exptag:   pre-normalized expression tag. default '⫷exp⫸'.
-#   tagre:    regex identifying any tag. default '⫷[a-z:]+⫸'.
+#   tagre:    regex identifying any tag. default '⫷[a-z0-9:]+⫸'.
 
 package PanLex::Serialize::normalize;
 use strict;
@@ -65,7 +65,7 @@ sub normalize {
         $delim      = $args->{delim} // '';
         $extag      = $args->{extag} // '⫷ex⫸';
         $exptag     = $args->{exptag} // '⫷exp⫸';
-        $tagre      = $args->{tagre} // '⫷[a-z:]+⫸';
+        $tagre      = $args->{tagre} // '⫷[a-z0-9:]+⫸';
     } else {
         ($tagre, $extag, $excol, $min, $mindeg, $uid, $exptag, $failtag, $delim) = @$args;
         $ignore = '';
