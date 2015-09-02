@@ -258,9 +258,15 @@ sub cmd_upload {
     );
 
     if ($r->is_success) {
-        print STDERR "done.\n\n";
+        my $content = $r->decoded_content;
+
+        if ($content =~ /Upload successful/) {
+            print STDERR "done.\n\n";
+        } else {
+            print STDERR "failed: unknown error\n\n";
+        }
     } else {
-        print STDERR "Could not upload zip file: ", $r->code, ' ', $r->message, "\n\n";
+        print STDERR "failed: ", $r->code, ' ', $r->message, "\n\n";
     }
 
     unlink $zippath;
