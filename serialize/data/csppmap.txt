@@ -98,7 +98,7 @@ Interjection	art-303:PartOfSpeechProperty:art-303:Interjection
 INTJ	art-303:PartOfSpeechProperty:art-303:Interjection	
 intj.	art-303:PartOfSpeechProperty:art-303:Interjection	
 intr	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb	
-intr.	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb.	
+intr.	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb	
 INTRJCT	art-303:PartOfSpeechProperty:art-303:Interjection	
 itg	art-303:ForceProperty:art-303:InterrogativeForce	
 IV	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb	
