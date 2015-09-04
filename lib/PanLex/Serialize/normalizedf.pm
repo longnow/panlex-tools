@@ -49,14 +49,14 @@ sub normalizedf {
         die "invalid arguments: you must pass a hashref";
     }
 
-    my ($log_fh, $log_obj, $json);
-    if ($log) {
-        open $log_fh, '>', 'normalizedf.log' or die $!;
-        $json = JSON->new->pretty->canonical;
-    }
-
     validate_col($excol);
     validate_uid($uid);
+
+    my ($log_fh, $log_obj, $json);
+    if ($log) {
+        open $log_fh, '>', "normalizedf${excol}.log" or die $!;
+        $json = JSON->new->pretty->canonical;
+    }
 
     die "invalid mindeg value: $mindeg" unless valid_int($mindeg) && $mindeg >= 0;
         

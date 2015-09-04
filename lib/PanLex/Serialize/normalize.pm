@@ -72,14 +72,14 @@ sub normalize {
         $log = 0;
     }
 
-    my ($log_fh, $log_obj, $json);
-    if ($log) {
-        open $log_fh, '>', 'normalize.log' or die $!;
-        $json = JSON->new->pretty->canonical;
-    }
-
     validate_col($excol);
     validate_uid($uid);
+
+    my ($log_fh, $log_obj, $json);
+    if ($log) {
+        open $log_fh, '>', "normalize${excol}.json" or die $!;
+        $json = JSON->new->pretty->canonical;
+    }
 
     die "invalid min value: $min" unless valid_int($min) && $min >= 0;
     die "invalid mindeg value: $mindeg" unless $mindeg eq '' || (valid_int($mindeg) && $mindeg >= 0);
