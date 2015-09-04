@@ -54,7 +54,7 @@ sub normalizedf {
 
     my ($log_fh, $log_obj, $json);
     if ($log) {
-        open $log_fh, '>', "normalizedf${excol}.log" or die $!;
+        open $log_fh, '>', "normalizedf${excol}.json" or die $!;
         $json = JSON->new->pretty->canonical;
     }
 
