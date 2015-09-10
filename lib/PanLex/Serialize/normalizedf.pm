@@ -12,7 +12,7 @@
 #               (blank) if none. default ''.
 #   extag:    expression tag. default '⫷ex⫸'.
 #   exptag:   pre-normalized expression tag. default '⫷exp⫸'.
-#   tagre:    regex identifying any tag. default '⫷[a-z0-9:]+⫸'.
+#   tagre:    regex identifying any tag. default '⫷[a-z0-9:-]+⫸'.
 
 package PanLex::Serialize::normalizedf;
 use strict;
@@ -44,7 +44,7 @@ sub normalizedf {
         $ignore     = $args->{ignore} // '';
         $extag      = $args->{extag} // '⫷ex⫸';
         $exptag     = $args->{exptag} // '⫷exp⫸';
-        $tagre      = $args->{tagre} // '⫷[a-z0-9:]+⫸';
+        $tagre      = $args->{tagre} // '⫷[a-z0-9:-]+⫸';
     } else {
         die "invalid arguments: you must pass a hashref";
     }

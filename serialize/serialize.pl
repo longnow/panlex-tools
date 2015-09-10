@@ -44,7 +44,7 @@ my @TOOLS = (
 #               (blank) if none. default ''.
 #   extag:    expression tag. default '⫷ex⫸'.
 #   exptag:   pre-normalized expression tag. default '⫷exp⫸'.
-#   tagre:    regex identifying any tag. default '⫷[a-z0-9:]+⫸'.
+#   tagre:    regex identifying any tag. default '⫷[a-z0-9:-]+⫸'.
 
 #'exdftag'      => { cols => [0, 1], re => '(?:\([^()]+\)|（[^（）]+）)', subre => '[][/,;?!~]' },
 # Splits definitional expressions into reduced expressions and definitions in 
@@ -170,7 +170,7 @@ my @TOOLS = (
 #               (blank) if not. default ''. example: ', '.
 #   extag:    expression tag. default '⫷ex⫸'.
 #   exptag:   pre-normalized expression tag. default '⫷exp⫸'.
-#   tagre:    regex identifying any tag. default '⫷[a-z0-9:]+⫸'.
+#   tagre:    regex identifying any tag. default '⫷[a-z0-9:-]+⫸'.
 
 #'replace'      => { cols => [1], from => '⫷fail⫸', to => '⫷ex⫸' },
 # Replaces strings in a tab-delimited source file.
