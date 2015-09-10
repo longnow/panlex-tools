@@ -83,11 +83,12 @@ my @TOOLS = (
 #                   default '‣'.
 #   default:    meaning or denotation attribute expression to use for unconvertible
 #                 items, or 'pass' if they should be left unchanged, or '' if they 
-#                 should be deleted. default 'art-300⁋HasProperty', where 'art-300' 
-#                 is the expression's UID, and 'HasProperty' is its text.
+#                 should be deleted. default 'art-303⁋LinguisticProperty', where 
+#                 'art-303' is the expression's UID, and 'LinguisticProperty' is 
+#                 its text.
 #   mapdefault: attribute expression to use when the mapping file property column
-#                 is '*'. default 'art-300⁋HasProperty', where 'art-300' is the
-#                 expression's UID, and 'HasProperty' is its text.
+#                 is '*'. default 'art-303⁋LinguisticProperty', where 'art-303' is 
+#                 the expression's UID, and 'LinguisticProperty' is its text.
 #   log:        set to 1 to log unconvertible items to csppmap.log, 0 otherwise.
 #                 default: 0.
 
