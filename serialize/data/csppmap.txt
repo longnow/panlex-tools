@@ -6,8 +6,8 @@ Adj	art-303:PartOfSpeechProperty:art-303:Adjectival
 ADJ	art-303:PartOfSpeechProperty:art-303:Adjectival	
 adj.	art-303:PartOfSpeechProperty:art-303:Adjectival	
 Adj.	art-303:PartOfSpeechProperty:art-303:Adjectival	
-adj.pred.	art-303:PartOfSpeechProperty:art-303:Adjectival‣art-302:PRED	
 Adj. poss.	art-303:PartOfSpeechProperty:art-303:Adjectival‣art-302:POSS	
+adj.pred.	art-303:PartOfSpeechProperty:art-303:Adjectival‣art-302:PRED	
 adjective	art-303:PartOfSpeechProperty:art-303:Adjectival	
 Adjective	art-303:PartOfSpeechProperty:art-303:Adjectival	
 ADJECTIVE	art-303:PartOfSpeechProperty:art-303:Adjectival	
@@ -18,10 +18,10 @@ adjv	art-303:PartOfSpeechProperty:art-303:Adjectival
 adv	art-303:PartOfSpeechProperty:art-303:Adverbial	
 Adv	art-303:PartOfSpeechProperty:art-303:Adverbial	
 ADV	art-303:PartOfSpeechProperty:art-303:Adverbial	
-adv2	art-303:PartOfSpeechProperty:art-303:Adverbial	
-adv3	art-303:PartOfSpeechProperty:art-303:Adverbial	
 adv.	art-303:PartOfSpeechProperty:art-303:Adverbial	
 Adv.	art-303:PartOfSpeechProperty:art-303:Adverbial	
+adv2	art-303:PartOfSpeechProperty:art-303:Adverbial	
+adv3	art-303:PartOfSpeechProperty:art-303:Adverbial	
 advb	art-303:PartOfSpeechProperty:art-303:Adverbial	
 Adverb	art-303:PartOfSpeechProperty:art-303:Adverbial	
 ADVERB	art-303:PartOfSpeechProperty:art-303:Adverbial	
@@ -74,11 +74,11 @@ disc	art-306:DM
 emph	art-306:IDEO	
 epn	art-303:PartOfSpeechProperty:art-303:Pronominal	
 exc	art-306:EXCLAM	
-excl.	art-306:EXCLAM	
 Excl	art-306:EXCLAM	
 EXCL	art-306:EXCLAM	
-expr.	art-303:WrittenLinguisticExpression:art-303:OrthographicPhrase	
+excl.	art-306:EXCLAM	
 expr	art-303:WrittenLinguisticExpression:art-303:OrthographicPhrase	
+expr.	art-303:WrittenLinguisticExpression:art-303:OrthographicPhrase	
 f.v.	art-303:Phrase:art-303:VerbPhrase	
 foc	art-302:FOC	
 frac	art-303:PartOfSpeechProperty:art-303:CardinalNumeral‣art-307:NumType:art-307:Frac	
@@ -107,7 +107,6 @@ mod.avv.	art-303:PartOfSpeechProperty:art-303:Adverbial‣art-303:PartOfSpeechPr
 n	art-303:PartOfSpeechProperty:art-303:Noun	
 N	art-303:PartOfSpeechProperty:art-303:Noun	
 N Próprio.	art-303:PartOfSpeechProperty:art-303:ProperNoun	
-n:	art-303:PartOfSpeechProperty:art-303:Noun	
 n.	art-303:PartOfSpeechProperty:art-303:Noun	
 N.	art-303:PartOfSpeechProperty:art-303:Noun	
 n. manner.	art-303:PartOfSpeechProperty:art-303:Noun	
@@ -125,6 +124,7 @@ n.qual.	art-303:PartOfSpeechProperty:art-303:Noun
 n.quant.	art-303:PartOfSpeechProperty:art-303:Noun	
 n.s.	art-303:PartOfSpeechProperty:art-303:Noun	
 n.time.	art-303:PartOfSpeechProperty:art-303:Noun	
+n:	art-303:PartOfSpeechProperty:art-303:Noun	
 name	art-303:PartOfSpeechProperty:art-303:ProperNoun	
 NAME	art-303:PartOfSpeechProperty:art-303:ProperNoun	
 neg	art-302:NEG	
@@ -171,7 +171,6 @@ pref.	art-303:Morpheme:art-303:Prefix
 prefix	art-303:Morpheme:art-303:Prefix	
 prep	art-303:PartOfSpeechProperty:art-303:Preposition	
 prep.	art-303:PartOfSpeechProperty:art-303:Preposition	
-prép.	art-303:PartOfSpeechProperty:art-303:Preposition	
 Preposition	art-303:PartOfSpeechProperty:art-303:Preposition	
 prn	art-303:PartOfSpeechProperty:art-303:Pronominal	
 pro	art-303:PartOfSpeechProperty:art-303:Pronominal	
@@ -180,8 +179,8 @@ PRO	art-303:PartOfSpeechProperty:art-303:Pronominal
 pro.	art-303:PartOfSpeechProperty:art-303:Pronominal	
 pro.rel.	art-303:PartOfSpeechProperty:art-303:RelativePronoun	
 pron	art-303:PartOfSpeechProperty:art-303:Pronominal	
-pron.	art-303:PartOfSpeechProperty:art-303:Pronominal	
 Pron	art-303:PartOfSpeechProperty:art-303:Pronominal	
+pron.	art-303:PartOfSpeechProperty:art-303:Pronominal	
 Pron.	art-303:PartOfSpeechProperty:art-303:Pronominal	
 Pron. Ab.	art-303:PartOfSpeechProperty:art-303:Pronominal‣art-303:CaseProperty:art-303:AblativeCase	
 Pron. Acus.	art-303:PartOfSpeechProperty:art-303:Pronominal‣art-303:CaseProperty:art-303:AccusativeCase	
@@ -195,11 +194,14 @@ prop n.	art-303:PartOfSpeechProperty:art-303:ProperNoun
 prop. n.	art-303:PartOfSpeechProperty:art-303:ProperNoun	
 prop.n.	art-303:PartOfSpeechProperty:art-303:ProperNoun	
 Proper Noun	art-303:PartOfSpeechProperty:art-303:ProperNoun	
+prép.	art-303:PartOfSpeechProperty:art-303:Preposition	
 qst	art-303:PartOfSpeechProperty:art-303:InterrogativeOperator	
 QT	art-303:PartOfSpeechProperty:art-303:Quantifier	
+quan	art-303:PartOfSpeechProperty:art-303:Quantifier	
 quant	art-303:PartOfSpeechProperty:art-303:Quantifier	
 quant.	art-303:PartOfSpeechProperty:art-303:Quantifier	
 Quantifier	art-303:PartOfSpeechProperty:art-303:Quantifier	
+ques	art-303:PartOfSpeechProperty:art-303:InterrogativeOperator	
 rel	art-303:PartOfSpeechProperty:art-303:Conjunction	
 RFLX PRO	art-303:PartOfSpeechProperty:art-303:ReflexivePronoun	
 s	art-303:PartOfSpeechProperty:art-303:Noun	
@@ -225,19 +227,21 @@ v	art-303:PartOfSpeechProperty:art-303:Verbal
 V	art-303:PartOfSpeechProperty:art-303:Verbal	
 V-INTR	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb	
 V-TR	art-303:PartOfSpeechProperty:art-303:TransitiveVerb	
+v.	art-303:PartOfSpeechProperty:art-303:Verbal	
+V.	art-303:PartOfSpeechProperty:art-303:Verbal	
+v. aux.	art-303:PartOfSpeechProperty:art-303:Auxiliary	
+v.i	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb	
+v.i.	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb	
+v.impers.	art-306:IMPRS	
+v.ref.	art-303:PartOfSpeechProperty:art-303:Verbal‣art-302:REFL	
+v.rif.	art-303:PartOfSpeechProperty:art-303:Verbal‣art-302:REFL	
+v.t	art-303:PartOfSpeechProperty:art-303:TransitiveVerb	
+v.t.	art-303:PartOfSpeechProperty:art-303:TransitiveVerb	
 v: itr	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb	
 v: tr	art-303:PartOfSpeechProperty:art-303:TransitiveVerb	
 v:it	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb	
 v:itr	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb	
 v:tr	art-303:PartOfSpeechProperty:art-303:TransitiveVerb	
-v.	art-303:PartOfSpeechProperty:art-303:Verbal	
-V.	art-303:PartOfSpeechProperty:art-303:Verbal	
-v. aux.	art-303:PartOfSpeechProperty:art-303:Auxiliary	
-v.i.	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb	
-v.impers.	art-306:IMPRS	
-v.ref.	art-303:PartOfSpeechProperty:art-303:Verbal‣art-302:REFL	
-v.rif.	art-303:PartOfSpeechProperty:art-303:Verbal‣art-302:REFL	
-v.t.	art-303:PartOfSpeechProperty:art-303:TransitiveVerb	
 vaux	art-303:PartOfSpeechProperty:art-303:Auxiliary	
 VAux.	art-303:PartOfSpeechProperty:art-303:Auxiliary	
 vbcop	art-303PartOfSpeechProperty:art-303:Copula	
