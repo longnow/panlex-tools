@@ -20,6 +20,7 @@ use PanLex::Serialize::dmtag;
 use PanLex::Serialize::dpptag;
 use PanLex::Serialize::exdftag;
 use PanLex::Serialize::extag;
+use PanLex::Serialize::mcsmap;
 use PanLex::Serialize::mcstag;
 use PanLex::Serialize::mdtag;
 use PanLex::Serialize::mitag;

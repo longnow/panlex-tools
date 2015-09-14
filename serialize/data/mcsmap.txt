@@ -1,0 +1,2 @@
+causative	art-316:Causative_of
+inchoative	art-316:Inchoative_of
