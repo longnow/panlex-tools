@@ -79,6 +79,8 @@ EXCL	art-306:EXCLAM
 excl.	art-306:EXCLAM	
 expr	art-303:WrittenLinguisticExpression:art-303:OrthographicPhrase	
 expr.	art-303:WrittenLinguisticExpression:art-303:OrthographicPhrase	
+f	art-303:GenderProperty:art-303:FeminineGender	
+f.	art-303:GenderProperty:art-303:FeminineGender	
 f.v.	art-303:Phrase:art-303:VerbPhrase	
 foc	art-302:FOC	
 frac	art-303:PartOfSpeechProperty:art-303:CardinalNumeral‣art-307:NumType:art-307:Frac	
@@ -94,6 +96,7 @@ interj	art-303:PartOfSpeechProperty:art-303:Interjection
 Interj	art-303:PartOfSpeechProperty:art-303:Interjection	
 interj.	art-303:PartOfSpeechProperty:art-303:Interjection	
 interjec.	art-303:PartOfSpeechProperty:art-303:Interjection	
+interjection	art-303:PartOfSpeechProperty:art-303:Interjection	
 Interjection	art-303:PartOfSpeechProperty:art-303:Interjection	
 INTJ	art-303:PartOfSpeechProperty:art-303:Interjection	
 intj.	art-303:PartOfSpeechProperty:art-303:Interjection	
@@ -102,6 +105,9 @@ intr.	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb
 INTRJCT	art-303:PartOfSpeechProperty:art-303:Interjection	
 itg	art-303:ForceProperty:art-303:InterrogativeForce	
 IV	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb	
+m	art-303:GenderProperty:art-303:MasculineGender	
+m.	art-303:GenderProperty:art-303:MasculineGender	
+M.	art-303:GenderProperty:art-303:MasculineGender	
 MOD	art-303:PartOfSpeechProperty:art-303:Modal	
 mod.avv.	art-303:PartOfSpeechProperty:art-303:Adverbial‣art-303:PartOfSpeechProperty:art-303:Modal	
 n	art-303:PartOfSpeechProperty:art-303:Noun	
@@ -142,11 +148,15 @@ num	art-303:PartOfSpeechProperty:art-303:Numeral
 Num	art-303:PartOfSpeechProperty:art-303:Numeral	
 NUM	art-303:PartOfSpeechProperty:art-303:Numeral	
 num.	art-303:PartOfSpeechProperty:art-303:Numeral	
+number	art-303:PartOfSpeechProperty:art-303:Numeral	
 numeral	art-303:PartOfSpeechProperty:art-303:Numeral	
 Numeral	art-303:PartOfSpeechProperty:art-303:Numeral	
 ord	art-303:PartOfSpeechProperty:art-303:OrdinalNumeral	
+particle	art-303:PartOfSpeechProperty:art-303:Particle	
 pcl	art-303:PartOfSpeechProperty:art-303:Particle	
 pcle	art-303:PartOfSpeechProperty:art-303:Particle	
+pers. pron	art-303:PartOfSpeechProperty:art-303:PersonalPronoun	
+pers. pronoun	art-303:PartOfSpeechProperty:art-303:PersonalPronoun	
 phr: v	art-303:Phrase:art-303:VerbPhrase	
 pn.	art-303:PartOfSpeechProperty:art-303:Pronominal	
 po	art-303:PartOfSpeechProperty:art-303:Postposition	
@@ -203,6 +213,7 @@ quant.	art-303:PartOfSpeechProperty:art-303:Quantifier
 Quantifier	art-303:PartOfSpeechProperty:art-303:Quantifier	
 ques	art-303:PartOfSpeechProperty:art-303:InterrogativeOperator	
 rel	art-303:PartOfSpeechProperty:art-303:Conjunction	
+rel. pron.	art-303:PartOfSpeechProperty:art-303:RelativePronoun	
 RFLX PRO	art-303:PartOfSpeechProperty:art-303:ReflexivePronoun	
 s	art-303:PartOfSpeechProperty:art-303:Noun	
 s.f.	art-303:PartOfSpeechProperty:art-303:Noun‣art-303:GenderProperty:art-303:FeminineGender	
@@ -230,9 +241,11 @@ V-TR	art-303:PartOfSpeechProperty:art-303:TransitiveVerb
 v.	art-303:PartOfSpeechProperty:art-303:Verbal	
 V.	art-303:PartOfSpeechProperty:art-303:Verbal	
 v. aux.	art-303:PartOfSpeechProperty:art-303:Auxiliary	
+v. auxiliary	art-303:PartOfSpeechProperty:art-303:Auxiliary	
+v. intrans.	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb	
 v.i	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb	
 v.i.	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb	
-v.impers.	art-306:IMPRS	
+v.impers.	art-303:PartOfSpeechProperty:art-303:Verbal‣art-306:IMPRS	
 v.ref.	art-303:PartOfSpeechProperty:art-303:Verbal‣art-302:REFL	
 v.rif.	art-303:PartOfSpeechProperty:art-303:Verbal‣art-302:REFL	
 v.t	art-303:PartOfSpeechProperty:art-303:TransitiveVerb	
