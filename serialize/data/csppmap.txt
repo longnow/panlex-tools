@@ -33,8 +33,10 @@ affx	art-303:Morpheme:art-303:Affix
 afx	art-303:Morpheme:art-303:Affix	
 agg.	art-303:PartOfSpeechProperty:art-303:Adjectival	
 art.	art-303:PartOfSpeechProperty:art-303:Article	
+article	art-303:PartOfSpeechProperty:art-303:Article	
 aux.	art-303:PartOfSpeechProperty:art-303:Auxiliary	
 Aux.	art-303:PartOfSpeechProperty:art-303:Auxiliary	
+aux. v.	art-303:PartOfSpeechProperty:art-303:Auxiliary	
 auxv	art-303:PartOfSpeechProperty:art-303:Auxiliary	
 avv.	art-303:PartOfSpeechProperty:art-303:Adverbial	
 bnd pfx	art-303:Morpheme:art-303:Prefix	
@@ -133,6 +135,7 @@ n.time.	art-303:PartOfSpeechProperty:art-303:Noun
 n:	art-303:PartOfSpeechProperty:art-303:Noun	
 name	art-303:PartOfSpeechProperty:art-303:ProperNoun	
 NAME	art-303:PartOfSpeechProperty:art-303:ProperNoun	
+name.	art-303:PartOfSpeechProperty:art-303:ProperNoun	
 neg	art-302:NEG	
 neg.	art-303:PartOfSpeechProperty:art-303:NegationOperator	
 nm	art-303:PartOfSpeechProperty:art-303:Noun‣art-303:GenderProperty:art-303:MasculineGender	
@@ -158,6 +161,9 @@ pcle	art-303:PartOfSpeechProperty:art-303:Particle
 pers. pron	art-303:PartOfSpeechProperty:art-303:PersonalPronoun	
 pers. pronoun	art-303:PartOfSpeechProperty:art-303:PersonalPronoun	
 phr: v	art-303:Phrase:art-303:VerbPhrase	
+phrase	art-303:SyntacticUnit:art-303:Phrase	
+phrase.	art-303:SyntacticUnit:art-303:Phrase	
+pl.	art-303:NumberPropety:art-303:PluralNumber	
 pn.	art-303:PartOfSpeechProperty:art-303:Pronominal	
 po	art-303:PartOfSpeechProperty:art-303:Postposition	
 Po	art-303:PartOfSpeechProperty:art-303:Postposition	
@@ -175,6 +181,7 @@ pp	art-303:PartOfSpeechProperty:art-303:Preposition
 pp.	art-303:PartOfSpeechProperty:art-303:Preposition	
 pr	art-303:PartOfSpeechProperty:art-303:Preposition	
 preadv	art-303:PartOfSpeechProperty:art-303:Adverbial	
+pred. adj.	art-303:PartOfSpeechProperty:art-303:Adjectival‣art-302:PRED	
 predet	art-303:PartOfSpeechProperty:art-303:Determiner	
 pref	art-303:Morpheme:art-303:Prefix	
 pref.	art-303:Morpheme:art-303:Prefix	
