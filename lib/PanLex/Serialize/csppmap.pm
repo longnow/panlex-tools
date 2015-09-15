@@ -102,9 +102,10 @@ sub csppmap {
                     $notfound{$el} = '';
 
                     if ($default eq 'pass') {
-                        $tagged .= $col[$i];
+                        $tagged .= $delim if length $tagged;
+                        $tagged .= $el;
                     } elsif ($default ne '') {
-                        $tagged .= pptag_item("${type}pp", $default . $col[$i]);
+                        $tagged .= pptag_item("${type}pp", $default . $el);
                     }
                 }
             }
