@@ -45,7 +45,7 @@ c	art-303:PartOfSpeechProperty:art-303:Conjunction
 card	art-303:PartOfSpeechProperty:art-303:CardinalNumeral	
 cc	art-303:PartOfSpeechProperty:art-303:CoordinatingConnective	
 CC	art-303:PartOfSpeechProperty:art-303:CoordinatingConnective	
-clitic	art-303:PartOfSpeechProperty:art-303:Clitic	
+clitic	art-303:Morpheme:art-303:Clitic	
 cnj	art-303:PartOfSpeechProperty:art-303:Conjunction	
 cnjadv	art-303:PartOfSpeechProperty:art-303:Adverbializer	
 cnjcoo	art-303:PartOfSpeechProperty:art-303:CoordinatingConnective	
@@ -224,6 +224,7 @@ rel	art-303:PartOfSpeechProperty:art-303:Conjunction
 rel. pron.	art-303:PartOfSpeechProperty:art-303:RelativePronoun	
 RFLX PRO	art-303:PartOfSpeechProperty:art-303:ReflexivePronoun	
 s	art-303:PartOfSpeechProperty:art-303:Noun	
+s.	art-303:PartOfSpeechProperty:art-303:Noun	
 s.f.	art-303:PartOfSpeechProperty:art-303:Noun‣art-303:GenderProperty:art-303:FeminineGender	
 s.f.pl.	art-303:PartOfSpeechProperty:art-303:Noun‣art-303:GenderProperty:art-303:FeminineGender‣art-303:NumberProperty:art-303:PluralNumber	
 s.m.	art-303:PartOfSpeechProperty:art-303:Noun‣art-303:GenderProperty:art-303:MasculineGender	
