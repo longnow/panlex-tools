@@ -3,7 +3,7 @@
 #   specs:  array of specifications (column index + colon + variety UID) of
 #             columns containing tags (e.g., ex, df, mcs, dcs) requiring variety
 #             specifications.
-#   mindf:  minimum count (1 or more) of definitions and expressions per entry.
+#   mindf:  minimum count (0 or more) of definitions and expressions per entry.
 #             default 2.
 #   minex:  minimum count (0 or more) of expressions per entry. default 1.
 
@@ -40,7 +40,7 @@ sub out_full_0 {
         validate_specs(\@specs);
     }
         
-    die "invalid minimum count\n" if ($mindf < 1) || ($minex < 0);
+    die "invalid minimum count\n" if ($mindf < 0) || ($minex < 0);
     # If either minimum count is too small, quit and notify the user.
 
     print $out ":\n0";

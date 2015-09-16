@@ -42,10 +42,10 @@ sub validate_cols {
     validate_col($_) for @{$_[0]};
 }
 
-# dies unless the argument is a non-empty array reference.
+# dies unless the argument is an array reference.
 # also calls validate_spec on each element of the array.
 sub validate_specs {
-    die "expected a specs argument with at least one specification" unless ref $_[0] eq 'ARRAY' && @{$_[0]};
+    die "expected specs argument to be an array" unless ref $_[0] eq 'ARRAY';
     validate_spec($_) for @{$_[0]};
 }
 
