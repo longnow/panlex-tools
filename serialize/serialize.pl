@@ -138,6 +138,16 @@ my @TOOLS = (
 #   col:    column that may contain multiple meanings.
 #   delim:  meaning-delimitation tag. default '⫷mn⫸'.
 
+#'mcsmap'       => { cols => [1] },
+# Converts text to meaning classifications based on a mapping file.
+# Arguments:
+#   cols:       array of columns containing data to be mapped.
+#   file:       name of the mapping file. default 'mcsmap.txt'.
+#   intradelim: intra-classification delimiter in file and columns. default ':'.
+#   interdelim: inter-classification delimiter in columns. default '‣'.
+#   log:        set to 1 to log unconvertible items to mcsmap.log, 0 otherwise.
+#                 default: 0.
+
 #'normalize'    => { col => 0, uid => 'eng-000', min => 50, mindeg => 10 },
 # Normalizes expressions in a tagged source file.
 # Arguments:
@@ -171,16 +181,6 @@ my @TOOLS = (
 #   extag:    expression tag. default '⫷ex⫸'.
 #   exptag:   pre-normalized expression tag. default '⫷exp⫸'.
 #   tagre:    regex identifying any tag. default '⫷[a-z0-9:-]+⫸'.
-
-#'mcsmap'       => { cols => [1] },
-# Converts text to meaning classifications based on a mapping file.
-# Arguments:
-#   cols:       array of columns containing data to be mapped.
-#   file:       name of the mapping file. default 'mcsmap.txt'.
-#   intradelim: intra-classification delimiter in file and columns. default ':'.
-#   interdelim: inter-classification delimiter in columns. default '‣'.
-#   log:        set to 1 to log unconvertible items to mcsmap.log, 0 otherwise.
-#                 default: 0.
 
 #'replace'      => { cols => [1], from => '⫷fail⫸', to => '⫷ex⫸' },
 # Replaces strings in a tab-delimited source file.
