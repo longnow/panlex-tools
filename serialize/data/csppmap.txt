@@ -163,7 +163,7 @@ pers. pronoun	art-303:PartOfSpeechProperty:art-303:PersonalPronoun
 phr: v	art-303:Phrase:art-303:VerbPhrase	
 phrase	art-303:SyntacticUnit:art-303:Phrase	
 phrase.	art-303:SyntacticUnit:art-303:Phrase	
-pl.	art-303:NumberPropety:art-303:PluralNumber	
+pl.	art-303:NumberProperty:art-303:PluralNumber	
 place	art-303:PartOfSpeechProperty:art-303:ProperNoun	
 pn.	art-303:PartOfSpeechProperty:art-303:Pronominal	
 po	art-303:PartOfSpeechProperty:art-303:Postposition	
