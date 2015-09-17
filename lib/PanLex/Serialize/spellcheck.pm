@@ -99,11 +99,32 @@ sub spellcheck {
         }
     }
 
-    foreach my $ex (keys %ex) {
+    EX: foreach my $ex (keys %ex) {
         if ($speller->check($ex)) {
             $exok{$ex} = delete $ex{$ex};
         } else {
-            $ex{$ex} = ($speller->suggest($ex))[0];
+            my @sugwords;
+
+            foreach my $word (split(' ', $ex)) {
+                if (!$speller->check($word)) {
+                    $word = ($speller->suggest($word))[0];
+
+                    if (!defined $word) {
+                        delete $ex{$ex};
+                        next EX;
+                    }
+                }
+
+                push @sugwords, $word;
+            }
+
+            my $sug = join(' ', @sugwords);
+
+            if ($ex eq $sug) {
+                $exok{$ex} = delete $ex{$ex};
+            } else {
+                $ex{$ex} = $sug;
+            }
         }
     }
 
@@ -130,7 +151,7 @@ sub spellcheck {
                     if (!exists $exok{$ex}) {
                     # If it is not in the table of accepted expressions:
 
-                        if (defined $ex{$ex}) {
+                        if (exists $ex{$ex}) {
                         # If it has a replacement:
 
                             $seg = "$exptag$ex$extag$ex{$ex}";
