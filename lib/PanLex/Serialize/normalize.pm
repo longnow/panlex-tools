@@ -40,7 +40,6 @@ use parent 'Exporter';
 use PanLex::Validation;
 use PanLex::Client::Normalize;
 use PanLex::MungeJson;
-use Unicode::Normalize;
 use JSON;
 
 our @EXPORT = qw/normalize/;
@@ -89,9 +88,6 @@ sub normalize {
     my $lentag = length $extag;
     # Identify the length of the expression tag.
 
-    my $done = 0;
-    # Initialize the count of processed lines as 0.
-
     my @line = <$in>;
     # Identify a list of the lines of the input file.
 
@@ -128,7 +124,6 @@ sub normalize {
 
                             $exok{$ex} = '';
                             # Add it to the table of valid expressions, if not already in it.
-
                         }
 
                         else {
@@ -136,7 +131,6 @@ sub normalize {
 
                             $ex{$ex} = '';
                             # Add it to the table of proposed expressions, if not already in it.
-
                         }
                     }
                 }

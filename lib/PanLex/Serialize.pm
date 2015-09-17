@@ -32,6 +32,7 @@ use PanLex::Serialize::out_full_0;
 use PanLex::Serialize::out_simple_0;
 use PanLex::Serialize::out_simple_2;
 use PanLex::Serialize::replace;
+use PanLex::Serialize::spellcheck;
 use PanLex::Serialize::wctag;
 
 sub serialize {
