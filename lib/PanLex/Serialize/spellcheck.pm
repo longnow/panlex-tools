@@ -5,6 +5,9 @@
 #   lang:     name of aspell language dictionary.
 #   ignore:   regex matching expressions to be ignored in spell checking; or ''
 #               (blank) if none. default ''.
+#   failtag:  tag with which to retag proposed expressions not accepted as 
+#               expressions; '' (blank) if they are to be converted to 
+#               pre-normalized expressions. default '⫷df⫸'.
 #   extag:    expression tag. default '⫷ex⫸'.
 #   exptag:   pre-normalized expression tag. default '⫷exp⫸'.
 #   tagre:    regex identifying any tag. default '⫷[a-z0-9:-]+⫸'.
@@ -29,9 +32,12 @@ sub spellcheck {
     my $excol   = $args->{col};
     my $lang    = $args->{lang};
     my $ignore  = $args->{ignore} // '';
+    my $failtag = $args->{failtag} // '⫷df⫸';
     my $extag   = $args->{extag} // '⫷ex⫸';
     my $exptag  = $args->{exptag} // '⫷exp⫸';
     my $tagre   = $args->{tagre} // '⫷[a-z0-9:-]+⫸';
+
+    $failtag = $exptag if $failtag eq '';
 
     validate_col($excol);
     
@@ -97,11 +103,7 @@ sub spellcheck {
         if ($speller->check($ex)) {
             $exok{$ex} = delete $ex{$ex};
         } else {
-            my $sug = ($speller->suggest($ex))[0];
-
-            if (defined $sug) {
-                $ex{$ex} = $sug;
-            }
+            $ex{$ex} = ($speller->suggest($ex))[0];
         }
     }
 
@@ -123,19 +125,24 @@ sub spellcheck {
                 if (index($seg, $extag) == 0) {
                 # If it is tagged as an expression:
 
-                    my $allok = 1;
-                    # Initialize the list's elements as all classifiable as
-                    # expressions.
-
                     my $ex = substr $seg, $lentag;
 
-                    if (!exists $exok{$ex} && $ex{$ex} ne '') {
-                    # If it is not in the table of accepted expressions and has
-                    # a replacement:
+                    if (!exists $exok{$ex}) {
+                    # If it is not in the table of accepted expressions:
 
-                        $seg = "$exptag$ex$extag$ex{$ex}";
-                        # Identify its replacement and save it as a pre-normalized
-                        # expression.
+                        if (defined $ex{$ex}) {
+                        # If it has a replacement:
+
+                            $seg = "$exptag$ex$extag$ex{$ex}";
+                            # Identify its replacement and save it as a pre-normalized
+                            # expression.
+                        } else {
+                        # Otherwise, i.e. if it has no replacement:
+
+                            $seg = "$failtag$ex";
+                            # Retag it as having failed spell-check.
+
+                        }
                     }
                 }
             }

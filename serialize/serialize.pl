@@ -148,18 +148,6 @@ my @TOOLS = (
 #   log:        set to 1 to log unconvertible items to mcsmap.log, 0 otherwise.
 #                 default: 0.
 
-#'spellcheck'   => { col => 0, lang => 'en_US' },
-# Uses aspell to spell-check expressions in a tagged source file.
-# Requires aspell and the Text::Aspell module.
-# Arguments:
-#   col:      column containing expressions to be spell-checked.
-#   lang:     name of aspell language dictionary.
-#   ignore:   regex matching expressions to be ignored in spell checking; or ''
-#               (blank) if none. default ''.
-#   extag:    expression tag. default '⫷ex⫸'.
-#   exptag:   pre-normalized expression tag. default '⫷exp⫸'.
-#   tagre:    regex identifying any tag. default '⫷[a-z0-9:-]+⫸'.
-
 #'normalize'    => { col => 0, uid => 'eng-000', min => 50, mindeg => 10 },
 # Normalizes expressions in a tagged source file.
 # Arguments:
@@ -190,6 +178,21 @@ my @TOOLS = (
 #               synonymous proposed expressions and they are to be normalized if
 #               and only if all expressions in the list are normalizable; or ''
 #               (blank) if not. default ''. example: ', '.
+#   extag:    expression tag. default '⫷ex⫸'.
+#   exptag:   pre-normalized expression tag. default '⫷exp⫸'.
+#   tagre:    regex identifying any tag. default '⫷[a-z0-9:-]+⫸'.
+
+#'spellcheck'   => { col => 0, lang => 'en_US' },
+# Uses aspell to spell-check expressions in a tagged source file.
+# Requires aspell and the Text::Aspell module.
+# Arguments:
+#   col:      column containing expressions to be spell-checked.
+#   lang:     name of aspell language dictionary.
+#   ignore:   regex matching expressions to be ignored in spell checking; or ''
+#               (blank) if none. default ''.
+#   failtag:  tag with which to retag proposed expressions not accepted as 
+#               expressions; '' (blank) if they are to be converted to 
+#               pre-normalized expressions. default '⫷df⫸'.
 #   extag:    expression tag. default '⫷ex⫸'.
 #   exptag:   pre-normalized expression tag. default '⫷exp⫸'.
 #   tagre:    regex identifying any tag. default '⫷[a-z0-9:-]+⫸'.
