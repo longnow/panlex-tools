@@ -1,8 +1,11 @@
-# Uses aspell to spell-check expressions in a tagged source file.
-# Requires aspell and the Text::Aspell module.
+# Spell-checks expressions in a tagged source file.
+# aspell requires Text::Aspell; hunspell requires Text::Hunspell.
 # Arguments:
 #   col:      column containing expressions to be spell-checked.
-#   lang:     name of aspell language dictionary.
+#   engine:   spell-check engine to use ('aspell' or 'hunspell').
+#   dict:     dictionary to use. for aspell, this is one of the names returned
+#               by `aspell dicts`. for hunspell, this is the full path to the 
+#               dictionary file, excluding the '.aff' or '.dic' extension.
 #   ignore:   regex matching expressions to be ignored in spell checking; or ''
 #               (blank) if none. default ''.
 #   failtag:  tag with which to retag proposed expressions not accepted as 
@@ -23,14 +26,13 @@ use PanLex::Validation;
 our @EXPORT = qw/spellcheck/;
 
 sub spellcheck {
-    require Text::Aspell;
-
     my $in = shift;
     my $out = shift;
     my $args = ref $_[0] ? $_[0] : \@_;
         
     my $excol   = $args->{col};
-    my $lang    = $args->{lang};
+    my $engine  = $args->{engine};
+    my $dict    = $args->{dict};
     my $ignore  = $args->{ignore} // '';
     my $failtag = $args->{failtag} // '⫷df⫸';
     my $extag   = $args->{extag} // '⫷ex⫸';
@@ -41,10 +43,24 @@ sub spellcheck {
 
     validate_col($excol);
     
-    my $speller = Text::Aspell->new; 
-    die "could not access aspell" unless $speller;
-    $speller->set_option('lang', $lang);
-    $speller->set_option('sug-mode', 'slow');
+    my $speller;
+
+    if ($engine eq 'aspell') {
+        require Text::Aspell;
+        
+        $speller = Text::Aspell->new; 
+        die "could not access aspell" unless $speller;
+
+        $speller->set_option('lang', $dict);
+        $speller->set_option('sug-mode', 'slow');
+    } elsif ($engine eq 'hunspell') {
+        require Text::Hunspell;
+
+        $speller = Text::Hunspell->new("${dict}.aff", "${dict}.dic");
+        die "could not access hunspell" unless $speller;
+    } else {
+        die "unknown engine: $engine";
+    }
 
     my (%ex, %exok);
 

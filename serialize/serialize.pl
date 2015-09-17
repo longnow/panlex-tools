@@ -183,11 +183,14 @@ my @TOOLS = (
 #   tagre:    regex identifying any tag. default '⫷[a-z0-9:-]+⫸'.
 
 #'spellcheck'   => { col => 0, lang => 'en_US' },
-# Uses aspell to spell-check expressions in a tagged source file.
-# Requires aspell and the Text::Aspell module.
+# Spell-checks expressions in a tagged source file.
+# aspell requires Text::Aspell; hunspell requires Text::Hunspell.
 # Arguments:
 #   col:      column containing expressions to be spell-checked.
-#   lang:     name of aspell language dictionary.
+#   engine:   spell-check engine to use ('aspell' or 'hunspell').
+#   dict:     dictionary to use. for aspell, this is one of the names returned
+#               by `aspell dicts`. for hunspell, this is the full path to the 
+#               dictionary file, excluding the '.aff' or '.dic' extension.
 #   ignore:   regex matching expressions to be ignored in spell checking; or ''
 #               (blank) if none. default ''.
 #   failtag:  tag with which to retag proposed expressions not accepted as 
