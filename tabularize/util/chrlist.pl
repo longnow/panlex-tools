@@ -8,6 +8,9 @@
 # font name and element 1 is the base64 encoding of the UTF-8 encoding of the text of an
 # expression.
 
+# Special case: The input file may be the final source file (submitted to, or retrieved from,
+# the database) containing only meaning properties whose values are as described above.
+
 # Purpose: to limit the effort of compiling a map from a non-Unicode font to Unicode by
 # disclosing which non-Unicode characters need to be mapped so that a particular source can
 # be converted.
@@ -50,6 +53,9 @@ my %all;
 
 while (<$in>) {
 # For each line of the input file:
+
+	next unless /.:/;
+	# Disregard it if it contains no non-initial colon.
 
 	my @el = (split /»/);
 	# Identify its elements, each being a font-prefixed expression text.
