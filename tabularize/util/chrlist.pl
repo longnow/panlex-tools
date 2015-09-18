@@ -5,7 +5,8 @@
 
 # Creates lists of distinct characters, by font, from a file of “»”-delimited pseudolists,
 # where each element is a colon-delimited pseudolist of 2 elements, of which element 0 is a
-# font name and element 1 is the base64 encoding of the text of an expression.
+# font name and element 1 is the base64 encoding of the UTF-8 encoding of the text of an
+# expression.
 
 # Purpose: to limit the effort of compiling a map from a non-Unicode font to Unicode by
 # disclosing which non-Unicode characters need to be mapped so that a particular source can
@@ -57,13 +58,16 @@ while (<$in>) {
 	# For each of them:
 
 		my @subel = (split /:/, $el, 2);
-		# Identify its font name and expression-text base64 encoding.
+		# Identify its font name and encoded expression text.
 
 		$subel[0] =~ s/\s//g;
 		# Delete all whitespace characters in the font name.
 
 		$subel[1] = (decode_base64 ($subel[1]));
-		# Identify the base64 decoding of the expression text.
+		# Decode the expression text from base64 to UTF-8.
+
+		utf8::decode ($subel[1]);
+		# Decode it from UTF-8 to characters.
 
 		$all{$subel[0]} .= $subel[1];
 		# Initialize or append to the concatenation of texts in the font.
