@@ -182,7 +182,7 @@ my @TOOLS = (
 #   exptag:   pre-normalized expression tag. default '⫷exp⫸'.
 #   tagre:    regex identifying any tag. default '⫷[a-z0-9:-]+⫸'.
 
-#'spellcheck'   => { col => 0, lang => 'en_US' },
+#'spellcheck'   => { col => 0, engine => 'aspell', dict => 'en_US' },
 # Spell-checks expressions in a tagged source file.
 # aspell requires Text::Aspell; hunspell requires Text::Hunspell.
 # Arguments:
