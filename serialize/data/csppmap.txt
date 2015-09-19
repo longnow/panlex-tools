@@ -89,9 +89,9 @@ Determ.	art-303:PartOfSpeechProperty:art-303:Determiner
 Determiner	art-303:PartOfSpeechProperty:art-303:Determiner	
 detnt	art-303:PartOfSpeechProperty:art-303:Determiner	
 detr	art-303:PartOfSpeechProperty:art-303:Determiner	
-disc	art-306:DM	
+disc	art-303:LinguisticSign:art-306:DM	
 dur.	art-303:AspectProperty:art-303:DurativeAspect	
-emph	art-306:IDEO	
+emph	art-303:ForceProperty:art-270:2549	
 enclitique	art-303:Morpheme:art-303:Enclitic	
 epn	art-303:PartOfSpeechProperty:art-303:Pronominal	
 exc	art-303:PartOfSpeechProperty:art-306:EXCLAM	
@@ -105,11 +105,11 @@ f	art-303:GenderProperty:art-303:FeminineGender
 f.	art-303:GenderProperty:art-303:FeminineGender	
 f.v.	art-303:Phrase:art-303:VerbPhrase	
 Floskel	art-303:SyntacticUnit:art-303:Phrase	
-foc	art-302:FOC	
+foc	art-303:InformationalForce:art-302:FOC	
 frac	art-303:PartOfSpeechProperty:art-303:CardinalNumeral‣art-307:NumType:art-307:Frac	
 frequ.	art-303:AspectProperty:art-303:FrequentiveAspect	
 Höflichkeitsform	art-253:register(scn>linguistics):art-306:POL	
-ideo.	art-306:IDEO	
+ideo.	art-303:SemanticProperty:art-306:IDEO	
 ij	art-303:PartOfSpeechProperty:art-303:Interjection	
 ijec	art-303:PartOfSpeechProperty:art-303:Interjection	
 Imperativ	art-303:ForceProperty:art-303:ImperativeForce	
@@ -169,7 +169,7 @@ n:	art-303:PartOfSpeechProperty:art-303:Noun
 name	art-303:PartOfSpeechProperty:art-303:ProperNoun	
 NAME	art-303:PartOfSpeechProperty:art-303:ProperNoun	
 name.	art-303:PartOfSpeechProperty:art-303:ProperNoun	
-neg	art-302:NEG	
+neg	art-303:PartOfSpeechProperty:art-303:NegationOperator	
 neg.	art-303:PartOfSpeechProperty:art-303:NegationOperator	
 nf.	art-303:PartOfSpeechProperty:art-303:Noun‣art-303:GenderProperty:art-303:FeminineGender	
 nm	art-303:PartOfSpeechProperty:art-303:Noun‣art-303:GenderProperty:art-303:MasculineGender	
