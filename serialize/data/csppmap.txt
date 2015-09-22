@@ -285,6 +285,7 @@ quant.	art-303:PartOfSpeechProperty:art-303:Quantifier
 Quantifier	art-303:PartOfSpeechProperty:art-303:Quantifier	
 ques	art-303:PartOfSpeechProperty:art-303:InterrogativeOperator	
 question word	art-303:ForceProperty:art-303:InterrogativeForce	
+refl	art-302:REFL	
 rel	art-303:PartOfSpeechProperty:art-303:Conjunction	
 rel. pron.	art-303:PartOfSpeechProperty:art-303:RelativePronoun	
 relpron.	art-303:PartOfSpeechProperty:art-303:RelativePronoun	
