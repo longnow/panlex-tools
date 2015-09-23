@@ -23,6 +23,7 @@ adjv	art-303:PartOfSpeechProperty:art-303:Adjectival
 adv	art-303:PartOfSpeechProperty:art-303:Adverbial	
 Adv	art-303:PartOfSpeechProperty:art-303:Adverbial	
 ADV	art-303:PartOfSpeechProperty:art-303:Adverbial	
+ADV.	art-303:PartOfSpeechProperty:art-303:Adverbial	
 adv.	art-303:PartOfSpeechProperty:art-303:Adverbial	
 Adv.	art-303:PartOfSpeechProperty:art-303:Adverbial	
 adv. interr.	art-303:PartOfSpeechProperty:art-303:Adverbial‣art-303:ForceProperty:art-303:InterrogativeForce	
