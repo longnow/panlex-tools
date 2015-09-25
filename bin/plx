@@ -35,10 +35,6 @@ sub cmd_cp {
 
     print(STDERR "You need to specify a tool.\n"), return unless $tool;
 
-    $dest //= $tool;
-    $tool .= '.pl' unless $tool =~ /\./;
-    $dest .= '.pl' unless $dest =~ /\./;
-
     my $sourcedir = rel2abs(curdir());
     utf8::decode($sourcedir);
 
@@ -50,6 +46,11 @@ sub cmd_cp {
         }
     }
     $source //= 'aaa-bbb-Author';
+
+    cp_makefile($source), return if $tool =~ /^makefile$/i;
+
+    $dest //= $tool;
+    $tool .= '.pl' unless $tool =~ /\./;
 
     foreach my $dir ( ['serialize'], ['serialize', 'data'], ['tabularize', 'util'] ) {
         my $file = catfile($ENV{PANLEX_TOOLDIR}, @$dir, $tool);
@@ -87,6 +88,41 @@ sub cp_file {
     
     my $mode = (stat($source_file))[2] & 07777;
     chmod $mode, $target_file;
+}
+
+sub cp_makefile {
+    my ($source) = @_;
+
+    my $tab = (glob('*0to1.*'))[0];
+    die "could not find 0to1 script" unless $tab;
+    utf8::decode($tab);
+
+    my $interp;
+    if ($tab =~ /\.pl$/) {
+        $interp = 'perl';
+    } elsif ($tab =~ /\.py$/) {
+        $interp = 'python3';
+    } elsif ($tab =~ /\.js$/) {
+        $interp = 'node';
+    } else {
+        die "don't know what interpreter to use for $tab";
+    }
+
+    open my $fd, '>', 'Makefile' or die $!;
+
+    print $fd <<"EOF";
+all: tab ser
+tab: ${source}-1.txt
+ser: ${source}-final.txt
+
+${source}-1.txt: $tab ${source}-0.txt
+	$interp $tab
+
+${source}-final.txt: ${source}-1.txt serialize.pl
+	perl serialize.pl
+EOF
+
+    close $fd;
 }
 
 sub cmd_fetch {
