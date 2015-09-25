@@ -64,7 +64,7 @@ cnjcoo	art-303:PartOfSpeechProperty:art-303:CoordinatingConnective
 cnjloc	art-303:PartOfSpeechProperty:art-303:Conjunction	
 cnjsub	art-303:PartOfSpeechProperty:art-303:SubordinatingConnective	
 common expression	art-303:SyntacticUnit:art-303:Phrase	
-comp n	art-303:PartOfSpeechProperty:Noun‣art-303:GrammarUnit:art-303:Compound
+comp n	art-303:PartOfSpeechProperty:Noun‣art-303:GrammarUnit:art-303:Compound	
 cong.	art-303:PartOfSpeechProperty:art-303:Conjunction	
 conj	art-303:PartOfSpeechProperty:art-303:Conjunction	
 Conj	art-303:PartOfSpeechProperty:art-303:Conjunction	
