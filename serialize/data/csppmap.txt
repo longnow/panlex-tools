@@ -43,6 +43,7 @@ art.	art-303:PartOfSpeechProperty:art-303:Article
 article	art-303:PartOfSpeechProperty:art-303:Article	
 attr.	art-303:LinguisticProperty:art-253:attributive(icl>adj,ant>predicative)	
 Ausruf	art-303:PartOfSpeechProperty:art-303:Interjection	
+aux	art-303:PartOfSpeechProperty:art-303:Auxiliary	
 aux.	art-303:PartOfSpeechProperty:art-303:Auxiliary	
 Aux.	art-303:PartOfSpeechProperty:art-303:Auxiliary	
 aux. v.	art-303:PartOfSpeechProperty:art-303:Auxiliary	
@@ -63,6 +64,7 @@ cnjcoo	art-303:PartOfSpeechProperty:art-303:CoordinatingConnective
 cnjloc	art-303:PartOfSpeechProperty:art-303:Conjunction	
 cnjsub	art-303:PartOfSpeechProperty:art-303:SubordinatingConnective	
 common expression	art-303:SyntacticUnit:art-303:Phrase	
+comp n	art-303:PartOfSpeechProperty:Noun‣art-303:GrammarUnit:art-303:Compound
 cong.	art-303:PartOfSpeechProperty:art-303:Conjunction	
 conj	art-303:PartOfSpeechProperty:art-303:Conjunction	
 Conj	art-303:PartOfSpeechProperty:art-303:Conjunction	
@@ -83,6 +85,7 @@ dem.pro.	art-303:PartOfSpeechProperty:art-303:Demonstrative
 demin.	art-303:SizeProperty:art-303:DiminuativeSize	
 Demonstrative	art-303:PartOfSpeechProperty:art-303:Demonstrative	
 demonstrative	art-303:PartOfSpeechProperty:art-303:Demonstrative	
+demonstrative adj	art-303:PartOfSpeechProperty:art-303:Demonstrative‣art-303:PartOfSpeechProperty:art-303:Adjectival	
 det	art-303:PartOfSpeechProperty:art-303:Determiner	
 Det	art-303:PartOfSpeechProperty:art-303:Determiner	
 det.	art-303:PartOfSpeechProperty:art-303:Determiner	
@@ -204,7 +207,9 @@ pcle	art-303:PartOfSpeechProperty:art-303:Particle
 pers. pron	art-303:PartOfSpeechProperty:art-303:PersonalPronoun	
 pers. pronoun	art-303:PartOfSpeechProperty:art-303:PersonalPronoun	
 pf.	art-303:AspectProperty:art-303:PerfectiveAspect	
-phr: v	art-303:Phrase:art-303:VerbPhrase	
+phr: v	art-303:SyntacticConstruction:art-303:VerbPhrase	
+phrasal adv	art-303:SyntacticConstruction:art-303:Phrase‣art-303:PartOfSpeechProperty:art-303:Adverbial	
+phrasal v	art-303:PartOfSpeechProperty:art-253:phrasal verb(scn>grammar)	
 phrase	art-303:SyntacticUnit:art-303:Phrase	
 phrase.	art-303:SyntacticUnit:art-303:Phrase	
 pl.	art-303:NumberProperty:art-303:PluralNumber	
