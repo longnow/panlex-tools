@@ -49,8 +49,8 @@ sub cmd_cp {
 
     cp_makefile($source), return if $tool =~ /^makefile$/i;
 
-    $dest //= $tool;
     $tool .= '.pl' unless $tool =~ /\./;
+    $dest //= $tool;
 
     foreach my $dir ( ['serialize'], ['serialize', 'data'], ['tabularize', 'util'] ) {
         my $file = catfile($ENV{PANLEX_TOOLDIR}, @$dir, $tool);
