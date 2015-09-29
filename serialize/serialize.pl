@@ -115,6 +115,16 @@ my @TOOLS = (
 #   fromcol:  column containing tag(s) to be copied.
 #   tocols:   array of columns containing tagged items.
 
+#'mcsmap'       => { cols => [1] },
+# Converts text to meaning classifications based on a mapping file.
+# Arguments:
+#   cols:       array of columns containing data to be mapped.
+#   file:       name of the mapping file. default 'mcsmap.txt'.
+#   intradelim: intra-classification delimiter in file and columns. default ':'.
+#   interdelim: inter-classification delimiter in columns. default '‣'.
+#   log:        set to 1 to log unconvertible items to mcsmap.log, 0 otherwise.
+#                 default: 0.
+
 #'mcstag'       => { cols => [1] },
 # Tags meaning classifications.
 # Arguments:
@@ -137,16 +147,6 @@ my @TOOLS = (
 # Arguments:
 #   col:    column that may contain multiple meanings.
 #   delim:  meaning-delimitation tag. default '⫷mn⫸'.
-
-#'mcsmap'       => { cols => [1] },
-# Converts text to meaning classifications based on a mapping file.
-# Arguments:
-#   cols:       array of columns containing data to be mapped.
-#   file:       name of the mapping file. default 'mcsmap.txt'.
-#   intradelim: intra-classification delimiter in file and columns. default ':'.
-#   interdelim: inter-classification delimiter in columns. default '‣'.
-#   log:        set to 1 to log unconvertible items to mcsmap.log, 0 otherwise.
-#                 default: 0.
 
 #'normalize'    => { col => 0, uid => 'eng-000', min => 50, mindeg => 10 },
 # Normalizes expressions in a tagged source file.
