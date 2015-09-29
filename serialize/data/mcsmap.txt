@@ -1,4 +1,5 @@
 causative	art-316:Causative_of
+domain	art-300:HasContext
 inchoative	art-316:Inchoative_of
-type	art-300:IsA
 pertaining	art-300:RelatedTo
+type	art-300:IsA
