@@ -44,7 +44,6 @@ my @TOOLS = (
 #               (blank) if none. default ''.
 #   extag:    expression tag. default '⫷ex⫸'.
 #   exptag:   pre-normalized expression tag. default '⫷exp⫸'.
-#   tagre:    regex identifying any tag. default '⫷[a-z0-9:-]+⫸'.
 
 #'exdftag'      => { cols => [0, 1], re => '(?:\([^()]+\)|（[^（）]+）)', subre => '[][/,;?!~]' },
 # Splits definitional expressions into reduced expressions and definitions in 
@@ -64,8 +63,6 @@ my @TOOLS = (
 #   postre:   regex matching any post-tag character. default '[^⫷]'.
 #   postwre:  regex matching any post-tag character that is not a space;
 #               default '[^⫷ ]'.
-#   prere:    regex matching a preposed annotation not to be counted, or '' if
-#               none. default '⫷[^⫷⫸]+⫸'.
 
 #'dftag'        => { cols => [1] },
 # Tags all column-based definitions in a tab-delimited source file.
@@ -180,7 +177,6 @@ my @TOOLS = (
 #               (blank) if not. default ''. example: ', '.
 #   extag:    expression tag. default '⫷ex⫸'.
 #   exptag:   pre-normalized expression tag. default '⫷exp⫸'.
-#   tagre:    regex identifying any tag. default '⫷[a-z0-9:-]+⫸'.
 
 #'spellcheck'   => { col => 0, engine => 'aspell', dict => 'en_US' },
 # Spell-checks expressions in a tagged source file.
@@ -198,7 +194,6 @@ my @TOOLS = (
 #               pre-normalized expressions. default '⫷df⫸'.
 #   extag:    expression tag. default '⫷ex⫸'.
 #   exptag:   pre-normalized expression tag. default '⫷exp⫸'.
-#   tagre:    regex identifying any tag. default '⫷[a-z0-9:-]+⫸'.
 
 #'replace'      => { cols => [1], from => '⫷fail⫸', to => '⫷ex⫸' },
 # Replaces strings in a tab-delimited source file.
