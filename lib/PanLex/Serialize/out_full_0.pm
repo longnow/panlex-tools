@@ -6,6 +6,9 @@
 #   mindf:  minimum count (0 or more) of definitions and expressions per entry.
 #             default 2.
 #   minex:  minimum count (0 or more) of expressions per entry. default 1.
+#   error:  indicates what to do when certain common errors are detected. use
+#             'mark' to mark errors in the output file, 'fail' to immediately
+#             abort, and 'ignore' to do nothing. default 'mark'.
 
 package PanLex::Serialize::out_full_0;
 use strict;
@@ -27,21 +30,25 @@ sub out_full_0 {
     my $out = shift;
     my $args = ref $_[0] ? $_[0] : \@_;
 
-    my (@specs, $mindf, $minex);
+    my (@specs, $mindf, $minex, $error);
     
     if (ref $args eq 'HASH') {
         validate_specs($args->{specs});
 
-        @specs  = @{$args->{specs}};
-        $mindf  = $args->{mindf} // 2;
-        $minex  = $args->{minex} // 1;
+        @specs = @{$args->{specs}};
+        $mindf = $args->{mindf} // 2;
+        $minex = $args->{minex} // 1;
+        $error = $args->{error} // 'mark';
     } else {
         (undef, $mindf, $minex, @specs) = @$args;
+        $error = 'ignore';
         validate_specs(\@specs);
     }
         
     die "invalid minimum count\n" if ($mindf < 0) || ($minex < 0);
     # If either minimum count is too small, quit and notify the user.
+
+    die "invalid value for error parameter: $error" if $error !~ /^(mark|fail|ignore)$/;
 
     print $out ":\n0";
     # Output the file header.
@@ -49,6 +56,15 @@ sub out_full_0 {
     my $col_uid = parse_specs(\@specs);
 
     my %seen;
+
+    my $error_count = 0;
+
+    my $report_error = sub {
+        my ($errstr, $line) = @_;
+        die $errstr if $error eq 'fail';
+        $error_count++;        
+        return "ERROR: $errstr\n$line";
+    };
 
     while (<$in>) {
     # For each line of the input file:
@@ -116,12 +132,36 @@ sub out_full_0 {
             $rec =~ s/⫷(?:[dm]pp)⫸/\n/g;
             # Convert all remaining property tags in it.
 
+            if ($error ne 'ignore') {
+                my @lines = split /\n/, $rec, -1;
+                shift @lines; # remove initial empty line
+                my $error_count_orig = $error_count;
+
+                foreach my $line (@lines) {
+                    $line = $report_error->('empty line', $line), next
+                        if $line eq '';
+
+                    $line = $report_error->('line contains ⫷ or ⫸', $line)
+                        if $line =~ /[⫷⫸]/;
+
+                    $line = $report_error->('line contains ASCII apostrophe', $line)
+                        if $line =~ /'/;
+
+                    $line = $report_error->('line contains improperly corrected ellipsis', $line)
+                        if $line =~ /\.{2,}|…\.|\.…/;
+                }
+
+                $rec = "\n" . join("\n", @lines) if $error_count > $error_count_orig;
+            }
+
             print $out "\nmn$rec\n";
             # Output it.
 
         }
 
     }
+
+    print "\n$error_count errors detected; check final file for ERROR lines\n" if $error_count;
 
 }
 
