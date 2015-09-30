@@ -93,6 +93,7 @@ Determ.	art-303:PartOfSpeechProperty:art-303:Determiner
 Determiner	art-303:PartOfSpeechProperty:art-303:Determiner	
 detnt	art-303:PartOfSpeechProperty:art-303:Determiner	
 detr	art-303:PartOfSpeechProperty:art-303:Determiner	
+dim	art-303:SizeProperty:art-303:DiminuativeSize	
 disc	art-303:LinguisticSign:art-306:DM	
 dur.	art-303:AspectProperty:art-303:DurativeAspect	
 emph	art-303:ForceProperty:art-270:2549	
