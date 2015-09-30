@@ -149,6 +149,16 @@ sub out_full_0 {
 
                     $line = $report_error->('line contains improperly corrected ellipsis', $line)
                         if $line =~ /\.{2,}|…\.|\.…/;
+
+                    my $count = 0;
+                    while ($line =~ / \( (?{ $count++ }) | \) (?{ $count-- }) /gx) {}
+                    $line = $report_error->('line contains unbalanced parentheses', $line)
+                        if $count != 0;
+
+                    $count = 0;
+                    while ($line =~ / \[ (?{ $count++ }) | \] (?{ $count-- }) /gx) {}
+                    $line = $report_error->('line contains unbalanced brackets', $line)
+                        if $count != 0;
                 }
 
                 $rec = "\n" . join("\n", @lines) if $error_count > $error_count_orig;
