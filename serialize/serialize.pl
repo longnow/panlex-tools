@@ -60,9 +60,6 @@ my @TOOLS = (
 #               default ''. example: 3.
 #   extag:    expression tag. default '⫷ex⫸'.
 #   dftag:    definition tag. default '⫷df⫸'.
-#   postre:   regex matching any post-tag character. default '[^⫷]'.
-#   postwre:  regex matching any post-tag character that is not a space;
-#               default '[^⫷ ]'.
 
 #'dftag'        => { cols => [1] },
 # Tags all column-based definitions in a tab-delimited source file.
