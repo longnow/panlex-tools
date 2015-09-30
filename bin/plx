@@ -93,36 +93,71 @@ sub cp_file {
 sub cp_makefile {
     my ($source) = @_;
 
-    my $tab = (glob('*0to1.*'))[0];
-    die "could not find 0to1 script" unless $tab;
-    utf8::decode($tab);
+    my $fromfile = get_glob("${source}-0.*");
 
-    my $interp;
-    if ($tab =~ /\.pl$/) {
-        $interp = 'perl';
-    } elsif ($tab =~ /\.py$/) {
-        $interp = 'python3';
-    } elsif ($tab =~ /\.js$/) {
-        $interp = 'node';
+    my (@deps, $tab);
+
+    if ($tab = get_glob('tabularize-*.*')) {
+        die "can't find file matching pattern ${source}-0.*" unless defined $fromfile;
+        push @deps, [ "${source}-1.txt", [ $fromfile, $tab ], add_interp($tab) ];
     } else {
-        die "don't know what interpreter to use for $tab";
+        if ($tab = get_glob('*-scrape.*')) {
+            $fromfile = get_glob("${source}.*");
+            die "can't find file matching pattern ${source}.*" unless defined $fromfile;
+            push @deps, [ "${source}-0.txt", [ $fromfile, $tab ], add_interp($tab) ];
+            $fromfile = "${source}-0.txt";
+        }
+
+        my ($x, $y) = (0, 1);
+
+        while ($tab = get_glob("*${x}to${y}.*")) {
+            push @deps, [ "${source}-${y}.txt", [ $fromfile, $tab ], add_interp($tab) ];
+            $fromfile = "${source}-${y}.txt";
+            $x++, $y++;
+        }
     }
+
+    my @tabs = map { $_->[0] } @deps; 
+
+    push @deps, [ "${source}-final.txt", [ $deps[-1][0], 'serialize.pl' ], 'perl serialize.pl' ]; 
 
     open my $fd, '>', 'Makefile' or die $!;
 
-    print $fd <<"EOF";
-all: tab ser
-tab: ${source}-1.txt
-ser: ${source}-final.txt
+    print $fd "all: tab ser\n";
+    print $fd "tab: @tabs\n";
+    print $fd "ser: ${source}-final.txt\n\n";
 
-${source}-1.txt: $tab ${source}-0.txt
-	$interp $tab
-
-${source}-final.txt: ${source}-1.txt serialize.pl
-	perl serialize.pl
-EOF
+    foreach my $d (@deps) {
+        print $fd "$d->[0]: @{$d->[1]}\n\t$d->[2]\n\n";
+    }
 
     close $fd;
+}
+
+sub get_glob {
+    my ($pattern) = @_;
+    my $file = (glob($pattern))[0];
+    return $file unless defined $file;
+    utf8::decode($file);
+    return $file;
+}
+
+sub add_interp {
+    my ($filename) = @_;
+
+    my $interp;
+
+    if ($filename =~ /\.pl$/) {
+        $interp = 'perl';
+    } elsif ($filename =~ /\.py$/) {
+        $interp = 'python3';
+    } elsif ($filename =~ /\.js$/) {
+        $interp = 'node';
+    } else {
+        die "don't know what interpreter to use for $filename";
+    }
+
+    return "$interp $filename";
 }
 
 sub cmd_fetch {
