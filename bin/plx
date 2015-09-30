@@ -117,15 +117,19 @@ sub cp_makefile {
         }
     }
 
-    my @tabs = map { $_->[0] } @deps; 
+    my @tabs = map { $_->[0] } @deps;
+    my $firstser = $deps[-1][0] =~ s/^.+-([0-9]+)\.txt$/$1/r;
+    $firstser++;
 
     push @deps, [ "${source}-final.txt", [ $deps[-1][0], 'serialize.pl' ], 'perl serialize.pl' ]; 
 
     open my $fd, '>', 'Makefile' or die $!;
 
-    print $fd "all: tab ser\n";
-    print $fd "tab: @tabs\n";
+    print $fd "SHELL = /bin/bash\n\n";
+    print $fd "all: tab ser\n\n";
+    print $fd "tab: @tabs\n\n";
     print $fd "ser: ${source}-final.txt\n\n";
+    print $fd "clean:\n\trm -f @tabs ${source}-{${firstser}..50}.txt ${source}-final.txt\n\n";
 
     foreach my $d (@deps) {
         print $fd "$d->[0]: @{$d->[1]}\n\t$d->[2]\n\n";
