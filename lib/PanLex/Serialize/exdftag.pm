@@ -12,9 +12,6 @@
 #               default ''. example: 3.
 #   extag:    expression tag. default '⫷ex⫸'.
 #   dftag:    definition tag. default '⫷df⫸'.
-#   postre:   regex matching any post-tag character. default '[^⫷]'.
-#   postwre:  regex matching any post-tag character that is not a space;
-#               default '[^⫷ ]'.
 
 package PanLex::Serialize::exdftag;
 use strict;
@@ -22,6 +19,7 @@ use warnings 'FATAL', 'all';
 use utf8;
 use parent 'Exporter';
 use PanLex::Validation;
+use PanLex::Serialize::Util;
 
 our @EXPORT = qw/exdftag/;
 
@@ -30,7 +28,7 @@ sub exdftag {
     my $out = shift;
     my $args = ref $_[0] ? $_[0] : \@_;
 
-    my (@exdfcol, $re, $subre, $tmc, $tmw, $extag, $dftag, $postre, $postwre);
+    my (@exdfcol, $re, $subre, $tmc, $tmw, $extag, $dftag);
 
     if (ref $args eq 'HASH') {
         validate_cols($args->{cols});
@@ -42,16 +40,13 @@ sub exdftag {
         $tmw      = $args->{maxword} // '';
         $extag    = $args->{extag} // '⫷ex⫸';
         $dftag    = $args->{dftag} // '⫷df⫸';
-        $postre   = $args->{postre} // '[^⫷]';
-        $postwre  = $args->{postwre} // '[^⫷ ]';
     } else {
-        ($extag, $postre, $postwre, $re, $dftag, $tmc, $tmw, $subre, undef, @exdfcol) = @$args;
+        ($extag, undef, undef, $re, $dftag, $tmc, $tmw, $subre, undef, @exdfcol) = @$args;
         validate_cols(\@exdfcol);
     }
 
-    $tmc++ if $tmc;
-    # Identify the character count of the shortest expression exceeding the maximum
-    # character count, or blank if none.
+    $extag = validate_tag($extag);
+    $dftag = validate_tag($dftag);
 
     while (<$in>) {
     # For each line of the input file:
@@ -68,57 +63,60 @@ sub exdftag {
 
             die "column $i not present in line" unless defined $col[$i];
 
-            if (length $re) {
-            # If there is a criterion for definitional substrings:
+            my $tags = parse_tags($col[$i]);
+            # Identify a parsed representation of the column's tags.
 
-                while ($col[$i] =~ /($extag$postre*$re$postre*)/) {
-                # As long as any expression in the column satisfies the criterion:
+            foreach my $ex (grep { tags_match($extag, $_) } @$tags) {
+            # For every expression in the column:
 
-                    my ($df,$ex) = ($1,$1);
-                    # Identify the first such expression and a definition identical to it.
+                if (length $re && $ex->[2] =~ /$re/) {
+                # If there is a criterion for definitional substrings and the expression
+                # satisfies it:
 
-                    $df =~ s/^$extag/$dftag/;
-                    # In the definition, change the expression tag to a definition tag.
+                    my $df = [ $dftag->[0], $dftag->[1], $ex->[2] ];
+                    # Identify a definition identical to the expression.
 
-                    $ex =~ s/$re//g;
+                    $ex->[2] =~ s/$re//g;
                     # In the expression, delete all definitional substrings.
 
-                    $ex =~ s/ {2,}/ /g;
+                    $ex->[2] =~ s/ {2,}/ /g;
                     # In the expression, collapse any multiple spaces.
 
-                    $ex =~ s/^$extag\K | $//g;
+                    $ex->[2] =~ s/^ | $//g;
                     # In the expression, delete all initial and final spaces.
 
-                    $ex = '' if (
-                        ($ex eq $extag)
-                        || ($tmc && ($ex =~ /^$extag.{$tmc}/))
-                        || ($tmw && ($ex =~ /^(?:[^ ]+ ){$tmw}/))
-                        || ((length $subre) && ($ex =~ /^$extag$postre*$subre/))
+                    $ex->[0] = '' if (
+                        $ex->[2] eq '' || 
+                        ($tmc && length $ex->[2] > $tmc) ||
+                        ($tmw && split(' ', $ex->[2]) > $tmw) ||
+                        (length $subre && $ex->[2] =~ /$subre/)
                     );
                     # If the expression has become blank, exceeds a maximum count, or contains
                     # a prohibited character, delete the expression.
 
-                    $col[$i] =~ s/$extag$postre*$re$postre*/$df$ex/;
+                    $ex = [ $df, $ex ];
                     # Replace the expression with the definition and the reduced expression.
+                } else {
+
+                    if (
+                        ($tmc && length $ex->[2] > $tmc) ||
+                        ($tmc && split(' ', $ex->[2]) > $tmw) ||
+                        (length $subre && $ex->[2] =~ /$subre/)
+                    ) {
+                        ($ex->[0], $ex->[1]) = ($dftag->[0], $dftag->[1]);
+                    }
+                    # Convert every expression in the column that exceeds the maximum character
+                    # count, if there is one, to a definition.
+                    # Convert every expression in the column that exceeds a maximum word count,
+                    # if there is one, to a definition.
+                    # Convert every expression containing a prohibited character, if there is any,
+                    # to a definition.
 
                 }
             }
-            
-            $col[$i] =~ s/$extag(${postre}{$tmc,})/$dftag$1/g
-                if $tmc;
-            # Convert every expression in the column that exceeds the maximum character
-            # count, if there is one, to a definition.
 
-            $col[$i] =~ s/$extag((?:$postwre+ +){$tmw})/$dftag$1/g
-                if $tmw;
-            # Convert every expression in the column that exceeds a maximum word count,
-            # if there is one, to a definition.
-
-            $col[$i] =~ s/$extag($postre*(?:$subre))/$dftag$1/g
-                if length $subre;
-            # Convert every expression containing a prohibited character, if there is any,
-            # to a definition.
-
+            $col[$i] = serialize_tags($tags);
+            # Set the column value to the modified tags.
         }
 
         print $out join("\t", @col), "\n";
