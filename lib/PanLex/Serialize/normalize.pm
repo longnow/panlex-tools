@@ -29,7 +29,6 @@
 #               (blank) if not. default ''. example: ', '.
 #   extag:    expression tag. default '⫷ex⫸'.
 #   exptag:   pre-normalized expression tag. default '⫷exp⫸'.
-#   tagre:    regex identifying any tag. default '⫷[a-z0-9:-]+⫸'.
 
 package PanLex::Serialize::normalize;
 use strict;
@@ -38,6 +37,7 @@ use utf8;
 use open IO => ':raw :encoding(utf8)';
 use parent 'Exporter';
 use PanLex::Validation;
+use PanLex::Serialize::Util;
 use PanLex::Client::Normalize;
 use PanLex::MungeJson;
 use JSON;
@@ -49,7 +49,7 @@ sub normalize {
     my $out = shift;
     my $args = ref $_[0] ? $_[0] : \@_;
     
-    my ($excol, $uid, $min, $mindeg, $ui, $log, $failtag, $ignore, @propcols, $delim, $extag, $exptag, $tagre);
+    my ($excol, $uid, $min, $mindeg, $ui, $log, $failtag, $ignore, @propcols, $delim, $extag, $exptag);
     
     if (ref $args eq 'HASH') {
         $excol      = $args->{col};
@@ -64,9 +64,8 @@ sub normalize {
         $delim      = $args->{delim} // '';
         $extag      = $args->{extag} // '⫷ex⫸';
         $exptag     = $args->{exptag} // '⫷exp⫸';
-        $tagre      = $args->{tagre} // '⫷[a-z0-9:-]+⫸';
     } else {
-        ($tagre, $extag, $excol, $min, $mindeg, $uid, $exptag, $failtag, $delim) = @$args;
+        (undef, $extag, $excol, $min, $mindeg, $uid, $exptag, $failtag, $delim) = @$args;
         $ignore = '';
         $log = 0;
     }
@@ -74,64 +73,62 @@ sub normalize {
     validate_col($excol);
     validate_uid($uid);
 
-    my ($log_fh, $log_obj, $json);
-    if ($log) {
-        open $log_fh, '>', "normalize${excol}.json" or die $!;
-        $json = JSON->new->pretty->canonical;
-    }
+    my $failtag_obj;
+    $failtag_obj = validate_tag($failtag) if $failtag ne '';
+    my $extag_obj = validate_tag($extag);
+    $exptag = validate_tag($exptag);
 
     die "invalid min value: $min" unless valid_int($min) && $min >= 0;
     die "invalid mindeg value: $mindeg" unless $mindeg eq '' || (valid_int($mindeg) && $mindeg >= 0);
-        
-    my (%ex, %exok);
+    
+    my (%ex, %exok, $log_obj);
 
-    my $lentag = length $extag;
-    # Identify the length of the expression tag.
-
-    my @line = <$in>;
+    my @lines = <$in>;
     # Identify a list of the lines of the input file.
 
-    chomp @line;
+    chomp @lines;
     # Delete their trailing newlines.
 
-    foreach my $line (@line) {
+    foreach my $line (@lines) {
     # For each line:
 
-        my @col = split /\t/, $line, -1;
+        $line = [ split /\t/, $line, -1 ];
         # Identify its columns.
 
-        die "column $excol not present in line" unless defined $col[$excol];
+        die "column $excol not present in line" unless defined $line->[$excol];
         # If the column containing proposed expressions isn’t among them, report the
         # error and quit.
 
-        if (length $col[$excol]) {
-        # If the column containing proposed expressions is nonblank:
+        $line->[$excol] = parse_tags($line->[$excol], 1);
+        # Identify the tagged items in it.
 
-            my @seg = ($col[$excol] =~ /($tagre.+?(?=$tagre|$))/g);
-            # Identify the tagged items, each item including its tag, in it.
+        foreach my $tag (@{$line->[$excol]}) {
+        # For each of the tagged items:
 
-            foreach my $seg (@seg) {
-            # For each of the tagged items:
+            my $subtag = ref $tag->[0] eq 'ARRAY' ? $tag->[1] : $tag;
+            # Identify the tag or subtag that may contain an expression.
 
-                if (index($seg, $extag) == 0) {
-                # If it is tagged as an expression:
+            if (tags_match($subtag, $extag_obj)) {
+            # If it is tagged as an expression:
 
-                    foreach my $ex (PsList($seg, $lentag, $delim)) {
-                    # For the expression, or for each expression if it is a pseudo-list:
+                die "don't know how to handle delimited expressions in complex tags"
+                    if $subtag != $tag && $delim ne '';
 
-                        if (length $ignore && $ex =~ /$ignore/) {
-                        # If the expression is to be ignored:
+                foreach my $ex (PsList($subtag->[2], $delim)) {
+                # For the expression, or for each expression if it is a pseudo-list:
 
-                            $exok{$ex} = '';
-                            # Add it to the table of valid expressions, if not already in it.
-                        }
+                    if (length $ignore && $ex =~ /$ignore/) {
+                    # If the expression is to be ignored:
 
-                        else {
-                        # Otherwise, i.e. if the expression is not to be ignored:
+                        $exok{$ex} = '';
+                        # Add it to the table of valid expressions, if not already in it.
+                    }
 
-                            $ex{$ex} = '';
-                            # Add it to the table of proposed expressions, if not already in it.
-                        }
+                    else {
+                    # Otherwise, i.e. if the expression is not to be ignored:
+
+                        $ex{$ex} = '';
+                        # Add it to the table of proposed expressions, if not already in it.
                     }
                 }
             }
@@ -175,147 +172,169 @@ sub normalize {
         }
     }
 
-    foreach my $line (@line) {
+    foreach my $line (@lines) {
     # For each line:
 
-        my @col = split /\t/, $line, -1;
-        # Identify its columns.
+        my $excount = 0;
+        my $failcount = 0;
+        # Initialize counts of the number of expressions and normalization
+        # failures in the column (needed for propcols).
 
-        if (length $col[$excol]) {
-        # If the column containing proposed expressions is nonblank:
+        foreach my $tag (@{$line->[$excol]}) {
+        # For each tag in the column containing proposed expressions:
 
-            my $excount = 0;
-            my $failcount = 0;
-            # Initialize counts of the number of expressions and normalization
-            # failures in the column (needed for propcols).
+            my $subtag = ref $tag->[0] eq 'ARRAY' ? $tag->[1] : $tag;
+            # Identify the tag or subtag that may contain an expression.
 
-            my @seg = ($col[$excol] =~ m/($tagre.+?(?=$tagre|$))/g);
-            # Identify the tagged items, including tags, in the column.
+            if (tags_match($subtag, $extag_obj)) {
+            # If it is tagged as an expression:
 
-            foreach my $seg (@seg) {
-            # For each item:
+                $excount++;
+                # Count it as a single expression for the purpose of propcols.
 
-                if (index($seg, $extag) == 0) {
-                # If it is tagged as an expression:
+                my $allok = 1;
+                # Initialize the list's elements as all classifiable as
+                # expressions.
 
-                    $excount++;
-                    # Count it as a single expression for the purpose of propcols.
+                my @ex = PsList($subtag->[2], $delim);
+                # Identify the expression, or a list of the expressions in it if
+                # it is a pseudo-list.
+                
+                foreach my $ex (@ex) {
+                # For each of them:
 
-                    my $allok = 1;
-                    # Initialize the list's elements as all classifiable as
-                    # expressions.
+                    unless (exists $exok{$ex} || exists $ttto{$ex}) {
+                    # If it is not classifiable as an expression without
+                    # replacement or after being replaced:
 
-                    my @ex = PsList($seg, $lentag, $delim);
-                    
+                        $allok = 0;
+                        # Identify the list as containing at least 1
+                        # expression not classifiable as an expression.
+
+                        last;
+                        # Stop checking the expression(s) in the list.
+                    }
+
+                }
+
+                if ($allok) {
+                # If all elements of the list are classifiable as expressions with
+                # or without replacement:
+
+                    my @newtags;
+                    # Identify a variable that will contain the rewritten tag(s).
+
                     foreach my $ex (@ex) {
-                    # Identify the expression, or a list of the expressions in it if
-                    # it is a pseudo-list.
-
                     # For each of them:
 
-                        unless (exists $exok{$ex} || exists $ttto{$ex}) {
-                        # If it is not classifiable as an expression without
-                        # replacement or after being replaced:
+                        if (exists $exok{$ex}) {
+                        # If it is classifiable as an expression without
+                        # replacement:
 
-                            $allok = 0;
-                            # Identify the list as containing at least 1
-                            # expression not classifiable as an expression.
-
-                            last;
-                            # Stop checking the expression(s) in the list.
-                        }
-
-                    }
-
-                    $seg = '';
-                    # Reinitialize the item as blank.
-
-                    if ($allok) {
-                    # If all elements of the list are classifiable as expressions with
-                    # or without replacement:
-
-                        foreach my $ex (@ex) {
-                        # For each of them:
-
-                            if (exists $exok{$ex}) {
-                            # If it is classifiable as an expression without
-                            # replacement:
-
-                                $seg .= "$extag$ex";
-                                # Append it, with an expression tag, to the
-                                # item.
-                            }
-
-                            else {
-                            # Otherwise, i.e. if it is classifiable as an
-                            # expression only after replacement:
-
-                                $seg .= "$exptag$ex$extag$ttto{$ex}";
-                                # Append it, with a pre-normalized
-                                # expression tag, and its replacement, with
-                                # an expression tag, to the item.
-                            }
-                        }
-                    }
-
-                    else {
-                    # Otherwise, i.e. if not all elements of the list are classifiable
-                    # as expressions with or without replacement:
-
-                        $seg = join($delim, @ex);
-                        # Identify the concatenation of the list's elements, with
-                        # the specified delimiter if any, i.e. the original item
-                        # without its expression tag.
-
-                        if (length $failtag) {
-                        # If proposed expressions not classifiable as expressions
-                        # are to be converted to another tag:
-
-                            $seg = "$failtag$seg";
-                            # Prepend the tag to the concatenation.
-
-                            $failcount++;
-                            # Note the failure for the purpose of propcols.
-
+                            push @newtags, [ $extag_obj->[0], $extag_obj->[1], $ex ];
+                            # Append it, with an expression tag, to the tag list.
                         }
 
                         else {
-                        # Otherwise, i.e. if such proposed expressions are not
-                        # to be converted to another tag:
+                        # Otherwise, i.e. if it is classifiable as an
+                        # expression only after replacement:
 
-                            $seg = "$exptag$seg";
-                            # Prepend a pre-normalized expression tag to the
-                            # concatenation.
-
+                            push @newtags, 
+                                [ $exptag->[0], $exptag->[1], $ex ], 
+                                [ $extag_obj->[0], $extag_obj->[1], $ttto{$ex} ];
+                            # Append it, with a pre-normalized
+                            # expression tag, and its replacement, with
+                            # an expression tag, to the tag list.
                         }
+                    }
+
+                    if ($subtag == $tag) {
+                    # If it is a simple tag:
+
+                        $tag = \@newtags;
+                        # Replace it with the new tag(s).
+
+                    } else {
+                    # Otherwise, i.e. if it is a complex tag:
+
+                        splice @$tag, -1, 1, @newtags;
+                        # Replace the last subtag with the new tag(s).
+
+                    }
+                }
+
+                else {
+                # Otherwise, i.e. if not all elements of the list are classifiable
+                # as expressions with or without replacement:
+
+                    my $newtag;
+                    # Identify a variable that will contain the rewritten tag.
+
+                    if (length $failtag) {
+                    # If proposed expressions not classifiable as expressions
+                    # are to be converted to another tag:
+
+                        $newtag = [ $failtag_obj->[0], $failtag_obj->[1], $subtag->[2] ];
+                        # Set the new tag to it with the tag indicating failure.
+
+                        $failcount++;
+                        # Note the failure for the purpose of propcols.
+
+                    }
+
+                    else {
+                    # Otherwise, i.e. if such proposed expressions are to be 
+                    # to be converted to pre-normalized expressions:
+
+                        $newtag = [ $exptag->[0], $exptag->[1], $subtag->[2] ];
+                        # Set the new tag to it with a pre-normalized expression tag.
+
+                    }
+
+                    if ($subtag == $tag) {
+                    # If it is a simple tag:
+
+                        $tag = $newtag;
+                        # Replace it with the new tag(s).
+
+                    } else {
+                    # Otherwise, i.e. if it is a complex tag:
+
+                        $tag->[1] = $newtag;
+                        # Replace the last subtag with the new tag.
+
+                        $tag->[0][0] = $newtag->[0] if $newtag->[0] =~ /^[dm]pp$/;
+                        # Propagate the tag change to the first subtag if it is a change
+                        # to a property.
+
                     }
                 }
             }
-
-            $col[$excol] = join('', @seg);
-            # Identify the column with all expression reclassifications.
-
-            if (@propcols and $excount == $failcount) {
-            # If failures are to be propagated to other columns and every 
-            # expression in the column failed normalization:
-
-                foreach my $propcol (@propcols) {
-                # For each column to which the conversion is to be propagated:
-
-                    $col[$propcol] =~ s/$extag/$failtag/g;
-                    # Convert all expression tags in it to the other tag.
-
-                }
-            }
-
         }
 
-        print $out join("\t", @col), "\n";
+        $line->[$excol] = serialize_tags($line->[$excol]);
+        # Identify the rewritten column.
+
+        if (@propcols and $excount == $failcount) {
+        # If failures are to be propagated to other columns and every 
+        # expression in the column failed normalization:
+
+            foreach my $propcol (@propcols) {
+            # For each column to which the conversion is to be propagated:
+
+                $line->[$propcol] =~ s/$extag/$failtag/g;
+                # Convert all expression tags in it to the other tag.
+
+            }
+        }
+
+        print $out join("\t", @$line), "\n";
         # Output the line.
     }
 
     if ($log) {
-        print $log_fh munge_json($json->encode($log_obj)), "\n";
+        open my $log_fh, '>', "normalize${excol}.json" or die $!;
+        print $log_fh munge_json(JSON->new->pretty->canonical->encode($log_obj)), "\n";
         close $log_fh;
     }
 }
@@ -324,36 +343,16 @@ sub normalize {
 # Return a list of items in the specified prefixed pseudo-list.
 # Arguments:
 #    0: pseudo-list.
-#    1: length of its prefix.
-#    2: regular expression matching the pseudo-list delimiter, or blank if none.
+#    1: regular expression matching the pseudo-list delimiter, or blank if none.
 
 sub PsList {
+    my ($tt, $delim) = @_;
 
-    my @ex;
-
-    my $tt  = substr $_[0], $_[1];
-    # Identify the specified pseudo-list without its prefix.
-
-    if (length $_[2] && $tt =~ /$_[2]/) {
-    # If the pseudo-list is to be partitioned and contains at least 1 delimiter:
-
-        @ex = split /$_[2]/, $tt;
-        # Partition it and identify its elements.
-
+    if (length $delim) {
+        return split /$delim/, $tt, -1;
+    } else {
+        return ($tt);
     }
-
-    else {
-    # Otherwise, i.e. if the pseudo-list is not to be partitioned or it contains no
-    # delimiter:
-
-        @ex = ($tt);
-        # Identify it as a 1-element list.
-
-    }
-
-    return @ex;
-    # Return the list.
-
 }
 
 1;
