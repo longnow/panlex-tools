@@ -48,6 +48,15 @@ sub exdftag {
     $extag = validate_tag($extag);
     $dftag = validate_tag($dftag);
 
+    my $match_conds = sub {
+        return 1 if ($tmc && length $_[0] > $tmc) ||
+            ($tmw && split(' ', $_[0]) > $tmw) ||
+            (length $subre && $_[0] =~ /$subre/);
+        return 0;
+    };
+    # Identify a function that returns true if an expression exceeds a maximum count,
+    # or contains a prohibited character.
+
     while (<$in>) {
     # For each line of the input file:
 
@@ -85,12 +94,7 @@ sub exdftag {
                     $ex->[2] =~ s/^ | $//g;
                     # In the expression, delete all initial and final spaces.
 
-                    $ex->[0] = '' if (
-                        $ex->[2] eq '' || 
-                        ($tmc && length $ex->[2] > $tmc) ||
-                        ($tmw && split(' ', $ex->[2]) > $tmw) ||
-                        (length $subre && $ex->[2] =~ /$subre/)
-                    );
+                    $ex->[0] = '' if $ex->[2] eq '' || $match_conds->($ex->[2]);
                     # If the expression has become blank, exceeds a maximum count, or contains
                     # a prohibited character, delete the expression.
 
@@ -98,20 +102,9 @@ sub exdftag {
                     # Replace the expression with the definition and the reduced expression.
                 } else {
 
-                    if (
-                        ($tmc && length $ex->[2] > $tmc) ||
-                        ($tmc && split(' ', $ex->[2]) > $tmw) ||
-                        (length $subre && $ex->[2] =~ /$subre/)
-                    ) {
-                        ($ex->[0], $ex->[1]) = ($dftag->[0], $dftag->[1]);
-                    }
-                    # Convert every expression in the column that exceeds the maximum character
-                    # count, if there is one, to a definition.
-                    # Convert every expression in the column that exceeds a maximum word count,
-                    # if there is one, to a definition.
-                    # Convert every expression containing a prohibited character, if there is any,
-                    # to a definition.
-
+                    ($ex->[0], $ex->[1]) = ($dftag->[0], $dftag->[1]) if $match_conds->($ex->[2]);
+                    # If the expression exceeds a maximum count or contains a prohibited character,
+                    # convert it to a definition.
                 }
             }
 
