@@ -29,6 +29,18 @@ sub parse_tags {
         push @tags, [ $1, $2, $3 ];
     }
 
+    for (my $i = 0; $i < @tags; $i++) {
+        if ($tags[$i][0] =~ /^([dm]cs2|[dm]pp)$/) {
+            my $type = $1;
+            $type =~ s/2$//;
+
+            if ($i+1 < @tags and $tags[$i+1][0] eq $type) {
+                $tags[$i] = [ $tags[$i], $tags[$i+1] ];
+                splice @tags, $i+1, 1;
+            }
+        }
+    }
+
     return \@tags;
 }
 
@@ -37,7 +49,7 @@ sub deparse_tags {
 
     my $str = '';
 
-    foreach my $tag (@$tags) {
+    foreach my $tag (map { ref $_ eq 'ARRAY' ? @$_ : $_ } @$tags) {
         my ($type, $uid, $content) = @$tag;
 
         $str .= "⫷$type";
