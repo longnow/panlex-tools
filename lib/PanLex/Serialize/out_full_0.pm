@@ -21,9 +21,6 @@ use PanLex::Serialize::Util;
 our @EXPORT = qw/out_full_0/;
 
 my $UID = qr/[a-z]{3}-\d{3}/; # matches a language variety UID
-my $DF = qr/⫷df:$UID⫸[^⫷]+/; # matches definitions
-my $DCSDPP = qr/⫷dcs1:$UID⫸[^⫷]+|⫷dcs2:$UID⫸[^⫷]+⫷dcs:$UID⫸[^⫷]+|⫷dpp:$UID⫸[^⫷]+⫷dpp⫸[^⫷]+/; # matches denotation classifications or properties
-my $MCSMPP = qr/⫷mcs1:$UID⫸[^⫷]+|⫷mcs2:$UID⫸[^⫷]+⫷mcs:$UID⫸[^⫷]+|⫷mpp:$UID⫸[^⫷]+⫷mpp⫸[^⫷]+/; # matches meaning classifications or properties
 
 sub out_full_0 {
     my $in = shift;
@@ -55,7 +52,7 @@ sub out_full_0 {
 
     my $col_uid = parse_specs(\@specs);
 
-    my %seen;
+    my %seen_rec;
 
     my $error_count = 0;
 
@@ -88,38 +85,66 @@ sub out_full_0 {
 
         }
 
-        my $rec = join '', @col;
-        # Identify a concatenation of its modified columns.
+        my @tags = @{ parse_tags(join('', @col), 1) };
+        # Identify a concatenation of tags from its modified columns.
 
-        $rec =~ s/⫷(?:exp|rm)⫸[^⫷]*//g;
+        @tags = grep { tag_type($_) !~ /^(?:exp|rm)$/ } @tags;
         # Delete all pre-normalized expressions and all tags that are marked as to be removed.
 
-        $rec =~ s/⫷ex(?=:)/⫷dn/g;
+        foreach my $tag (@tags) {
+            $tag->[0] = 'dn' if tag_type($tag) eq 'ex';
+        }
         # Convert all ex tags to dn.
 
-        while ($rec =~ s/($DF)(?:$DCSDPP)/$1/) {}
-        # Delete all denotation classifications and properties following definitions.
+        my %seen;
 
-        while ($rec =~ s/(($DCSDPP)(?:$DCSDPP)*)\2(?=⫷|$)/$1/) {}
-        # Delete all duplicate denotation classifications and properties of any dn element in it.
+        for (my $i = 0; $i < @tags; $i++) {
+            my $type = tag_type($tags[$i]);
 
-        while ($rec =~ s/(($DF|$MCSMPP)(?:⫷.+?)?)\2(?=⫷|$)/$1/) {}
-        # Delete all duplicate df elements and meaning classifications and properties in it.
+            if ($type =~ /^(?:dn|df|[dm]cs[12]|[dm]pp)$/) {
+                if ($type eq 'df') {
+                    for (my $j = $i+1; $j < @tags && tag_type($tags[$j]) =~ /^dcs[12]|dpp$/; ) {
+                        splice @tags, $j, 1;
+                    }
+                }                
+                # Delete all denotation items following definitions.
 
-        while ($rec =~ s/((⫷dn:$UID+⫸[^⫷]+)(?:⫷.+?)?)\K\2(?:$DCSDPP)*(?=⫷|$)//) {}
-        # Delete all duplicate dn elements in it.
+                my $str = serialize_tags($tags[$i]);
 
-        next if (
-            (() = $rec =~ /(⫷(?:dn|df):)/g) < $mindf
-            || (() = $rec =~ /(⫷dn:)/g) < $minex
-        );
+                if (exists $seen{$type}{$str}) {
+                    if ($type eq 'dn') {
+                        for (my $j = $i+1; $j < @tags && tag_type($tags[$j]) =~ /^dcs[12]|dpp$/; ) {
+                            splice @tags, $j, 1;
+                        }
+                    }
+                    # Delete all denotation items following duplicate denotations.
+
+                    splice @tags, $i--, 1;
+                } else {
+                    $seen{$type}{$str} = '';
+
+                    if ($type eq 'dn') {
+                        $seen{$_} = {} for (qw/ dcs1 dcs2 dpp /);
+                        # Reset the duplicate tables for denotation items.
+                    }
+                }
+                # Delete all duplicate dn, df, dcs, dpp, mcs, and mpp tags.
+
+            }
+        }
+
+        next if 
+            scalar(grep { tag_type($_) =~ /^(?:dn|df)$/ } @tags) < $mindf ||
+            scalar(grep { tag_type($_) eq 'dn' } @tags) < $minex;
         # If the count of remaining expressions and definitions or the count of remaining
         # expressions is smaller than the minimum, disregard the line.
 
-        unless (exists $seen{$rec}) {
+        my $rec = serialize_tags(@tags);
+
+        unless (exists $seen_rec{$rec}) {
         # If the converted line is not a duplicate:
 
-            $seen{$rec} = '';
+            $seen_rec{$rec} = '';
             # Add it to the table of lines.
 
             $rec =~ s/⫷(dn|df|[dm]cs[12]|[dm]pp):($UID)⫸/\n$1\n$2\n/g;

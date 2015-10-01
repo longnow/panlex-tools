@@ -5,8 +5,10 @@ use utf8;
 use parent 'Exporter';
 use File::Spec::Functions;
 
-our @EXPORT = qw/parse_specs parse_tags serialize_tags tags_match/;
+our @EXPORT = qw/parse_specs parse_tags serialize_tags tags_match tag_type/;
 
+# takes an arrayref of column-uid specifications and returns a hashref whose 
+# keys are column indexes and values are uids.
 sub parse_specs {
     my ($specs) = @_;
 
@@ -20,6 +22,11 @@ sub parse_specs {
     return \%col_uid;
 }
 
+# takes a string containing standard tags and parses them into an arrayref
+# containing one arrayref per tag. each tag arrayref contains three elements:
+# the tag type, the uid (undef if none), and the tag content. the second 
+# parameter, if true, indicates that complex tags (dcs2, mcs2, dpp, and mpp) 
+# should have be combined into two-element arrayrefs. 
 sub parse_tags {
     my ($str, $combine_complex_tags) = @_;
 
@@ -46,24 +53,27 @@ sub parse_tags {
     return \@tags;
 }
 
+# serializes the output of parse_tags back into a standardly tagged string.
+# arrayrefs of arrayrefs are flattened one level deep. tags whose type is
+# undefined or '' are ignored.
 sub serialize_tags {
-    my ($tags) = @_;
+    my $tags = ref $_[0][0] ? $_[0] : \@_;
 
     my $str = '';
 
     foreach my $tag (map { ref $_->[0] eq 'ARRAY' ? @$_ : $_ } @$tags) {
-        my ($type, $uid, $content) = @$tag;
+        next if !defined $tag->[0] || $tag->[0] eq '';
 
-        next if !defined $type || $type eq '';
-
-        $str .= "⫷$type";
-        $str .= ":$uid" if defined $uid;
-        $str .= "⫸$content";
+        $str .= "⫷$tag->[0]";
+        $str .= ":$tag->[1]" if defined $tag->[1];
+        $str .= "⫸$tag->[2]";
     }
 
     return $str;
 }
 
+# returns true if the two passed parsed tag arrayrefs match in both
+# type and uid (if any), otherwise returns false.
 sub tags_match {
     my ($x, $y) = @_;
 
@@ -71,6 +81,13 @@ sub tags_match {
     return 0 if defined $x->[1] != defined $y->[1];
     return 0 if defined $x->[1] && $x->[1] ne $y->[1];
     return 1;
+}
+
+# returns the type of a tag.
+sub tag_type {
+    my ($tag) = @_;
+    $tag = $tag->[0] if ref $tag->[0] eq 'ARRAY';
+    return $tag->[0];
 }
 
 1;
