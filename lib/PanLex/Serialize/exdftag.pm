@@ -5,7 +5,8 @@
 #               definitional parts.
 #   re:       regex matching a definitional part of an expression, or '' if none.
 #   subre:    regex matching any substring forcing an expression to be
-#               reclassified as a definition, or '' if none.
+#               reclassified as a definition (or deleted if in a reduced string
+#               left by removal of definitional parts), or '' if none.
 #   maxchar:  maximum character count permitted in an expression, or '' if none.
 #               default ''. example: 25.
 #   maxword:  maximum word count permitted in an expression, or '' if none.
