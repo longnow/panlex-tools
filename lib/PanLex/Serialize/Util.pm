@@ -5,7 +5,7 @@ use utf8;
 use parent 'Exporter';
 use File::Spec::Functions;
 
-our @EXPORT = qw/parse_specs parse_tags deparse_tags/;
+our @EXPORT = qw/parse_specs parse_tags serialize_tags tags_match/;
 
 sub parse_specs {
     my ($specs) = @_;
@@ -25,7 +25,7 @@ sub parse_tags {
 
     my @tags;
 
-    while ($str =~ /⫷([a-z0-9]+)(?::([a-z]{3}-\d{3}))?⫸([^⫷]+)/g) {
+    while ($str =~ /⫷([a-z0-9]+)(?::([a-z]{3}-\d{3}))?⫸([^⫷]*)/g) {
         push @tags, [ $1, $2, $3 ];
     }
 
@@ -46,7 +46,7 @@ sub parse_tags {
     return \@tags;
 }
 
-sub deparse_tags {
+sub serialize_tags {
     my ($tags) = @_;
 
     my $str = '';
@@ -60,6 +60,15 @@ sub deparse_tags {
     }
 
     return $str;
+}
+
+sub tags_match {
+    my ($x, $y) = @_;
+
+    return 0 if $x->[0] ne $y->[0];
+    return 0 if defined $x->[1] != defined $y->[1];
+    return 0 if defined $x->[1] && $x->[1] ne $y->[1];
+    return 1;
 }
 
 1;
