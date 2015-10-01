@@ -51,15 +51,9 @@ sub normalizedf {
     validate_col($excol);
     validate_uid($uid);
 
-    my ($log_fh, $log_obj, $json);
-    if ($log) {
-        open $log_fh, '>', "normalizedf${excol}.json" or die $!;
-        $json = JSON->new->pretty->canonical;
-    }
-
     die "invalid mindeg value: $mindeg" unless valid_int($mindeg) && $mindeg >= 0;
         
-    my (%ex, %exok);
+    my (%ex, %exok, $log_obj);
 
     my $lentag = length $extag;
     # Identify the length of the expression tag.
@@ -217,7 +211,8 @@ sub normalizedf {
     }
 
     if ($log) {
-        print $log_fh munge_json($json->encode($log_obj)), "\n";
+        open my $log_fh, '>', "normalizedf${excol}.json" or die $!;
+        print $log_fh munge_json(JSON->new->pretty->canonical->encode($log_obj)), "\n";
         close $log_fh if $log;
     }
 }
