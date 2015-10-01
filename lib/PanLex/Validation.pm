@@ -1,8 +1,9 @@
 package PanLex::Validation;
 use strict;
 use parent 'Exporter';
+use PanLex::Serialize::Util;
 
-our @EXPORT = qw/validate_spec validate_col validate_uid valid_int validate_array validate_hash validate_cols validate_specs validate_uids/;
+our @EXPORT = qw/validate_spec validate_col validate_uid valid_int validate_array validate_hash validate_cols validate_specs validate_uids validate_tag/;
 
 # dies if the two arguments do not form a valid column and uid spec.
 sub validate_spec {
@@ -54,6 +55,15 @@ sub validate_specs {
 sub validate_uids {
     die "expected a uids argument with at least one column" unless ref $_[0] eq 'ARRAY' && @{$_[0]};
     validate_uid($_) for @{$_[0]};
+}
+
+# dies unless the argument is a tag containing a single tag with no content.
+# returns the parsed tag.
+sub validate_tag {
+    my $tags = parse_tags($_[0]);
+    die "expected a single tag: $_[0]" unless @$tags == 1;
+    die "expected a tag with no contenet: $_[0]" unless $tags->[0][2] eq '';
+    return $tags->[0];
 }
 
 1;
