@@ -291,22 +291,22 @@ sub normalize {
 
                     }
 
-                    if ($subtag == $tag) {
-                    # If it is a simple tag:
+                    if ($subtag == $tag || $newtag->[0] !~ /^[dm]pp$/) {
+                    # If it is a simple tag, or a complex tag that is not to be
+                    # changed into a property:
 
                         $tag = $newtag;
-                        # Replace it with the new tag(s).
+                        # Replace it with the new tag.
 
                     } else {
-                    # Otherwise, i.e. if it is a complex tag:
+                    # Otherwise, i.e. if it is a complex tag to be changed into a property:
 
                         $tag->[1] = $newtag;
                         # Replace the last subtag with the new tag.
 
-                        $tag->[0][0] = $newtag->[0] if $newtag->[0] =~ /^[dm]pp$/;
+                        $tag->[0][0] = $newtag->[0];
                         # Propagate the tag change to the first subtag if it is a change
                         # to a property.
-
                     }
                 }
             }
