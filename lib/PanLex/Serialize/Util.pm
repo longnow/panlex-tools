@@ -51,8 +51,10 @@ sub serialize_tags {
 
     my $str = '';
 
-    foreach my $tag (map { ref $_ eq 'ARRAY' ? @$_ : $_ } @$tags) {
+    foreach my $tag (map { ref $_->[0] eq 'ARRAY' ? @$_ : $_ } @$tags) {
         my ($type, $uid, $content) = @$tag;
+
+        next if !defined $type || $type eq '';
 
         $str .= "⫷$type";
         $str .= ":$uid" if defined $uid;
