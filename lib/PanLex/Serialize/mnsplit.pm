@@ -1,5 +1,4 @@
-# Splits multi-meaning lines of a tagged source file, eliminating any duplicate
-# output lines.
+# Splits multi-meaning lines of a tagged source file.
 # Arguments:
 #   col:    column that may contain multiple meanings.
 #   delim:  meaning-delimitation tag. default '⫷mn⫸'.
@@ -29,8 +28,6 @@ sub mnsplit {
 
     validate_col($mncol);
 
-    my %seen;
-
     while (<$in>) {
     # For each line of the input file:
 
@@ -45,15 +42,8 @@ sub mnsplit {
         if (index($col[$mncol], $delim) < 0) {
         # If the potentially multimeaning column is one-meaning:
 
-            unless (exists $seen{$_}) {
-            # If the line isn't a duplicate:
-
-                $seen{$_} = '';
-                # Add it to the table of output lines.
-
-                print $out $_, "\n";
-                # Output it.
-            }
+            print $out $_, "\n";
+            # Output it.
         }
 
         else {
@@ -68,18 +58,8 @@ sub mnsplit {
                 $newcol[$mncol] = $mn;
                 # Replace the multimeaning column with the meaning segment.
 
-                my $line = join("\t", @newcol);
-                # Identify the meaning's line.
-
-                unless (exists $seen{$line}) {
-                # If it isn't a duplicate:
-
-                    $seen{$line} = '';
-                    # Add it to the table of output lines.
-
-                    print $out $line, "\n";
-                    # Output it.
-                }
+                print $out join("\t", @newcol), "\n";
+                # Output it.
             }
         }
     }

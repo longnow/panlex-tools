@@ -139,8 +139,7 @@ my @TOOLS = (
 #             default ''. example 'art-301⁋identifier⁋'.
 
 #'mnsplit'      => { col => 2 },
-# Splits multi-meaning lines of a tagged source file, eliminating any duplicate
-# output lines.
+# Splits multi-meaning lines of a tagged source file.
 # Arguments:
 #   col:    column that may contain multiple meanings.
 #   delim:  meaning-delimitation tag. default '⫷mn⫸'.
