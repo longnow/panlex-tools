@@ -69,7 +69,7 @@ sub extag {
             # Delete all expression tags with blank contents.
 
             if ($tagged) {
-                $col[$i] =~ s/$extag(?=⫷(?:ex|df)[⫸:])//g;
+                $col[$i] =~ s/$extag(?=⫷(?:df)[⫸:])//g;
                 # Delete additional expression tags with blank contents.
             }
 
