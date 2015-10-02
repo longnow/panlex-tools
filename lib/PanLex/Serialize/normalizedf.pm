@@ -4,10 +4,12 @@
 #   uid:      variety UID of expressions to be normalized.
 #   mindeg:   minimum score a proposed expression or its replacement must have in 
 #               order to be accepted as an expression.
+#   strict:   set to 1 to only accept replacements differing in parentheses, 0
+#               to accept all replacements. default 1.
 #   ui:       array of source group IDs whose meanings are to be ignored in
 #               normalization; [] if none. default [].
 #   log:      set to 1 to log normalize scores to normalizedf.json, 0 otherwise.
-#               default: 0.
+#               default 0.
 #   ignore:   regex matching expressions to be ignored in normalization; or ''
 #               (blank) if none. default ''.
 #   extag:    expression tag. default '⫷ex⫸'.
@@ -32,13 +34,14 @@ sub normalizedf {
     my $out = shift;
     my $args = ref $_[0] ? $_[0] : \@_;
     
-    my ($excol, $uid, $mindeg, $ui, $log, $ignore, $extag, $exptag);
+    my ($excol, $uid, $mindeg, $ui, $strict, $log, $ignore, $extag, $exptag);
     
     if (ref $args eq 'HASH') {
         $excol      = $args->{col};
         $uid        = $args->{uid};
         $mindeg     = $args->{mindeg};
         $ui         = $args->{ui} // $args->{ap} // [];
+        $strict     = $args->{strict} // 1;
         $log        = $args->{log} // 0;
         $ignore     = $args->{ignore} // '';
         $extag      = $args->{extag} // '⫷ex⫸';
@@ -113,16 +116,14 @@ sub normalizedf {
 
     foreach my $tt (keys %$result) {
         # Identify the highest-scoring expression.
-        $result->{$tt} = $result->{$tt}[0];
-
-        my $norm = $result->{$tt};
+        my $norm = $result->{$tt}[0];
 
         # For each proposed expression that is a highest-scoring expression in the variety with
         # its degradation and whose score is sufficient for acceptance as an expression:
         if ($norm->{score} >= $mindeg && defined $norm->{tt}) {
             if ($tt eq $norm->{tt}) {
                 $exok{$tt} = '';
-            } else {
+            } elsif (!$strict || strict_match($tt, $norm->{tt})) {
                 $ttto{$tt} = $norm->{tt};
             }
         }
@@ -166,6 +167,12 @@ sub normalizedf {
         print $log_fh munge_json(JSON->new->pretty->canonical->encode($log_obj)), "\n";
         close $log_fh if $log;
     }
+}
+
+sub strict_match {
+    my ($old, $new) = @_;
+
+    return $old eq $new =~ tr/()//dr;
 }
 
 1;
