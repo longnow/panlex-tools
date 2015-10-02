@@ -12,7 +12,6 @@
 #               (blank) if none. default ''.
 #   extag:    expression tag. default '⫷ex⫸'.
 #   exptag:   pre-normalized expression tag. default '⫷exp⫸'.
-#   tagre:    regex identifying any tag. default '⫷[a-z0-9:-]+⫸'.
 
 package PanLex::Serialize::normalizedf;
 use strict;
@@ -21,6 +20,7 @@ use utf8;
 use open IO => ':raw :encoding(utf8)';
 use parent 'Exporter';
 use PanLex::Validation;
+use PanLex::Serialize::Util;
 use PanLex::Client::Normalize;
 use PanLex::MungeJson;
 use JSON;
@@ -32,7 +32,7 @@ sub normalizedf {
     my $out = shift;
     my $args = ref $_[0] ? $_[0] : \@_;
     
-    my ($excol, $uid, $mindeg, $ui, $log, $ignore, $extag, $exptag, $tagre);
+    my ($excol, $uid, $mindeg, $ui, $log, $ignore, $extag, $exptag);
     
     if (ref $args eq 'HASH') {
         $excol      = $args->{col};
@@ -43,13 +43,15 @@ sub normalizedf {
         $ignore     = $args->{ignore} // '';
         $extag      = $args->{extag} // '⫷ex⫸';
         $exptag     = $args->{exptag} // '⫷exp⫸';
-        $tagre      = $args->{tagre} // '⫷[a-z0-9:-]+⫸';
     } else {
         die "invalid arguments: you must pass a hashref";
     }
 
     validate_col($excol);
     validate_uid($uid);
+
+    $extag = validate_tag($extag);
+    $exptag = validate_tag($exptag);
 
     die "invalid mindeg value: $mindeg" unless valid_int($mindeg) && $mindeg >= 0;
         
@@ -58,49 +60,46 @@ sub normalizedf {
     my $lentag = length $extag;
     # Identify the length of the expression tag.
 
-    my @line = <$in>;
+    my @lines = <$in>;
     # Identify a list of the lines of the input file.
 
-    chomp @line;
+    chomp @lines;
     # Delete their trailing newlines.
 
-    foreach my $line (@line) {
+    foreach my $line (@lines) {
     # For each line:
 
-        my @col = split /\t/, $line, -1;
+        $line = [ split /\t/, $line, -1 ];
         # Identify its columns.
 
-        die "column $excol not present in line" unless defined $col[$excol];
+        die "column $excol not present in line" unless defined $line->[$excol];
         # If the column containing proposed expressions isn’t among them, report the
         # error and quit.
 
-        if (length $col[$excol]) {
-        # If the column containing proposed expressions is nonblank:
+        $line->[$excol] = parse_tags($line->[$excol]);
+        # Identify the tagged items in it.
 
-            my @seg = ($col[$excol] =~ /($tagre.+?(?=$tagre|$))/g);
-            # Identify the tagged items, each item including its tag, in it.
+        foreach my $tag (@{$line->[$excol]}) {
+        # For each of the tagged items:
 
-            foreach my $seg (@seg) {
-            # For each of the tagged items:
+            if (tags_match($tag, $extag)) {
+            # If it is tagged as an expression:
 
-                if (index($seg, $extag) == 0) {
-                # If it is tagged as an expression:
+                my $ex = $tag->[2];
+                # Identify the expression.
 
-                    my $ex = substr $seg, $lentag;
+                if (length $ignore && $ex =~ /$ignore/) {
+                # If the expression is to be ignored:
 
-                    if (length $ignore && $ex =~ /$ignore/) {
-                    # If the expression is to be ignored:
+                    $exok{$ex} = '';
+                    # Add it to the table of valid expressions, if not already in it.
+                }
 
-                        $exok{$ex} = '';
-                        # Add it to the table of valid expressions, if not already in it.
-                    }
+                else {
+                # Otherwise, i.e. if the expression is not to be ignored:
 
-                    else {
-                    # Otherwise, i.e. if the expression is not to be ignored:
-
-                        $ex{$ex} = '';
-                        # Add it to the table of proposed expressions, if not already in it.
-                    }
+                    $ex{$ex} = '';
+                    # Add it to the table of proposed expressions, if not already in it.
                 }
             }
         }
@@ -129,84 +128,36 @@ sub normalizedf {
         }
     }
 
-    foreach my $line (@line) {
+    foreach my $line (@lines) {
     # For each line:
 
-        my @col = split /\t/, $line, -1;
-        # Identify its columns.
+        foreach my $tag (@{$line->[$excol]}) {
+        # For each item:
 
-        if (length $col[$excol]) {
-        # If the column containing proposed expressions is nonblank:
+            if (tags_match($tag, $extag)) {
+            # If it is tagged as an expression:
 
-            my @seg = ($col[$excol] =~ m/($tagre.+?(?=$tagre|$))/g);
-            # Identify the tagged items, including tags, in it.
+                my $ex = $tag->[2];
+                # Identify the string. 
 
-            foreach my $seg (@seg) {
-            # For each item:
+                if (!exists $exok{$ex} && exists $ttto{$ex}) {
+                # If it is not classifiable as an expression without
+                # replacement and has a replacement:
 
-                if (index($seg, $extag) == 0) {
-                # If it is tagged as an expression:
-
-                    my $allok = 1;
-                    # Initialize the list's elements as all classifiable as
-                    # expressions.
-
-                    my $ex = substr $seg, $lentag;
-
-                    unless (exists $exok{$ex} || exists $ttto{$ex}) {
-                    # If it is not classifiable as an expression without
-                    # replacement or after being replaced:
-
-                        $allok = 0;
-                        # Identify the list as containing at least 1
-                        # expression not classifiable as an expression.
-                    }
-
-                    $seg = '';
-                    # Reinitialize the item as blank.
-
-                    if ($allok) {
-                    # If all elements of the list are classifiable as expressions with
-                    # or without replacement:
-
-                        if (exists $exok{$ex}) {
-                        # If it is classifiable as an expression without
-                        # replacement:
-
-                            $seg .= "$extag$ex";
-                            # Append it, with an expression tag, to the
-                            # item.
-                        }
-
-                        else {
-                        # Otherwise, i.e. if it is classifiable as an
-                        # expression only after replacement:
-
-                            $seg .= "$exptag$ex$extag$ttto{$ex}";
-                            # Append it, with a pre-normalized
-                            # expression tag, and its replacement, with
-                            # an expression tag, to the item.
-                        }
-                    }
-
-                    else {
-                    # Otherwise, i.e. if not all elements of the list are classifiable
-                    # as expressions with or without replacement:
-
-                        $seg .= "$extag$ex";
-                        # Prepend an expression tag to the
-                        # expression.
-
-                    }
+                    $tag = [ 
+                        [ $exptag->[0], $exptag->[1], $tag->[2] ], 
+                        [ $extag->[0], $extag->[1], $ttto{$ex} ]
+                    ];
+                    # Rewrite it as a pre-normalized expression and
+                    # replacement expression.
                 }
             }
-
-            $col[$excol] = join('', @seg);
-            # Identify the column with all expression reclassifications.
-
         }
 
-        print $out join("\t", @col), "\n";
+        $line->[$excol] = serialize_tags($line->[$excol]);
+        # Identify the rewritten column.
+
+        print $out join("\t", @$line), "\n";
         # Output the line.
     }
 
