@@ -1,4 +1,4 @@
-antonym	art-303:antonym
+antonym	art-300:Antonym
 causative	art-316:Causative_of
 domain	art-300:HasContext
 inchoative	art-316:Inchoative_of
