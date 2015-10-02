@@ -109,7 +109,7 @@ sub out_full_0 {
                 }                
                 # Delete all denotation items following definitions.
 
-                my $str = serialize_tags($tags[$i]);
+                my $str = serialize_tags([ $tags[$i] ]);
 
                 if (exists $seen{$type}{$str}) {
                     if ($type eq 'dn') {
@@ -132,14 +132,13 @@ sub out_full_0 {
 
             }
         }
-
         next if 
             scalar(grep { tag_type($_) =~ /^(?:dn|df)$/ } @tags) < $mindf ||
             scalar(grep { tag_type($_) eq 'dn' } @tags) < $minex;
         # If the count of remaining expressions and definitions or the count of remaining
         # expressions is smaller than the minimum, disregard the line.
 
-        my $rec = serialize_tags(@tags);
+        my $rec = serialize_tags(\@tags);
 
         unless (exists $seen_rec{$rec}) {
         # If the converted line is not a duplicate:

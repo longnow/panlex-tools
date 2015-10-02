@@ -57,7 +57,7 @@ sub parse_tags {
 # arrayrefs of arrayrefs are flattened one level deep. tags whose type is
 # undefined or '' are ignored.
 sub serialize_tags {
-    my $tags = ref $_[0][0] ? $_[0] : \@_;
+    my ($tags) = @_;
 
     my $str = '';
 
