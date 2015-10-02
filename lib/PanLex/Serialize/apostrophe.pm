@@ -77,7 +77,7 @@ sub apostrophe {
         }
 
         die "could not find an apostrophe conversion for the following language varieties: "
-            . join(', ', @not_found);
+            . join(', ', sort @not_found);
     }
 
     my @convertible_col = keys %$col_uid;
