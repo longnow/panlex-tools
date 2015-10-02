@@ -38,8 +38,10 @@ my @TOOLS = (
 #               order to be accepted as an expression.
 #   ui:       array of source group IDs whose meanings are to be ignored in
 #               normalization; [] if none. default [].
+#   strict:   set to 1 to only accept replacements differing in parentheses, 0
+#               to accept all replacements. default 1.
 #   log:      set to 1 to log normalize scores to normalizedf.json, 0 otherwise.
-#               default: 0.
+#               default 0.
 #   ignore:   regex matching expressions to be ignored in normalization; or ''
 #               (blank) if none. default ''.
 #   extag:    expression tag. default '⫷ex⫸'.
@@ -85,7 +87,7 @@ my @TOOLS = (
 #                 is '*'. default 'art-303⁋LinguisticProperty', where 'art-303' is 
 #                 the expression's UID, and 'LinguisticProperty' is its text.
 #   log:        set to 1 to log unconvertible items to csppmap.log, 0 otherwise.
-#                 default: 0.
+#                 default 0.
 
 #'dcstag'       => { cols => [1] },
 # Tags denotation classifications.
@@ -118,7 +120,7 @@ my @TOOLS = (
 #   intradelim: intra-classification delimiter in file and columns. default ':'.
 #   interdelim: inter-classification delimiter in columns. default '‣'.
 #   log:        set to 1 to log unconvertible items to mcsmap.log, 0 otherwise.
-#                 default: 0.
+#                 default 0.
 
 #'mcstag'       => { cols => [1] },
 # Tags meaning classifications.
@@ -159,7 +161,7 @@ my @TOOLS = (
 #   ui:       array of source group IDs whose meanings are to be ignored in
 #               normalization; [] if none. default [].
 #   log:      set to 1 to log normalize scores to normalize.json, 0 otherwise.
-#               default: 0.
+#               default 0.
 #   failtag:  tag with which to retag proposed expressions not accepted as 
 #               expressions and not having replacements accepted as expressions; 
 #               '' (blank) if they are to be converted to pre-normalized 

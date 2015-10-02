@@ -13,7 +13,7 @@
 #   ui:       array of source group IDs whose meanings are to be ignored in
 #               normalization; [] if none. default [].
 #   log:      set to 1 to log normalize scores to normalize.json, 0 otherwise.
-#               default: 0.
+#               default 0.
 #   failtag:  tag with which to retag proposed expressions not accepted as 
 #               expressions and not having replacements accepted as expressions; 
 #               '' (blank) if they are to be converted to pre-normalized 
@@ -156,9 +156,7 @@ sub normalize {
 
         foreach my $tt (keys %$result) {
             # Identify the highest-scoring expression.
-            $result->{$tt} = $result->{$tt}[0];
-
-            my $norm = $result->{$tt};
+            my $norm = $result->{$tt}[0];
 
             # For each proposed expression that is a highest-scoring expression in the variety with
             # its degradation and whose score is sufficient for acceptance as an expression:

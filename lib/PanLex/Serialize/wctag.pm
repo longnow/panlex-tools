@@ -5,7 +5,7 @@
 #   wctag: word-classification tag. default '⫷wc⫸'.
 #   mdtag: metadatum tag. default '⫷md:gram⫸'.
 #   log:   set to 1 to log unconvertible word classes to wc.log, 0 otherwise.
-#            default: 0.
+#            default 0.
 
 package PanLex::Serialize::wctag;
 use strict;

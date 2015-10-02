@@ -15,7 +15,7 @@
 #                 is '*'. default 'art-303⁋LinguisticProperty', where 'art-303' is 
 #                 the expression's UID, and 'LinguisticProperty' is its text.
 #   log:        set to 1 to log unconvertible items to csppmap.log, 0 otherwise.
-#                 default: 0.
+#                 default 0.
 
 package PanLex::Serialize::csppmap;
 use strict;
