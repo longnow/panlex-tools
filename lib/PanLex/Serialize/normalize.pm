@@ -156,7 +156,8 @@ sub normalize {
 
         foreach my $tt (keys %$result) {
             # Identify the highest-scoring expression.
-            my $norm = $result->{$tt}[0];
+            $result->{$tt} = $result->{$tt}[0];
+            my $norm = $result->{$tt};
 
             # For each proposed expression that is a highest-scoring expression in the variety with
             # its degradation and whose score is sufficient for acceptance as an expression:
