@@ -5,7 +5,7 @@ use utf8;
 use parent 'Exporter';
 use File::Spec::Functions;
 
-our @EXPORT = qw/parse_specs parse_tags serialize_tags tags_match tag_type/;
+our @EXPORT = qw/parse_specs parse_tags combine_complex_tags serialize_tags tags_match tag_type/;
 
 # takes an arrayref of column-uid specifications and returns a hashref whose 
 # keys are column indexes and values are uids.
@@ -24,11 +24,9 @@ sub parse_specs {
 
 # takes a string containing standard tags and parses them into an arrayref
 # containing one arrayref per tag. each tag arrayref contains three elements:
-# the tag type, the uid (undef if none), and the tag content. the second 
-# parameter, if true, indicates that complex tags (dcs2, mcs2, dpp, and mpp) 
-# should have be combined into two-element arrayrefs. 
+# the tag type, the uid (undef if none), and the tag content.
 sub parse_tags {
-    my ($str, $combine_complex_tags) = @_;
+    my ($str) = @_;
 
     my @tags;
 
@@ -36,21 +34,27 @@ sub parse_tags {
         push @tags, [ $1, $2, $3 ];
     }
 
-    if ($combine_complex_tags) {
-        for (my $i = 0; $i < @tags; $i++) {
-            if ($tags[$i][0] =~ /^([dm]cs2|[dm]pp)$/) {
-                my $type = $1;
-                $type =~ s/2$//;
+    return \@tags;
+}
 
-                if ($i+1 < @tags and $tags[$i+1][0] eq $type) {
-                    $tags[$i] = [ $tags[$i], $tags[$i+1] ];
-                    splice @tags, $i+1, 1;
-                }
+# takes the output of parse_tags and combines complex tags 
+# (dcs2, mcs2, dpp, and mpp) into two-element arrayrefs. 
+sub combine_complex_tags {
+    my ($tags) = @_;
+
+    for (my $i = 0; $i < @$tags; $i++) {
+        if ($tags->[$i][0] =~ /^([dm]cs2|[dm]pp)$/) {
+            my $type = $1;
+            $type =~ s/2$//;
+
+            if ($i+1 < @$tags and $tags->[$i+1][0] eq $type) {
+                $tags->[$i] = [ $tags->[$i], $tags->[$i+1] ];
+                splice @$tags, $i+1, 1;
             }
         }
     }
 
-    return \@tags;
+    return $tags;
 }
 
 # serializes the output of parse_tags back into a standardly tagged string.

@@ -99,7 +99,7 @@ sub normalize {
         # If the column containing proposed expressions isn’t among them, report the
         # error and quit.
 
-        $line->[$excol] = parse_tags($line->[$excol], 1);
+        $line->[$excol] = combine_complex_tags(parse_tags($line->[$excol]));
         # Identify the tagged items in it.
 
         foreach my $tag (@{$line->[$excol]}) {

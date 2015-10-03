@@ -85,41 +85,43 @@ sub out_full_0 {
 
         }
 
-        my @tags = @{ parse_tags(join('', @col), 1) };
-        # Identify a concatenation of tags from its modified columns.
+        my $tags = parse_tags(join('', @col));
+        # Identify a list of tags from its modified columns.
 
-        @tags = grep { tag_type($_) !~ /^(?:exp|rm)$/ } @tags;
+        $tags = [ grep { $_->[0] !~ /^(?:exp|rm)$/ } @$tags ];
         # Delete all pre-normalized expressions and all tags that are marked as to be removed.
 
-        foreach my $tag (@tags) {
-            $tag->[0] = 'dn' if tag_type($tag) eq 'ex';
+        foreach my $tag (@$tags) {
+            $tag->[0] = 'dn' if $tag->[0] eq 'ex';
         }
         # Convert all ex tags to dn.
 
+        $tags = combine_complex_tags($tags);
+
         my %seen;
 
-        for (my $i = 0; $i < @tags; $i++) {
-            my $type = tag_type($tags[$i]);
+        for (my $i = 0; $i < @$tags; $i++) {
+            my $type = tag_type($tags->[$i]);
 
             if ($type =~ /^(?:dn|df|[dm]cs[12]|[dm]pp)$/) {
                 if ($type eq 'df') {
-                    for (my $j = $i+1; $j < @tags && tag_type($tags[$j]) =~ /^dcs[12]|dpp$/; ) {
-                        splice @tags, $j, 1;
+                    for (my $j = $i+1; $j < @$tags && tag_type($tags->[$j]) =~ /^dcs[12]|dpp$/; ) {
+                        splice @$tags, $j, 1;
                     }
                 }                
                 # Delete all denotation items following definitions.
 
-                my $str = serialize_tags([ $tags[$i] ]);
+                my $str = serialize_tags([ $tags->[$i] ]);
 
                 if (exists $seen{$type}{$str}) {
                     if ($type eq 'dn') {
-                        for (my $j = $i+1; $j < @tags && tag_type($tags[$j]) =~ /^dcs[12]|dpp$/; ) {
-                            splice @tags, $j, 1;
+                        for (my $j = $i+1; $j < @$tags && tag_type($tags->[$j]) =~ /^dcs[12]|dpp$/; ) {
+                            splice @$tags, $j, 1;
                         }
                     }
                     # Delete all denotation items following duplicate denotations.
 
-                    splice @tags, $i--, 1;
+                    splice @$tags, $i--, 1;
                 } else {
                     $seen{$type}{$str} = '';
 
@@ -133,12 +135,12 @@ sub out_full_0 {
             }
         }
         next if 
-            scalar(grep { tag_type($_) =~ /^(?:dn|df)$/ } @tags) < $mindf ||
-            scalar(grep { tag_type($_) eq 'dn' } @tags) < $minex;
+            scalar(grep { tag_type($_) =~ /^(?:dn|df)$/ } @$tags) < $mindf ||
+            scalar(grep { tag_type($_) eq 'dn' } @$tags) < $minex;
         # If the count of remaining expressions and definitions or the count of remaining
         # expressions is smaller than the minimum, disregard the line.
 
-        my $rec = serialize_tags(\@tags);
+        my $rec = serialize_tags($tags);
 
         unless (exists $seen_rec{$rec}) {
         # If the converted line is not a duplicate:
