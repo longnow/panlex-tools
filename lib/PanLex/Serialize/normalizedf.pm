@@ -80,7 +80,8 @@ sub normalizedf {
         # error and quit.
 
         $line->[$excol] = parse_tags($line->[$excol]);
-        # Identify the tagged items in it.
+        # Identify an array of references to the tag types, UIDs, and contents of
+        # the tagged items in it.
 
         foreach my $tag (@{$line->[$excol]}) {
         # For each of the tagged items:
@@ -89,20 +90,20 @@ sub normalizedf {
             # If it is tagged as an expression:
 
                 my $ex = $tag->[2];
-                # Identify the expression.
+                # Identify its text.
 
                 if (length $ignore && $ex =~ /$ignore/) {
-                # If the expression is to be ignored:
+                # If there is a criterion for texts to be ignored and it satisfies the criterion:
 
                     $exok{$ex} = '';
-                    # Add it to the table of valid expressions, if not already in it.
+                    # Add it to the table of valid expression texts, if not already in it.
                 }
 
                 else {
-                # Otherwise, i.e. if the expression is not to be ignored:
+                # Otherwise, i.e. if the text is not to be ignored:
 
                     $ex{$ex} = '';
-                    # Add it to the table of proposed expressions, if not already in it.
+                    # Add it to the table of proposed expression texts, if not already in it.
                 }
             }
         }
@@ -111,40 +112,65 @@ sub normalizedf {
     my %ttto;
 
     my $result = panlex_norm('df', $uid, [keys %ex], 1, $ui);
+    # Identify a reference to a table whose keys are the proposed expression texts and whose
+    # values are df-type “norm” objects with “degrade” true, as defined by the PanLex API. Each “norm”
+    # object is an array of score-text pairs, ordered from highest to lowest score, containing the
+    # score of a definition text with matching degradation and the definition text itself.
 
     $log_obj = $result if $log;
+    # Log the table if logging is being performed.
 
     foreach my $tt (keys %$result) {
-        # Identify the highest-scoring expression.
+    # For each proposed expression text:
+
         $result->{$tt} = $result->{$tt}[0];
+        # Discard all but its first (i.e. highest-scoring) score-text pair.
+
         my $norm = $result->{$tt};
+        # Identify a reference to that pair.
 
         # For each proposed expression that is a highest-scoring expression in the variety with
         # its degradation and whose score is sufficient for acceptance as an expression:
         if ($norm->{score} >= $mindeg && defined $norm->{tt}) {
+        # If score of the pair is at least equal to the minimum score required for acceptance and
+        # the pair has a text:
+
             if ($tt eq $norm->{tt}) {
+            # If the pair’s text is identical to the text of the proposed expression:
+
                 $exok{$tt} = '';
-            } elsif (!$strict || strict_match($tt, $norm->{tt})) {
+                # Add the proposed expression text to the table of texts to be accepted as
+                # expressions.
+
+            }
+
+            elsif (!$strict || strict_match($tt, $norm->{tt})) {
+            # Otherwise, if all definition texts with matching degradations are acceptable, or
+            # if the pair’s text is identical to that of the proposed expression when parentheses
+            # are removed from the pair’s text:
+
                 $ttto{$tt} = $norm->{tt};
+                # Add the pair’s text to the table of replacements for the proposed expression text.
+
             }
         }
     }
 
     foreach my $line (@lines) {
-    # For each line:
+    # For each line of the input file:
 
         foreach my $tag (@{$line->[$excol]}) {
-        # For each item:
+        # For each tagged item in the specified column:
 
             if (tags_match($tag, $extag)) {
             # If it is tagged as an expression:
 
                 my $ex = $tag->[2];
-                # Identify the string. 
+                # Identify the item’s content, i.e. proposed text. 
 
                 if (!exists $exok{$ex} && exists $ttto{$ex}) {
-                # If it is not classifiable as an expression without
-                # replacement and has a replacement:
+                # If it is not in the table of acceptable expression texts but has a replacement
+                # in the table of replacements:
 
                     $tag = [ 
                         [ $exptag->[0], $exptag->[1], $tag->[2] ], 
@@ -161,19 +187,33 @@ sub normalizedf {
 
         print $out join("\t", @$line), "\n";
         # Output the line.
+
     }
 
     if ($log) {
+    # If logging is being performed:
+
         open my $log_fh, '>', "normalizedf${excol}.json" or die $!;
+        # Open a logging file for writing.
+
         print $log_fh munge_json(JSON->new->pretty->canonical->encode($log_obj)), "\n";
+        # Reformat the table of “norm” objects and output it to the file.
+
         close $log_fh if $log;
+        # Close the file.
+
     }
+
 }
 
 sub strict_match {
+
     my ($old, $new) = @_;
 
     return $old eq $new =~ tr/()//dr;
+    # Return whether the two specified strings are identical after all parentheses are removed
+    # from the second one.
+
 }
 
 1;
