@@ -6,6 +6,8 @@
 #   mindf:  minimum count (0 or more) of definitions and expressions per entry.
 #             default 2.
 #   minex:  minimum count (0 or more) of expressions per entry. default 1.
+#   remove_tags: regular expression matching tag types to be removed prior to
+#             serialization, or '' if none. default '^(?:exp|rm)$'.
 #   error:  indicates what to do when certain common errors are detected. use
 #             'mark' to mark errors in the output file, 'fail' to immediately
 #             abort, and 'ignore' to do nothing. default 'mark'.
@@ -27,7 +29,7 @@ sub out_full_0 {
     my $out = shift;
     my $args = ref $_[0] ? $_[0] : \@_;
 
-    my (@specs, $mindf, $minex, $error);
+    my (@specs, $mindf, $minex, $error, $remove_tags);
     
     if (ref $args eq 'HASH') {
         validate_specs($args->{specs});
@@ -36,12 +38,14 @@ sub out_full_0 {
         $mindf = $args->{mindf} // 2;
         $minex = $args->{minex} // 1;
         $error = $args->{error} // 'mark';
+        $remove_tags = $args->{remove_tags} // '^(?:exp|rm)$';
     } else {
         (undef, $mindf, $minex, @specs) = @$args;
-        $error = 'ignore';
         validate_specs(\@specs);
+        $error = 'ignore';
+        $remove_tags = '^(?:exp|rm)$';
     }
-        
+    
     die "invalid minimum count\n" if ($mindf < 0) || ($minex < 0);
     # If either minimum count is too small, quit and notify the user.
 
@@ -83,8 +87,10 @@ sub out_full_0 {
         my $tags = parse_tags(join('', @col));
         # Identify a list of tags from its modified columns.
 
-        $tags = [ grep { $_->[0] !~ /^(?:exp|rm)$/ } @$tags ];
-        # Delete all pre-normalized expressions and all tags that are marked as to be removed.
+        if ($remove_tags ne '') {
+            $tags = [ grep { $_->[0] !~ /$remove_tags/ } @$tags ];
+            # Delete all tags that are to be removed.
+        }
 
         foreach my $tag (@$tags) {
             $tag->[0] = 'dn' if $tag->[0] eq 'ex';

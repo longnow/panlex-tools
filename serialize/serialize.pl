@@ -210,6 +210,8 @@ my @TOOLS = (
 #   mindf:  minimum count (0 or more) of definitions and expressions per entry.
 #             default 2.
 #   minex:  minimum count (0 or more) of expressions per entry. default 1.
+#   remove_tags: regular expression matching tag types to be removed prior to
+#             serialization, or '' if none. default '^(?:exp|rm)$'.
 #   error:  indicates what to do when certain common errors are detected. use
 #             'mark' to mark errors in the output file, 'fail' to immediately
 #             abort, and 'ignore' to do nothing. default 'mark'.
