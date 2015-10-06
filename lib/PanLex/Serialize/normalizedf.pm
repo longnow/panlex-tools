@@ -210,7 +210,7 @@ sub strict_match {
 
     my ($old, $new) = @_;
 
-    return $old eq $new =~ tr/()//dr;
+    return $old eq $new =~ tr/()（）//dr;
     # Return whether the two specified strings are identical after all parentheses are removed
     # from the second one.
 
