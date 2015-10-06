@@ -72,7 +72,7 @@ sub out_full_0 {
         my @col = split /\t/, $_, -1;
         # Identify its columns.
 
-        foreach my $i (keys %col_uid) {
+        foreach my $i (keys %$col_uid) {
         # For each of them that is variety-specific:
 
             $col[$i] =~ s/⫷(ex|df|[dm]cs)⫸/⫷$1:$col_uid->{$i}⫸/g;
