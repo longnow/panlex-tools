@@ -72,16 +72,11 @@ sub out_full_0 {
         my @col = split /\t/, $_, -1;
         # Identify its columns.
 
-        for (my $i = 0; $i < @col; $i++) {
-        # For each of them:
+        foreach my $i (keys %col_uid) {
+        # For each of them that is variety-specific:
 
-            if (exists $col_uid->{$i}) {
-            # If it is variety-specific:
-
-                $col[$i] =~ s/⫷(ex|df|[dm]cs)⫸/⫷$1:$col_uid->{$i}⫸/g;
-                # Insert the column's variety UID into each tag in it.
-
-            }
+            $col[$i] =~ s/⫷(ex|df|[dm]cs)⫸/⫷$1:$col_uid->{$i}⫸/g;
+            # Insert the column's variety UID into each tag in it.
 
         }
 
@@ -97,6 +92,7 @@ sub out_full_0 {
         # Convert all ex tags to dn.
 
         $tags = combine_complex_tags($tags);
+        # Combine classification and property tags into subarrays.
 
         my %seen;
 
@@ -122,6 +118,7 @@ sub out_full_0 {
                     # Delete all denotation items following duplicate denotations.
 
                     splice @$tags, $i--, 1;
+                    # Delete all duplicate dn, df, dcs, dpp, mcs, and mpp tags.
                 } else {
                     $seen{$type}{$str} = '';
 
@@ -130,10 +127,9 @@ sub out_full_0 {
                         # Reset the duplicate tables for denotation items.
                     }
                 }
-                # Delete all duplicate dn, df, dcs, dpp, mcs, and mpp tags.
-
             }
         }
+
         next if 
             scalar(grep { tag_type($_) =~ /^(?:dn|df)$/ } @$tags) < $mindf ||
             scalar(grep { tag_type($_) eq 'dn' } @$tags) < $minex;
@@ -142,58 +138,56 @@ sub out_full_0 {
 
         my $rec = serialize_tags($tags);
 
-        unless (exists $seen_rec{$rec}) {
-        # If the converted line is not a duplicate:
+        next if exists $seen_rec{$rec};
+        # Skip the record if it is a duplicate.
 
-            $seen_rec{$rec} = '';
-            # Add it to the table of lines.
+        $seen_rec{$rec} = '';
+        # Add it to the table of lines.
 
-            $rec =~ s/⫷(dn|df|[dm]cs[12]|[dm]pp):($UID)⫸/\n$1\n$2\n/g;
-            # Convert all expression, definition, and initial classification and property 
-            # tags in it.
+        $rec =~ s/⫷(dn|df|[dm]cs[12]|[dm]pp):($UID)⫸/\n$1\n$2\n/g;
+        # Convert all expression, definition, and initial classification and property 
+        # tags in it.
 
-            $rec =~ s/⫷(?:[dm]cs):($UID)⫸/\n$1\n/g;
-            # Convert all remaining classification tags in it.
+        $rec =~ s/⫷(?:[dm]cs):($UID)⫸/\n$1\n/g;
+        # Convert all remaining classification tags in it.
 
-            $rec =~ s/⫷(?:[dm]pp)⫸/\n/g;
-            # Convert all remaining property tags in it.
+        $rec =~ s/⫷(?:[dm]pp)⫸/\n/g;
+        # Convert all remaining property tags in it.
 
-            if ($error ne 'ignore') {
-                my @lines = split /\n/, $rec, -1;
-                shift @lines; # remove initial empty line
-                my $error_count_orig = $error_count;
+        if ($error ne 'ignore') {
+            my @lines = split /\n/, $rec, -1;
+            shift @lines; # remove initial empty line
+            my $error_count_orig = $error_count;
 
-                foreach my $line (@lines) {
-                    $line = $report_error->('empty line', $line), next
-                        if $line eq '';
+            foreach my $line (@lines) {
+                $line = $report_error->('empty line', $line), next
+                    if $line eq '';
 
-                    $line = $report_error->('line contains ⫷ or ⫸', $line)
-                        if $line =~ /[⫷⫸]/;
+                $line = $report_error->('line contains ⫷ or ⫸', $line)
+                    if $line =~ /[⫷⫸]/;
 
-                    $line = $report_error->('line contains ASCII apostrophe', $line)
-                        if $line =~ /'/;
+                $line = $report_error->('line contains ASCII apostrophe', $line)
+                    if $line =~ /'/;
 
-                    $line = $report_error->('line contains improperly corrected ellipsis', $line)
-                        if $line =~ /\.{2,}|…\.|\.…/;
+                $line = $report_error->('line contains improperly corrected ellipsis', $line)
+                    if $line =~ /\.{2,}|…\.|\.…/;
 
-                    my $count = 0;
-                    while ($line =~ / \( (?{ $count++ }) | \) (?{ $count-- }) /gx) {}
-                    $line = $report_error->('line contains unbalanced parentheses', $line)
-                        if $count != 0;
+                my $count = 0;
+                while ($line =~ / \( (?{ $count++ }) | \) (?{ $count-- }) /gx) {}
+                $line = $report_error->('line contains unbalanced parentheses', $line)
+                    if $count != 0;
 
-                    $count = 0;
-                    while ($line =~ / \[ (?{ $count++ }) | \] (?{ $count-- }) /gx) {}
-                    $line = $report_error->('line contains unbalanced brackets', $line)
-                        if $count != 0;
-                }
-
-                $rec = "\n" . join("\n", @lines) if $error_count > $error_count_orig;
+                $count = 0;
+                while ($line =~ / \[ (?{ $count++ }) | \] (?{ $count-- }) /gx) {}
+                $line = $report_error->('line contains unbalanced brackets', $line)
+                    if $count != 0;
             }
 
-            print $out "\nmn$rec\n";
-            # Output it.
-
+            $rec = "\n" . join("\n", @lines) if $error_count > $error_count_orig;
         }
+
+        print $out "\nmn$rec\n";
+        # Output it.
 
     }
 
