@@ -105,33 +105,33 @@ sub out_full_0 {
         for (my $i = 0; $i < @$tags; $i++) {
             my $type = tag_type($tags->[$i]);
 
-            if ($type =~ /^(?:dn|df|[dm]cs[12]|[dm]pp)$/) {
-                if ($type eq 'df') {
+            next unless $type =~ /^(?:dn|df|[dm]cs[12]|[dm]pp)$/;
+
+            if ($type eq 'df') {
+                for (my $j = $i+1; $j < @$tags && tag_type($tags->[$j]) =~ /^dcs[12]|dpp$/; ) {
+                    splice @$tags, $j, 1;
+                }
+            }
+            # Delete all denotation items following definitions.
+
+            my $str = serialize_tags([ $tags->[$i] ]);
+
+            if (exists $seen{$type}{$str}) {
+                if ($type eq 'dn') {
                     for (my $j = $i+1; $j < @$tags && tag_type($tags->[$j]) =~ /^dcs[12]|dpp$/; ) {
                         splice @$tags, $j, 1;
                     }
-                }                
-                # Delete all denotation items following definitions.
+                }
+                # Delete all denotation items following duplicate denotations.
 
-                my $str = serialize_tags([ $tags->[$i] ]);
+                splice @$tags, $i--, 1;
+                # Delete all duplicate dn, df, dcs, dpp, mcs, and mpp tags.
+            } else {
+                $seen{$type}{$str} = '';
 
-                if (exists $seen{$type}{$str}) {
-                    if ($type eq 'dn') {
-                        for (my $j = $i+1; $j < @$tags && tag_type($tags->[$j]) =~ /^dcs[12]|dpp$/; ) {
-                            splice @$tags, $j, 1;
-                        }
-                    }
-                    # Delete all denotation items following duplicate denotations.
-
-                    splice @$tags, $i--, 1;
-                    # Delete all duplicate dn, df, dcs, dpp, mcs, and mpp tags.
-                } else {
-                    $seen{$type}{$str} = '';
-
-                    if ($type eq 'dn') {
-                        $seen{$_} = {} for (qw/ dcs1 dcs2 dpp /);
-                        # Reset the duplicate tables for denotation items.
-                    }
+                if ($type eq 'dn') {
+                    $seen{$_} = {} for (qw/ dcs1 dcs2 dpp /);
+                    # Reset the duplicate tables for denotation items.
                 }
             }
         }
