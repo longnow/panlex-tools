@@ -325,9 +325,9 @@ sub cmd_upload {
     my $r = $ua->post("${SOURCE_ARCHIVE_URL}/upload", 
         Content_Type => 'form-data',
         Content => [
-            editor  => $ENV{PANLEX_ARCHIVE_NAME},
-            email   => $ENV{PANLEX_ARCHIVE_EMAIL},
-            notes   => $note,
+            editor  => encode('utf8', $ENV{PANLEX_ARCHIVE_NAME}),
+            email   => encode('utf8', $ENV{PANLEX_ARCHIVE_EMAIL}),
+            notes   => encode('utf8', $note),
             zip     => [encode('utf8', $zippath), undef],
         ]
     );
