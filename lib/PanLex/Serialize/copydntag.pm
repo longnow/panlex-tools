@@ -13,6 +13,8 @@ use PanLex::Validation;
 
 our @EXPORT = qw/copydntag/;
 
+my $UID = qr/[a-z]{3}-\d{3}/; # matches a language variety UID
+
 sub copydntag {
     my ($in, $out, $args) = @_;
 
@@ -39,7 +41,7 @@ sub copydntag {
 
             die "column $i not present in line" unless defined $col[$i];
 
-            $col[$i] =~ s/(⫷ex⫸[^⫷]+)/$1$col[$fromcol]/g
+            $col[$i] =~ s/(⫷ex(?::$UID)?⫸[^⫷]+)/$1$col[$fromcol]/g
                 if length $col[$i];
             # Append the source column's text to each expression in the column.
         }
