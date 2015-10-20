@@ -5,7 +5,7 @@ use open IO => ':raw :encoding(utf8)';
 use parent 'Exporter';
 use Unicode::Normalize 'NFC';
 
-our @EXPORT = qw/Trim NormTrim Dedup Delimiter DelimiterIf DelimiterIfRegex ExpandParens ExpandParensEachEx EachEx LoadMap MapStr/;
+our @EXPORT = qw/Trim NormTrim Dedup Delimiter DelimiterIf DelimiterIfRegex ExpandParens ExpandParensEachEx EachEx LoadMap MapStr NestedParensToBrackets/;
 
 ### Trim
 # Delete superfluous spaces in the specified string.
@@ -265,6 +265,27 @@ sub MapStr {
     }
 
     return $output;
+}
+
+### NestedParensToBrackets
+# Converts nested parentheses to brackets in a string.
+# Arguments:
+#   0: the string.
+sub NestedParensToBrackets {
+    my ($str) = @_;
+
+    my $count = 0;
+    $str =~ s/ ( \( (?{ $count++ }) | \) (?{ $count-- }) ) /_MapParenToBracket($1, $count)/gex;
+
+    return $str;
+}
+
+sub _MapParenToBracket {
+    my ($char, $count) = @_;
+
+    return '[' if $char eq '(' && $count > 1;
+    return ']' if $char eq ')' && $count > 0;
+    return $char;
 }
 
 1;
