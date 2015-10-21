@@ -177,7 +177,7 @@ sub _ExpandParens {
         if (@pieces = /(^.*[^ ])\(([^ ]+)\)(.*$)/) {
             _ExpandParens("$pieces[0]$pieces[1]$pieces[2]", _JoinPieces(@pieces));
         }
-        elsif (@pieces = /(^.*)\(([^ ]+)\)([^ ].*$)/) {
+        elsif (@pieces = /(^.*)\(([^ ]+)\)([^ ,].*$)/) {
             _ExpandParens("$pieces[0]$pieces[1]$pieces[2]", _JoinPieces(@pieces));
         }
         else {
