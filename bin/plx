@@ -262,7 +262,7 @@ sub cmd_submit {
     print "Submitting $final to PanLem ...\n";
 
     my $ua = LWP::UserAgent->new;
-    $ua->timeout(600);
+    $ua->timeout(1800);
 
     my $r = $ua->post($PANLEM_URL,
         Content_Type => 'form-data',
