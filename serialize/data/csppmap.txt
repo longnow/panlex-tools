@@ -108,7 +108,7 @@ expr	art-303:SyntacticUnit:art-303:Phrase
 expr.	art-303:SyntacticUnit:art-303:Phrase	
 f	art-303:GenderProperty:art-303:FeminineGender	
 f.	art-303:GenderProperty:art-303:FeminineGender	
-f.v.	art-303:Phrase:art-303:VerbPhrase	
+f.v.	art-303:SyntactitUnit:art-303:VerbPhrase	
 Floskel	art-303:SyntacticUnit:art-303:Phrase	
 foc	art-303:InformationalForce:art-302:FOC	
 frac	art-303:PartOfSpeechProperty:art-303:CardinalNumeral‣art-307:NumType:art-307:Frac	
@@ -208,8 +208,8 @@ pcle	art-303:PartOfSpeechProperty:art-303:Particle
 pers. pron	art-303:PartOfSpeechProperty:art-303:PersonalPronoun	
 pers. pronoun	art-303:PartOfSpeechProperty:art-303:PersonalPronoun	
 pf.	art-303:AspectProperty:art-303:PerfectiveAspect	
-phr: v	art-303:SyntacticConstruction:art-303:VerbPhrase	
-phrasal adv	art-303:SyntacticConstruction:art-303:Phrase‣art-303:PartOfSpeechProperty:art-303:Adverbial	
+phr: v	art-303:SyntacticUnit:art-303:VerbPhrase	
+phrasal adv	art-303:SyntacticUnit:art-303:Phrase‣art-303:PartOfSpeechProperty:art-303:Adverbial	
 phrasal v	art-303:PartOfSpeechProperty:art-253:phrasal verb(scn>grammar)	
 phrase	art-303:SyntacticUnit:art-303:Phrase	
 phrase.	art-303:SyntacticUnit:art-303:Phrase	
