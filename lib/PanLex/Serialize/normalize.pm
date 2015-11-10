@@ -290,22 +290,27 @@ sub normalize {
 
                     }
 
-                    if ($subtag == $tag || $newtag->[0] !~ /^[dm]pp$/) {
-                    # If it is a simple tag, or a complex tag that is not to be
-                    # changed into a property:
+                    if ($subtag == $tag || $newtag->[0] !~ /^[dm](?:cs|pp)$/) {
+                    # If it is a simple tag, or its replacement is not a classification
+                    # or property:
 
                         $tag = $newtag;
                         # Replace it with the new tag.
 
                     } else {
-                    # Otherwise, i.e. if it is a complex tag to be changed into a property:
+                    # Otherwise, i.e. if it is a complex tag:
 
                         $tag->[1] = $newtag;
                         # Replace the last subtag with the new tag.
 
-                        $tag->[0][0] = $newtag->[0];
-                        # Propagate the tag change to the first subtag if it is a change
-                        # to a property.
+                        if ($newtag->[0] =~ /^[dm]pp$/) {
+                        # If the new tag is a property:
+
+                            $tag->[0][0] = $newtag->[0];
+                            # Propagate the tag change to the first subtag.
+
+                        }
+
                     }
                 }
             }
