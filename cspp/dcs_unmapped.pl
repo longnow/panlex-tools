@@ -27,7 +27,7 @@ while (<$in>) {
     pop @cols;
     my $cs = join ':', @cols;
 
-    print $out "'$cs'\n" unless $seen{$cs};
+    print $out "$cs\n" unless $seen{$cs};
 }
 
 close $in;
