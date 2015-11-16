@@ -1,0 +1,166 @@
+This file contains miscellaneous information about classifications and properties, including standard practices regarding specific superclass, class, and attribute expressions. The first places you should look for such expressions are csppmap.txt and mcsmap.txt. This file contains whatever is not covered by those mapping files.
+
+MEANING CLASSIFICATIONS
+
+Some available complete classifications are:
+
+art-317:termType:art-317:placeName (for place names)
+
+MEANING PROPERTIES
+
+Some available attribute expressions are:
+
+art-270:2544 (for the raw string from which a meaning was derived)
+art-300:HasProperty
+art-301:date
+art-301:identifier (for meaning identifiers)
+art-301:source (for a reference (e.g. bibliographic) to where the meaning came from)
+art-301:URI
+
+DENOTATION CLASSIFICATIONS
+
+Some available superclass expressions are:
+
+art-253:etymology(icl>linguistics>thing)
+art-303:BoundMorpheme
+art-303:Stem
+art-317:idiom (for associated idiomatic expression)
+art-317:reduplication (for associated reduplications)
+art-321:to (for ???)
+
+Some available complete classifications (candidates for merging into csppmap.txt) are:
+
+art-253:argot(icl>jargon):art-253:criminal(aoj>human)
+art-253:sex(equ>gender):art-253:female(icl>sex)
+art-253:sex(equ>gender):art-253:male(icl>sex)
+art-303:CaseProperty:art-303:NominativeCase
+art-303:Class:art-253:constant(icl>adj,equ>changeless)
+art-303:GenderProperty:art-303:AnimateGender
+art-303:GenderProperty:art-303:InanimateGender
+art-303:LinguisticProperty:art-253:inchoative(icl>adj)
+art-303:LinguisticProperty:art-302:DEF
+art-303:LinguisticProperty:art-317:irregular
+art-303:LinguisticUnit:art-303:Compound
+art-303:LinguisticUnit:art-303:Grapheme
+art-303:LinguisticUnit:art-317:proverb
+art-303:ModalityProperty:art-303:ConditionalModality
+art-303:MoodProperty:art-303:IndicativeMood
+art-303:Morpheme:art-303:DerivationalMorpheme
+art-303:Morpheme:art-303:Nominalizer
+art-303:Morpheme:art-303:Root
+art-303:MorphosemanticProperty:art-317:intensifier
+art-303:MorphosyntacticProperty:art-303:ConditionalModality
+art-303:MorphosyntacticProperty:art-303:EvaluativeProperty
+art-303:MorphosyntacticProperty:art-303:EvidentialityProperty
+art-303:MorphosyntacticProperty:art-317:animate
+art-303:MorphosyntacticProperty:art-317:inanimate
+art-303:NumberProperty:art-303:DualNumber
+art-303:NumberProperty:art-306:COL
+art-303:PartOfSpeechProperty:art-253:modifier(scn>grammar)
+art-303:PartOfSpeechProperty:art-253:onomatopoeia
+art-303:PartOfSpeechProperty:art-292:8.3.5.2.4
+art-303:PartOfSpeechProperty:art-303:Classifier
+art-303:PartOfSpeechProperty:art-303:Clitic
+art-303:PartOfSpeechProperty:art-303:Connective
+art-303:PartOfSpeechProperty:art-303:DefiniteArticle
+art-303:PartOfSpeechProperty:art-303:DerivationalMorpheme
+art-303:PartOfSpeechProperty:art-303:IndefiniteArticle
+art-303:PartOfSpeechProperty:art-303:MultiplicativeNumeral
+art-303:PartOfSpeechProperty:art-303:Nominal
+art-303:PartOfSpeechProperty:art-303:PartitiveNumeral
+art-303:PartOfSpeechProperty:art-303:ReciprocalPronoun
+art-303:PartOfSpeechProperty:art-303:VerbalParticle
+art-303:PartOfSpeechProperty:art-306:IDEO
+art-303:PartOfSpeechProperty:art-306:TNS
+art-303:PartOfSpeechProperty:art-317:comparativeParticle
+art-303:PartOfSpeechProperty:art-317:infinitive
+art-303:PartOfSpeechProperty:art-317:placeName
+art-303:PartOfSpeechProperty:art-317:pronominalAdverb
+art-303:PartOfSpeechProperty:art-317:temporal
+art-303:PersonProperty:art-303:FirstPerson
+art-303:PersonProperty:art-303:FirstPersonExclusive
+art-303:PersonProperty:art-303:FirstPersonInclusive
+art-303:PersonProperty:art-303:SecondPerson
+art-303:PersonProperty:art-303:ThirdPerson
+art-303:PolarityProperty:art-303:NegativePolarity
+art-303:ProperNoun:art-253:patronymic(icl>name>abstract_thing)
+art-303:ProperNoun:art-317:familyName
+art-303:ProperNoun:art-317:givenName
+art-303:SyntacticUnit:art-317:idiom
+art-303:SyntacticUnit:art-317:prepositionalPhrase
+art-303:TenseProperty:art-303:PastTense
+art-303:TenseProperty:art-303:PresentTense
+art-303:VoiceProperty:art-303:ApplicativeVoice
+art-303:VoiceProperty:art-303:CausativeVoice
+art-303:VoiceProperty:art-303:LocativePassiveVoice
+art-303:VoiceProperty:art-303:PassiveVoice
+art-303:VoiceProperty:art-303:ReciprocalMiddleVoice
+art-303:VoiceProperty:art-303:ReflexiveMiddleVoice
+art-303:argument:art-303:directObject
+art-303:argument:art-303:indirectObject
+art-303:object:art-303:AccusativeCase
+art-303:object:art-303:DativeCase
+art-303:object:art-303:GenitiveCase
+art-303:syntacticRole:art-303:object
+art-317:Conf:art-317:large for high confidence
+art-317:Conf:art-317:small for low confidence
+art-317:Usage:art-253:derogatory(icl>adj,equ>derogative)
+art-317:Usage:art-317:archaicTerm
+art-317:Usage:art-317:obsoleteTerm
+art-317:expressionType:art-253:aphorism(icl>apophthegm)
+art-317:expressionType:art-317:bound
+art-317:expressionType:art-317:formula
+art-317:expressionType:art-317:idiom
+art-317:expressionType:art-317:lexeme
+art-317:expressionType:art-317:proverb
+art-317:numeral:art-317:indefiniteCardinalNumeral
+art-317:register:art-253:colloquial language(icl>language)
+art-317:register:art-253:vulgarism(icl>profanity>thing,equ>obscenity)
+art-317:register:art-306:HBL
+art-317:register:art-306:HON
+art-317:register:art-306:POL
+art-317:register:art-317:colloquialStyle
+art-317:register:art-317:female
+art-317:register:art-317:honorific
+art-317:register:art-317:informal
+art-317:register:art-317:male
+art-317:register:art-317:slangRegister
+art-317:register:art-317:vulgarRegister
+art-317:termType:art-317:abbreviation
+art-317:termType:art-317:acronym
+art-317:termType:art-317:contraction
+art-317:termType:art-317:phraseologicalUnit
+art-317:termType:art-317:placeName
+art-317:termType:art-317:symbol
+
+DENOTATION PROPERTIES
+
+Some available attribute expressions are:
+
+art-253:etymology(icl>linguistics>thing)
+art-253:gloss(icl>explanation>thing)
+art-253:pragmatics(icl>linguistics>thing)
+art-253:tone(icl>pitch)
+art-292:6.1.2 (for method)
+art-292:8.3 (for quality)
+art-300:HasContext (for domains)
+art-300:HasProperty
+art-301:URI
+art-301:date
+art-301:identifier
+art-301:source
+art-303:Affix
+art-303:Class
+art-303:Dialect
+art-303:GenderProperty
+art-303:LinguisticProperty
+art-303:MorphosyntacticProperty
+art-303:OrthographicSystem
+art-303:PartOfSpeechProperty
+art-303:Root
+art-303:Toneme
+art-303:hasMorphologicalConstituent
+art-303:literalTranslation
+art-303:phonemicRep
+art-303:phoneticRep
+art-308:3.8.5 (for note)
