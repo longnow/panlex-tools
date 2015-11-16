@@ -1,4 +1,4 @@
-This file contains miscellaneous information about classifications and properties, including standard practices regarding specific superclass, class, and attribute expressions. The first places you should look for such expressions are csppmap.txt and mcsmap.txt. This file contains whatever is not covered by those mapping files.
+This file contains miscellaneous information about classifications and properties, including standard practices regarding specific superclass, class, and attribute expressions. The first places you should look for such expressions are csppmap.txt and mcsmap.txt. This file contains whatever is not covered by those mapping files. Comments are indicated below in square brackets following expressions, separated by a space.
 
 MEANING CLASSIFICATIONS
 
@@ -10,13 +10,13 @@ MEANING PROPERTIES
 
 Some available attribute expressions are:
 
-art-257:12.92 (like, similar)
-art-257:19.11 (country)
-art-270:2544 (origin: the raw string from which a meaning was derived)
+art-257:12.92 [like, similar]
+art-257:19.11 [country]
+art-270:2544 [origin: the raw string from which a meaning was derived]
 art-300:HasProperty
 art-301:date
-art-301:identifier (meaning identifier)
-art-301:source (for a reference, e.g. bibliographic, to where the meaning came from)
+art-301:identifier [meaning identifier]
+art-301:source [for a reference, e.g. bibliographic, to where the meaning came from]
 art-301:URI
 art-303:Dialect
 art-303:Language
@@ -30,23 +30,23 @@ DENOTATION CLASSIFICATIONS
 Some available superclass expressions are:
 
 art-253:etymology(icl>linguistics>thing)
-art-292:8.3 (quality)
-art-292:9.6.2.5.1 (reason)
+art-292:8.3 [quality]
+art-292:9.6.2.5.1 [reason]
 art-303:BoundMorpheme
 art-303:Stem
-art-317:idiom (for associated idiomatic expression)
-art-317:reduplication (for associated reduplications)
-art-321:to (for ???)
+art-317:idiom [for associated idiomatic expression]
+art-317:reduplication [for associated reduplications]
+art-321:to [for ???]
 
-Some available complete classifications (candidates for merging into csppmap.txt) are:
+Some available complete classifications [candidates for merging into csppmap.txt] are:
 
 art-253:argot(icl>jargon):art-253:criminal(aoj>human)
 art-253:sex(equ>gender):art-253:female(icl>sex)
 art-253:sex(equ>gender):art-253:male(icl>sex)
 art-303:CaseProperty:art-303:NominativeCase
 art-303:Class:art-253:constant(icl>adj,equ>changeless)
-art-303:ForceProperty:art-257:18.99909 (greet)
-art-303:ForceProperty:art-270:2227 (answer)
+art-303:ForceProperty:art-257:18.99909 [greet]
+art-303:ForceProperty:art-270:2227 [answer]
 art-303:GenderProperty:art-303:AnimateGender
 art-303:GenderProperty:art-303:InanimateGender
 art-303:LinguisticProperty:art-253:inchoative(icl>adj)
@@ -60,7 +60,7 @@ art-303:MoodProperty:art-303:IndicativeMood
 art-303:Morpheme:art-303:DerivationalMorpheme
 art-303:Morpheme:art-303:Nominalizer
 art-303:Morpheme:art-303:Root
-art-303:MorphosemanticProperty:art-292:9.4.5 (evidential)
+art-303:MorphosemanticProperty:art-292:9.4.5 [evidential]
 art-303:MorphosemanticProperty:art-317:intensifier
 art-303:MorphosyntacticProperty:art-303:ConditionalModality
 art-303:MorphosyntacticProperty:art-303:EvaluativeProperty
@@ -71,7 +71,7 @@ art-303:NumberProperty:art-303:DualNumber
 art-303:NumberProperty:art-306:COL
 art-303:PartOfSpeechProperty:art-253:modifier(scn>grammar)
 art-303:PartOfSpeechProperty:art-253:onomatopoeia
-art-303:PartOfSpeechProperty:art-292:8.3.5.2.4 (other)
+art-303:PartOfSpeechProperty:art-292:8.3.5.2.4 [other]
 art-303:PartOfSpeechProperty:art-303:Classifier
 art-303:PartOfSpeechProperty:art-303:Clitic
 art-303:PartOfSpeechProperty:art-303:Connective
@@ -115,8 +115,8 @@ art-303:object:art-303:AccusativeCase
 art-303:object:art-303:DativeCase
 art-303:object:art-303:GenitiveCase
 art-303:syntacticRole:art-303:object
-art-317:Conf:art-317:large (high confidence)
-art-317:Conf:art-317:small (low confidence)
+art-317:Conf:art-317:large [high confidence]
+art-317:Conf:art-317:small [low confidence]
 art-317:Usage:art-253:derogatory(icl>adj,equ>derogative)
 art-317:Usage:art-317:archaicTerm
 art-317:Usage:art-317:obsoleteTerm
@@ -154,9 +154,9 @@ art-253:etymology(icl>linguistics>thing)
 art-253:gloss(icl>explanation>thing)
 art-253:pragmatics(icl>linguistics>thing)
 art-253:tone(icl>pitch)
-art-292:6.1.2 (method)
-art-292:8.3 (quality)
-art-300:HasContext (domain)
+art-292:6.1.2 [method]
+art-292:8.3 [quality]
+art-300:HasContext [domain]
 art-300:HasProperty
 art-301:URI
 art-301:date
@@ -176,4 +176,4 @@ art-303:hasMorphologicalConstituent
 art-303:literalTranslation
 art-303:phonemicRep
 art-303:phoneticRep
-art-308:3.8.5 (note)
+art-308:3.8.5 [note]
