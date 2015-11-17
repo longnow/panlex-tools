@@ -19,6 +19,8 @@ use utf8;
 use parent 'Exporter';
 use PanLex::Validation;
 use PanLex::Serialize::Util;
+use PanLex::Client;
+use JSON;
 
 our @EXPORT = qw/out_full_0/;
 
@@ -66,6 +68,16 @@ sub out_full_0 {
         $error_count++;        
         return "ERROR: $errstr\n$line";
     };
+
+    my %uid_immutable;
+
+    if ($error ne 'ignore') {
+        my $data = panlex_query_all('/lv', { mu => JSON::false });
+
+        foreach my $lv (@{$data->{result} || []}) {
+            $uid_immutable{$lv->{uid}} = undef;
+        }
+    }
 
     while (<$in>) {
     # For each line of the input file:
@@ -160,39 +172,49 @@ sub out_full_0 {
         $rec =~ s/⫷(?:[dm]pp)⫸/\n/g;
         # Convert all remaining property tags in it.
 
+        $rec =~ s/^\n+//g;
+        # Remove any initial newlines.
+
         if ($error ne 'ignore') {
             my @lines = split /\n/, $rec, -1;
-            shift @lines; # remove initial empty line
+
             my $error_count_orig = $error_count;
+            my $check_cspp_ex = 0;
 
             foreach my $line (@lines) {
-                $line = $report_error->('empty line', $line), next
-                    if $line eq '';
+                if ($line eq '') {
+                    $line = $report_error->('empty line', $line);
+                } else {
+                    $line = $report_error->('not an immutable language variety', $line)
+                        if $check_cspp_ex && !exists $uid_immutable{$line};
 
-                $line = $report_error->('line contains ⫷ or ⫸', $line)
-                    if $line =~ /[⫷⫸]/;
+                    $line = $report_error->('line contains ⫷ or ⫸', $line)
+                        if $line =~ /[⫷⫸]/;
 
-                $line = $report_error->('line contains ASCII apostrophe', $line)
-                    if $line =~ /'/;
+                    $line = $report_error->('line contains ASCII apostrophe', $line)
+                        if $line =~ /'/;
 
-                $line = $report_error->('line contains improperly corrected ellipsis', $line)
-                    if $line =~ /\.{2,}|…\.|\.…/;
+                    $line = $report_error->('line contains improperly corrected ellipsis', $line)
+                        if $line =~ /\.{2,}|…\.|\.…/;
 
-                my $count = 0;
-                while ($line =~ / \( (?{ $count++ }) | \) (?{ $count-- }) /gx) {}
-                $line = $report_error->('line contains unbalanced parentheses', $line)
-                    if $count != 0;
+                    my $count = 0;
+                    while ($line =~ / \( (?{ $count++ }) | \) (?{ $count-- }) /gx) {}
+                    $line = $report_error->('line contains unbalanced parentheses', $line)
+                        if $count != 0;
 
-                $count = 0;
-                while ($line =~ / \[ (?{ $count++ }) | \] (?{ $count-- }) /gx) {}
-                $line = $report_error->('line contains unbalanced brackets', $line)
-                    if $count != 0;
+                    $count = 0;
+                    while ($line =~ / \[ (?{ $count++ }) | \] (?{ $count-- }) /gx) {}
+                    $line = $report_error->('line contains unbalanced brackets', $line)
+                        if $count != 0;
+                }
+
+                $check_cspp_ex = $line =~ /^[dm](?:cs2|pp)$/ ? 1 : 0;
             }
 
-            $rec = "\n" . join("\n", @lines) if $error_count > $error_count_orig;
+            $rec = join("\n", @lines) if $error_count > $error_count_orig;
         }
 
-        print $out "\nmn$rec\n";
+        print $out "\nmn\n$rec\n";
         # Output it.
 
     }
