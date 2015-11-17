@@ -75,3 +75,6 @@ class MecabSoup:
     self.length = len(self.contents)
     self.wordlist = [word[0] for word in self.contents]
     self.poslist = [word[1][0] for word in self.contents]
+
+  def __len(self):
+    return self.length
