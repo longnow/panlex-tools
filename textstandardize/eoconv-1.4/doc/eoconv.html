@@ -1,0 +1,305 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>eoconv - Convert text files between various Esperanto encodings</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:none" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#usage">USAGE</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#options">OPTIONS</a></li>
+	<ul>
+
+		<li><a href="#character_encodings">CHARACTER ENCODINGS</a></li>
+	</ul>
+
+	<li><a href="#esperanto_orthography">ESPERANTO ORTHOGRAPHY</a></li>
+	<ul>
+
+		<li><a href="#postfix_h_notation">POSTFIX-h NOTATION</a></li>
+		<li><a href="#postfix_h_notation">POSTFIX-H NOTATION</a></li>
+		<li><a href="#postfix_x_notation">POSTFIX-x NOTATION</a></li>
+		<li><a href="#postfix_x_notation">POSTFIX-X NOTATION</a></li>
+		<li><a href="#prefix__and_postfix_caret_notation">PREFIX- AND POSTFIX-CARET NOTATION</a></li>
+		<li><a href="#iso_8859_3__latin_3_">ISO-8859-3 (LATIN-3)</a></li>
+		<li><a href="#unicode__iso_iec_10646_">UNICODE (ISO/IEC 10646)</a></li>
+		<li><a href="#latex_sequences">LaTeX SEQUENCES</a></li>
+		<li><a href="#html_entities">HTML ENTITIES</a></li>
+	</ul>
+
+	<li><a href="#bugs_and_limitations">BUGS AND LIMITATIONS</a></li>
+	<li><a href="#author">AUTHOR</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#license_and_copyright">LICENSE AND COPYRIGHT</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<h1><a name="name">NAME</a></h1>
+<p>eoconv - Convert text files between various Esperanto encodings</p>
+<p>
+</p>
+<hr />
+<h1><a name="usage">USAGE</a></h1>
+<p>eoconv [-q] --from=<em>encoding</em> --to=<em>encoding</em> [<em class="file">file</em> ...]</p>
+<pre>
+ Options:
+   --from       specify input encoding (see below)
+   --to         specify output encoding (see below)
+   -q, --quiet  suppress warnings</pre>
+<pre>
+   --help       detailed help message
+   --man        full documentation
+   --version    display version information</pre>
+<pre>
+ Valid encodings:
+   post-h post-H post-x post-X post-caret pre-caret latex
+   html-hex html-dec iso-8859-3 utf-7 utf-8 utf-16 utf-32</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p><strong>eoconv</strong> will read the given input files (or stdin if no files are
+specified) containing Esperanto text in the encoding specified by
+<strong>--from</strong>, and then output it in the encoding specified by <strong>--to</strong>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="options">OPTIONS</a></h1>
+<dl>
+<dt><strong><a name="from_encoding" class="item"><strong>--from=</strong><em>encoding</em></a></strong></dt>
+
+<dd>
+<p>Specify character encoding for input</p>
+</dd>
+<dt><strong><a name="to_encoding" class="item"><strong>--to=</strong><em>encoding</em></a></strong></dt>
+
+<dd>
+<p>Specify character encoding for output</p>
+</dd>
+<dt><strong><a name="q_quiet" class="item"><strong>-q</strong>
+<strong>--quiet</strong></a></strong></dt>
+
+<dd>
+<p>Suppress non-essential warning messages</p>
+</dd>
+<dt><strong><a name="help" class="item"><strong>-?</strong>
+<strong>--help</strong></a></strong></dt>
+
+<dd>
+<p>Print a brief help message and exit.</p>
+</dd>
+<dt><strong><a name="man" class="item"><strong>--man</strong></a></strong></dt>
+
+<dd>
+<p>Print the manual page and exit.</p>
+</dd>
+<dt><strong><a name="version" class="item"><strong>--version</strong></a></strong></dt>
+
+<dd>
+<p>Print version information and exit.</p>
+</dd>
+</dl>
+<p>
+</p>
+<h2><a name="character_encodings">CHARACTER ENCODINGS</a></h2>
+<dl>
+<dt><strong><a name="post_h" class="item"><em>post-h</em></a></strong></dt>
+
+<dd>
+<p>ASCII postfix h notation</p>
+</dd>
+<dt><strong><a name="post_h" class="item"><em>post-H</em></a></strong></dt>
+
+<dd>
+<p>ASCII postfix H notation</p>
+</dd>
+<dt><strong><a name="post_x" class="item"><em>post-x</em></a></strong></dt>
+
+<dd>
+<p>ASCII postfix x notation</p>
+</dd>
+<dt><strong><a name="post_x" class="item"><em>post-X</em></a></strong></dt>
+
+<dd>
+<p>ASCII postfix X notation</p>
+</dd>
+<dt><strong><a name="post_caret" class="item"><em>post-caret</em></a></strong></dt>
+
+<dd>
+<p>ASCII postfix caret (^) notation</p>
+</dd>
+<dt><strong><a name="pre_caret" class="item"><em>pre-caret</em></a></strong></dt>
+
+<dd>
+<p>ASCII prefix caret (^) notation</p>
+</dd>
+<dt><strong><a name="latex_latex" class="item"><em>latex</em>, <em>LaTeX</em></a></strong></dt>
+
+<dd>
+<p>ASCII LaTeX sequences</p>
+</dd>
+<dt><strong><a name="html_hex_html_hex" class="item"><em>html-hex</em>, <em>HTML-hex</em></a></strong></dt>
+
+<dd>
+<p>ASCII HTML hexadecimal entities</p>
+</dd>
+<dt><strong><a name="html_dec_html_dec" class="item"><em>html-dec</em>, <em>HTML-dec</em></a></strong></dt>
+
+<dd>
+<p>ASCII HTML decimal entities</p>
+</dd>
+<dt><strong><a name="iso_8859_3_iso_8859_3_latin3_latin_3_latin3_latin_3" class="item"><em>iso-8859-3</em>, <em>ISO-8859-3</em>, <em>latin3</em>, <em>latin-3</em>, <em>Latin3</em>, <em>Latin-3</em></a></strong></dt>
+
+<dd>
+<p>ISO-8859-3</p>
+</dd>
+<dt><strong><a name="utf_7_utf_7_utf7_utf7" class="item"><em>utf-7</em>, <em>UTF-7</em>, <em>utf7</em>, <em>UTF7</em></a></strong></dt>
+
+<dd>
+<p>Unicode UTF-7</p>
+</dd>
+<dt><strong><a name="utf_8_utf_8_utf8_utf8" class="item"><em>utf-8</em>, <em>UTF-8</em>, <em>utf8</em>, <em>UTF8</em></a></strong></dt>
+
+<dd>
+<p>Unicode UTF-8</p>
+</dd>
+<dt><strong><a name="utf_16_utf_16_utf16_utf16" class="item"><em>utf-16</em>, <em>UTF-16</em>, <em>utf16</em>, <em>UTF16</em></a></strong></dt>
+
+<dd>
+<p>Unicode UTF-16</p>
+</dd>
+<dt><strong><a name="utf_32_utf_32_utf32_utf32" class="item"><em>utf-32</em>, <em>UTF-32</em>, <em>utf32</em>, <em>UTF32</em></a></strong></dt>
+
+<dd>
+<p>Unicode UTF-32</p>
+</dd>
+</dl>
+<p>
+</p>
+<hr />
+<h1><a name="esperanto_orthography">ESPERANTO ORTHOGRAPHY</a></h1>
+<p>Esperanto is written in an alphabet of 28 letters.  However, only 22
+of these letters can be found in the standard ASCII character set.
+The remaining six -- `c', `g', `h', `j', and `s' with circumflex, and
+`u' with breve -- are not available in ASCII; neither are they among
+the characters available in the common 8-bit ISO-8859-1 character
+encoding.  Therefore, while the six special Esperanto characters pose
+no problem for handwritten texts, they were impossible to represent on
+standard typewriters, and are somewhat problematic even on modern-day
+computers.  Various encoding systems have been developed to represent
+Esperanto text in printed and typed text.</p>
+<p>
+</p>
+<h2><a name="postfix_h_notation">POSTFIX-h NOTATION</a></h2>
+<p>This was the solution proposed by the creator of Esperanto,
+L. L. Zamenhof.  He recommended using `u' for `u-breve' and appending
+an `h' to a letter to indicate that it should have a circumflex.
+However, the letters `u' and `h' are already part of the Esperanto
+alphabet, so using them for another purpose invites ambiguity and
+mispronunciation.  It also makes conversion of Esperanto text to
+postfix-h notation `lossy' or one-way; it is generally not possible to
+convert from postfix-h notation via automated means.  This notation
+suffers from the additional drawback that the text cannot be sorted
+with standard rules for ASCII text.</p>
+<p>
+</p>
+<h2><a name="postfix_h_notation">POSTFIX-H NOTATION</a></h2>
+<p>This is the same as postfix-h notation, except that `H' is used
+instead of `h' following a capital letter.</p>
+<p>
+</p>
+<h2><a name="postfix_x_notation">POSTFIX-x NOTATION</a></h2>
+<p>This is the most common ASCII notation encountered today.  It involves
+appending an `x' to a letter to indicate that it should have an accent
+(be it circumflex or breve).  Since `x' is not a letter in the
+Esperanto alphabet, no ambiguity results.  However, ASCII sorting
+algorithms still fail with postfix-x text.</p>
+<p>
+</p>
+<h2><a name="postfix_x_notation">POSTFIX-X NOTATION</a></h2>
+<p>This is the same as postfix-x notation, except that `X' is used
+instead of `x' following a capital letter.</p>
+<p>
+</p>
+<h2><a name="prefix__and_postfix_caret_notation">PREFIX- AND POSTFIX-CARET NOTATION</a></h2>
+<p>Two slightly less popular ASCII encodings are to prepend or append a
+caret (`^') to a letter to indicate that it should have an accent.</p>
+<p>
+</p>
+<h2><a name="iso_8859_3__latin_3_">ISO-8859-3 (LATIN-3)</a></h2>
+<p>ISO 8859-3, also known as Latin-3 or South European, is an 8-bit
+character encoding for Esperanto.  High-bit characters are used to
+encode the accented Esperanto letters.  ISO-8859-3 can also be used
+for encoding English, Finnish, German, Italian, Latin, Maltese,
+Turkish, and Portuguese, making it useful for texts which mix
+Esperanto with one or more of these languages.</p>
+<p>
+</p>
+<h2><a name="unicode__iso_iec_10646_">UNICODE (ISO/IEC 10646)</a></h2>
+<p>Unicode is a standard for matching every character of every human
+language to a specific code.  The mapping methods are known as Unicode
+Transformation Formats (UTF). Among them are UTF-32, UTF-16, UTF-8 and
+UTF-7, where the numbers indicate the number of bits in one unit.</p>
+<p>
+</p>
+<h2><a name="latex_sequences">LaTeX SEQUENCES</a></h2>
+<p>The popular LaTeX typesetting package is capable of representing
+virtually any accented character.  Note that conversion from LaTeX
+sequences assumes that characters to be accented are enclosed in
+braces -- for example, `\^{C}' will be recognized as `C' with
+circumflex, but `\^C' will not be.</p>
+<p>
+</p>
+<h2><a name="html_entities">HTML ENTITIES</a></h2>
+<p>Unicode codes for Esperanto characters can be escaped in HTML
+documents by using HTML entities.  The codes can be represented in
+either decimal (base-10) or hexadecimal (base-16) notation; the two
+are functionally equivalent.</p>
+<p>
+</p>
+<hr />
+<h1><a name="bugs_and_limitations">BUGS AND LIMITATIONS</a></h1>
+<p>Because the postfix-h and postfix-H notations are inherently
+ambiguous, conversion from postfix-h or -H text is unlikely to result
+in coherent text.  Use at your own risk, and carefully proofread the
+results.</p>
+<p>Report bugs to &lt;<a href="mailto:psychonaut@nothingisreal.com">psychonaut@nothingisreal.com</a>&gt;.</p>
+<p>
+</p>
+<hr />
+<h1><a name="author">AUTHOR</a></h1>
+<p>Tristan Miller &lt;<a href="mailto:psychonaut@nothingisreal.com">psychonaut@nothingisreal.com</a>&gt;</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><code>charsets(7)</code>, <code>ascii(7)</code>, iso_8859-3(7), <code>unicode(7)</code>, utf-8(7), <code>latex(1)</code></p>
+<p>
+</p>
+<hr />
+<h1><a name="license_and_copyright">LICENSE AND COPYRIGHT</a></h1>
+<p>Copyright (C) 2004-2013 Tristan Miller.</p>
+<p>Permission is granted to make and distribute verbatim or modified
+copies of this manual provided the copyright notice and this
+permission notice are preserved on all copies.</p>
+
+</body>
+
+</html>
