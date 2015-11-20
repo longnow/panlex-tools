@@ -113,6 +113,7 @@ Floskel	art-303:SyntacticUnit:art-303:Phrase
 foc	art-303:InformationalForce:art-302:FOC	
 frac	art-303:PartOfSpeechProperty:art-303:CardinalNumeral‣art-307:NumType:art-307:Frac	
 frequ.	art-303:AspectProperty:art-303:FrequentiveAspect	
+fut	art-303:TenseProperty:art-303:FutureTense	
 Höflichkeitsform	art-317:register:art-306:POL	
 ideo.	art-303:SemanticProperty:art-306:IDEO	
 ij	art-303:PartOfSpeechProperty:art-303:Interjection	
@@ -122,6 +123,7 @@ impf.	art-303:AspectProperty:art-303:ImperfectiveAspect
 indpron.	art-303:PartOfSpeechProperty:art-303:IndefinitePronoun	
 inj	art-303:PartOfSpeechProperty:art-303:Interjection	
 INSTR	art-303:PartOfSpeechProperty:art-303:Adverbial	
+instrumental	art-303:CaseProperty:art-303:InstrumentalCase	
 inter	art-303:PartOfSpeechProperty:art-303:Interjection	
 INTER	art-303:PartOfSpeechProperty:art-303:Interjection	
 inter.	art-303:PartOfSpeechProperty:art-303:Interjection	
@@ -138,6 +140,7 @@ intpron.	art-303:PartOfSpeechProperty:art-303:InterrogativeProform
 intr	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb	
 intr.	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb	
 INTRJCT	art-303:PartOfSpeechProperty:art-303:Interjection	
+irrealis	art-303:MoodProperty:art-303:IrrealisMood	
 itg	art-303:ForceProperty:art-303:InterrogativeForce	
 IV	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb	
 Kindersprache	art-317:register:art-253:baby talk(icl>speech of a young child)	
@@ -169,6 +172,7 @@ n.pro.	art-303:PartOfSpeechProperty:art-303:ProperNoun
 n.qual.	art-303:PartOfSpeechProperty:art-303:Noun	
 n.quant.	art-303:PartOfSpeechProperty:art-303:Noun	
 n.s.	art-303:PartOfSpeechProperty:art-303:Noun	
+n.sg.	art-303:NumberProperty:art-302:NSG	
 n.time.	art-303:PartOfSpeechProperty:art-303:Noun	
 n:	art-303:PartOfSpeechProperty:art-303:Noun	
 name	art-303:PartOfSpeechProperty:art-303:ProperNoun	
@@ -247,6 +251,7 @@ prefix	art-303:Morpheme:art-303:Prefix
 prep	art-303:PartOfSpeechProperty:art-303:Preposition	
 prep.	art-303:PartOfSpeechProperty:art-303:Preposition	
 Preposition	art-303:PartOfSpeechProperty:art-303:Preposition	
+pres	art-303:TenseProperty:art-303:PresentTense	
 prn	art-303:PartOfSpeechProperty:art-303:Pronominal	
 pro	art-303:PartOfSpeechProperty:art-303:Pronominal	
 Pro	art-303:PartOfSpeechProperty:art-303:Pronominal	
@@ -284,6 +289,8 @@ prspron.	art-303:PartOfSpeechProperty:art-303:PersonalPronoun
 Präposition	art-303:PartOfSpeechProperty:art-303:Preposition	
 prép	art-303:PartOfSpeechProperty:art-303:Preposition	
 prép.	art-303:PartOfSpeechProperty:art-303:Preposition	
+pst	art-303:TenseProperty:art-303:PastTense	
+purp	art-303:LinguisticProperty:art-302:PURP	
 qst	art-303:PartOfSpeechProperty:art-303:InterrogativeOperator	
 QT	art-303:PartOfSpeechProperty:art-303:Quantifier	
 quan	art-303:PartOfSpeechProperty:art-303:Quantifier	
