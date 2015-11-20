@@ -150,6 +150,7 @@ m.	art-303:GenderProperty:art-303:MasculineGender
 M.	art-303:GenderProperty:art-303:MasculineGender	
 measure word	art-303:PartOfSpeechProperty:art-303:NumeralClassifier	
 Mehrzahl	art-303:NumberProperty:art-303:PluralNumber	
+mid.voi.	art-303:VoiceProperty:art-303:PlainMiddleVoice	
 MOD	art-303:PartOfSpeechProperty:art-303:Modal	
 mod.avv.	art-303:PartOfSpeechProperty:art-303:Adverbial‣art-303:PartOfSpeechProperty:art-303:Modal	
 n	art-303:PartOfSpeechProperty:art-303:Noun	
@@ -172,7 +173,7 @@ n.pro.	art-303:PartOfSpeechProperty:art-303:ProperNoun
 n.qual.	art-303:PartOfSpeechProperty:art-303:Noun	
 n.quant.	art-303:PartOfSpeechProperty:art-303:Noun	
 n.s.	art-303:PartOfSpeechProperty:art-303:Noun	
-n.sg.	art-303:NumberProperty:art-302:NSG	
+non-sg	art-303:NumberProperty:art-302:NSG	
 n.time.	art-303:PartOfSpeechProperty:art-303:Noun	
 n:	art-303:PartOfSpeechProperty:art-303:Noun	
 name	art-303:PartOfSpeechProperty:art-303:ProperNoun	
