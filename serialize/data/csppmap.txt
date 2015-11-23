@@ -115,6 +115,7 @@ frac	art-303:PartOfSpeechProperty:art-303:CardinalNumeral‣art-307:NumType:art-
 frequ.	art-303:AspectProperty:art-303:FrequentiveAspect	
 fut	art-303:TenseProperty:art-303:FutureTense	
 Höflichkeitsform	art-317:register:art-306:POL	
+hortative	art-303:Force Property:art-303:HortatoryForce	
 ideo.	art-303:SemanticProperty:art-306:IDEO	
 ij	art-303:PartOfSpeechProperty:art-303:Interjection	
 ijec	art-303:PartOfSpeechProperty:art-303:Interjection	
