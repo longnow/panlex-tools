@@ -32,6 +32,7 @@ Some available superclass expressions are:
 art-253:etymology(icl>linguistics>thing)
 art-292:8.3 [quality]
 art-292:9.6.2.5.1 [reason]
+art-300:HasContext [domain]
 art-303:BoundMorpheme
 art-303:Stem
 art-317:idiom [for associated idiomatic expression]
