@@ -186,7 +186,7 @@ sub out_full_0 {
                     $line = $report_error->('empty line', $line);
                 } else {
                     $line = $report_error->('not an immutable language variety', $line)
-                        if $check_cspp_ex && !exists $uid_immutable{$line};
+                        if $check_cspp_ex && $line =~ $UID && !exists $uid_immutable{$line};
 
                     $line = $report_error->('line contains ⫷ or ⫸', $line)
                         if $line =~ /[⫷⫸]/;
