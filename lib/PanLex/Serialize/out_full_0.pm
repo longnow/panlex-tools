@@ -162,15 +162,26 @@ sub out_full_0 {
         $seen_rec{$rec} = '';
         # Add it to the table of lines.
 
-        $rec =~ s/⫷(dn|df|[dm]cs[12]|[dm]pp):($UID)⫸/\n$1\n$2\n/g;
-        # Convert all expression, definition, and initial classification and property 
-        # tags in it.
+        $rec =~ s/⫷(dn|df):($UID)⫸/\n  $1\n    $2\n    /g;
+        # Convert all expression and definition tags in it.
 
-        $rec =~ s/⫷(?:[dm]cs):($UID)⫸/\n$1\n/g;
-        # Convert all remaining classification tags in it.
+        $rec =~ s/⫷(mcs[12]|mpp):($UID)⫸/\n  $1\n    $2\n    /g;
+        # Convert all initial meaning classification and property tags in it.
 
-        $rec =~ s/⫷(?:[dm]pp)⫸/\n/g;
-        # Convert all remaining property tags in it.
+        $rec =~ s/⫷(?:mcs):($UID)⫸/\n    $1\n    /g;
+        # Convert all remaining meaning classification tags in it.
+
+        $rec =~ s/⫷(?:mpp)⫸/\n    /g;
+        # Convert all remaining meaning property tags in it.
+
+        $rec =~ s/⫷(dcs[12]|dpp):($UID)⫸/\n    $1\n      $2\n      /g;
+        # Convert all initial denotation classification and property tags in it.
+
+        $rec =~ s/⫷(?:dcs):($UID)⫸/\n      $1\n      /g;
+        # Convert all remaining denotation classification tags in it.
+
+        $rec =~ s/⫷(?:dpp)⫸/\n      /g;
+        # Convert all remaining denotation property tags in it.
 
         $rec =~ s/^\n+//g;
         # Remove any initial newlines.
@@ -182,11 +193,13 @@ sub out_full_0 {
             my $check_cspp_ex = 0;
 
             foreach my $line (@lines) {
-                if ($line eq '') {
+                my $line_stripped = $line =~ s/^ +//r;
+
+                if ($line_stripped eq '') {
                     $line = $report_error->('empty line', $line);
                 } else {
                     $line = $report_error->('not an immutable language variety', $line)
-                        if $check_cspp_ex && $line =~ $UID && !exists $uid_immutable{$line};
+                        if $check_cspp_ex && $line_stripped =~ $UID && !exists $uid_immutable{$line_stripped};
 
                     $line = $report_error->('line contains ⫷ or ⫸', $line)
                         if $line =~ /[⫷⫸]/;
@@ -208,7 +221,7 @@ sub out_full_0 {
                         if $count != 0;
                 }
 
-                $check_cspp_ex = $line =~ /^[dm](?:cs2|pp)$/ ? 1 : 0;
+                $check_cspp_ex = $line_stripped =~ /^[dm](?:cs2|pp)$/ ? 1 : 0;
             }
 
             $rec = join("\n", @lines) if $error_count > $error_count_orig;
