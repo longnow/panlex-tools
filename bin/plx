@@ -263,6 +263,7 @@ sub cmd_submit {
 
     my $ua = LWP::UserAgent->new;
     $ua->timeout(1800);
+    $ua->show_progress(1);
 
     my $r = $ua->post($PANLEM_URL,
         Content_Type => 'form-data',

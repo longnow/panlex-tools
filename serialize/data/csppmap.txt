@@ -76,7 +76,7 @@ conj. coord.	art-303:PartOfSpeechProperty:art-303:CoordinatingConnective
 Conjunction	art-303:PartOfSpeechProperty:art-303:Conjunction	
 conjunction	art-303:PartOfSpeechProperty:art-303:Conjunction	
 coord.	art-303:PartOfSpeechProperty:art-303:CoordinatingConnective	
-cop	art-303PartOfSpeechProperty:art-303:Copula	
+cop	art-303:PartOfSpeechProperty:art-303:Copula	
 counter word	art-303:PartOfSpeechProperty:art-303:NumeralClassifier	
 dem	art-303:PartOfSpeechProperty:art-303:Demonstrative	
 DEM	art-303:PartOfSpeechProperty:art-303:Demonstrative	
@@ -362,7 +362,7 @@ v:itr	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb
 v:tr	art-303:PartOfSpeechProperty:art-303:TransitiveVerb	
 vaux	art-303:PartOfSpeechProperty:art-303:Auxiliary	
 VAux.	art-303:PartOfSpeechProperty:art-303:Auxiliary	
-vbcop	art-303PartOfSpeechProperty:art-303:Copula	
+vbcop	art-303:PartOfSpeechProperty:art-303:Copula	
 vbdo	art-303:PartOfSpeechProperty:art-303:Verbal	
 vbex	art-303:PartOfSpeechProperty:art-303:Verbal	
 vbhaver	art-303:PartOfSpeechProperty:art-303:Auxiliary	

@@ -72,7 +72,7 @@ sub out_full_0 {
     my %uid_immutable;
 
     if ($error ne 'ignore') {
-        my $data = panlex_query_all('/lv', { mu => JSON::false });
+        my $data = panlex_query_all('/lv', { mu => JSON::false, cache => 0 });
 
         foreach my $lv (@{$data->{result} || []}) {
             $uid_immutable{$lv->{uid}} = undef;
