@@ -13,13 +13,16 @@ adj.	art-303:PartOfSpeechProperty:art-303:Adjectival
 Adj.	art-303:PartOfSpeechProperty:art-303:Adjectival	
 Adj. poss.	art-303:PartOfSpeechProperty:art-303:Adjectival‣art-302:POSS	
 adj.pred.	art-303:PartOfSpeechProperty:art-303:Adjectival‣art-302:PRED	
+adjectival phrase	art-303:SyntacticUnit:art-303:Phrase	*
 adjective	art-303:PartOfSpeechProperty:art-303:Adjectival	
 Adjective	art-303:PartOfSpeechProperty:art-303:Adjectival	
 ADJECTIVE	art-303:PartOfSpeechProperty:art-303:Adjectival	
+adjective	art-303:PartOfSpeechProperty:art-303:Adjectival	
 adjectives	art-303:PartOfSpeechProperty:art-303:Adjectival	
 Adjectives	art-303:PartOfSpeechProperty:art-303:Adjectival	
 adji	art-303:PartOfSpeechProperty:art-303:Adjectival	
 adjv	art-303:PartOfSpeechProperty:art-303:Adjectival	
+adnominal demonstrative	art-303:LinguisticProperty:art-253:attributive(icl>adj,ant>predicative)‣art-303:PartOfSpeechProperty:art-303:Demonstrative	
 adv	art-303:PartOfSpeechProperty:art-303:Adverbial	
 Adv	art-303:PartOfSpeechProperty:art-303:Adverbial	
 ADV	art-303:PartOfSpeechProperty:art-303:Adverbial	
@@ -32,6 +35,8 @@ adv3	art-303:PartOfSpeechProperty:art-303:Adverbial
 advb	art-303:PartOfSpeechProperty:art-303:Adverbial	
 Adverb	art-303:PartOfSpeechProperty:art-303:Adverbial	
 ADVERB	art-303:PartOfSpeechProperty:art-303:Adverbial	
+adverb	art-303:PartOfSpeechProperty:art-303:Adverbial	
+adverbial expression	art-303:PartOfSpeechProperty:art-303:Adverbial‣art-303:SyntacticUnit:art-303:Phrase	
 Aff	art-303:Morpheme:art-303:Affix	
 AFF	art-303:Morpheme:art-303:Affix	
 aff.	art-303:Morpheme:art-303:Affix	
@@ -39,14 +44,21 @@ affix	art-303:Morpheme:art-303:Affix
 affx	art-303:Morpheme:art-303:Affix	
 afx	art-303:Morpheme:art-303:Affix	
 agg.	art-303:PartOfSpeechProperty:art-303:Adjectival	
+archaic	art-317:Usage:art-317:archaicTerm	
+archaic copula	art-317:Usage:art-317:archaicTerm‣art-303:PartOfSpeechProperty:art-303:Copula	
+archaic expression	art-317:Usage:art-317:archaicTerm‣art-303:SyntacticUnit:art-303:Phrase	
+archaic noun	art-317:Usage:art-317:archaicTerm‣art-303:PartOfSpeechProperty:art-303:Noun	
 art.	art-303:PartOfSpeechProperty:art-303:Article	
 article	art-303:PartOfSpeechProperty:art-303:Article	
 attr.	art-303:LinguisticProperty:art-253:attributive(icl>adj,ant>predicative)	
+attributive verb	art-303:LinguisticProperty:art-253:attributive(icl>adj,ant>predicative)‣art-303:PartOfSpeechProperty:art-303:Verbal	
 Ausruf	art-303:PartOfSpeechProperty:art-303:Interjection	
 aux	art-303:PartOfSpeechProperty:art-303:Auxiliary	
 aux.	art-303:PartOfSpeechProperty:art-303:Auxiliary	
 Aux.	art-303:PartOfSpeechProperty:art-303:Auxiliary	
 aux. v.	art-303:PartOfSpeechProperty:art-303:Auxiliary	
+auxiliary	art-303:PartOfSpeechProperty:art-303:Auxiliary	
+auxiliary verb	art-303:PartOfSpeechProperty:art-303:Auxiliary	
 auxv	art-303:PartOfSpeechProperty:art-303:Auxiliary	
 avv.	art-303:PartOfSpeechProperty:art-303:Adverbial	
 bnd pfx	art-303:Morpheme:art-303:Prefix	
@@ -77,7 +89,10 @@ Conjunction	art-303:PartOfSpeechProperty:art-303:Conjunction
 conjunction	art-303:PartOfSpeechProperty:art-303:Conjunction	
 coord.	art-303:PartOfSpeechProperty:art-303:CoordinatingConnective	
 cop	art-303:PartOfSpeechProperty:art-303:Copula	
+copula	art-303:PartOfSpeechProperty:art-303:Copula	
+counter	art-303:PartOfSpeechProperty:art-303:NumeralClassifier	
 counter word	art-303:PartOfSpeechProperty:art-303:NumeralClassifier	
+deictic pronoun	art-303:LinguisticProperty:art-306:DEI‣art-303:PartOfSpeechProperty:art-303:Pronominal	
 dem	art-303:PartOfSpeechProperty:art-303:Demonstrative	
 DEM	art-303:PartOfSpeechProperty:art-303:Demonstrative	
 dem.	art-303:PartOfSpeechProperty:art-303:Demonstrative	
@@ -98,6 +113,7 @@ disc	art-303:LinguisticSign:art-306:DM
 dur.	art-303:AspectProperty:art-303:DurativeAspect	
 emph	art-303:ForceProperty:art-270:2549	
 enclitique	art-303:Morpheme:art-303:Enclitic	
+ending	art-303:Morpheme:art-303:Suffix	
 epn	art-303:PartOfSpeechProperty:art-303:Pronominal	
 exc	art-303:PartOfSpeechProperty:art-306:EXCLAM	
 Excl	art-303:PartOfSpeechProperty:art-306:EXCLAM	
@@ -106,20 +122,34 @@ excl.	art-303:PartOfSpeechProperty:art-306:EXCLAM
 exclamation	art-303:PartOfSpeechProperty:art-306:EXCLAM	
 expr	art-303:SyntacticUnit:art-303:Phrase	
 expr.	art-303:SyntacticUnit:art-303:Phrase	
+expression	art-303:SyntacticUnit:art-303:Phrase	
 f	art-303:GenderProperty:art-303:FeminineGender	
 f.	art-303:GenderProperty:art-303:FeminineGender	
 f.v.	art-303:SyntactitUnit:art-303:VerbPhrase	
+female expression	art-317:register:art-317:female‣art-303:SyntacticUnit:art-303:Phrase	
+female interjection	art-317:register:art-317:female‣art-303:PartOfSpeechProperty:art-303:Interjection	
 Floskel	art-303:SyntacticUnit:art-303:Phrase	
 foc	art-303:InformationalForce:art-302:FOC	
+formal	art-317:register:art-317:formalRegister	
+formal noun	art-317:register:art-317:formalRegister‣art-303:PartOfSpeechProperty:art-303:Noun	
 frac	art-303:PartOfSpeechProperty:art-303:CardinalNumeral‣art-307:NumType:art-307:Frac	
 frequ.	art-303:AspectProperty:art-303:FrequentiveAspect	
 fut	art-303:TenseProperty:art-303:FutureTense	
-Höflichkeitsform	art-317:register:art-306:POL	
+godan verb	art-303:PartOfSpeechProperty:art-303:Verbal	*
+honorific	art-317:register:art-317:honorific	
+honorific copula	art-317:register:art-317:honorific‣art-303:PartOfSpeechProperty:art-303:Copula	
+honorific expression	art-317:register:art-317:honorific‣art-303:SyntacticUnit:art-303:Phrase	
+honorific noun	art-317:register:art-317:honorific‣art-303:PartOfSpeechProperty:art-303:Noun	
+honorific verb	art-317:register:art-317:honorific‣art-303:PartOfSpeechProperty:art-303:Verbal	
 hortative	art-303:Force Property:art-303:HortatoryForce	
+Höflichkeitsform	art-317:register:art-306:POL	
+i-adjective	art-303:PartOfSpeechProperty:art-303:Adjectival	*
 ideo.	art-303:SemanticProperty:art-306:IDEO	
 ij	art-303:PartOfSpeechProperty:art-303:Interjection	
 ijec	art-303:PartOfSpeechProperty:art-303:Interjection	
 Imperativ	art-303:ForceProperty:art-303:ImperativeForce	
+imperative auxiliary	art-303:ForceProperty:art-303:ImperativeForce‣art-303:PartOfSpeechProperty:art-303:Auxiliary	
+imperative verb	art-303:ForceProperty:art-303:ImperativeForce‣art-303:PartOfSpeechProperty:art-303:Verbal	
 impf.	art-303:AspectProperty:art-303:ImperfectiveAspect	
 indpron.	art-303:PartOfSpeechProperty:art-303:IndefinitePronoun	
 inj	art-303:PartOfSpeechProperty:art-303:Interjection	
@@ -140,15 +170,20 @@ intj.	art-303:PartOfSpeechProperty:art-303:Interjection
 intpron.	art-303:PartOfSpeechProperty:art-303:InterrogativeProform	
 intr	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb	
 intr.	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb	
+intransitive verb	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb	
 INTRJCT	art-303:PartOfSpeechProperty:art-303:Interjection	
 irrealis	art-303:MoodProperty:art-303:IrrealisMood	
 itg	art-303:ForceProperty:art-303:InterrogativeForce	
 IV	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb	
+ka-adjective	art-303:PartOfSpeechProperty:art-303:Adjectival	*
 Kindersprache	art-317:register:art-253:baby talk(icl>speech of a young child)	
+literary noun	art-317:register:art-317:literaryStyle‣art-303:PartOfSpeechProperty:art-303:Noun	
 loc.	art-303:CaseProperty:art-303:LocativeCase	
 m	art-303:GenderProperty:art-303:MasculineGender	
 m.	art-303:GenderProperty:art-303:MasculineGender	
 M.	art-303:GenderProperty:art-303:MasculineGender	
+male expression	art-317:register:art-317:male‣art-303:SyntacticUnit:art-303:Phrase	
+male interjection	art-317:register:art-317:male‣art-303:PartOfSpeechProperty:art-303:Interjection	
 measure word	art-303:PartOfSpeechProperty:art-303:NumeralClassifier	
 Mehrzahl	art-303:NumberProperty:art-303:PluralNumber	
 mid.voi.	art-303:VoiceProperty:art-303:PlainMiddleVoice	
@@ -174,21 +209,29 @@ n.pro.	art-303:PartOfSpeechProperty:art-303:ProperNoun
 n.qual.	art-303:PartOfSpeechProperty:art-303:Noun	
 n.quant.	art-303:PartOfSpeechProperty:art-303:Noun	
 n.s.	art-303:PartOfSpeechProperty:art-303:Noun	
-non-sg	art-303:NumberProperty:art-302:NSG	
 n.time.	art-303:PartOfSpeechProperty:art-303:Noun	
 n:	art-303:PartOfSpeechProperty:art-303:Noun	
+na-adjective	art-303:PartOfSpeechProperty:art-303:Adjectival	*
 name	art-303:PartOfSpeechProperty:art-303:ProperNoun	
 NAME	art-303:PartOfSpeechProperty:art-303:ProperNoun	
+name	art-303:PartOfSpeechProperty:art-303:ProperNoun	
 name.	art-303:PartOfSpeechProperty:art-303:ProperNoun	
 neg	art-303:PartOfSpeechProperty:art-303:NegationOperator	
 neg.	art-303:PartOfSpeechProperty:art-303:NegationOperator	
+negative sa-adjective	art-303:PolarityProperty:art-303:NegativePolarity‣art-303:PartOfSpeechProperty:art-303:Adjectival	*
+negative verb	art-303:PolarityProperty:art-303:NegativePolarity‣art-303:PartOfSpeechProperty:art-303:Verbal	
 nf.	art-303:PartOfSpeechProperty:art-303:Noun‣art-303:GenderProperty:art-303:FeminineGender	
+ni-adverb	art-303:PartOfSpeechProperty:art-303:Adverbial	*
 nm	art-303:PartOfSpeechProperty:art-303:Noun‣art-303:GenderProperty:art-303:MasculineGender	
 nm.	art-303:PartOfSpeechProperty:art-303:Noun‣art-303:GenderProperty:art-303:MasculineGender	
 nnt.	art-303:PartOfSpeechProperty:art-303:Noun‣art-303:GenderProperty:art-303:NeuterGender	
+no-adjective	art-303:PartOfSpeechProperty:art-303:Adjectival	*
+non-sg	art-303:NumberProperty:art-302:NSG	
 noun	art-303:PartOfSpeechProperty:art-303:Noun	
 Noun	art-303:PartOfSpeechProperty:art-303:Noun	
 NOUN	art-303:PartOfSpeechProperty:art-303:Noun	
+noun	art-303:PartOfSpeechProperty:art-303:Noun	
+noun suffix	art-303:Morpheme:art-303:Suffix	*
 noun, placename	art-303:PartOfSpeechProperty:art-303:ProperNoun	
 nouns	art-303:PartOfSpeechProperty:art-303:Noun	
 Nouns	art-303:PartOfSpeechProperty:art-303:Noun	
@@ -209,6 +252,8 @@ ord	art-303:PartOfSpeechProperty:art-303:OrdinalNumeral
 Part	art-303:PartOfSpeechProperty:art-303:Particle	
 participle	art-303:PartOfSpeechProperty:art-303:Participle	
 particle	art-303:PartOfSpeechProperty:art-303:Particle	
+particles	art-303:PartOfSpeechProperty:art-303:Particle	
+past verb	art-303:PartOfSpeechProperty:art-303:Verbal	
 pcl	art-303:PartOfSpeechProperty:art-303:Particle	
 pcle	art-303:PartOfSpeechProperty:art-303:Particle	
 pers. pron	art-303:PartOfSpeechProperty:art-303:PersonalPronoun	
@@ -287,6 +332,7 @@ prop n.	art-303:PartOfSpeechProperty:art-303:ProperNoun
 prop. n.	art-303:PartOfSpeechProperty:art-303:ProperNoun	
 prop.n.	art-303:PartOfSpeechProperty:art-303:ProperNoun	
 Proper Noun	art-303:PartOfSpeechProperty:art-303:ProperNoun	
+proper noun	art-303:PartOfSpeechProperty:art-303:ProperNoun	
 prspron.	art-303:PartOfSpeechProperty:art-303:PersonalPronoun	
 Präposition	art-303:PartOfSpeechProperty:art-303:Preposition	
 prép	art-303:PartOfSpeechProperty:art-303:Preposition	
@@ -312,9 +358,12 @@ s.f.	art-303:PartOfSpeechProperty:art-303:Noun‣art-303:GenderProperty:art-303:
 s.f.pl.	art-303:PartOfSpeechProperty:art-303:Noun‣art-303:GenderProperty:art-303:FeminineGender‣art-303:NumberProperty:art-303:PluralNumber	
 s.m.	art-303:PartOfSpeechProperty:art-303:Noun‣art-303:GenderProperty:art-303:MasculineGender	
 s.m.pl.	art-303:PartOfSpeechProperty:art-303:Noun‣art-303:GenderProperty:art-303:MasculineGender‣art-303:NumberProperty:art-303:PluralNumber	
+sa-adjective	art-303:PartOfSpeechProperty:art-303:Adjectival	*
+sa-adjective ending	art-303:Morpheme:art-303:Suffix	*
 sc.	art-303:PartOfSpeechProperty:art-303:SubordinatingConnective	
 sf	art-303:PartOfSpeechProperty:art-303:Noun‣art-303:GenderProperty:art-303:FeminineGender	
 sf.	art-303:PartOfSpeechProperty:art-303:Noun‣art-303:GenderProperty:art-303:FeminineGender	
+sha-adjective	art-303:PartOfSpeechProperty:art-303:Adjectival	*
 sing	art-303:NumberProperty:art-303:SingularNumber	
 sm	art-303:PartOfSpeechProperty:art-303:Noun‣art-303:GenderProperty:art-303:MasculineGender	
 sm.	art-303:PartOfSpeechProperty:art-303:Noun‣art-303:GenderProperty:art-303:MasculineGender	
@@ -326,13 +375,17 @@ suf	art-303:Morpheme:art-303:Suffix
 suf.	art-303:Morpheme:art-303:Suffix	
 Suf.	art-303:Morpheme:art-303:Suffix	
 suffix	art-303:Morpheme:art-303:Suffix	
-suffix	art-303:Morpheme:art-303:Suffix	
+suffix or ending	art-303:Morpheme:art-303:Suffix	
+suru-verb	art-303:PartOfSpeechProperty:art-303:Verbal	*
 svin.	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb‣art-306:STV	
 TEMP	art-303:PartOfSpeechProperty:art-303:Adverbial	
 temps.	art-303:PartOfSpeechProperty:art-303:Adverbial	
 time adverb	art-303:PartOfSpeechProperty:art-303:Adverbial	
+to-adverb	art-303:PartOfSpeechProperty:art-303:Adverbial	*
 tr	art-303:PartOfSpeechProperty:art-303:TransitiveVerb	
 tr.	art-303:PartOfSpeechProperty:art-303:TransitiveVerb	
+transitive verb	art-303:PartOfSpeechProperty:art-303:TransitiveVerb	
+tu-adverb	art-303:PartOfSpeechProperty:art-303:Adverbial	*
 TV	art-303:PartOfSpeechProperty:art-303:TransitiveVerb	
 v	art-303:PartOfSpeechProperty:art-303:Verbal	
 V	art-303:PartOfSpeechProperty:art-303:Verbal	
@@ -380,10 +433,14 @@ vc	art-303:PartOfSpeechProperty:art-303:Verbal
 verb	art-303:PartOfSpeechProperty:art-303:Verbal	
 Verb	art-303:PartOfSpeechProperty:art-303:Verbal	
 VERB	art-303:PartOfSpeechProperty:art-303:Verbal	
+verb	art-303:PartOfSpeechProperty:art-303:Verbal	
+verb ending	art-303:Morpheme:art-303:Suffix	*
+verb phrase	art-303:PartOfSpeechProperty:art-303:Verbal‣art-303:SyntacticUnit:art-303:Phrase	*
 verb phrase	art-303:Phrase:art-303:VerbPhrase	
 verb suffix	art-303:Morpheme:art-303:Suffix	
 verb-intransitive	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb	
 verb-transitive	art-303:PartOfSpeechProperty:art-303:TransitiveVerb	
+verbal ending	art-303:Morpheme:art-303:Suffix	*
 verbs	art-303:PartOfSpeechProperty:art-303:Verbal	
 Verbs	art-303:PartOfSpeechProperty:art-303:Verbal	
 vi	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb	
@@ -392,13 +449,13 @@ vi.	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb
 vin.	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb	
 vint	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb	
 Vint.	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb	
+volitional auxiliary	art-303:PartOfSpeechProperty:art-303:Auxiliary	
 vpart	art-303:PartOfSpeechProperty:art-303:Particle	
 vr	art-303:PartOfSpeechProperty:art-303:Verbal‣art-302:REFL	
 vr.	art-303:PartOfSpeechProperty:art-303:Verbal‣art-302:REFL	
 vt	art-303:PartOfSpeechProperty:art-303:TransitiveVerb	
 Vt	art-303:PartOfSpeechProperty:art-303:TransitiveVerb	
 vt.	art-303:PartOfSpeechProperty:art-303:TransitiveVerb	
-vtr	art-303:PartOfSpeechProperty:art-303:TransitiveVerb	
 vtr	art-303:PartOfSpeechProperty:art-303:TransitiveVerb	
 vtr.	art-303:PartOfSpeechProperty:art-303:TransitiveVerb	
 Vtran.	art-303:PartOfSpeechProperty:art-303:TransitiveVerb	
