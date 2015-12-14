@@ -1,3 +1,3 @@
 from .source import *
-from .text_filter import *
+from . import text_filter
 from . import entryfilter

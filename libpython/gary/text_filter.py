@@ -1,7 +1,8 @@
 
 import regex as re
 
-from util.source import ignore_parens
+
+from . import ignore_parens
 
 def strip_ws(text, **kwargs):
     return text.strip()

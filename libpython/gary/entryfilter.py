@@ -12,12 +12,16 @@ class SimpleFilter(object):
 
 
 class ExtractorFilter(object):
-    def __init__(self, func, fromField, toField, **kwargs):
-        self.func = func
-        self.fromProperties = fromField.split('.')
-        self.toProperties = toField.split('.')
+    def __init__(self, dual_func, fromField, toField, **kwargs):
+        self.func = dual_func
+        self.fromProps = fromField.split('.')
+        self.toProps = toField.split('.')
 
     def __call__(self, entry, *args, **kwargs):
-        fromField = entry.__getattribute__(self.fromProperties[0]).__getattribute__(self.fromProperties[1])
-        result = self.func()
-        toField = entry.__getattribute__(self.toProperties[0]).__getattribute__(self.toProperties[1])
+        fromField = entry.__getattribute__(self.fromProps[0]).__getattribute__(self.fromProps[1])
+        toField = entry.__getattribute__(self.toProps[0]).__getattribute__(self.toProps[1])
+        fromResult,toResult = self.func(fromField, toField)
+        entry.__getattribute__(self.fromProps[0]).__setattr__(self.fromProps[1], fromResult)
+        entry.__getattribute__(self.toProps[0]).__setattr__(self.toProps[1], toResult)
+
+
