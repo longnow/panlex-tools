@@ -11,6 +11,29 @@ class SimpleFilter(object):
             langObj.text = result
 
 
+
+class PredicateFilter(object):
+    def __init__(self, func, *field_list):
+        self.func = func
+        self.fields = []
+        for field in field_list:
+            items = field.split('.')
+            if len(items) == 1:
+                self.fields.append((field,'text'))
+            elif len(items) == 2:
+                self.fields.append(tuple(items))
+            else:
+                print('WARNING: FAILED MATCH FOR FIELD: %s' % field)
+
+    def __call__(self, entry, *args, **kwargs):
+        for lang,field in self.fields:
+            langObj = entry.__getattribute__(lang)
+            langValue = langObj.__getattribute__(field)
+            return self.func(langValue, **kwargs)
+
+
+
+
 class ExtractorFilter(object):
     def __init__(self, dual_func, fromField, toField, **kwargs):
         self.func = dual_func
