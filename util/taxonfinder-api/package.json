@@ -1,0 +1,12 @@
+{
+  "name": "taxonfinder-api",
+  "version": "1.0.0",
+  "description": "Simple JSON-returning HTTP API to taxonfinder",
+  "main": "index.js",
+  "author": "David Kamholz",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.13.3",
+    "taxonfinder": "^1.1.0"
+  }
+}
