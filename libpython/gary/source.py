@@ -101,14 +101,15 @@ def increment_fileid(filename, ext=None):
 
 
 def append_synonym(text, elem):
-    print(text,elem)
     fields = text.split('\s*‣\s*')
 
     if len(fields) == 0:
         # nothing to append to
         return elem
     else:
-        if elem not in fields:
+        if len(fields) == 1 and len(fields[0]) == 0:
+            return elem
+        elif elem not in fields:
             # append to list
             return '%s‣%s' % (text,elem)
         else:
