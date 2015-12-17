@@ -5,7 +5,7 @@ var app = express();
 
 app.get('/', function (req, res) {
     if (req.query.text === undefined) res.status(409).end();
-    else res.json(taxonfinder.findNamesAndOffsets(req.query.text))
+    else res.json(taxonfinder.findNamesAndOffsets(req.query.text));
 });
 
 var server = app.listen(3000, function () {
