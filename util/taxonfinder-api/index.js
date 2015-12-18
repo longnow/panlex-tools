@@ -9,7 +9,7 @@ app.get('/', function (req, res) {
 });
 
 var host = 'localhost';
-var port = 3000;
+var port = process.argv[2] || 3000;
 
 var server = app.listen(port, host, function () {
   console.log('taxonfinder-api listening at http://%s:%s', host, port);    
