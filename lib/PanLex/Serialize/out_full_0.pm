@@ -20,6 +20,7 @@ use parent 'Exporter';
 use PanLex::Validation;
 use PanLex::Serialize::Util;
 use PanLex::Client;
+use panlex_ucd;
 use JSON;
 
 our @EXPORT = qw/out_full_0/;
@@ -206,6 +207,9 @@ sub out_full_0 {
 
                     $line = $report_error->('line contains ASCII apostrophe', $line)
                         if $line =~ /'/;
+
+                    $line = $report_error->('line contains prohibited character', $line)
+                        if $line =~ /\p{IsProhibited}/;
 
                     $line = $report_error->('line contains improperly corrected ellipsis', $line)
                         if $line =~ /\.{2,}|…\.|\.…/;
