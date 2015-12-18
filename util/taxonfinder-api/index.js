@@ -14,7 +14,3 @@ var server = app.listen(3000, function () {
 
   console.log('taxonfinder-api listening at http://%s:%s', host, port);    
 });
-
-process.stdin.on('end', function () {
-    process.exit();
-});
