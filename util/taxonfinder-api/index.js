@@ -8,9 +8,9 @@ app.get('/', function (req, res) {
     else res.json(taxonfinder.findNamesAndOffsets(req.query.text));
 });
 
-var server = app.listen(3000, function () {
-  var host = server.address().address;
-  var port = server.address().port;
+var host = 'localhost';
+var port = 3000;
 
+var server = app.listen(port, host, function () {
   console.log('taxonfinder-api listening at http://%s:%s', host, port);    
 });
