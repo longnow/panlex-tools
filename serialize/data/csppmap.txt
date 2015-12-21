@@ -120,6 +120,7 @@ Excl	art-303:PartOfSpeechProperty:art-306:EXCLAM
 EXCL	art-303:PartOfSpeechProperty:art-306:EXCLAM	
 excl.	art-303:PartOfSpeechProperty:art-306:EXCLAM	
 exclamation	art-303:PartOfSpeechProperty:art-306:EXCLAM	
+exclusive	art-303:PersonProperty:art-303:firstPersonExclusive	
 expr	art-303:SyntacticUnit:art-303:Phrase	
 expr.	art-303:SyntacticUnit:art-303:Phrase	
 expression	art-303:SyntacticUnit:art-303:Phrase	
@@ -151,6 +152,7 @@ Imperativ	art-303:ForceProperty:art-303:ImperativeForce
 imperative auxiliary	art-303:ForceProperty:art-303:ImperativeForce‣art-303:PartOfSpeechProperty:art-303:Auxiliary	
 imperative verb	art-303:ForceProperty:art-303:ImperativeForce‣art-303:PartOfSpeechProperty:art-303:Verbal	
 impf.	art-303:AspectProperty:art-303:ImperfectiveAspect	
+inclusive	art-303:PersonProperty:art-303:FirstPersonInclusive	
 indpron.	art-303:PartOfSpeechProperty:art-303:IndefinitePronoun	
 inj	art-303:PartOfSpeechProperty:art-303:Interjection	
 INSTR	art-303:PartOfSpeechProperty:art-303:Adverbial	
