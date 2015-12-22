@@ -69,7 +69,7 @@ def split_outside_parens(entries, cols, delim=r',', detectsentences=False, paren
   TEMP_SENTENCE_PAREN = [(r'🁾',r'🂊')]
 
   if detectsentences:
-    minwords = 6
+    minwords = 5
     parens += TEMP_SENTENCE_PAREN
     minwords = str(minwords - 1)
 
@@ -91,29 +91,34 @@ def split_outside_parens(entries, cols, delim=r',', detectsentences=False, paren
       try: entry[col]
       except: raise ValueError('index', col, 'not in entry:', entry)
 
-      if detectsentences: # detect sentences and put special parens around them
-        # start w/ capital letter, end with period
-        entry[col] = regex.sub(r'(\p{Lu}[^\s.]+(?:\s+[^\s.]+){'+minwords+r',}\.)', TEMP_SENTENCE_PAREN[0][0]+r'\1'+TEMP_SENTENCE_PAREN[0][1],  entry[col])
+      if not ''.join(entry[col]).startswith('⫷df⫸'):
 
-      count = 0
+        if detectsentences: # detect sentences and put special parens around them
+          # start w/ capital letter, end with period(s)
+          entry[col] = regex.sub(r'(\p{Lu}[^\s.]+(?:\s+[^\s.]+){'+minwords+r',}[\.!?]+)', TEMP_SENTENCE_PAREN[0][0]+r'\1'+TEMP_SENTENCE_PAREN[0][1], entry[col])
 
-      entry_letters = []
+        count = 0
 
-      for l in entry[col]:
-        if list(filter(None, [regex.match(o_paren, l) for o_paren in o_parens])):
-          # if letter is open paren
-          entry_letters.append(l)
-          count += 1
-        elif list(filter(None, [regex.match(c_paren, l) for c_paren in c_parens])):
-          # if letter is close paren
-          entry_letters.append(l)
-          count -= 1
-        elif count == 0 and regex.match(delim, l):
-          entry_letters.append(SOP_DELIM)
-        else:
-          entry_letters.append(l)
+        entry_letters = []
 
-      entry[col] = [regex.sub(r'['+TEMP_SENTENCE_PAREN[0][0]+TEMP_SENTENCE_PAREN[0][1]+r']', '',  c).strip() for c in ''.join(entry_letters).split(SOP_DELIM)]
+        for l in entry[col]:
+          if list(filter(None, [regex.match(o_paren, l) for o_paren in o_parens])):
+            # if letter is open paren
+            entry_letters.append(l)
+            count += 1
+          elif list(filter(None, [regex.match(c_paren, l) for c_paren in c_parens])):
+            # if letter is close paren
+            entry_letters.append(l)
+            count -= 1
+          elif count == 0 and regex.match(delim, l):
+            entry_letters.append(SOP_DELIM)
+          else:
+            entry_letters.append(l)
+
+        entry[col] = [regex.sub(r'['+TEMP_SENTENCE_PAREN[0][0]+TEMP_SENTENCE_PAREN[0][1]+r']', '',  c).strip() for c in ''.join(entry_letters).split(SOP_DELIM)]
+
+      else:
+        entry[col] = [entry[col]]
 
     result.append(entry)
   return result
@@ -343,44 +348,46 @@ def exdfprep(entries, sourcecols, tocol=-1, lang='eng-000'):
       try: entry[col]
       except: raise ValueError('index', col, 'not in entry:', entry)
 
-      if not isinstance(entry[col], list):
-        raise ValueError(entry[col], ': not a list; did you remember to do a synonym split?')
-      else:
-        result1 = []
+      if not ''.join(entry[col]).startswith('⫷df⫸'):
 
-        for syn in entry[col]:
-          pretags = ''
+        if not isinstance(entry[col], list):
+          raise ValueError(entry[col], ': not a list; did you remember to do a synonym split?')
+        else:
+          result1 = []
 
-          rules = EXDFPREP_RULES[lang]
+          for syn in entry[col]:
+            pretags = ''
 
-          if lang != 'general':
-            rules.update(EXDFPREP_RULES['general'])
+            rules = EXDFPREP_RULES[lang]
 
-          for stage in rules:
-            for rule in rules[stage]:
-              if regex.search(rule, syn):
-                replacement, pretag = rules[stage][rule]
-                if '\\' in pretag:
-                  pretag_addn = regex.sub(rule, pretag, syn).strip()
-                  old = syn
-                  while old != pretag_addn:
-                    old = pretag_addn
-                    pretag_addn = regex.sub(rule, pretag, pretag_addn).strip()
-                  pretag_addn = regex.sub(paren_re, '', pretag_addn).strip()
-                  pretag_addn = regex.sub('⫸ +', '⫸', pretag_addn)
-                  pretags += pretag_addn
-                else:
-                  pretags += pretag.strip()
-                syn = regex.sub(rule, replacement, syn).strip()
+            if lang != 'general':
+              rules.update(EXDFPREP_RULES['general'])
 
-          if tocol >= 0:
-            entry[tocol] += pretags # new prepared column
-          else:
-            syn += pretags # right after source
+            for stage in rules:
+              for rule in rules[stage]:
+                if regex.search(rule, syn):
+                  replacement, pretag = rules[stage][rule]
+                  if '\\' in pretag:
+                    pretag_addn = regex.sub(rule, pretag, syn).strip()
+                    old = syn
+                    while old != pretag_addn:
+                      old = pretag_addn
+                      pretag_addn = regex.sub(rule, pretag, pretag_addn).strip()
+                    pretag_addn = regex.sub(paren_re, '', pretag_addn).strip()
+                    pretag_addn = regex.sub('⫸ +', '⫸', pretag_addn)
+                    pretags += pretag_addn
+                  else:
+                    pretags += pretag.strip()
+                  syn = regex.sub(rule, replacement, syn).strip()
 
-          result1.append(syn)
+            if tocol >= 0:
+              entry[tocol] += pretags # new prepared column
+            else:
+              syn += pretags # right after source
 
-        entry[col] = result1
+            result1.append(syn)
+
+          entry[col] = result1
 
     result.append(entry)
 
