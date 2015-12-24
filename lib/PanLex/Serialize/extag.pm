@@ -21,7 +21,7 @@ sub extag {
     my $out = shift;
     my $args = ref $_[0] ? $_[0] : \@_;
 
-    my (@excol, $syndelim, $mndelim, $extag, $mntag, $tagged);
+    my (@excol, $syndelim, $mndelim, $extag, $mntag);
     
     if (ref $args eq 'HASH') {
         validate_cols($args->{cols});
