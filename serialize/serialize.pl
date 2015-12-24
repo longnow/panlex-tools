@@ -26,8 +26,6 @@ my @TOOLS = (
 #   mndelim:  meaning delimiter (regex), or '' if none. default '⁋'.
 #   extag:    expression tag. default '⫷ex⫸'.
 #   mntag:    meaning tag. default '⫷mn⫸'.
-#   tagged:   whether columns may contain already tagged contents (with standard
-#               tag delimiters). default 0.
 
 #'normalizedf'  => { col => 0, uid => 'eng-000', mindeg => 10 },
 # Normalizes expressions in a tagged source file by matching them against definitions.
