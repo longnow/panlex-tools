@@ -64,7 +64,7 @@ sub extag {
             $col[$i] =~ s/$extag(?=$extag|$mntag|$)//g;
             # Delete all expression tags with blank contents.
 
-            $col[$i] =~ s/$extag(?=⫷(?:ex|df)[⫸:])//g;
+            $col[$i] =~ s/$extag(?=⫷(?:ex|df|mcs[12]|mpp)[⫸:])//g;
             # Delete additional expression tags with blank contents.
 
             $col[$i] =~ s/$mntag(?=$mntag|$)//g;
