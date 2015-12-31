@@ -8,11 +8,15 @@ def strip_ws(text, **kwargs):
     return text.strip()
 
 
+def normalize_punctuation(text):
+    text = re.sub('[.,/?!]+\s*$', '', text)
+    text = re.sub('\s*\.{3,}\s*', ' … ', text)
+    text = re.sub('^\((.*)\)$', r'\1', text)
+
+    return text
 
 def remove_final_punct(text, **kwargs):
-    start = text
     text = re.sub('[.,/?!]+\s*$', '', text)
-    
     return text
 
 
