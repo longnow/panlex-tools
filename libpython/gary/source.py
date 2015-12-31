@@ -81,6 +81,33 @@ def process_synonyms(proc):
     return wrapper
 
 
+def process_method_synonyms(proc):
+    # s = '‣'
+    def wrapper(text):
+        fields = text.split('‣')
+        for i in range(len(fields)):
+            fields[i] = proc(fields[i])
+        return '‣'.join( fields)
+    return wrapper
+
+
+
+def process_text_synonym_extract(proc):
+    def wrapper(text1,text2):
+        fields1 = text1.split('‣')
+
+        for i in range(len(fields1)):
+            fields1[i],text2 = proc(fields1[i],text2)
+
+        fields1 = [f for f in fields1 if len(f) > 0]
+        text1 = '‣'.join( fields1)
+
+        return text1,text2
+
+    return wrapper
+
+
+
 def increment_fileid(filename, ext=None):
     # filename of XYZ-n (optionally .ext)
     match = re.search('(.*)-(\d+)(?:\.(\w+))?$', filename)
