@@ -21,7 +21,7 @@ sub extag {
     my $out = shift;
     my $args = ref $_[0] ? $_[0] : \@_;
 
-    my (@excol, $syndelim, $mndelim, $extag, $mntag, $tagged);
+    my (@excol, $syndelim, $mndelim, $extag, $mntag);
     
     if (ref $args eq 'HASH') {
         validate_cols($args->{cols});
@@ -64,7 +64,7 @@ sub extag {
             $col[$i] =~ s/$extag(?=$extag|$mntag|$)//g;
             # Delete all expression tags with blank contents.
 
-            $col[$i] =~ s/$extag(?=⫷(?:ex|df)[⫸:])//g;
+            $col[$i] =~ s/$extag(?=⫷(?:ex|df|mcs[12]|mpp)[⫸:])//g;
             # Delete additional expression tags with blank contents.
 
             $col[$i] =~ s/$mntag(?=$mntag|$)//g;
