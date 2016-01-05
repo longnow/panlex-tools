@@ -141,11 +141,14 @@ def make_paren_regex(parens=PARENS, maxnested=10):
     paren_res.append(fld)
   return r'(' + r'|'.join(paren_res) + r')'
 
+def remove_parens(s, parens=PARENS):
+  return regex.sub(make_paren_regex, '', s).strip()
+
 
 EXDFPREP_RULES = {
   'eng-000' : {
     1 : {
-      r'([^\s])\s+(some(?:one|body|thing)(?: or some(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)([^\'’]|$)' : (r'\1 (\2)\3', ''),
+      r'([^\s])\s+(some(?:one|body|thing)(?: or some(?:one|body|thing))?(?: (?:who|which|that) is)?|s\.[bot]\.?|o\.s\.?)([^\'’]|$)' : (r'\1 (\2)\3', ''),
       r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)(some(?:one|body|thing)(?: or some(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\s+([^\s])' : (r'\1(\2) \3', ''),
       r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)(some(?:one|body|thing)[\'’]?s)\s+([^\s])' : (r'\1(\2) \3', ''),
       r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)((?:\(?\s*to\s*\)?\s+)?be)\s+([^\(])'  : (r'\1(\2) \3', ''),
@@ -160,12 +163,12 @@ EXDFPREP_RULES = {
       r'^\((some(?:one|body|thing)(?: or some(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)\s+' : (r'\1 ', ''),
     },
     3: {
-      r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)((?:not )?)[Tt]o\s+(?!the )' : (r'\1\2(to) ', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal'),
+      r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)((?:not )?)[Tt]o\s+((?:'+make_paren_regex()[1:-1]+r')?\s*)(?!the )' : (r'\1\2(to) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal'),
     },
     4: {
       r'(^|\s)\(a\) (lot|bit|posteriori|priori)(\s|$)' : (r'\1a \2\3', r''),
       r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)((?:\(to\) )?)(become)\s+([^\s\()][^\s]*)$' : (r'\1\2\3 \4', r'⫷mcs2:art-316⫸Inchoative_of⫷mcs⫸\4'),
-      r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)((?:\(to\) )?)(make)\s+([^\s\()][^\s]*)$'   : (r'\1\2\3 \4', r'⫷mcs2:art-316⫸Causative_of⫷mcs⫸\4')
+      r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)((?:\(to\) )?)(make)\s+([^\s\()][^\s]*)$'   : (r'\1\2\3 \4', r'⫷mcs2:art-316⫸Causative_of⫷mcs⫸\4'),
     },
     5: {
       # r'(^|\s)\(to be\) a(\s|$)' : (r'\1a lot\2', r''),
@@ -318,7 +321,7 @@ EXDFPREP_RULES = {
   }
 }
 
-def exdfprep(entries, sourcecols, tocol=-1, lang='eng-000'):
+def exdfprep(entries, sourcecols, tocol=-1, lang='eng-000', pretag_special_lvs=True):
   ''' Parenthesizes "definitional" parts of an expression, and adds appropriate pretagged elements.
   entries    = list of entries, lists of elements; column with expressions to be process must be a list
   sourcecols = list of columns (element indices) on which to perform operation
@@ -384,6 +387,13 @@ def exdfprep(entries, sourcecols, tocol=-1, lang='eng-000'):
               entry[tocol] += pretags # new prepared column
             else:
               syn += pretags # right after source
+
+            # pretag special language varieties:
+            if pretag_special_lvs:
+              # integers
+              if regex.match(r'^(?:⫷..⫸)?\d+($|⫷)', syn.strip()):
+                syn = regex.sub(r'^(?:⫷[^⫸]+⫸)?', '⫷ex:art-269⫸', syn.strip()).strip()
+
 
             result1.append(syn)
 
@@ -745,8 +755,8 @@ def single_expsplit(exp, splitdelim='/', expdelim='‣'):
     newexp = []
     for ex in exp:
       newex = ex
-      if splitdelim == '/':
-        newex = regex.sub(r'^((?:[^'+prs+']|'+p+r')*)(^|\s)([^/\s'+prs+']+)/([^/\s'+prs+']+)(\s|$)((?:[^'+prs+']|'+p+r')*)$', r'\1\2\3\5\6'+expdelim+r'\1\2\4\5\6', newex)
+      if splitdelim == '/': # fwd slash, no space
+        newex = regex.sub(r'^((?:[^'+prs+']|'+p+')*)(^|\s)([^/\s'+prs+']+)/([^\s'+prs+']+)(\s|$)((?:[^'+prs+']|'+p+r')*)$', r'\1\2\3\5\6'+expdelim+r'\1\2\4\5\6', newex)
 
       elif splitdelim == '()': # parens, space agnostic
         newex = regex.sub(r'^((?:[^'+prs+']|'+p+')*)(^|\s)([^'+prs+']+)\(([^\)\s]+)\)([^'+prs+']*)(\s|$)((?:[^'+prs+']|'+p+')*)$', r'\1\2\3\5\6\7'+expdelim+r'\1\2\3\4\5\6\7', newex)
@@ -783,9 +793,33 @@ def expsplit(entries, cols, splitdelim='/', expdelim='‣'):
     for col in range(len(entry)):
       newcol = entry[col]
       if col in cols:
-        splitcol = entry[col] if isinstance(entry[col], list) else entry[col].split(expdelim)
+        splitcol = newcol if isinstance(newcol, list) else newcol.split(expdelim)
         newcol = [single_expsplit(exp, splitdelim, expdelim) for exp in splitcol]
         newcol = expdelim.join(newcol)
+      newentry.append(newcol)
+    result.append(newentry)
+  return result
+
+NO_DECAP = ['I', 'March', 'May', 'Turkey', 'Ashavan', 'Asha', 'Zarathushtra', 'Ahura', 'Khwarrah', 'Fravashi', 'Fravashis', 'Mazda', 'Mithra']
+
+def decap(entries, cols):
+  # decapitalize the first (after parens) letter of each given column (except for some key words)
+  for col in cols:
+    assert col < len(entries[0])
+  result = []
+  for entry in entries:
+    newentry = []
+    for col in range(len(entry)):
+      newcol = entry[col]
+      if col in cols:
+        m = regex.match(r'^((?:'+make_paren_regex()[1:-1]+r')?)\s*(.*)$', newcol)
+        if not m:
+          raise ValueException('unexpected un-match:', newcol)
+        else:
+          paren, rest = m.group(1), m.group(2)
+          if not list(filter(None, [regex.search(r'^'+nd+r'(?:\s|‣|⫷|;|,|\.|:|$)', rest) for nd in NO_DECAP])):
+            newcol = paren + ' ' + rest[0].lower() + rest[1:]
+            newcol = newcol.strip()
       newentry.append(newcol)
     result.append(newentry)
   return result
