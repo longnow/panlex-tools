@@ -45,6 +45,9 @@ def preprocess(entries):
       # weirdly placed commas
       col = regex.sub(r'\s* ,([^\s])', r', \1', col).strip()
 
+      # digit separator commas
+      col = regex.sub(r'(\d),(\d)', r'\1\2', col).strip()
+
       # surprise html encoded chars
       col = col.replace('&amp;', '&')
       col = col.replace('&quot;', '"')
@@ -55,7 +58,8 @@ def preprocess(entries):
   return result
 
 
-PARENS = [(r'\(',r'\)'),(r'\[',r'\]'),(r'\{',r'\}'),(r'（',r'）'),(r'【',r'】'),(r'‘',r'’')]
+PARENS = [(r'\(',r'\)'),(r'\[',r'\]'),(r'\{',r'\}'),(r'（',r'）'),(r'【',r'】')]
+#,(r'‘',r'’')
 
 def split_outside_parens(entries, cols, delim=r',', detectsentences=False, parens=PARENS):
   ''' Peforms a split of each specified column, but ignores anything in parens.
@@ -156,23 +160,22 @@ EXDFPREP_RULES = {
       r'(^|\s)a lot(\s|$)' : (r'\1(a) lot\2', r''),
     },
     2: {
-      r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)(the|an?)\s+([^\(])'   : (r'\1(\2) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun'),
-      r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)(the)\s+([^\(])'   : (r'\1(\2) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun'),
+      r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)(the|an?)\s+([^\(])'   : (r'\1(\2) \3', ''),
+      # r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)(the)\s+([^\(])'   : (r'\1(\2) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun'),
       r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)\((some(?:one|body|thing)(?: or some(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)\s+(which|that|who|to)' : (r'\1\2 \3', ''),
-      r'\((some(?:one|body|thing)(?: or some(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)\s+(else(?:\'s))' : (r'(\1 \2)', ''),
+      r'\((some(?:one|body|thing)(?: or some(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)\s+(else(?:\'s)?)' : (r'(\1 \2)', ''),
       r'^\((some(?:one|body|thing)(?: or some(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)\s+' : (r'\1 ', ''),
     },
     3: {
       r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)((?:not )?)[Tt]o\s+((?:'+make_paren_regex()[1:-1]+r')?\s*)(?!the )' : (r'\1\2(to) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal'),
     },
     4: {
-      r'(^|\s)\(a\) (lot|bit|posteriori|priori)(\s|$)' : (r'\1a \2\3', r''),
+      r'(^|\s)\(a\) (lot|bit|posteriori|priori|fortiori|few|little|minute|same)(\s|$)' : (r'\1a \2\3', r''),
       r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)((?:\(to\) )?)(become)\s+([^\s\()][^\s]*)$' : (r'\1\2\3 \4', r'⫷mcs2:art-316⫸Inchoative_of⫷mcs⫸\4'),
       r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)((?:\(to\) )?)(make)\s+([^\s\()][^\s]*)$'   : (r'\1\2\3 \4', r'⫷mcs2:art-316⫸Causative_of⫷mcs⫸\4'),
     },
     5: {
-      # r'(^|\s)\(to be\) a(\s|$)' : (r'\1a lot\2', r''),
-      #r'(\([^\(\)]*)\((some(?:one|body|thing)(?: or some(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)([^\)]*\))' : (r'\1\2\3', ''),
+      r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)\((the|an?)\)\s+([^\(])'   : (r'\1(\2) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun'),
     },
   },
   'jpn-000' : {
@@ -391,8 +394,12 @@ def exdfprep(entries, sourcecols, tocol=-1, lang='eng-000', pretag_special_lvs=T
             # pretag special language varieties:
             if pretag_special_lvs:
               # integers
-              if regex.match(r'^(?:⫷..⫸)?\d+($|⫷)', syn.strip()):
-                syn = regex.sub(r'^(?:⫷[^⫸]+⫸)?', '⫷ex:art-269⫸', syn.strip()).strip()
+              int_m = regex.match(r'^(?:⫷..⫸)?(\d+)($|⫷)', syn.strip())
+              if int_m:
+                if int_m.group(1) in ['747']:
+                  print('WARNING: Did not pretag potentially special number:', int_m.group(1))
+                else:
+                  syn = regex.sub(r'^(?:⫷[^⫸]+⫸)?', '⫷ex:art-269⫸', syn.strip()).strip()
 
 
             result1.append(syn)
@@ -458,6 +465,7 @@ def convert_between_cols(entries, conversion_rules, fromcol, tocol=-1, delim='�
   tocol   = new col in which to deposit replacements (end); if -1, use end of source col
   delim   = delimiter to use between replacements if not a fully-formed tag '''
 
+  assert isinstance(tocol, int)
   cols_total = len(entries[0])
   if tocol >= 0: # update source col index if making new col
     cols_total += 1
@@ -832,3 +840,88 @@ def tsv_to_entries(infile):
 def delete_col(entries, col):
   assert col < len(entries[0])
   return [entry[:col] + entry[col+1:] for entry in entries]
+
+
+def correct_homoglyphs(entries, cols, target_script='Latn'):
+  # convert any stray characters from other scripts (Latin, Cyrillic, Greek)
+  # to their homoglyphs in the target_script script
+  for col in cols:
+    assert col < len(entries[0])
+  assert target_script in ['Latn', 'Cyrl', 'Grek']
+  if not HOMOGLYPH_DICTS: __init_homoglyph_dicts()
+  result = []
+  for entry in entries:
+    newentry = []
+    for col in range(len(entry)):
+      newcol = entry[col]
+      if col in cols:
+        newcol = ''.join([HOMOGLYPH_DICTS[target_script][c] if c in HOMOGLYPH_DICTS[target_script].keys() else c for c in newcol])
+      newentry.append(newcol)
+    result.append(newentry)
+  return result
+
+HOMOGLYPH_DICTS = {}
+
+def __init_homoglyph_dicts():
+  HOMOGLYPHS = [
+    ('A','Α','А'),
+    ('B','Β','В'),
+    ('C','Ϲ','С'),
+    ('E','Ε','Е'),
+    ('F','Ϝ',''),
+    ('G','','Ԍ'),
+    ('H','Η','Н'),
+    ('I','Ι','І'),
+    ('J','','Ј'),
+    ('K','Κ','К'),
+    ('M','Μ','М'),
+    ('N','Ν',''),
+    ('O','Ο','О'),
+    ('P','Ρ','Р'),
+    ('S','','Ѕ'),
+    ('T','Τ','Т'),
+    ('V','','Ѵ'),
+    ('X','Χ','Х'),
+    ('Y','Υ','Ү'),
+    ('Z','Ζ',''),
+    ('a','α','а'),
+    ('b','β','Ь'),
+    ('c','ϲ','с'),
+    ('d','','ԁ'),
+    ('e','ε','е'),
+    ('h','','һ'),
+    ('i','ι','і'),
+    ('j','','ј'),
+    ('k','κ','к'),
+    ('o','ο','о'),
+    ('p','ρ','р'),
+    ('s','ς','ѕ'),
+    ('t','τ','т'),
+    ('v','ν','ѵ'),
+    ('w','','ѡ'),
+    ('x','χ','х'),
+    ('y','γ','у'),
+    ('Ä','','Ӓ'),
+    ('Ö','','Ӧ'),
+    #('ß','β',''),
+    ('ä','','ӓ'),
+    ('ö','','ӧ')
+  ]
+  global HOMOGLYPH_DICTS
+  CONV_TO_LATN, CONV_TO_CYRL, CONV_TO_GREK = {}, {}, {}
+  for triple in HOMOGLYPHS:
+    latn, grek, cyrl = triple
+    if latn and grek:
+      CONV_TO_LATN[grek] = latn
+      CONV_TO_GREK[latn] = grek
+    if latn and cyrl:
+      CONV_TO_LATN[cyrl] = latn
+      CONV_TO_CYRL[latn] = cyrl
+    if grek and cyrl:
+      CONV_TO_GREK[cyrl] = grek
+      CONV_TO_CYRL[grek] = cyrl
+  HOMOGLYPH_DICTS = {
+    'Latn' : CONV_TO_LATN,
+    'Cyrl' : CONV_TO_CYRL,
+    'Grek' : CONV_TO_GREK
+  }
