@@ -5,6 +5,10 @@ a. comp.	art-303:PartOfSpeechProperty:art-303:ComparativeAdjective
 a. indecl.	art-303:PartOfSpeechProperty:art-303:Adjectival	
 a. pl. superl.	art-303:PartOfSpeechProperty:art-303:SuperlativeAdjective‣art-303:NumberProperty:art-303:PluralNumber	
 a. superl.	art-303:PartOfSpeechProperty:art-303:SuperlativeAdjective	
+abbr	art-317:termType:art-317:abbreviation	
+abbr.	art-317:termType:art-317:abbreviation	
+abbrev	art-317:termType:art-317:abbreviation	
+abbrev.	art-317:termType:art-317:abbreviation	
 ad	art-303:PartOfSpeechProperty:art-303:Adjectival	
 adj	art-303:PartOfSpeechProperty:art-303:Adjectival	
 Adj	art-303:PartOfSpeechProperty:art-303:Adjectival	
