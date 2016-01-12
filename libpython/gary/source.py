@@ -4,6 +4,11 @@ from collections import OrderedDict
 import io
 import regex as re
 
+def run_filters(filters, entry):
+    for f in filters:
+        f(entry)
+    return entry
+
 
 class LanguageField(object):
     def __init__(self, text='', *args):
@@ -142,3 +147,8 @@ def append_synonym(text, elem):
         else:
             # already in list, don't append
             return text
+
+
+def join_synonyms(syn_ls):
+    syn_ls = [syn for syn in syn_ls if syn != None and len(syn) > 0]
+    return '‣'.join(syn_ls)
