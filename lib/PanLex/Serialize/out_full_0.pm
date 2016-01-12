@@ -199,8 +199,10 @@ sub out_full_0 {
                 if ($line_stripped eq '') {
                     $line = $report_error->('empty line', $line);
                 } else {
-                    $line = $report_error->('line contains prohibited character', $line)
-                        if $line =~ /\p{IsProhibited}/;
+                    if ($line =~ /(\p{IsProhibited})/) {
+                        my $code = sprintf "%X", ord($1);
+                        $line = $report_error->("line contains prohibited character U+$code", $line);
+                    }
 
                     $line = $report_error->('not an immutable language variety', $line)
                         if $check_cspp_ex && $line_stripped =~ $UID && !exists $uid_immutable{$line_stripped};
