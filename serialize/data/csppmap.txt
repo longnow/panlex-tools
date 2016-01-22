@@ -96,6 +96,7 @@ cop	art-303:PartOfSpeechProperty:art-303:Copula
 copula	art-303:PartOfSpeechProperty:art-303:Copula	
 counter	art-303:PartOfSpeechProperty:art-303:NumeralClassifier	
 counter word	art-303:PartOfSpeechProperty:art-303:NumeralClassifier	
+def.art	art-303:PartOfSpeechProperty:art-303:DefiniteArticle	
 deictic pronoun	art-303:LinguisticProperty:art-306:DEI‣art-303:PartOfSpeechProperty:art-303:Pronominal	
 dem	art-303:PartOfSpeechProperty:art-303:Demonstrative	
 DEM	art-303:PartOfSpeechProperty:art-303:Demonstrative	
@@ -116,6 +117,7 @@ dim	art-303:SizeProperty:art-303:DiminuativeSize
 disc	art-303:LinguisticSign:art-306:DM	
 dur.	art-303:AspectProperty:art-303:DurativeAspect	
 emph	art-303:ForceProperty:art-270:2549	
+encl	art-303:Morpheme:art-303:Enclitic	
 enclitique	art-303:Morpheme:art-303:Enclitic	
 ending	art-303:Morpheme:art-303:Suffix	
 epn	art-303:PartOfSpeechProperty:art-303:Pronominal	
@@ -124,7 +126,7 @@ Excl	art-303:PartOfSpeechProperty:art-306:EXCLAM
 EXCL	art-303:PartOfSpeechProperty:art-306:EXCLAM	
 excl.	art-303:PartOfSpeechProperty:art-306:EXCLAM	
 exclamation	art-303:PartOfSpeechProperty:art-306:EXCLAM	
-exclusive	art-303:PersonProperty:art-303:firstPersonExclusive	
+exclusive	art-303:PersonProperty:art-303:FirstPersonExclusive	
 expr	art-303:SyntacticUnit:art-303:Phrase	
 expr.	art-303:SyntacticUnit:art-303:Phrase	
 expression	art-303:SyntacticUnit:art-303:Phrase	
@@ -157,6 +159,7 @@ imperative auxiliary	art-303:ForceProperty:art-303:ImperativeForce‣art-303:Par
 imperative verb	art-303:ForceProperty:art-303:ImperativeForce‣art-303:PartOfSpeechProperty:art-303:Verbal	
 impf.	art-303:AspectProperty:art-303:ImperfectiveAspect	
 inclusive	art-303:PersonProperty:art-303:FirstPersonInclusive	
+indef.art	art-303:PartOfSpeechProperty:art-303:IndefiniteArticle	
 indpron.	art-303:PartOfSpeechProperty:art-303:IndefinitePronoun	
 inj	art-303:PartOfSpeechProperty:art-303:Interjection	
 INSTR	art-303:PartOfSpeechProperty:art-303:Adverbial	
@@ -194,6 +197,7 @@ measure word	art-303:PartOfSpeechProperty:art-303:NumeralClassifier
 Mehrzahl	art-303:NumberProperty:art-303:PluralNumber	
 mid.voi.	art-303:VoiceProperty:art-303:PlainMiddleVoice	
 MOD	art-303:PartOfSpeechProperty:art-303:Modal	
+mod	art-303:PartOfSpeechProperty:art-303:Modal	
 mod.avv.	art-303:PartOfSpeechProperty:art-303:Adverbial‣art-303:PartOfSpeechProperty:art-303:Modal	
 n	art-303:PartOfSpeechProperty:art-303:Noun	
 N	art-303:PartOfSpeechProperty:art-303:Noun	
@@ -314,6 +318,8 @@ pro.rel.	art-303:PartOfSpeechProperty:art-303:RelativePronoun
 proclitique	art-303:Morpheme:art-303:Proclitic	
 pron	art-303:PartOfSpeechProperty:art-303:Pronominal	
 Pron	art-303:PartOfSpeechProperty:art-303:Pronominal	
+pron int	art-303:PartOfSpeechProperty:art-303:InterrogativeProform	
+pron ref	art-303:PartOfSpeechProperty:art-303:ReflexivePronoun	
 pron.	art-303:PartOfSpeechProperty:art-303:Pronominal	
 Pron.	art-303:PartOfSpeechProperty:art-303:Pronominal	
 Pron. Ab.	art-303:PartOfSpeechProperty:art-303:Pronominal‣art-303:CaseProperty:art-303:AblativeCase	
@@ -377,6 +383,7 @@ splu	art-303:PartOfSpeechProperty:art-303:Noun‣art-303:NumberProperty:art-303:
 spn	art-303:PartOfSpeechProperty:art-303:Pronominal	
 spost	art-303:PartOfSpeechProperty:art-303:Postposition	
 Sprichwort	art-303:SyntacticUnit:art-303:Phrase	
+strong	art-303:Class:art-253:strong(fld>grammer)	
 suf	art-303:Morpheme:art-303:Suffix	
 suf.	art-303:Morpheme:art-303:Suffix	
 Suf.	art-303:Morpheme:art-303:Suffix	
@@ -466,6 +473,7 @@ vtr	art-303:PartOfSpeechProperty:art-303:TransitiveVerb
 vtr.	art-303:PartOfSpeechProperty:art-303:TransitiveVerb	
 Vtran.	art-303:PartOfSpeechProperty:art-303:TransitiveVerb	
 vtrm.	art-303:PartOfSpeechProperty:art-303:TransitiveVerb‣art-303:PartOfSpeechProperty:art-303:Modal	
+weak	art-303:Class:art-253:weak(scn>grammar)	
 ZEW	art-303:PartOfSpeechProperty:art-303:NumeralClassifier	
 Zählwort	art-303:PartOfSpeechProperty:art-303:NumeralClassifier	
 副詞	art-303:PartOfSpeechProperty:art-303:Adverbial	
