@@ -279,6 +279,7 @@ place	art-303:PartOfSpeechProperty:art-303:ProperNoun
 place adverb	art-303:PartOfSpeechProperty:art-303:Adverbial	
 placename	art-303:PartOfSpeechProperty:art-303:ProperNoun	
 plu	art-303:NumberProperty:art-303:PluralNumber	
+pn	art-303:PartOfSpeechProperty:art-303:Pronominal	
 pn.	art-303:PartOfSpeechProperty:art-303:Pronominal	
 po	art-303:PartOfSpeechProperty:art-303:Postposition	
 Po	art-303:PartOfSpeechProperty:art-303:Postposition	
