@@ -54,7 +54,7 @@ sub out_full_0 {
 
     die "invalid value for error parameter: $error" if $error !~ /^(mark|fail|ignore)$/;
 
-    print $out ":\n0";
+    print $out ":\n0\n";
     # Output the file header.
 
     my $col_uid = parse_specs(\@specs);
