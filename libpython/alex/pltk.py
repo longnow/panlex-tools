@@ -3,7 +3,7 @@ PanLex ToolKit
 '''
 
 import unicodedata
-import regex
+import regex as re
 from time import sleep
 import simplejson as json
 from unidecode import unidecode
@@ -11,8 +11,7 @@ from unidecode import unidecode
 # initialize these only if function called
 nltk = None
 TextBlob = None
-MecabSoup = None
-import urllib.request
+from MecabSoup import MecabSoup
 
 
 def preprocess(entries):
@@ -23,35 +22,38 @@ def preprocess(entries):
     for col in entry:
       
       # nonstandard spaces/newlines
-      col = regex.sub(r'[\u200B\uFEFF \n\u200E]', ' ', col).strip()
+      col = re.sub(r'[\u200B\uFEFF \n\u200E]', ' ', col).strip()
 
       # fullwidth punctuation, numbers
       col = col.replace('？', '?')
       col = col.replace('！', '!')
-      if regex.search(r'\p{Nd}', col):
+      if re.search(r'\p{Nd}', col):
         col = unicodedata.normalize('NFKC', col).strip()  # North Florida Koi Club
 
-      # "etc"
-      col = regex.sub(r'[\,、;]?\s*etc\.?$', '...', col).strip()
+      # hyphen to hyphen-minus
+      col = col.replace('‐','-')
 
+      # "etc"
+      col = re.sub(r'[\,、;]?\s*(etc| u\.ä\.?)\.?$', '', col).strip()
       # ellipses
-      col = regex.sub(r'・・・', '...', col)
-      col = regex.sub(r'～', '...', col)
-      col = regex.sub(r'\.\s*\.(\s*\.)+', ' … ', col).strip()
-      col = regex.sub(r'\s*…\s*', ' … ', col).strip()
-      col = regex.sub(r'^\s*…', '', col).strip()
-      col = regex.sub(r'…\s*$', '', col).strip()
+      col = re.sub(r'・・・', '...', col)
+      col = re.sub(r'__+', '...', col)
+      col = re.sub(r'[～〜]', '...', col)
+      col = re.sub(r'\.\s*\.(\s*\.)+', ' … ', col).strip()
+      col = re.sub(r'\s*…\s*', ' … ', col).strip()
+      col = re.sub(r'^\s*…', '', col).strip()
+      col = re.sub(r'…\s*$', '', col).strip()
 
       # excess whitespace
-      col = regex.sub(r'  +', r' ',col).strip()
-      col = regex.sub(r'\( +','(',col).strip()
-      col = regex.sub(r' +\)',')',col).strip()
+      col = re.sub(r'  +', r' ',col).strip()
+      col = re.sub(r'\( +','(',col).strip()
+      col = re.sub(r' +\)',')',col).strip()
 
       # weirdly placed commas
-      col = regex.sub(r'\s* ,([^\s])', r', \1', col).strip()
+      col = re.sub(r'\s* ,([^\s])', r', \1', col).strip()
 
       # digit separator commas
-      col = regex.sub(r'(\d),(\d)', r'\1\2', col).strip()
+      col = re.sub(r'(\d),(\d)', r'\1\2', col).strip()
 
       # surprise html encoded chars
       col = col.replace('&amp;', '&')
@@ -104,27 +106,27 @@ def split_outside_parens(entries, cols, delim=r',', detectsentences=False, paren
 
         if detectsentences: # detect sentences and put special parens around them
           # start w/ capital letter, end with period(s)
-          entry[col] = regex.sub(r'(\p{Lu}[^\s.]+(?:\s+[^\s.]+){'+minwords+r',}[\.!?]+)', TEMP_SENTENCE_PAREN[0][0]+r'\1'+TEMP_SENTENCE_PAREN[0][1], entry[col])
+          entry[col] = re.sub(r'(\p{Lu}[^\s.]+(?:\s+[^\s.]+){'+minwords+r',}[\.!?]+)', TEMP_SENTENCE_PAREN[0][0]+r'\1'+TEMP_SENTENCE_PAREN[0][1], entry[col])
 
         count = 0
 
         entry_letters = []
 
         for l in entry[col]:
-          if list(filter(None, [regex.match(o_paren, l) for o_paren in o_parens])):
+          if list(filter(None, [re.match(o_paren, l) for o_paren in o_parens])):
             # if letter is open paren
             entry_letters.append(l)
             count += 1
-          elif list(filter(None, [regex.match(c_paren, l) for c_paren in c_parens])):
+          elif list(filter(None, [re.match(c_paren, l) for c_paren in c_parens])):
             # if letter is close paren
             entry_letters.append(l)
             count -= 1
-          elif count == 0 and regex.match(delim, l):
+          elif count == 0 and re.match(delim, l):
             entry_letters.append(SOP_DELIM)
           else:
             entry_letters.append(l)
 
-        entry[col] = [regex.sub(r'['+TEMP_SENTENCE_PAREN[0][0]+TEMP_SENTENCE_PAREN[0][1]+r']', '',  c).strip() for c in ''.join(entry_letters).split(SOP_DELIM)]
+        entry[col] = [re.sub(r'['+TEMP_SENTENCE_PAREN[0][0]+TEMP_SENTENCE_PAREN[0][1]+r']', '',  c).strip() for c in ''.join(entry_letters).split(SOP_DELIM)]
 
       else:
         entry[col] = [entry[col]]
@@ -151,35 +153,37 @@ def make_paren_regex(parens=PARENS, maxnested=10):
   return r'(' + r'|'.join(paren_res) + r')'
 
 def remove_parens(s, parens=PARENS):
-  return regex.sub(make_paren_regex, '', s).strip()
+  return re.sub(make_paren_regex, '', s).strip()
 
 
 EXDFPREP_RULES = {
   'eng-000' : {
     1 : {
-      r'([^\s])\s+(some(?:one|body|thing)(?: or some(?:one|body|thing))?(?: (?:who|which|that) is)?|s\.[bot]\.?|o\.s\.?)([^\'’]|$)' : (r'\1 (\2)\3', ''),
-      r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)(some(?:one|body|thing)(?: or some(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\s+([^\s])' : (r'\1(\2) \3', ''),
-      r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)(some(?:one|body|thing)[\'’]?s)\s+([^\s])' : (r'\1(\2) \3', ''),
+      r'([^\s])\s+(s(?:\-|ome)(?: other )?(?: other )?(?:one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|ome)(?: other )?(?:one|body|thing))?(?: (?:who|which|that) is)?|s\.[bot]\.?|o\.s\.?)([^\'’]|$)' : (r'\1 (\2)\3', ''),
+      r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)(s(?:\-|ome)(?: other )?(?:one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|ome)(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\s+([^\s])' : (r'\1(\2) \3', ''),
+      r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)(s(?:\-|ome)(?: other )?(?:one|body|thing)[\'’]?s)\s+([^\s])' : (r'\1(\2) \3', ''),
       r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)((?:\(?\s*to\s*\)?\s+)?be)\s+([^\(])'  : (r'\1(\2) \3', ''),
-      r'^(\(?(?:a\s+)?(?:kind|type|sort|species) of\)?)\s*([^\s]+ ?[^\s]+)$' : (r'(\1) \2', r'⫷mcs2:art-300⫸IsA⫷mcs:eng-000⫸\2'),
+      r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)(\(?(?:a\s+)?(?:kind|type|sort|species) of\)?|k\.?o\.)\s*' : (r'\1(\2) ', r''),
     },
     2: {
-      r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)(the|an?)\s+([^\(])'   : (r'\1(\2) \3', ''),
-      # r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)(the)\s+([^\(])'   : (r'\1(\2) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun'),
-      r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)\((some(?:one|body|thing)(?: or some(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)\s+(which|that|who|to)' : (r'\1\2 \3', ''),
-      r'\((some(?:one|body|thing)(?: or some(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)\s+(else(?:\'s)?)' : (r'(\1 \2)', ''),
-      r'^\((some(?:one|body|thing)(?: or some(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)\s+' : (r'\1 ', ''),
+      r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)(the|an?)\s+((?:(?:'+make_paren_regex()[1:-1]+'|[^\(\)\[\]\s]+))(?: (?:'+make_paren_regex()[1:-1]+'|[^\(\)\[\]\s]+))?)$'   : (r'\1(\2) \3', ''),      # r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)(the)\s+([^\(])'   : (r'\1(\2) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun'),
+      r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)\((s(?:\-|ome)(?: other )?(?:one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|ome)(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)\s+(which|that|who|to)' : (r'\1\2 \3', ''),
+      r'\((s(?:\-|ome)(?: other )?(?:one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|ome)(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)\s+(else(?:\'s)?)' : (r'(\1 \2)', ''),
+      r'^\((s(?:\-|ome)(?: other )?(?:one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|ome)(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)\s+' : (r'\1 ', ''),
+      r'^((?:[^\s]+\s)?)((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)(\(?(?:a\s+)?(?:kind|type|sort|species) of\)?|\(?k\.?o\.\)?)\s*([^\s]+ ?[^\s]+)$' : (r'\2(\3) \1\4', r'⫷mcs2:art-300⫸IsA⫷mcs:eng-000⫸\4'),
     },
     3: {
-      r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)((?:not )?)[Tt]o\s+((?:'+make_paren_regex()[1:-1]+r')?\s*)(?!the(?: |$)|you|us$|him$|her$|them$|me$)' : (r'\1\2(to) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal'),
+      r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)((?:not )?)[Tt]o\s+((?:'+make_paren_regex()[1:-1]+r')?\s*)(?!the(?: |$)|you|us$|him$|her$|them$|me$|no )' : (r'\1\2(to) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal'),
     },
     4: {
-      r'(^|\s)\(a\) (lot|bit|posteriori|priori|fortiori|few|little|minute|same)(\s|$)' : (r'\1a \2\3', r''),
+      r'(^|\s)\(a\) (lot|bit|posteriori|priori|fortiori|few|little|minute|same|while)(\s|$)' : (r'\1a \2\3', r''),
       r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)((?:\(to\) )?)(become)\s+([^\s\()][^\s]*)$' : (r'\1\2\3 \4', r'⫷mcs2:art-316⫸Inchoative_of⫷mcs⫸\4'),
-      r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)((?:\(to\) )?)(make)\s+([^\s\()][^\s]*)$'   : (r'\1\2\3 \4', r'⫷mcs2:art-316⫸Causative_of⫷mcs⫸\4'),
+      
+      r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)((?:\(to\) )?)(make)\s+((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)\s+(?!space(?: |$)|room(?: |$)|out(?: |$)|love(?: |$))([^\s\()][^\s]*)$'   : (r'\1\2\3 \4\5', r'⫷mcs2:art-316⫸Causative_of⫷mcs⫸\5'),
+      # r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)((?:\(to\) )?)(make)\s+((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)([^\s\()][^\s]*)$'   : (r'\1\2\3 \4\5', r'⫷mcs2:art-316⫸Causative_of⫷mcs⫸\5'),
     },
     5: {
-      r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)\((the|an?)\)\s+([^\(])'   : (r'\1(\2) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun'),
+      r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)\((the|an?)\)\s+((?:(?:'+make_paren_regex()[1:-1]+'|[^\(\)\[\]\s]+))(?: (?:'+make_paren_regex()[1:-1]+'|[^\(\)\[\]\s]+))?)$'   : (r'\1(\2) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun'),
     },
   },
   'jpn-000' : {
@@ -188,7 +192,9 @@ EXDFPREP_RULES = {
       r'([\p{Han}\p{Katakana}](?:'+make_paren_regex()[1:-1]+r')?)(だ|の|な)$' : (r'\1(\2)', ''),
       r'^(.*[\p{Han}])(らせる)$' : (r'\1\2', r'⫷mcs2:art-316⫸Causative_of⫷mcs⫸\1る'),
       r'^(させる)$' : (r'\1', r'⫷mcs2:art-316⫸Causative_of⫷mcs⫸する'),
-      r'^(を)(\p{Han})' : (r'(\1)\2', r''),
+      r'^(が)(\p{Han})' : (r'(\1)\2', r''),
+      # r'^(を)(\p{Han})' : (r'(\1)\2', r''),
+      r'^(を)' : (r'(\1)', r''),
       r'(など)$' : (r'(\1)', ''),  # ... etc.
       r'^([^…]+)(くなる)$' : (r'\1\2', r'⫷mcs2:art-316⫸Inchoative_of⫷mcs⫸\1い'),  # to become ~ (keiyoshi)
       r'^([^…]+)(になる)$' : (r'\1\2', r'⫷mcs2:art-316⫸Inchoative_of⫷mcs⫸\1'),  # to become ~
@@ -207,7 +213,7 @@ EXDFPREP_RULES = {
     1 : {
       #r'([^\s])\s+\(?(alg(?:ui[eé]n|o|\.))\)?([^\'’])' : (r'\1 (\2)\3', ''),
       #r'^\(?(alg(?:ui[eé]n|o|\.))\)?\s+([^\s\(])' : (r'(\1) \2', ''),
-      r'^\(?([Ee]l|[Uu]n)\)?\s+([^\s\(])'  : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸MasculineGender'),
+      r'^\(?([Ee]l|[Uu]n)\)?\s+([^\s\(])'  : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun'), # Masculine not determined
       r'^\(?([Ll]os|[Uu]nos)\)?\s+([^\s\(])'  : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸MasculineGender⫷dcs2:art-303⫸NumberProperty⫷dcs:art-303⫸PluralNumber'),
       r'^\(?([Ll]a|[Uu]na)\)?\s+([^\s\(])'  : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸FeminineGender'),
       r'^\(?([Ll]as|[Uu]nas)\)?\s+([^\s\(])'  : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸FeminineGender⫷dcs2:art-303⫸NumberProperty⫷dcs:art-303⫸PluralNumber'),
@@ -316,6 +322,8 @@ EXDFPREP_RULES = {
   },
   'deu-000' : {
     1 : {
+      r'((?:etw(?:\.|as)|jemand(?:en)?)(?: oder etwas)?(?:,? (?:der|was))?)([^\'’]|$)' : (r'(\1)\2', ''),
+      r'\s+(d\.[ih]\..*)$' : (r' (\1)', ''),
       r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)(ein(?:e[mnrs]?)?|die|das|de[mnrs])\s+([^\(])'   : (r'\1(\2) \3', ''),
     },
     2: {
@@ -323,15 +331,20 @@ EXDFPREP_RULES = {
   },
   'general' : {
     998 : {
-      r'(^\s*…|…\s*$)' : ('', ''),
-      r'^((?:[^\s][^\s]?\.)+)$' : (r'\1.', ''),
+      r'(^\s*…|…\s*(?:$|⫷))' : ('', ''),
+      # # r'^((?:[^\s][^\s]?\.)+)$' : (r'\1.', ''),
+      r'\s+(\.(?:$|⫷))' : (r'\1', ''),
+      r'\s*(\))\s*\.\s*($|⫷)' : (r'\1\2', ''),
     },
     999 : {
       r'(.)[！!]$'  : (r'\1', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Interjection'),
       r'(.)\?$' : (r'\1', '⫷dcs2:art-303⫸ForceProperty⫷dcs:art-303⫸InterrogativeForce'),
-      r'^\?+$' : (r'', ''),
+      r'^\?+$' : ('', ''),
       r'["“”]'  : ('', ''),
-      r'\.$' : (r'', ''),
+      # delete periods at end, but only when no periods in exp already, and len > 6
+      r'^([^\.]{6,})\s*\.$' : (r'\1', ''),
+      r'^\(([^\(\)]*)\)$' : (r'⫷df⫸\1', ''),
+      r'^\[([^\[\]]*)\]$' : (r'⫷df⫸\1', ''),
     }
   }
 }
@@ -383,20 +396,20 @@ def exdfprep(entries, sourcecols, tocol=-1, lang='eng-000', pretag_special_lvs=T
 
             for stage in rules:
               for rule in rules[stage]:
-                if regex.search(rule, syn):
+                if re.search(rule, syn):
                   replacement, pretag = rules[stage][rule]
                   if '\\' in pretag:
-                    pretag_addn = regex.sub(rule, pretag, syn).strip()
+                    pretag_addn = re.sub(rule, pretag, syn).strip()
                     old = syn
                     while old != pretag_addn:
                       old = pretag_addn
-                      pretag_addn = regex.sub(rule, pretag, pretag_addn).strip()
-                    pretag_addn = regex.sub(paren_re, '', pretag_addn).strip()
-                    pretag_addn = regex.sub('⫸ +', '⫸', pretag_addn)
+                      pretag_addn = re.sub(rule, pretag, pretag_addn).strip()
+                    pretag_addn = re.sub(paren_re, '', pretag_addn).strip()
+                    pretag_addn = re.sub('⫸ +', '⫸', pretag_addn)
                     pretags += pretag_addn
                   else:
                     pretags += pretag.strip()
-                  syn = regex.sub(rule, replacement, syn).strip()
+                  syn = re.sub(rule, replacement, syn).strip()
 
             if tocol >= 0:
               entry[tocol] += pretags # new prepared column
@@ -406,12 +419,12 @@ def exdfprep(entries, sourcecols, tocol=-1, lang='eng-000', pretag_special_lvs=T
             # pretag special language varieties:
             if pretag_special_lvs:
               # integers
-              int_m = regex.match(r'^(?:⫷..⫸)?(\d+)($|⫷)', syn.strip())
+              int_m = re.match(r'^(?:⫷..⫸)?(\d+)($|⫷)', syn.strip())
               if int_m:
                 if int_m.group(1) in ['747']:
                   print('WARNING: Did not pretag potentially special number:', int_m.group(1))
                 else:
-                  syn = regex.sub(r'^(?:⫷[^⫸]+⫸)?', '⫷ex:art-269⫸', syn.strip()).strip()
+                  syn = re.sub(r'^(?:⫷[^⫸]+⫸)?', '⫷ex:art-269⫸', syn.strip()).strip()
 
 
             result1.append(syn)
@@ -432,7 +445,7 @@ def mnsplit(entries, col, delim='⁋'):
   result = []
   for entry in entries:
     assert isinstance(entry[col], str)
-    for mn in regex.split('⁋', entry[col]):
+    for mn in re.split('⁋', entry[col]):
       result.append(entry[:col] + [mn] + entry[col+1:])
   return result
 
@@ -458,11 +471,11 @@ def separate_parentheticals(entries, cols, delim=r'[&,;]', parens=PARENS):
         from_re = o + r'([^' + c + r']*)\s*' + delim + r'\s*([^' + c + r']*)' + c
         oraw, craw = o.replace('\\',''), c.replace('\\','')
         # separate parentheticals
-        new = regex.sub(from_re, oraw+r'\1'+craw+' '+oraw+r'\2'+craw, entry[col])
+        new = re.sub(from_re, oraw+r'\1'+craw+' '+oraw+r'\2'+craw, entry[col])
         while entry[col] != new:
           entry[col] = new
-          new = regex.sub(from_re, oraw+r'\1'+craw+' '+oraw+r'\2'+craw, new)
-        entry[col] = regex.sub(r'\s+\)', ')', entry[col])
+          new = re.sub(from_re, oraw+r'\1'+craw+' '+oraw+r'\2'+craw, new)
+        entry[col] = re.sub(r'\s+\)', ')', entry[col])
 
     result.append(entry)
 
@@ -503,21 +516,21 @@ def convert_between_cols(entries, conversion_rules, fromcol, tocol=-1, syn_delim
       newcol = []
       for exp in entry[fromcol].split(syn_delim):
         for rule in curr_conv_rules:
-          m = regex.search(rule, exp)
+          m = re.search(rule, exp)
           if m:
             # if the conversion to isn't explicit tags, add the standard delimiter
             if '⫷' not in curr_conv_rules[rule] and colbuffer:
               colbuffer += delim
             # if capture group exists, sub from the column
             if '\\' in curr_conv_rules[rule]:
-              colbuffer += regex.sub(rule, curr_conv_rules[rule], m.group(0))
+              colbuffer += re.sub(rule, curr_conv_rules[rule], m.group(0))
             # else just add the target
             else:
               colbuffer += curr_conv_rules[rule]
-            exp = regex.sub(rule, ' ', exp).strip()
-            exp = regex.sub(r'  +', ' ', exp.strip())
+            exp = re.sub(rule, ' ', exp).strip()
+            exp = re.sub(r'  +', ' ', exp.strip())
         newcol.append(exp)
-      colbuffer = regex.sub(r'  +', ' ', colbuffer.strip())
+      colbuffer = re.sub(r'  +', ' ', colbuffer.strip())
 
       entry[fromcol] = syn_delim.join(newcol)
       entry[curr_tocol] += colbuffer
@@ -531,7 +544,7 @@ def splitcol(entries, col, delim=''):
   result = []
   for entry in entries:
     assert isinstance(entry[col], str)
-    entry[col] = [e.strip() for e in regex.split(delim, entry[col]) if e.strip()]
+    entry[col] = [e.strip() for e in re.split(delim, entry[col]) if e.strip()]
     result.append(entry)
   return result
 
@@ -561,11 +574,11 @@ def remove_nested_parens(entries, cols, parens=PARENS):
       entry_letters = []
 
       for l in entry[col]:
-        if list(filter(None, [regex.match(o_paren, l) for o_paren in o_parens])):
+        if list(filter(None, [re.match(o_paren, l) for o_paren in o_parens])):
           if not count > 0:
             entry_letters.append(l)
           count += 1
-        elif list(filter(None, [regex.match(c_paren, l) for c_paren in c_parens])):
+        elif list(filter(None, [re.match(c_paren, l) for c_paren in c_parens])):
           if not count > 1:
             entry_letters.append(l)
           count -= 1
@@ -579,10 +592,10 @@ def remove_nested_parens(entries, cols, parens=PARENS):
         out_o, out_c = paren
         for paren2 in parens:
           in_o, in_c = paren2
-          new = regex.sub(r'(' + out_o + r'[^' + in_o + r']*)' + in_o + r'([^' + in_c + r']*)' + in_c + r'([^' + out_c + r']*' + out_c + r')', r'\1\2\3', entry[col]).strip()
+          new = re.sub(r'(' + out_o + r'[^' + in_o + r']*)' + in_o + r'([^' + in_c + r']*)' + in_c + r'([^' + out_c + r']*' + out_c + r')', r'\1\2\3', entry[col]).strip()
           while entry[col] != new:
             entry[col] = new
-            new = regex.sub(r'(' + out_o + r'[^' + in_o + r']*)' + in_o + r'([^' + in_c + r']*)' + in_c + r'([^' + out_c + r']*' + out_c + r')', r'\1\2\3', new)
+            new = re.sub(r'(' + out_o + r'[^' + in_o + r']*)' + in_o + r'([^' + in_c + r']*)' + in_c + r'([^' + out_c + r']*' + out_c + r')', r'\1\2\3', new)
       """
 
     result.append(entry)
@@ -596,7 +609,7 @@ def regexsubcol(refrom, reto, cols, entries):
     for col in cols:
       try: entry[col]
       except: raise ValueError('index', col, 'not in entry:', entry)
-      entry[col] = regex.sub(refrom, reto, entry[col]).strip()
+      entry[col] = re.sub(refrom, reto, entry[col]).strip()
     result.append(entry)
   return result
 
@@ -618,7 +631,7 @@ def prepsyns(entries, cols, refrom, lng, delim='‣', splitdetectsentences=True,
     for col in cols:
       # remove parens on entries enclosed entirely in parens
       # for paren in PARENS:
-      #   entry[col] = [regex.sub(r'^' + paren[0] + r'(.*)' + paren[1] + r'$', r'\1', syn) for syn in entry[col]]
+      #   entry[col] = [re.sub(r'^' + paren[0] + r'(.*)' + paren[1] + r'$', r'\1', syn) for syn in entry[col]]
       entry[col] = delim.join(nodupes(filter(None, entry[col])))
     result.append(entry)
   result = remove_nested_parens(entries, cols)
@@ -643,7 +656,7 @@ def resolve_xrefs(entries, fromcol, hwcol, xref_format=r'^= (.+)$'):
   for entry in entries:
     try: entry[fromcol]
     except: raise ValueError('index', fromcol, 'not in entry:', entry)
-    m = regex.match(xref_format, entry[fromcol])
+    m = re.match(xref_format, entry[fromcol])
     if m:
       try: hw = entry[hwcol]
       except: raise ValueError('index', hwcol, 'not in entry:', entry)
@@ -666,6 +679,11 @@ def get_normalize_scores(exps, lang='eng-000'):
   returns dict of expressions and their scores
   """
   assert isinstance(exps, list)
+
+  try:
+    urllib.request
+  except:
+    import urllib.request
 
   url = 'http://api.panlex.org/norm/ex/' + lang
 
@@ -703,10 +721,13 @@ def normalize(entries, col, threshold=50, lang='eng-000'):
   return result
 
 
+JPN_NORMALIZE_EXCEPTIONS = ['おねえちゃん', 'おにいちゃん']
+
 def jpn_normalize(entries, col, delim='‣', maxlen=3, dftag='⫷df⫸'):
   """ Keeps, or retags entries based on expressions in given column. """
-  if not MecabSoup:
-    from MecabSoup import MecabSoup
+  # global MecabSoup
+  # if not MecabSoup:
+  #   from MecabSoup import MecabSoup
 
   assert col < len(entries[0])
   result = []
@@ -715,9 +736,11 @@ def jpn_normalize(entries, col, delim='‣', maxlen=3, dftag='⫷df⫸'):
       entry[col] = entry[col].split(delim)
     newentry = []
     for syn in entry[col]:
-      syn_noparens = regex.sub(make_paren_regex(), '', syn).strip()
-      syn_noparens = regex.sub(r'⫷.*', '', syn_noparens).strip()
-      syn_noparens = regex.sub(r'\s*…\s*', '', syn_noparens).strip()
+      syn_noparens = re.sub(make_paren_regex(), '', syn).strip()
+      syn_noparens = re.sub(r'⫷.*', '', syn_noparens).strip()
+      syn_noparens = re.sub(r'\s*…\s*', '', syn_noparens).strip()
+      for exc in JPN_NORMALIZE_EXCEPTIONS:
+        syn_noparens = re.sub(exc, 'X', syn_noparens).strip()
       if len(syn_noparens) <= maxlen: # too short, no need to analyze
         newentry.append(syn)
         print(syn)
@@ -747,9 +770,9 @@ def lemmatize_verb(text):
   last_paren_word = False
   for word in text.split(' '):
     for letter in word:
-      if regex.match(ops, letter):
+      if re.match(ops, letter):
         paren_counter += 1
-      elif regex.match(cps, letter):
+      elif re.match(cps, letter):
         paren_counter -= 1
         if paren_counter == 0:
           last_paren_word = True
@@ -758,8 +781,8 @@ def lemmatize_verb(text):
 
 
   to_blob = ' '.join([w[0] for w in text_annot if w[1]])
-  to_blob = regex.sub(r'\s+,', ',', to_blob).strip()
-  to_blob = regex.sub(r' n\'t', 'n\'t', to_blob).strip()
+  to_blob = re.sub(r'\s+,', ',', to_blob).strip()
+  to_blob = re.sub(r' n\'t', 'n\'t', to_blob).strip()
   to_blob = to_blob.split(' ')
 
   blob = TextBlob(' '.join(to_blob))
@@ -791,35 +814,35 @@ def single_expsplit(exp, splitdelim='/', expdelim='‣'):
     for ex in exp:
       newex = ex
       if splitdelim == '/': # fwd slash, no space
-        newex = regex.sub(r'^((?:[^'+prs+']|'+p+')*)(^|\s)([^/\s'+prs+']+)/([^\s'+prs+']+)(\s|$)((?:[^'+prs+']|'+p+r')*)$', r'\1\2\3\5\6'+expdelim+r'\1\2\4\5\6', newex)
+        newex = re.sub(r'^((?:[^'+prs+']|'+p+')*)(^|\s)([^/\s'+prs+']+)/([^\s'+prs+']+)(\s|$)((?:[^'+prs+']|'+p+r')*)$', r'\1\2\3\5\6'+expdelim+r'\1\2\4\5\6', newex)
 
       elif splitdelim == '()': # parens, space agnostic
-        newex = regex.sub(r'^((?:[^'+prs+']|'+p+')*)(^|\s)([^'+prs+']+)\(([^\)\s]+)\)([^'+prs+']*)(\s|$)((?:[^'+prs+']|'+p+')*)$', r'\1\2\3\5\6\7'+expdelim+r'\1\2\3\4\5\6\7', newex)
-        newex = regex.sub(r'^((?:[^'+prs+']|'+p+')*)(^|\s)([^'+prs+']*)\(([^\)\s]+)\)([^'+prs+']+)(\s|$)((?:[^'+prs+']|'+p+')*)$', r'\1\2\3\5\6\7'+expdelim+r'\1\2\3\4\5\6\7', newex)
+        newex = re.sub(r'^((?:[^'+prs+']|'+p+')*)(^|\s)([^'+prs+']+)\(([^\)\s]+)\)([^'+prs+']*)(\s|$)((?:[^'+prs+']|'+p+')*)$', r'\1\2\3\5\6\7'+expdelim+r'\1\2\3\4\5\6\7', newex)
+        newex = re.sub(r'^((?:[^'+prs+']|'+p+')*)(^|\s)([^'+prs+']*)\(([^\)\s]+)\)([^'+prs+']+)(\s|$)((?:[^'+prs+']|'+p+')*)$', r'\1\2\3\5\6\7'+expdelim+r'\1\2\3\4\5\6\7', newex)
 
       elif splitdelim == '(ns)': # parens, no space
-        newex = regex.sub(r'^((?:[^'+prs+']|'+p+')*)(^|\s)([^\s'+prs+']+)\(([^\)\s]+)\)([^\s'+prs+']*)(\s|$)((?:[^'+prs+']|'+p+')*)$', r'\1\2\3\5\6\7'+expdelim+r'\1\2\3\4\5\6\7', newex)
-        newex = regex.sub(r'^((?:[^'+prs+']|'+p+')*)(^|\s)([^\s'+prs+']*)\(([^\)\s]+)\)([^\s'+prs+']+)(\s|$)((?:[^'+prs+']|'+p+')*)$', r'\1\2\3\5\6\7'+expdelim+r'\1\2\3\4\5\6\7', newex)
+        newex = re.sub(r'^((?:[^'+prs+']|'+p+')*)(^|\s)([^\s'+prs+']+)\(([^\)\s]+)\)([^\s'+prs+']*)(\s|$)((?:[^'+prs+']|'+p+')*)$', r'\1\2\3\5\6\7'+expdelim+r'\1\2\3\4\5\6\7', newex)
+        newex = re.sub(r'^((?:[^'+prs+']|'+p+')*)(^|\s)([^\s'+prs+']*)\(([^\)\s]+)\)([^\s'+prs+']+)(\s|$)((?:[^'+prs+']|'+p+')*)$', r'\1\2\3\5\6\7'+expdelim+r'\1\2\3\4\5\6\7', newex)
 
       elif splitdelim == '[]': # brackets, space agnostic
-        newex = regex.sub(r'^((?:[^'+prs+']|'+p+')*)(^|\s)([^'+prs+']+)\[([^\]]+)\]([^'+prs+']*)(\s|$)((?:[^'+prs+']|'+p+')*)$', r'\1\2\3\5\6\7'+expdelim+r'\1\2\3\4\5\6\7', newex)
-        newex = regex.sub(r'^((?:[^'+prs+']|'+p+')*)(^|\s)([^'+prs+']*)\[([^\]]+)\]([^'+prs+']+)(\s|$)((?:[^'+prs+']|'+p+')*)$', r'\1\2\3\5\6\7'+expdelim+r'\1\2\3\4\5\6\7', newex)
+        newex = re.sub(r'^((?:[^'+prs+']|'+p+')*)(^|\s)([^'+prs+']+)\[([^\]]+)\]([^'+prs+']*)(\s|$)((?:[^'+prs+']|'+p+')*)$', r'\1\2\3\5\6\7'+expdelim+r'\1\2\3\4\5\6\7', newex)
+        newex = re.sub(r'^((?:[^'+prs+']|'+p+')*)(^|\s)([^'+prs+']*)\[([^\]]+)\]([^'+prs+']+)(\s|$)((?:[^'+prs+']|'+p+')*)$', r'\1\2\3\5\6\7'+expdelim+r'\1\2\3\4\5\6\7', newex)
 
       elif splitdelim == '[ns]': # brackets, no space
-        newex = regex.sub(r'^((?:[^'+prs+']|'+p+')*)(^|\s)([^\s'+prs+']+)\[([^\]]+)\]([^\s'+prs+']*)(\s|$)((?:[^'+prs+']|'+p+')*)$', r'\1\2\3\5\6\7'+expdelim+r'\1\2\3\4\5\6\7', newex)
-        newex = regex.sub(r'^((?:[^'+prs+']|'+p+')*)(^|\s)([^\s'+prs+']*)\[([^\]]+)\]([^\s'+prs+']+)(\s|$)((?:[^'+prs+']|'+p+')*)$', r'\1\2\3\5\6\7'+expdelim+r'\1\2\3\4\5\6\7', newex)
+        newex = re.sub(r'^((?:[^'+prs+']|'+p+')*)(^|\s)([^\s'+prs+']+)\[([^\]]+)\]([^\s'+prs+']*)(\s|$)((?:[^'+prs+']|'+p+')*)$', r'\1\2\3\5\6\7'+expdelim+r'\1\2\3\4\5\6\7', newex)
+        newex = re.sub(r'^((?:[^'+prs+']|'+p+')*)(^|\s)([^\s'+prs+']*)\[([^\]]+)\]([^\s'+prs+']+)(\s|$)((?:[^'+prs+']|'+p+')*)$', r'\1\2\3\5\6\7'+expdelim+r'\1\2\3\4\5\6\7', newex)
 
       elif splitdelim == '{}': # braces, space agnostic
-        newex = regex.sub(r'^((?:[^'+prs+']|'+p+')*)(^|\s)([^'+prs+']+)\{([^\}]+)\}([^'+prs+']*)(\s|$)((?:[^'+prs+']|'+p+')*)$', r'\1\2\3\5\6\7'+expdelim+r'\1\2\3\4\5\6\7', newex)
-        newex = regex.sub(r'^((?:[^'+prs+']|'+p+')*)(^|\s)([^'+prs+']*)\{([^\}]+)\}([^'+prs+']+)(\s|$)((?:[^'+prs+']|'+p+')*)$', r'\1\2\3\5\6\7'+expdelim+r'\1\2\3\4\5\6\7', newex)
+        newex = re.sub(r'^((?:[^'+prs+']|'+p+')*)(^|\s)([^'+prs+']+)\{([^\}]+)\}([^'+prs+']*)(\s|$)((?:[^'+prs+']|'+p+')*)$', r'\1\2\3\5\6\7'+expdelim+r'\1\2\3\4\5\6\7', newex)
+        newex = re.sub(r'^((?:[^'+prs+']|'+p+')*)(^|\s)([^'+prs+']*)\{([^\}]+)\}([^'+prs+']+)(\s|$)((?:[^'+prs+']|'+p+')*)$', r'\1\2\3\5\6\7'+expdelim+r'\1\2\3\4\5\6\7', newex)
 
       elif splitdelim == '{ns}': # braces, no space
-        newex = regex.sub(r'^((?:[^'+prs+']|'+p+')*)(^|\s)([^\s'+prs+']+)\{([^\}]+)\}([^\s'+prs+']*)(\s|$)((?:[^'+prs+']|'+p+')*)$', r'\1\2\3\5\6\7'+expdelim+r'\1\2\3\4\5\6\7', newex)
-        newex = regex.sub(r'^((?:[^'+prs+']|'+p+')*)(^|\s)([^\s'+prs+']*)\{([^\}]+)\}([^\s'+prs+']+)(\s|$)((?:[^'+prs+']|'+p+')*)$', r'\1\2\3\5\6\7'+expdelim+r'\1\2\3\4\5\6\7', newex)
+        newex = re.sub(r'^((?:[^'+prs+']|'+p+')*)(^|\s)([^\s'+prs+']+)\{([^\}]+)\}([^\s'+prs+']*)(\s|$)((?:[^'+prs+']|'+p+')*)$', r'\1\2\3\5\6\7'+expdelim+r'\1\2\3\4\5\6\7', newex)
+        newex = re.sub(r'^((?:[^'+prs+']|'+p+')*)(^|\s)([^\s'+prs+']*)\{([^\}]+)\}([^\s'+prs+']+)(\s|$)((?:[^'+prs+']|'+p+')*)$', r'\1\2\3\5\6\7'+expdelim+r'\1\2\3\4\5\6\7', newex)
       else:
         raise ValueException('invalid delimiter')
-      newex = regex.sub(r'\s*'+expdelim+r'\s*', expdelim, newex).strip()
-      newex = regex.sub(r'\s\s+', ' ', newex).strip()
+      newex = re.sub(r'\s*'+expdelim+r'\s*', expdelim, newex).strip()
+      newex = re.sub(r'\s\s+', ' ', newex).strip()
       newexp.append(newex)
     if set(newexp) == set(exp):
       done = True
@@ -855,12 +878,12 @@ def decap(entries, cols):
     for col in range(len(entry)):
       newcol = entry[col]
       if col in cols:
-        m = regex.match(r'^((?:'+make_paren_regex()[1:-1]+r')?)\s*(.*)$', newcol)
+        m = re.match(r'^((?:'+make_paren_regex()[1:-1]+r')?)\s*(.*)$', newcol)
         if not m:
           raise ValueException('unexpected un-match:', newcol)
         else:
           paren, rest = m.group(1), m.group(2)
-          if not list(filter(None, [regex.search(r'^'+nd+r'(?:\s|‣|⫷|;|,|\.|:|$)', rest) for nd in NO_DECAP])):
+          if not list(filter(None, [re.search(r'^'+nd+r'(?:\s|‣|⫷|;|,|\.|:|$)', rest) for nd in NO_DECAP])):
             newcol = paren + ' ' + rest[0].lower() + rest[1:]
             newcol = newcol.strip()
       newentry.append(newcol)
@@ -929,6 +952,7 @@ def __init_homoglyph_dicts():
     ('j','','ј'),
     ('k','κ','к'),
     ('o','ο','о'),
+    ('ŋ','η',''),
     ('p','ρ','р'),
     ('s','ς','ѕ'),
     ('t','τ','т'),
@@ -938,9 +962,9 @@ def __init_homoglyph_dicts():
     ('y','γ','у'),
     ('Ä','','Ӓ'),
     ('Ö','','Ӧ'),
-    #('ß','β',''),
     ('ä','','ӓ'),
     ('ö','','ӧ')
+    #('ß','β',''),
   ]
   TO_LATN, TO_CYRL, TO_GREK = {}, {}, {}
   for triple in HOMOGLYPHS:
@@ -992,3 +1016,26 @@ def synthesize_strings(s1, s2, max_overlap=4, vowels='AEIOUYaeiouy'):
       return s1[:-overlap]+s2
 
   return s1+s2
+
+def insert_into_tilde(s1, s2, max_overlap=4, vowels='AEIOUYaeiouy'):
+  # choose how best to synthesize strings depending on context
+  # first make sure a single tilde is in s2 in the first place
+  s2_separated = re.match(r'^([^~]*)~([^~]*)$', s2)
+  if not s2_separated:
+    print('tilde count != 1, returning string as is:', s2)
+    return s2
+
+  s2_pre, s2_post = s2_separated.group(1), s2_separated.group(2)
+  
+  if s2_pre.endswith(' ') and s2_post.startswith(' '):
+    # tilde surrounded by space, just put s1 in there
+    return s2.replace('~', s1)
+  elif s2_pre.endswith(' ') or s2_post.startswith('~'):
+    # tilde at beginning/after space
+    return s2_pre + synthesize_strings(s1, s2_post)
+  elif s2_pre.endswith('~') or s2_post.startswith(' '):
+    # tilde at end/before space
+    return synthesize_strings(s2_pre, s1) + s2_post
+  else:
+    # ambiguous, so do two merges
+    return synthesize_strings(synthesize_strings(s2_pre, s1), s2_post)

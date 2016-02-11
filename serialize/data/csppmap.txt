@@ -142,6 +142,7 @@ formal noun	art-317:register:art-317:formalRegister‣art-303:PartOfSpeechProper
 frac	art-303:PartOfSpeechProperty:art-303:CardinalNumeral‣art-307:NumType:art-307:Frac	
 frequ.	art-303:AspectProperty:art-303:FrequentiveAspect	
 fut	art-303:TenseProperty:art-303:FutureTense	
+ge.	art-303:PartOfSpeechProperty:art-303:Gerund	
 godan verb	art-303:PartOfSpeechProperty:art-303:Verbal	*
 honorific	art-317:register:art-317:honorific	
 honorific copula	art-317:register:art-317:honorific‣art-303:PartOfSpeechProperty:art-303:Copula	
