@@ -4,6 +4,7 @@ import argparse
 import codecs
 from collections import defaultdict
 from operator import itemgetter
+import unicodedata
 
 return_dict = {'\x01':'SOH', '\x02':'STX', '\x03':'ETX', '\x04':'EOT', '\x05':'ENQ',
                '\x06':'ACK','\x07':'BEL', '\x08':'BS', '\x09':'HT', '\n':'LF',
@@ -22,6 +23,11 @@ def get_hist(text):
     for c in text:
         hist[c] += 1
     return hist
+
+
+
+def get_unicode_name(ch):
+    return unicodedata.name(ch)
 
     
 
@@ -45,11 +51,15 @@ def print_hist(hist, cutoff=False):
             max_count += 1
             if max_count > cutoff:
                 break
+        try:
+            name = unicodedata.name(char)
+        except:
+            name = ''
         
         if char in return_dict.keys():
-            print('\t%s (U+%.4x)\t%3d' % (return_dict[char], ord(char),count))
+            print('\t%s (U+%.4x)\t%3d\t%s' % (return_dict[char], ord(char),count,name))
         else:
-            print('\t%s (U+%.4x)\t%3d' % (char,ord(char),count))
+            print('\t%s (U+%.4x)\t%3d\t%s' % (char,ord(char),count,name))
 
 
 
