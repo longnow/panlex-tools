@@ -4,15 +4,6 @@ PanLex ToolKit
 
 import unicodedata
 import regex as re
-from time import sleep
-import simplejson as json
-from unidecode import unidecode
-
-# initialize these only if function called
-nltk = None
-TextBlob = None
-from MecabSoup import MecabSoup
-
 
 def preprocess(entries):
   # perform across-the-board preprocessing of things that should !ALWAYS! be done
@@ -170,17 +161,17 @@ EXDFPREP_RULES = {
       r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)\((s(?:\-|ome)(?: other )?(?:one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|ome)(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)\s+(which|that|who|to)' : (r'\1\2 \3', ''),
       r'\((s(?:\-|ome)(?: other )?(?:one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|ome)(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)\s+(else(?:\'s)?)' : (r'(\1 \2)', ''),
       r'^\((s(?:\-|ome)(?: other )?(?:one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|ome)(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)\s+' : (r'\1 ', ''),
-      r'^((?:[^\s]+\s)?)((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)(\(?(?:a\s+)?(?:kind|type|sort|species) of\)?|\(?k\.?o\.\)?)\s*([^\s]+ ?[^\s]+)$' : (r'\2(\3) \1\4', r'⫷mcs2:art-300⫸IsA⫷mcs:eng-000⫸\4'),
+      r'^((?:[^\s\(\)\[\]]+\s)?)((?:(?:'+make_paren_regex()[1:-1]+r'))?\s*)(\(?(?:kind|type|sort|species) of\)?|\(?k\.?o\.\)?)\s*([^\s]+ ?[^\s]+)$' : (r'\2 (\3) \1\4', r'⫷mcs2:art-300⫸IsA⫷mcs:eng-000⫸\4'),
+      r'^((?:(?:'+make_paren_regex()[1:-1]+r'))?\s*)(\(?(?:a\s+)?(?:kind|type|sort|species) of\)?|\(?k\.?o\.\)?)\s*([^\s]+ ?[^\s]+)$' : (r'\1 (\2) \3', r'⫷mcs2:art-300⫸IsA⫷mcs:eng-000⫸\3'),
     },
     3: {
       r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)((?:not )?)[Tt]o\s+((?:'+make_paren_regex()[1:-1]+r')?\s*)(?!the(?: |$)|you|us$|him$|her$|them$|me$|no )' : (r'\1\2(to) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal'),
+      r'(^| )make to ' : (r'\1make (to) ', '')
     },
     4: {
       r'(^|\s)\(a\) (lot|bit|posteriori|priori|fortiori|few|little|minute|same|while)(\s|$)' : (r'\1a \2\3', r''),
       r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)((?:\(to\) )?)(become)\s+([^\s\()][^\s]*)$' : (r'\1\2\3 \4', r'⫷mcs2:art-316⫸Inchoative_of⫷mcs⫸\4'),
-      
-      r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)((?:\(to\) )?)(make)\s+((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)\s+(?!space(?: |$)|room(?: |$)|out(?: |$)|love(?: |$))([^\s\()][^\s]*)$'   : (r'\1\2\3 \4\5', r'⫷mcs2:art-316⫸Causative_of⫷mcs⫸\5'),
-      # r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)((?:\(to\) )?)(make)\s+((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)([^\s\()][^\s]*)$'   : (r'\1\2\3 \4\5', r'⫷mcs2:art-316⫸Causative_of⫷mcs⫸\5'),
+      r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)((?:\(to\) )?)(make\s+)((?:\(to\)\s+)?)((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)\s+(?!space(?: |$)|room(?: |$)|out(?: |$)|love(?: |$))([^\s\()][^\s]*)$'   : (r'\1\2\3\4 \5 \6', r'⫷mcs2:art-316⫸Causative_of⫷mcs⫸\6'),
     },
     5: {
       r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)\((the|an?)\)\s+((?:(?:'+make_paren_regex()[1:-1]+'|[^\(\)\[\]\s]+))(?: (?:'+make_paren_regex()[1:-1]+'|[^\(\)\[\]\s]+))?)$'   : (r'\1(\2) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun'),
@@ -625,16 +616,19 @@ def prepsyns(entries, cols, refrom, lng, delim='‣', splitdetectsentences=True,
   """
   assert isinstance(cols, list)
   result = []
+  # split at given delimiter
   entries = split_outside_parens(entries, cols, refrom, detectsentences=splitdetectsentences)
+  # prepare as expression
   entries = exdfprep(entries, cols, lang=lng, pretag_special_lvs=pretag_special_lvs)
+  # join with consistent synonym delimiter
   for entry in entries:
     for col in cols:
-      # remove parens on entries enclosed entirely in parens
-      # for paren in PARENS:
-      #   entry[col] = [re.sub(r'^' + paren[0] + r'(.*)' + paren[1] + r'$', r'\1', syn) for syn in entry[col]]
       entry[col] = delim.join(nodupes(filter(None, entry[col])))
     result.append(entry)
+  # remove nested parens
   result = remove_nested_parens(entries, cols)
+  # detect taxa, report if extract_taxa is advised
+  # detect_taxa(entries, cols, delim=delim)
   return result
 
 def nodupes(ls):
@@ -685,6 +679,16 @@ def get_normalize_scores(exps, lang='eng-000'):
   except:
     import urllib.request
 
+  try:
+    sleep
+  except:
+    from time import sleep
+
+  try:
+    json
+  except:
+    import simplejson as json
+
   url = 'http://api.panlex.org/norm/ex/' + lang
 
   # build proper query string
@@ -725,9 +729,10 @@ JPN_NORMALIZE_EXCEPTIONS = ['おねえちゃん', 'おにいちゃん']
 
 def jpn_normalize(entries, col, delim='‣', maxlen=3, dftag='⫷df⫸'):
   """ Keeps, or retags entries based on expressions in given column. """
-  # global MecabSoup
-  # if not MecabSoup:
-  #   from MecabSoup import MecabSoup
+  try:
+    MecabSoup
+  except:
+    from MecabSoup import MecabSoup
 
   assert col < len(entries[0])
   result = []
@@ -741,11 +746,11 @@ def jpn_normalize(entries, col, delim='‣', maxlen=3, dftag='⫷df⫸'):
       syn_noparens = re.sub(r'\s*…\s*', '', syn_noparens).strip()
       for exc in JPN_NORMALIZE_EXCEPTIONS:
         syn_noparens = re.sub(exc, 'X', syn_noparens).strip()
-      if len(syn_noparens) <= maxlen: # too short, no need to analyze
+      if len(syn_noparens) <= maxlen or not re.sub(r'\p{Katakana}+','',syn_noparens).strip(): # too short to analyze, or all katakana
         newentry.append(syn)
         print(syn)
       else:
-        if MecabSoup(syn_noparens).length > maxlen:
+        if MecabSoup(syn_noparens).length > maxlen or '。' in syn_noparens:
           # retag
           newentry.append(dftag+syn)
           print(dftag+syn)
@@ -757,9 +762,14 @@ def jpn_normalize(entries, col, delim='‣', maxlen=3, dftag='⫷df⫸'):
 
 
 def lemmatize_verb(text):
-  if not TextBlob:
+  try:
+    TextBlob
+  except:
     from textblob import TextBlob
-  if not nltk:
+
+  try:
+    nltk
+  except:
     import nltk
 
   ops = r'|'.join([p[0] for p in PARENS])
@@ -993,6 +1003,11 @@ def __degrade(s):
   return s.replace('j','i').replace('w','u')
 
 def synthesize_strings(s1, s2, max_overlap=4, vowels='AEIOUYaeiouy'):
+  try:
+    unidecode
+  except:
+    from unidecode import unidecode
+
   # return a synthesis of the first and second strings, based on max_overlap amount
 
   max_overlap = min(max_overlap, min(len(s1),len(s2))) # account for string lengths
@@ -1039,3 +1054,35 @@ def insert_into_tilde(s1, s2, max_overlap=4, vowels='AEIOUYaeiouy'):
   else:
     # ambiguous, so do two merges
     return synthesize_strings(synthesize_strings(s2_pre, s1), s2_post)
+
+
+def extract_taxa(entries, col, delim='‣'):
+  print('\nextracting taxa...')
+  try:
+    requests
+  except:
+    import requests
+  try:
+    r = requests.get('http://127.0.0.1:3000', params={'text': 'string'})
+  except:
+    raise ConnectionError('Must initialize taxonfinder')
+  else:
+    result = []
+    for entry in entries:
+      # print(entry)
+      newentry = []
+      for syn in entry[col].split(delim):
+        r = requests.get('http://127.0.0.1:3000', params={'text': syn}).json()
+        if r:
+          for match in r:
+            offsets, name = match['offsets'], match['name']
+            print(name)
+            if offsets[1] - offsets[0] == len(syn):
+              syn = '⫷ex:lat-003⫸' + name
+            else:
+              syn = syn + '⫷ex:lat-003⫸' + name
+        newentry.append(syn)
+      entry[col] = delim.join(newentry)
+      
+    return entries
+    print('done')
