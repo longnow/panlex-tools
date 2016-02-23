@@ -167,11 +167,11 @@ sub add_interp {
 sub cmd_fetch {
     my ($source) = @_;
 
-    print(STDERR "You need to specify a source directory or label.\n"), return unless $source;
+    print(STDERR "You need to specify a source directory, label, or ID.\n"), return unless $source;
     check_env(qw/PANLEX_ARCHIVE_USERNAME PANLEX_ARCHIVE_PASSWORD/);
 
-    if ($source =~ /:/) {
-        print(STDERR "Looking up source directory from label ...\n");
+    if ($source =~ /:|^\d+$/) {
+        print(STDERR "Looking up source directory from label/ID ...\n");
 
         my $result = panlex_query("/ap/$source");
         $source = $result->{ap}{fp};
@@ -369,7 +369,7 @@ Commands:
 
 cp <tool> (<dest>)
     copy PanLex tool into the current directory
-fetch <source_dir>|<source_label>
+fetch <source_dir>|<source_label>|<source_id>
     fetch PanLex source from archive into the current directory and unzip it
 submit (<file>) (<source_id>|<source_label>) (replace|add|check)
     submit final source file to PanLem
