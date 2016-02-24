@@ -9,6 +9,7 @@ jpnexdf is for one-stop full-file processing, or just call MecabSoup within your
 
 import regex
 from subprocess import check_output
+import subprocess
 
 def jpnexdf(entries, col, delim='‣', maxlen=3, dftag='⫷df⫸'):
   """
@@ -69,7 +70,8 @@ def make_paren_regex(parens=[(r'\(',r'\)'),(r'\[',r'\]'),(r'\{',r'\}'),(r'（',r
 class MecabSoup:
   def __init__(self, string):
     self.string = string
-    self.rawoutput = check_output('mecab <<< "' + string + '"', shell=True).decode('utf-8')
+    proc = subprocess.Popen(['mecab'], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
+    self.rawoutput = proc.communicate(input=string.encode('utf-8)'))[0].decode('utf-8')
     self.contents = [(word.split('\t')[0], word.split('\t')[1].split(',')) for word in self.rawoutput.split('\n')[:-2]]
 
     self.length = len(self.contents)
