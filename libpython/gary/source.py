@@ -2,11 +2,27 @@
 from collections import OrderedDict
 
 import io
+import logging
 import regex as re
+import time
 
-def run_filters(filters, entry):
+logging.basicConfig(filename='filter.log',level=logging.DEBUG)
+
+def log_results(text, debug=False):
+    if debug:
+        logging.debug(text)
+
+
+def run_filters(filters, entry, is_logged=False, **kwargs):
+    log_results('UNFILTERED:%s' % entry, debug=is_logged)
+    # TODO: add preprocess filter for all language fields
+
     for f in filters:
-        f(entry)
+        before = str(entry)
+        f(entry, **kwargs)
+        after = str(entry)
+        if before != after:
+            log_results('%s: %s' % (f.name,after), debug=is_logged)
     return entry
 
 
@@ -44,7 +60,6 @@ class Entry(object):
             self.__setattr__(langid, langdata)
             self.langfields[lang] = langdata
 
-
     def __str__(self):
         return '\t'.join([str(field) for field in self.langfields.values()])
 
@@ -79,10 +94,18 @@ def ignore_parens(proc):
 def process_synonyms(proc):
     # s = '‣'
     def wrapper(text):
-        fields = text.split('‣')
-        for i in range(len(fields)):
-            fields[i] = proc(fields[i])
-        return '‣'.join( fields)
+        mn_fields = text.split('⁋')
+
+        for i in range(len(mn_fields)):
+            syn_fields = mn_fields[i].split('‣')
+
+            for j in range(len(syn_fields)):
+                syn_fields[j] = proc(syn_fields[j])
+
+            mn_fields[i] = '‣'.join( syn_fields)
+
+        return '⁋'.join(mn_fields)
+
     return wrapper
 
 
@@ -149,6 +172,91 @@ def append_synonym(text, elem):
             return text
 
 
+def append_meaning(text, elem):
+    fields = text.split('\s*⁋\s*')
+
+    if len(fields) == 0:
+        # nothing to append to
+        return elem
+    else:
+        if len(fields) == 1 and len(fields[0]) == 0:
+            return elem
+        elif elem not in fields:
+            # append to list
+            return '%s⁋%s' % (text,elem)
+        else:
+            # already in list, don't append
+            return text
+
 def join_synonyms(syn_ls):
     syn_ls = [syn for syn in syn_ls if syn != None and len(syn) > 0]
     return '‣'.join(syn_ls)
+
+def pretag_df(text):
+    match = re.search('^(?:⫷[^⫸]*⫸)?(.*)$', text)
+    text = '⫷df⫸%s' % match[1]
+    return text
+
+
+def pretag_ex(text):
+    match = re.search('^(?:⫷[^⫸]*⫸)?(.*)$', text)
+    text = '⫷ex⫸%s' % match[1]
+    return text
+
+
+class SourceProcessor(object):
+    def __init(self):
+        self.filters = []
+        self.pred_filters = []
+
+
+    def setInputFiles(self, filelist):
+        self.inputfiles = filelist
+
+
+    def setOutputFile(self, filename):
+        self.outputfile = filename
+
+
+    def setFilters(self, filter_list:list):
+        self.filters = filter_list
+
+
+    def setPredicateFilters(self, pred_filter_list):
+        self.pred_filters = pred_filter_list
+
+
+    def setEntryFormatter(self, func):
+        self.formatter = func
+
+
+    def filtered_out(self, entry):
+        fail = False
+        for filt in self.pred_filters:
+            if filt(entry):
+                fail = True
+
+        return fail
+
+
+    def run(self, parser):
+        start_time = time.time()
+        with open(self.outputfile, 'w') as fout:
+            for inputfile in self.inputfiles:
+
+                count = 0
+                for record in parser.getRecords(inputfile):
+                    entry = self.formatter(record)
+
+                    for entry_filter in self.filters:
+                        entry_filter(entry)
+
+                    if not self.filtered_out(entry):
+                        fout.write('%s\n' % entry)
+
+                    count += 1
+
+        endtime = time.time()
+        span = endtime - start_time
+
+        print('processed %d records in %.3fs (%.3f rec/s)' % (count,span,count / span))

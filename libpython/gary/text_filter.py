@@ -9,11 +9,13 @@ def strip_ws(text, **kwargs):
     return text.strip()
 
 
-
 def pre_process(text):
+    text = re.sub('(?<=\d)\s+(?=\d)', '', text)
     text = re.sub('\s*\.{3,}\s*', ' … ', text)
     text = re.sub('\s+', ' ', text)
     text = unicodedata.normalize('NFC', text)
+    text = re.sub('[‐‑⁃－]', '-', text)
+    text = re.sub('[\u200B\u00AD\u200E\u200F\u202A\u202C]', '', text)
 
     return text.strip()
 
@@ -33,7 +35,7 @@ def normalize_punctuation(text):
 
 
 def remove_final_punct(text, **kwargs):
-    text = re.sub('[.,/?!]+\s*$', '', text)
+    text = re.sub('[.,/?!:]+\s*$', '', text)
     return text
 
 
@@ -71,3 +73,18 @@ def flatten_parentheses(text:str, remove=False) -> str:
             count -= 1
 
     return ''.join(text)
+
+_cyrillic_chars = 'авемнорстухѐёѕіїјһӀ'
+_latin_chars = 'aBeMHopcTyxèësiïjhI'
+
+def cyrillic2latin(text):
+    if re.search('^[^%s]$' % _cyrillic_chars, text):
+        return text
+
+    chars = list(text)
+    for i in range(len(chars)):
+        idx = _cyrillic_chars.find(chars[i])
+        if idx > -1:
+            chars[i] = _latin_chars[idx]
+
+    return ''.join(chars)
