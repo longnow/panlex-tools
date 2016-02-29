@@ -8,7 +8,6 @@ from bs4 import BeautifulSoup
 
 class LexiqueParser(object):
     def __init__(self):
-        print('INIT PARSER')
         self._ignore_list = ['lpSpAfterEntryName', 'lpMiniHeading', 'lpPunctuation']
     
     

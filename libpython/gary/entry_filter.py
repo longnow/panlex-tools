@@ -3,20 +3,30 @@ from gary import source
 
 
 class SimpleFilter(object):
-    def __init__(self, func, *languages):
+    def __init__(self, func, *fields):
         self.func = func
-        self.langs = languages
+        self.name = func.__name__
+        self.fields = []
+        for field in fields:
+            if len(field.split('.')) == 1:
+                self.fields.append('%s.text' % field)
+            else:
+                self.fields.append(field)
+
 
     def __call__(self, entry, *args, **kwargs):
-        for langId in self.langs:
-            langObj = entry.__getattribute__(langId)
-            result = self.func(langObj.text, **kwargs)
-            langObj.text = result
+        for fieldId in self.fields:
+            parts = fieldId.split('.')
+            langObj = entry.__getattribute__(parts[0])
+            langValue = langObj.__getattribute__(parts[1])
+            result = self.func(langValue, **kwargs)
+            langObj.__setattr__(parts[1], result)
 
 
 
 class SynonymFilter(object):
     def __init__(self, func, *languages):
+        self.name = func.__name__
         self.func = process_synonyms(func)
         self.langs = languages
 
@@ -32,10 +42,14 @@ class SynonymFilter(object):
 class PredicateFilter(object):
     def __init__(self, func, *field_list):
         self.func = func
+        self.name = func.__name__
         self.fields = []
+
         for field in field_list:
             items = field.split('.')
+
             if len(items) == 1:
+                # if no attribute is given, assume text field attribute
                 self.fields.append((field,'text'))
             elif len(items) == 2:
                 self.fields.append(tuple(items))
@@ -50,10 +64,10 @@ class PredicateFilter(object):
 
 
 
-
 class ExtractorFilter(object):
     def __init__(self, dual_func, fromField, toField, **kwargs):
         self.func = dual_func
+        self.name = dual_func.__name__
         self.fromProps = fromField.split('.')
         self.toProps = toField.split('.')
 
@@ -69,6 +83,7 @@ class ExtractorFilter(object):
 
 class TextExtractorFilter(object):
     def __init__(self, dual_func, fromField, toField, **kwargs):
+        self.name = dual_func.__name__
         self.func = source.process_text_synonym_extract(dual_func)
         self.fromProps = fromField.split('.')
         self.toProps = toField.split('.')
