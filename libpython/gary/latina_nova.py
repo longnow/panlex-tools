@@ -5,7 +5,7 @@ from urllib.parse import urlencode
 def find_latin(text):
     result = {'name':text}
     payload = {'text':text}
-    response = requests.get('http://localhost:3000', params=payload)
+    response = requests.get('http://localhost:3000', params=payload, headers={'Connection':'close'})
 
     if response.status_code == 200:
         data = response.json()
