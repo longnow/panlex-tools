@@ -23,7 +23,7 @@ def normalize_adj(text,pos):
 
 
 def remove_articles(text):
-    text = re.sub('^(el|la|las|un|una)\M', '', text)
+    text = re.sub('^(el|la|las|un|una)\s+', '', text)
     return text
 
 
