@@ -4,6 +4,7 @@ import argparse
 import codecs
 from collections import defaultdict
 from operator import itemgetter
+import sys
 import unicodedata
 
 return_dict = {'\x01':'SOH', '\x02':'STX', '\x03':'ETX', '\x04':'EOT', '\x05':'ENQ',
@@ -12,16 +13,19 @@ return_dict = {'\x01':'SOH', '\x02':'STX', '\x03':'ETX', '\x04':'EOT', '\x05':'E
 
 def get_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-f', '--filename')
+    parser.add_argument('filename', type=str, nargs='?', help='file to process')
     parser.add_argument('-c', '--cutoff', type=int, default=0)
     return parser.parse_args()
 
 
 
-def get_hist(text):
+def get_hist(fin):
     hist = defaultdict(int)
+    text = fin.read()
+
     for c in text:
         hist[c] += 1
+
     return hist
 
 
@@ -72,14 +76,18 @@ def read_file(filename):
 
 
 def run_hist(filename, cutoff=False):
-    data = read_file(args.filename)
-    hist = get_hist(data)
+    if filename == None:
+        source = sys.stdin
+    else:
+       source = open(filename)
+    hist = get_hist(source)
     print_hist(hist, cutoff)
 
 
 
 if __name__ == '__main__':
     args = get_args()
+
     if args.cutoff == 0:
         run_hist(args.filename)
     else:

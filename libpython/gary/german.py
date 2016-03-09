@@ -7,5 +7,7 @@ def remove_feminine_infl(text):
     return text
 
 def remove_articles(text):
-    text = re.sub('^(?:die|der|das|dem|den|ein|eine|einen|einem)\s+', '', text)
+    if not re.search('^ein für alle', text):
+        text = re.sub('^(?:die|der|das|dem|den|ein|eine|einen|einem)\s+', '', text)
+
     return text
