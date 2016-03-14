@@ -4,6 +4,9 @@ PanLex ToolKit
 
 import unicodedata
 import regex as re
+from unidecode import unidecode
+
+from time import sleep
 
 def preprocess(entries):
   # perform across-the-board preprocessing of things that should !ALWAYS! be done
@@ -18,8 +21,8 @@ def preprocess(entries):
       # fullwidth punctuation, numbers
       col = col.replace('？', '?')
       col = col.replace('！', '!')
-      if re.search(r'\p{Nd}', col):
-        col = unicodedata.normalize('NFKC', col).strip()  # North Florida Koi Club
+      # if re.search(r'\p{Nd}', col):
+      #   col = unicodedata.normalize('NFKC', col).strip()
 
       # hyphen to hyphen-minus
       col = col.replace('‐','-')
@@ -44,7 +47,7 @@ def preprocess(entries):
       col = re.sub(r'\s* ,([^\s])', r', \1', col).strip()
 
       # digit separator commas
-      col = re.sub(r'(\d),(\d)', r'\1\2', col).strip()
+      col = re.sub(r'(\d),(\d\d\d)', r'\1\2', col).strip()
 
       # surprise html encoded chars
       col = col.replace('&amp;', '&')
@@ -57,9 +60,8 @@ def preprocess(entries):
 
 
 PARENS = [(r'\(',r'\)'),(r'\[',r'\]'),(r'\{',r'\}'),(r'（',r'）'),(r'【',r'】')]
-#,(r'‘',r'’')
 
-def split_outside_parens(entries, cols, delim=r',', detectsentences=False, parens=PARENS):
+def split_outside_parens(entries, cols, delim=r',', parens=PARENS):
   ''' Peforms a split of each specified column, but ignores anything in parens.
   entries    = list of entries, which are lists of columns
   cols    = list of columns (element indices) on which to perform operation
@@ -68,12 +70,11 @@ def split_outside_parens(entries, cols, delim=r',', detectsentences=False, paren
             to be considered parenthetical '''
 
   SOP_DELIM = ''
-  TEMP_SENTENCE_PAREN = [(r'🁾',r'🂊')]
+  TEMP_PAREN = [(r'🁾',r'🂊')]
 
-  if detectsentences:
-    minwords = 5
-    parens += TEMP_SENTENCE_PAREN
-    minwords = str(minwords - 1)
+  # detect sentences
+  parens += TEMP_PAREN
+  minwords = 4
 
   assert parens
   
@@ -95,9 +96,11 @@ def split_outside_parens(entries, cols, delim=r',', detectsentences=False, paren
 
       if not ''.join(entry[col]).startswith('⫷df⫸'):
 
-        if detectsentences: # detect sentences and put special parens around them
-          # start w/ capital letter, end with period(s)
-          entry[col] = re.sub(r'(\p{Lu}[^\s.]+(?:\s+[^\s.]+){'+minwords+r',}[\.!?]+)', TEMP_SENTENCE_PAREN[0][0]+r'\1'+TEMP_SENTENCE_PAREN[0][1], entry[col])
+        # detect sentences/other non splittable things and put special parens around them
+        # sentences: start w/ capital letter, end with period(s)
+        entry[col] = re.sub(r'(\p{Lu}[^\s.]+(?:\s+[^\s.]+){'+str(minwords)+r',}[\.!?]+)', TEMP_PAREN[0][0]+r'\1'+TEMP_PAREN[0][1], entry[col])
+        # commas separating decimals or digit groups
+        entry[col] = re.sub(r'(\d+(?:,\d+)+)', TEMP_PAREN[0][0]+r'\1'+TEMP_PAREN[0][1], entry[col])
 
         count = 0
 
@@ -117,7 +120,7 @@ def split_outside_parens(entries, cols, delim=r',', detectsentences=False, paren
           else:
             entry_letters.append(l)
 
-        entry[col] = [re.sub(r'['+TEMP_SENTENCE_PAREN[0][0]+TEMP_SENTENCE_PAREN[0][1]+r']', '',  c).strip() for c in ''.join(entry_letters).split(SOP_DELIM)]
+        entry[col] = [re.sub(r'['+TEMP_PAREN[0][0]+TEMP_PAREN[0][1]+r']', '',  c).strip() for c in ''.join(entry_letters).split(SOP_DELIM)]
 
       else:
         entry[col] = [entry[col]]
@@ -126,7 +129,7 @@ def split_outside_parens(entries, cols, delim=r',', detectsentences=False, paren
   return result
 
 
-def make_paren_regex(parens=PARENS, maxnested=10):
+def make_paren_regex(parens=PARENS, maxnested=10, cap=True):
   ''' Makes a regex to match any parenthetical content, up to a certain number
       of layers deep.
   parens  = list of tuples of opening and closing characters (regex escaped)
@@ -141,7 +144,9 @@ def make_paren_regex(parens=PARENS, maxnested=10):
     fld += o + r'[^' + c + r']*' + c
     fld += (r')*' + c) * (maxnested - 1)
     paren_res.append(fld)
-  return r'(' + r'|'.join(paren_res) + r')'
+  result = r'|'.join(paren_res) + r')'
+  result = r'(' + result if cap else r'(?:' + result
+  return result
 
 def remove_parens(s, parens=PARENS):
   return re.sub(make_paren_regex, '', s).strip()
@@ -151,36 +156,40 @@ EXDFPREP_RULES = {
   'eng-000' : {
     1 : {
       r'([^\s])\s+(s(?:\-|ome)(?: other )?(?: other )?(?:one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|ome)(?: other )?(?:one|body|thing))?(?: (?:who|which|that) is)?|s\.[bot]\.?|o\.s\.?)([^\'’]|$)' : (r'\1 (\2)\3', ''),
-      r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)(s(?:\-|ome)(?: other )?(?:one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|ome)(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\s+([^\s])' : (r'\1(\2) \3', ''),
-      r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)(s(?:\-|ome)(?: other )?(?:one|body|thing)[\'’]?s)\s+([^\s])' : (r'\1(\2) \3', ''),
-      r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)((?:\(?\s*to\s*\)?\s+)?be)\s+([^\(])'  : (r'\1(\2) \3', ''),
-      r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)(\(?(?:a\s+)?(?:kind|type|sort|species) of\)?|k\.?o\.)\s*' : (r'\1(\2) ', r''),
+      r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(s(?:\-|ome)(?: other )?(?:one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|ome)(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\s+([^\s])' : (r'\1(\2) \3', ''),
+      r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(s(?:\-|ome)(?: other )?(?:one|body|thing)[\'’]?s)\s+([^\s])' : (r'\1(\2) \3', ''),
+      r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:\(?\s*to\s*\)?\s+)?be)\s+([^\(])'  : (r'\1(\2) \3', ''),
+      r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(\(?(?:a\s+)?(?:kind|variety|type|sort|species) of\)?|k\.?o\.)\s*' : (r'\1(\2) ', r''),
     },
     2: {
-      r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)(the|an?)\s+((?:(?:'+make_paren_regex()[1:-1]+'|[^\(\)\[\]\s]+))(?: (?:'+make_paren_regex()[1:-1]+'|[^\(\)\[\]\s]+))?)$'   : (r'\1(\2) \3', ''),      # r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)(the)\s+([^\(])'   : (r'\1(\2) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun'),
-      r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)\((s(?:\-|ome)(?: other )?(?:one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|ome)(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)\s+(which|that|who|to)' : (r'\1\2 \3', ''),
+      r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(the|an?)\s+((?:(?:'+make_paren_regex()[1:-1]+'|[^\(\)\[\]\s]+))(?: (?:'+make_paren_regex()[1:-1]+'|[^\(\)\[\]\s]+))?)$'   : (r'\1(\2) \3', ''),      # r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(the)\s+([^\(])'   : (r'\1(\2) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun'),
+      r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)\((s(?:\-|ome)(?: other )?(?:one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|ome)(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)\s+(which|that|who|to)' : (r'\1\2 \3', ''),
       r'\((s(?:\-|ome)(?: other )?(?:one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|ome)(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)\s+(else(?:\'s)?)' : (r'(\1 \2)', ''),
       r'^\((s(?:\-|ome)(?: other )?(?:one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|ome)(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)\s+' : (r'\1 ', ''),
-      r'^((?:[^\s\(\)\[\]]+\s)?)((?:(?:'+make_paren_regex()[1:-1]+r'))?\s*)(\(?(?:kind|type|sort|species) of\)?|\(?k\.?o\.\)?)\s*([^\s]+ ?[^\s]+)$' : (r'\2 (\3) \1\4', r'⫷mcs2:art-300⫸IsA⫷mcs:eng-000⫸\4'),
-      r'^((?:(?:'+make_paren_regex()[1:-1]+r'))?\s*)(\(?(?:a\s+)?(?:kind|type|sort|species) of\)?|\(?k\.?o\.\)?)\s*([^\s]+ ?[^\s]+)$' : (r'\1 (\2) \3', r'⫷mcs2:art-300⫸IsA⫷mcs:eng-000⫸\3'),
+      r'^((?:[^\s\(\)\[\]]+\s)?)((?:'+make_paren_regex(cap=False)+r')?\s*)(\(?(?:kind|variety|type|sort|species) of\)?|\(?k\.?o\.\)?)\s*([^\s]+ ?[^\s]+)$' : (r'\2 (\3) \1\4', r'⫷mcs2:art-300⫸IsA⫷mcs:eng-000⫸\4'),
+      r'^((?:'+make_paren_regex(cap=False)+r')?\s*)(\(?(?:a\s+)?(?:kind|variety|type|sort|species) of\)?|\(?k\.?o\.\)?)\s*([^\s]+ ?[^\s]+)$' : (r'\1 (\2) \3', r'⫷mcs2:art-300⫸IsA⫷mcs:eng-000⫸\3'),
     },
     3: {
-      r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)((?:not )?)[Tt]o\s+((?:'+make_paren_regex()[1:-1]+r')?\s*)(?!the(?: |$)|you|us$|him$|her$|them$|me$|no )' : (r'\1\2(to) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal'),
+      r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:not )?)[Tt]o\s+('+make_paren_regex(cap=False)+r'?\s*)(?!the(?: |$)|you|us$|him$|her$|them$|me$|no )' : (r'\1\2(to) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal'),
       r'(^| )make to ' : (r'\1make (to) ', '')
     },
     4: {
       r'(^|\s)\(a\) (lot|bit|posteriori|priori|fortiori|few|little|minute|same|while)(\s|$)' : (r'\1a \2\3', r''),
-      r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)((?:\(to\) )?)(become)\s+([^\s\()][^\s]*)$' : (r'\1\2\3 \4', r'⫷mcs2:art-316⫸Inchoative_of⫷mcs⫸\4'),
-      r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)((?:\(to\) )?)(make\s+)((?:\(to\)\s+)?)((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)\s+(?!space(?: |$)|room(?: |$)|out(?: |$)|love(?: |$))([^\s\()][^\s]*)$'   : (r'\1\2\3\4 \5 \6', r'⫷mcs2:art-316⫸Causative_of⫷mcs⫸\6'),
+      r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:\(to\) )?)(become)\s+([^\s\()][^\s]*)$' : (r'\1\2\3 \4', r'⫷mcs2:art-316⫸Inchoative_of⫷mcs⫸\4'),
+      r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:\(to\) )?)(make\s+)((?:\(to\)\s+)?)((?:'+make_paren_regex(cap=False)+r'\s*)?)\s+(?!space(?: |$)|room(?: |$)|out(?: |$)|love(?: |$))([^\s\()][^\s]*)$'   : (r'\1\2\3\4 \5 \6', r'⫷mcs2:art-316⫸Causative_of⫷mcs⫸\6'),
     },
     5: {
-      r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)\((the|an?)\)\s+((?:(?:'+make_paren_regex()[1:-1]+'|[^\(\)\[\]\s]+))(?: (?:'+make_paren_regex()[1:-1]+'|[^\(\)\[\]\s]+))?)$'   : (r'\1(\2) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun'),
+      r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)\((the|an?)\)\s+((?:(?:'+make_paren_regex()[1:-1]+'|[^\(\)\[\]\s]+))(?: (?:'+make_paren_regex()[1:-1]+'|[^\(\)\[\]\s]+))?)$'   : (r'\1(\2) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun'),
+      r' \(n\.?\)$' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun'),
+      r' \(v\.?\)$' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal'),
+      r' \(v\.?i\.?\)$' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸IntransitiveVerb'),
+      r' \(v\.?t\.?\)$' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸TransitiveVerb'),
     },
   },
   'jpn-000' : {
     1: {
       r'^(.+)(である)$' : (r'\1(\2)', ''), # to be ~
-      r'([\p{Han}\p{Katakana}](?:'+make_paren_regex()[1:-1]+r')?)(だ|の|な)$' : (r'\1(\2)', ''),
+      r'([\p{Han}\p{Katakana}]'+make_paren_regex(cap=False)+r'?)(だ|の|な)$' : (r'\1(\2)', ''),
       r'^(.*[\p{Han}])(らせる)$' : (r'\1\2', r'⫷mcs2:art-316⫸Causative_of⫷mcs⫸\1る'),
       r'^(させる)$' : (r'\1', r'⫷mcs2:art-316⫸Causative_of⫷mcs⫸する'),
       r'^(が)(\p{Han})' : (r'(\1)\2', r''),
@@ -192,7 +201,7 @@ EXDFPREP_RULES = {
       r'^[…\s]*(に)(なる)$' : (r'(\1)\2', r''),  # to become
     },
     2: {
-      r'其((?:'+make_paren_regex()[1:-1]+r')?)\(の\)' : (r'其\1の', ''),
+      r'其('+make_paren_regex(cap=False)+r'?)\(の\)' : (r'其\1の', ''),
     },
   },
   'arb-000' : {
@@ -215,6 +224,10 @@ EXDFPREP_RULES = {
       r'[¡\!]' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Interjection'),
       r'^idioma ([^\s\(][^\s]*)$' : (r'(idioma) \1', ''),
       r'^(\(?(?:una?\s+)?(?:clase) de\)?)\s*([^\s]+ ?[^\s]+)$' : (r'(\1) \2', r'⫷mcs2:art-300⫸IsA⫷mcs:spa-000⫸\2'),
+    },
+    2 : {
+      r' \(m\.?\)$' : ('', '⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸MasculineGender'),
+      r' \(f\.?\)$' : ('', '⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸FeminineGender'),
     }
   },
   'cat-000' : {
@@ -248,19 +261,15 @@ EXDFPREP_RULES = {
   },
   'nob-000' : {
     1 : {
-      r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)((?:\(?\s*å\s*\)?\s+)?bli)\s+([^\(])'  : (r'\1(\2) \3', ''),
-      r'^\(?([Ee]l|[Uu]n)\)?\s+([^\s\(])'  : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸MasculineGender'),
-      r'^\(?([Ll]os|[Uu]nos)\)?\s+([^\s\(])'  : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸MasculineGender⫷dcs2:art-303⫸NumberProperty⫷dcs:art-303⫸PluralNumber'),
-      r'^\(?([Ll]a|[Uu]na)\)?\s+([^\s\(])'  : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸FeminineGender'),
-      r'^\(?([Ll]as|[Uu]nas)\)?\s+([^\s\(])'  : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸FeminineGender⫷dcs2:art-303⫸NumberProperty⫷dcs:art-303⫸PluralNumber'),
+      r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:\(?\s*å\s*\)?\s+)?bli)\s+([^\(])'  : (r'\1(\2) \3', ''),
     },
     2: {
-      r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)å\s+' : (r'\1(å) ', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal'),
+      r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)å\s+' : (r'\1(å) ', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal'),
     },
   },
   'fra-000' : {
     1 : {
-      r'^(.+)\s+\(?(quelqu[\'’]un|quelque chose)\)?' : (r'\1 (\2)', ''),
+      r'^(.+)\s+(quelqu[\'’]un|quelque chose)' : (r'\1 (\2)', ''),
       r'\(?(q\.?q\.?(?:ch|un?)\.?)\)?' : (r'(\1)', ''),
       r'^([Ll][\'’])([^\s\(])' : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun'),
       r'^([Ll]e)\s+([^\s\(])'     : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸MasculineGender'),
@@ -272,28 +281,31 @@ EXDFPREP_RULES = {
       r'^(\(?(?:type|sorte|espèce) d[e\']\)?)\s*(.+)$' : (r'(\1) \2', r'⫷mcs2:art-300⫸IsA⫷mcs:fra-000⫸\2'),
     },
     2: {
-      r'^devenir\s+([^\s]+)$' : (r'devenir \1', r'⫷dcs2:art-316⫸Inchoative_of⫷dcs⫸\1')
+      r'^devenir\s+([^\s]+)$' : (r'devenir \1', r'⫷dcs2:art-316⫸Inchoative_of⫷dcs⫸\1'),
+      r' \(m\.?\)$' : ('', '⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸MasculineGender'),
+      r' \(f\.?\)$' : ('', '⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸FeminineGender'),
     }
   },
   'isl-000' : {
     1 : {
       r'^(vera)\s+'   : (r'(\1) ', ''),
-      r'([^\s])\s+(e\-(?:[ðimnstu]|ar?|rs?))(\s|$)' : (r'\1 (\2)\3', ''),
+      r'(^|[^\s]\s+)(e\-(?:[ðimnstu]|ar?|rs?))(\s|$)' : (r'\1(\2)\3', ''),
 
-      """
-      e-a  einhverja, einhverra    (fem acc sg, msc acc pl; msc/fem/neu gen pl)
-      e-ar einhverjar, einhverrar  (fem nom/acc pl; fem gen sg)
-      e-ð  eitthvað     (neu nom/acc sg substant)
-      e-i  einhverri    (fem dat sg)
-      e-m  einhverjum   (msc dat sg, msc/fem/neu dat pl)
-      e-n  einhvern     (msc acc sg)
-      e-r  einhver      (msc/fem nom sg)
-      e-(r)s einhvers   (msc/neu gen sg)
-      e-t  eitthvert    (neu nom/acc sg demonstr)
-      e-u  einhverju    (neu dat sg)
-      """
+      # e-a  einhverja, einhverra    (fem acc sg, msc acc pl; msc/fem/neu gen pl)
+      # e-ar einhverjar, einhverrar  (fem nom/acc pl; fem gen sg)
+      # e-ð  eitthvað     (neu nom/acc sg substant)
+      # e-i  einhverri    (fem dat sg)
+      # e-m  einhverjum   (msc dat sg, msc/fem/neu dat pl)
+      # e-n  einhvern     (msc acc sg)
+      # e-r  einhver      (msc/fem nom sg)
+      # e-(r)s einhvers   (msc/neu gen sg)
+      # e-t  eitthvert    (neu nom/acc sg demonstr)
+      # e-u  einhverju    (neu dat sg)
 
-      r'^(e\-(?:[ðimnstu]|ar?|rs?))\s+([^\s])' : (r'(\1) \2', ''),
+      r'^([^z]*)z([^z]*)$'   : (r'\1z\2', r'⫷ex:isl-000⫸\1s\2'), # 1973 reforms
+    },
+    2 : {
+      r'⫷ex:isl-000⫸([^z⫷]*)z([^z⫷]*)'   : ('', ''),
     },
   },
   'ces-000' : {
@@ -305,19 +317,32 @@ EXDFPREP_RULES = {
   },
   'fin-000' : {
     1 : {
-      r'^(olla)\s+'   : (r'(\1) ', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Adjectival'),
+      r'^(olla)\s+'   : (r'(\1) ', ''),
     },
     2: {
-      r'^tulla\s+(.+)$' : (r'tulla \1', r'⫷dcs2:art-316⫸Inchoative_of⫷dcs⫸\1')
+      r'^(tulla)\s+(.+)$' : (r'\1 \2', r'⫷dcs2:art-316⫸Inchoative_of⫷dcs⫸\2')
     }
   },
   'deu-000' : {
     1 : {
       r'((?:etw(?:\.|as)|jemand(?:en)?)(?: oder etwas)?(?:,? (?:der|was))?)([^\'’]|$)' : (r'(\1)\2', ''),
       r'\s+(d\.[ih]\..*)$' : (r' (\1)', ''),
-      r'^((?:(?:'+make_paren_regex()[1:-1]+r')\s*)?)(ein(?:e[mnrs]?)?|die|das|de[mnrs])\s+([^\(])'   : (r'\1(\2) \3', ''),
+      r'(^| )(o\.ä\.)( |$)' : (r'\1(\2)\3', ''),
+      r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(ein(?:e[mnrs]?)?|die|das|de[mnrs])\s+([^\(])'   : (r'\1(\2) \3', ''),
     },
     2: {
+    },
+  },
+  'rus-000' : {
+    1: {
+      r'(^|[^ ] +)((?:что|чего|чему|ч[её]м|чьих|чей|кто|кого|кем|кому?)\-л(?:ибо|\.)?(?: в (?:что|чего|чему|ч[её]м|чьих|чей|кто|кого|кем|кому?)\-л(?:ибо|\.)?)?)( |$)' : (r'\1(\2)\3', ''),
+      r' (и т\.\s*п\.)' : (r' (\1)', ''),
+
+      # something:  что-л (n/a), чего (g), чему (d), чем (i), чём (p)
+      # someone:    кто-л (n), кого (g/a), кому (d), кем (i), ком (p)
+    },
+    2: {
+      r'^\(((?:что|ч[её]м|чему|чего|чьих|кого|кем|кому)\-л\.?(?: в (?:что|ч[её]м|чему|чего|кого|кем|кому)\-л\.?)?)\)$' : (r'\1', ''),
     }
   },
   'general' : {
@@ -329,13 +354,15 @@ EXDFPREP_RULES = {
     },
     999 : {
       r'(.)[！!]$'  : (r'\1', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Interjection'),
-      r'(.)\?$' : (r'\1', '⫷dcs2:art-303⫸ForceProperty⫷dcs:art-303⫸InterrogativeForce'),
+      r'(.)[？\?]$' : (r'\1', '⫷dcs2:art-303⫸ForceProperty⫷dcs:art-303⫸InterrogativeForce'),
       r'^\?+$' : ('', ''),
       r'["“”]'  : ('', ''),
       # delete periods at end, but only when no periods in exp already, and len > 6
       r'^([^\.]{6,})\s*\.$' : (r'\1', ''),
       r'^\(([^\(\)]*)\)$' : (r'⫷df⫸\1', ''),
       r'^\[([^\[\]]*)\]$' : (r'⫷df⫸\1', ''),
+      # numbered/lettered entries in front
+      r'^[АБВГДЕЖЗабвгдежзABCDEFGHabcdefgh\d]\)\s+' : (r'', ''),
     }
   }
 }
@@ -605,7 +632,7 @@ def regexsubcol(refrom, reto, cols, entries):
   return result
 
 
-def prepsyns(entries, cols, refrom, lng, delim='‣', splitdetectsentences=True, pretag_special_lvs=True):
+def prepsyns(entries, cols, refrom, lng, delim='‣', pretag_special_lvs=True):
   """ Splits at given regex (outside parens), runs exdfprep, joins with syn delimiter,
   and removes nested parens.
   entries = list of entries
@@ -617,7 +644,7 @@ def prepsyns(entries, cols, refrom, lng, delim='‣', splitdetectsentences=True,
   assert isinstance(cols, list)
   result = []
   # split at given delimiter
-  entries = split_outside_parens(entries, cols, refrom, detectsentences=splitdetectsentences)
+  entries = split_outside_parens(entries, cols, refrom)
   # prepare as expression
   entries = exdfprep(entries, cols, lang=lng, pretag_special_lvs=pretag_special_lvs)
   # join with consistent synonym delimiter
@@ -888,7 +915,7 @@ def decap(entries, cols):
     for col in range(len(entry)):
       newcol = entry[col]
       if col in cols:
-        m = re.match(r'^((?:'+make_paren_regex()[1:-1]+r')?)\s*(.*)$', newcol)
+        m = re.match(r'^('+make_paren_regex(cap=False)+r'?)\s*(.*)$', newcol)
         if not m:
           raise ValueException('unexpected un-match:', newcol)
         else:
@@ -1003,13 +1030,7 @@ def __degrade(s):
   return s.replace('j','i').replace('w','u')
 
 def synthesize_strings(s1, s2, max_overlap=4, vowels='AEIOUYaeiouy'):
-  try:
-    unidecode
-  except:
-    from unidecode import unidecode
-
   # return a synthesis of the first and second strings, based on max_overlap amount
-
   max_overlap = min(max_overlap, min(len(s1),len(s2))) # account for string lengths
   
   # first check for exact matches, then inexact matches, on all lengths except 1
@@ -1037,7 +1058,7 @@ def insert_into_tilde(s1, s2, max_overlap=4, vowels='AEIOUYaeiouy'):
   # first make sure a single tilde is in s2 in the first place
   s2_separated = re.match(r'^([^~]*)~([^~]*)$', s2)
   if not s2_separated:
-    print('tilde count != 1, returning string as is:', s2)
+    # print('tilde count != 1, returning string as is:', s2)
     return s2
 
   s2_pre, s2_post = s2_separated.group(1), s2_separated.group(2)
@@ -1057,30 +1078,36 @@ def insert_into_tilde(s1, s2, max_overlap=4, vowels='AEIOUYaeiouy'):
 
 
 def extract_taxa(entries, col, delim='‣'):
+  reqno = 0
   print('\nextracting taxa...')
   try:
     requests
   except:
     import requests
   try:
+    reqno += 1
     r = requests.get('http://127.0.0.1:3000', params={'text': 'string'})
   except:
     raise ConnectionError('Must initialize taxonfinder')
   else:
     result = []
     for entry in entries:
-      # print(entry)
       newentry = []
       for syn in entry[col].split(delim):
-        r = requests.get('http://127.0.0.1:3000', params={'text': syn}).json()
-        if r:
-          for match in r:
-            offsets, name = match['offsets'], match['name']
-            print(name)
-            if offsets[1] - offsets[0] == len(syn):
-              syn = '⫷ex:lat-003⫸' + name
-            else:
-              syn = syn + '⫷ex:lat-003⫸' + name
+        if re.search(r'\p{Latin}', syn.replace('⫷df⫸','')):
+          # print(reqno, syn)
+          reqno += 1
+          r = requests.get('http://127.0.0.1:3000', params={'text': syn}, headers={'Connection':'close'}).json()
+          # if reqno % 1000 == 0:
+            # sleep(1)
+          if r:
+            for match in r:
+              offsets, name = match['offsets'], match['name']
+              print(name)
+              if offsets[1] - offsets[0] == len(syn):
+                syn = '⫷ex:lat-003⫸' + name
+              else:
+                syn = syn + '⫷ex:lat-003⫸' + name
         newentry.append(syn)
       entry[col] = delim.join(newentry)
       
