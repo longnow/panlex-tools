@@ -209,7 +209,7 @@ def remove_inf_to(text:str) -> str:
     tagged_tokens = tagger.tag(tokens)
 
     if tagged_tokens[0][1] == 'TO' and re.search('^(V|B)', tagged_tokens[1][1]):
-        
+
         if not re.search("(everybody|somebody)", tagged_tokens[1][0]):
 
             if tagged_tokens[1][0] not in exclude_list:
