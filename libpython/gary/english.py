@@ -180,11 +180,13 @@ def remove_extra_spaces(text):
 
 def remove_article(text, **kwargs):
     match = re.search('^(?:a|an|the)\s+(\w+)', text)
+
     if match:
         if match[1].lower() not in ['lot', 'little', 'priori', 'posteriori', 'bit']:
             text = re.sub('^(?:a|an|the)\s+', '', text)
 
-    match_end = re.search('^(.*?)\s+(?:a|an|the)', text)
+    match_end = re.search('^(.*?)\s+(?:a|an|the)\s*$', text)
+
     if match_end:
         text = match_end[1]
 
@@ -197,6 +199,7 @@ exclude_list = ['boot']
 
 def remove_inf_to(text:str) -> str:
     global tokenizer,tagger
+
     if text == 'to':
         return "to"
 
@@ -204,8 +207,11 @@ def remove_inf_to(text:str) -> str:
 
     tokens = tokenizer.tokenize(text)
     tagged_tokens = tagger.tag(tokens)
+
     if tagged_tokens[0][1] == 'TO' and re.search('^(V|B)', tagged_tokens[1][1]):
+        
         if not re.search("(everybody|somebody)", tagged_tokens[1][0]):
+
             if tagged_tokens[1][0] not in exclude_list:
                 text = re.sub('^to\s+', '', text)
 
