@@ -4,10 +4,12 @@ import argparse
 import json
 from operator import itemgetter
 
+import sys
+
 
 def get_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-f', '--filename')
+    parser.add_argument('filename', type=str, nargs='?', help='file to list')
     parser.add_argument('--min', default=0, type=int, help='minimum score to show (default 0)')
     parser.add_argument('--max', default=50, type=int, help='maximum score to show (default 50)')
     return parser.parse_args()
@@ -28,11 +30,12 @@ def read_values(filename, min_count, max_count):
                     continue
                 
                 if word == degraded_form:
-                    print('%4d %-18s => _' % (score,word))
+                    print('%4d %-22s => _' % (score,word))
                 else:
-                    print('%4d %-18s => %-18s' % (score,word,degraded_form))
+                    print('%4d %-22s => %-18s' % (score,word,degraded_form))
             else:
-                print('%4d %-18s' % (score,word))
+                print('%4d %-22s' % (score,word))
+
     return
 
 

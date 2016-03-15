@@ -13,11 +13,15 @@ def pre_process(text):
     text = re.sub('(?<=\d)\s+(?=\d)', '', text)
     text = re.sub('\s*\.{3,}\s*', ' … ', text)
     text = re.sub('\s+', ' ', text)
+    text = re.sub('\uFEFF', '', text)
     text = unicodedata.normalize('NFC', text)
     text = re.sub('[‐‑⁃－]', '-', text)
     text = re.sub('[\u200B\u00AD\u200E\u200F\u202A\u202C]', '', text)
+    text = re.sub('^\s*…\s*', '', text)
+    text = re.sub('\s*…\s*$', '', text)
 
     return text.strip()
+
 
 
 message_is_displayed = True

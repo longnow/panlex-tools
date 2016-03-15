@@ -36,6 +36,17 @@ def extract_noun(text, pos):
     return text,pos
 
 
+def extract_question(text, pos):
+    fields = re.split('\s*‣\s*', text)
+    for i in range(len(fields)):
+        match = re.search('^\s*(?:¿)?\s*(.*)\s*\?\s*$', fields[i])
+        if match:
+            fields[i] = match[1]
+            pos = append_synonym(pos,'ques')
+    text = '‣'.join(fields)
+
+    return text,pos
+
 
 def normalize_accent(text):
     text = re.sub('à', 'á', text)

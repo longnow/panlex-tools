@@ -6,7 +6,7 @@ import logging
 import regex as re
 import time
 
-logging.basicConfig(filename='filter.log',level=logging.DEBUG)
+
 
 def log_results(text, debug=False):
     if debug:
@@ -14,7 +14,10 @@ def log_results(text, debug=False):
 
 
 def run_filters(filters, entry, is_logged=False, **kwargs):
-    log_results('UNFILTERED:%s' % entry, debug=is_logged)
+    if is_logged:
+        logging.basicConfig(filename='filter.log',level=logging.DEBUG)
+        log_results('UNFILTERED:%s' % entry, debug=is_logged)
+
     # TODO: add preprocess filter for all language fields
 
     for f in filters:
@@ -23,6 +26,7 @@ def run_filters(filters, entry, is_logged=False, **kwargs):
         after = str(entry)
         if before != after:
             log_results('%s: %s' % (f.name,after), debug=is_logged)
+
     return entry
 
 
@@ -260,3 +264,35 @@ class SourceProcessor(object):
         span = endtime - start_time
 
         print('processed %d records in %.3fs (%.3f rec/s)' % (count,span,count / span))
+
+
+class DcsMapper(object):
+    def __init__(self):
+        self.mapping = {}
+        with open('csppmap.txt') as fin:
+            for line in fin:
+                fields = line.split('\t')
+                if len(fields) >= 2:
+                    self.mapping[fields[0]] = self.__standardize(fields[1])
+
+
+    def __getitem__(self, key):
+        return self.mapping[key]
+
+
+    def __setitem__(self, key, value):
+        self.mapping[key] = value
+
+
+    def __standardize(self, text):
+        fields = text.split('‣')
+        results = []
+        for field in fields:
+            match = re.search('\s*(\w{3}-\d{1,3}):([^:]+):(\w{3}-\d{1,3}):([^:]+)\s*$', field)
+            if match:
+                tag = '⫷dcs2:%s⫸%s⫷dcs:%s⫸%s' % match.groups()
+                results.append(tag)
+
+        return ''.join(results)
+
+
