@@ -193,9 +193,11 @@ def remove_article(text, **kwargs):
     return text
 
 
+
 tokenizer = TreebankWordTokenizer()
 tagger = PerceptronTagger()
 exclude_list = ['boot']
+
 
 def remove_inf_to(text:str) -> str:
     global tokenizer,tagger
@@ -206,10 +208,15 @@ def remove_inf_to(text:str) -> str:
     text = re.sub('^to be ', '', text)
 
     tokens = tokenizer.tokenize(text)
+
+    if len(tokens) < 2:
+        return text
+
     tagged_tokens = tagger.tag(tokens)
+    print(tagged_tokens)
 
-    if tagged_tokens[0][1] == 'TO' and re.search('^(V|B)', tagged_tokens[1][1]):
-
+    if tagged_tokens[0][1] == 'TO' and tagged_tokens[1][1] != 'DT':
+        next_tok = tagged_tokens[1]
         if not re.search("(everybody|somebody)", tagged_tokens[1][0]):
 
             if tagged_tokens[1][0] not in exclude_list:
