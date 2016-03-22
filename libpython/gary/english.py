@@ -213,10 +213,8 @@ def remove_inf_to(text:str) -> str:
         return text
 
     tagged_tokens = tagger.tag(tokens)
-    print(tagged_tokens)
 
     if tagged_tokens[0][1] == 'TO' and tagged_tokens[1][1] != 'DT':
-        next_tok = tagged_tokens[1]
         if not re.search("(everybody|somebody)", tagged_tokens[1][0]):
 
             if tagged_tokens[1][0] not in exclude_list:

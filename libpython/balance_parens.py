@@ -21,7 +21,7 @@ if __name__ == '__main__':
 
     for line in fin:
         count = 0
-        
+
         for c in line:
             if c == '(':
                 count += 1
