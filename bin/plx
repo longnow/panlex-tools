@@ -175,6 +175,7 @@ sub cmd_fetch {
 
         my $result = panlex_query("/ap/$source");
         $source = $result->{ap}{fp};
+        die "could not find source directory" unless defined $source;
         print STDERR "$source\n\n";
     }
 
