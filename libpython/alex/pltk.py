@@ -5,6 +5,7 @@ PanLex ToolKit
 import unicodedata
 import regex as re
 from unidecode import unidecode
+from bs4 import Tag
 
 from time import sleep
 
@@ -48,6 +49,7 @@ def preprocess(entries):
 
       # digit separator commas
       col = re.sub(r'(\d),(\d\d\d)', r'\1\2', col).strip()
+      col = re.sub(r'(\d)\.(\d\d\d)', r'\1\2', col).strip()
 
       # surprise html encoded chars
       col = col.replace('&amp;', '&')
@@ -98,7 +100,7 @@ def split_outside_parens(entries, cols, delim=r',', parens=PARENS):
 
         # detect sentences/other non splittable things and put special parens around them
         # sentences: start w/ capital letter, end with period(s)
-        entry[col] = re.sub(r'(\p{Lu}[^\s.]+(?:\s+[^\s.]+){'+str(minwords)+r',}[\.!?]+)', TEMP_PAREN[0][0]+r'\1'+TEMP_PAREN[0][1], entry[col])
+        entry[col] = re.sub(r'(\p{Lu}(?:'+make_paren_regex(cap=False)+r'|[^\s\(\)\[\].])+(?:\s+(?:'+make_paren_regex(cap=False)+r'|[^\s\(\)\[\].])+){'+str(minwords)+r',}[\.!?]+)', TEMP_PAREN[0][0]+r'\1'+TEMP_PAREN[0][1], entry[col])
         # commas separating decimals or digit groups
         entry[col] = re.sub(r'(\d+(?:,\d+)+)', TEMP_PAREN[0][0]+r'\1'+TEMP_PAREN[0][1], entry[col])
 
@@ -162,7 +164,7 @@ EXDFPREP_RULES = {
       r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(\(?(?:a\s+)?(?:kind|variety|type|sort|species) of\)?|k\.?o\.)\s*' : (r'\1(\2) ', r''),
     },
     2: {
-      r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(the|an?)\s+((?:(?:'+make_paren_regex()[1:-1]+'|[^\(\)\[\]\s]+))(?: (?:'+make_paren_regex()[1:-1]+'|[^\(\)\[\]\s]+))?)$'   : (r'\1(\2) \3', ''),      # r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(the)\s+([^\(])'   : (r'\1(\2) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun'),
+      r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)([Tt]he|[Aa]n?)\s+((?:(?:'+make_paren_regex()[1:-1]+'|[^\(\)\[\]\s]+))(?: (?:'+make_paren_regex()[1:-1]+'|[^\(\)\[\]\s]+))?)$'   : (r'\1(\2) \3', ''),      # r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(the)\s+([^\(])'   : (r'\1(\2) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun'),
       r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)\((s(?:\-|ome)(?: other )?(?:one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|ome)(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)\s+(which|that|who|to)' : (r'\1\2 \3', ''),
       r'\((s(?:\-|ome)(?: other )?(?:one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|ome)(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)\s+(else(?:\'s)?)' : (r'(\1 \2)', ''),
       r'^\((s(?:\-|ome)(?: other )?(?:one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|ome)(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)\s+' : (r'\1 ', ''),
@@ -179,7 +181,7 @@ EXDFPREP_RULES = {
       r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:\(to\) )?)(make\s+)((?:\(to\)\s+)?)((?:'+make_paren_regex(cap=False)+r'\s*)?)\s+(?!space(?: |$)|room(?: |$)|out(?: |$)|love(?: |$))([^\s\()][^\s]*)$'   : (r'\1\2\3\4 \5 \6', r'⫷mcs2:art-316⫸Causative_of⫷mcs⫸\6'),
     },
     5: {
-      r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)\((the|an?)\)\s+((?:(?:'+make_paren_regex()[1:-1]+'|[^\(\)\[\]\s]+))(?: (?:'+make_paren_regex()[1:-1]+'|[^\(\)\[\]\s]+))?)$'   : (r'\1(\2) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun'),
+      r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)\(([Tt]he|[Aa]n?)\)\s+((?:(?:'+make_paren_regex()[1:-1]+'|[^\(\)\[\]\s]+))(?: (?:'+make_paren_regex()[1:-1]+'|[^\(\)\[\]\s]+))?)$'   : (r'\1(\2) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun'),
       r' \(n\.?\)$' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun'),
       r' \(v\.?\)$' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal'),
       r' \(v\.?i\.?\)$' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸IntransitiveVerb'),
@@ -309,8 +311,10 @@ EXDFPREP_RULES = {
     },
   },
   'ces-000' : {
+    # a (také) = and (also)
     1 : {
-      r'^(být)\s+'   : (r'(\1) ', ''),
+      r'^(být)\s+'   : (r'(\1) ', ''), # to be
+      r'^(nějaký)\s+' : (r'(\1) ', ''), # some, a(n)
     },
     2: {
     }
@@ -1113,3 +1117,18 @@ def extract_taxa(entries, col, delim='‣'):
       
     return entries
     print('done')
+
+
+def get_next_sibling_tag(tag):
+  # next tag method for beautifulsoup (siblings only)
+  for nextsib in tag.next_siblings:
+    if isinstance(nextsib, Tag):
+      return nextsib
+  return None
+
+def get_next_tag(tag):
+  # next tag method for beautifulsoup
+  for nexttag in tag.next_elements:
+    if isinstance(nexttag, Tag):
+      return nexttag
+  return None
