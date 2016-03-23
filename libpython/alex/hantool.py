@@ -33,24 +33,17 @@ class HanText:
   def original_string(self):
     return self.string
 
-  def simplified(self):
-    return self.simp
-
-  def traditional(self):
-    return self.trad
-
   def scripts(self):
     return self.scripts
 
-  def is_simp(self):
-    return 'Hans' in self.scripts
+  def is_simp_only(self):
+    return self.scripts == ['Hans']
 
-  def is_trad(self):
-    return 'Hant' in self.scripts
+  def is_trad_only(self):
+    return self.scripts == ['Hant']
 
-  def is_both(self):
-    return is_simp(self) and is_trad(self)
+  def is_simp_and_trad(self):
+    return 'Hans' in self.scripts and 'Hant' in self.scripts
 
   def __len__(self):
     return len(self.string)
-
