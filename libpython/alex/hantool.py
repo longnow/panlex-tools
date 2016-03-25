@@ -11,24 +11,38 @@ from time import sleep
 ambi_chars = '苧斗台板杯辟表卜布才彩虫丑仇出村粗酬党淀吊冬范丰谷雇刮广哄后伙几机奸姜借据卷克困夸累厘漓梁了霉蔑么麽苹仆朴确舍沈胜松他你体同涂喂咸弦熏腌叶佣涌游于余吁郁欲御愿岳云扎占折征志制致种周注准冢庄蚕忏吨赶构柜怀坏极茧家价洁惊腊蜡帘怜岭扑秋千确扰洒晒适听洼网旋踊优症朱荐离气圣万与虮篱泞托咽曲升系胡划回里向只它并采厂干蒙面复斗台著兒乾夥藉瞭摺徵'
 
 # weird additional ones
-ambi_chars += '内'
+ambi_chars += '内凄'
 
-# variants
-VARIANTS = {
+# variant forms
+variants = {
   '衆' : '眾',
 }
 
+exceptions_simp = ['模稜两可']
+exceptions_trad = []
 
 class HanText:
   def __init__(self, string):
     self.string = string.strip().replace(' ','')
     # replace all variants
-    self.string = ''.join([VARIANTS[c] if c in VARIANTS else c for c in self.string])
+    self.string = ''.join([variants[c] if c in variants else c for c in self.string])
     # check for ambiguous (s+t) single character
     if len(self.string) == 1 and self.string in ambi_chars:
       self.simp = self.string
       self.trad = self.string
       self.scripts = ['Hans', 'Hant']
+    elif self.string in exceptions_simp:
+      self.simp = self.string
+      tl_t = translator('zh', 'zh-TW', self.string)
+      sleep(0.5)
+      self.trad = re.sub(r'\u200b', '', tl_t[0][0][0].strip())
+      self.scripts = ['Hans']
+    elif self.string in exceptions_trad:
+      tl_t = translator('zh', 'zh-CN', self.string)
+      sleep(0.5)
+      self.simp = re.sub(r'\u200b', '', tl_t[0][0][0].strip())
+      self.trad = self.string
+      self.scripts = ['Hant']
     else:
       tl_s = translator('zh', 'zh-CN', self.string)
       sleep(0.5)
