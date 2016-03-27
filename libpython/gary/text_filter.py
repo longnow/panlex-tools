@@ -19,6 +19,8 @@ def pre_process(text):
     text = re.sub('[\u200B\u00AD\u200E\u200F\u202A\u202C]', '', text)
     text = re.sub('^\s*…\s*', '', text)
     text = re.sub('\s*…\s*$', '', text)
+    text = re.sub('\s*…\s*\)', ' …)', text)
+    text = re.sub('\(\s*…\s*', '(… ', text)
 
     return text.strip()
 

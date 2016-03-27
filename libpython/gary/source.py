@@ -3,10 +3,13 @@ from collections import OrderedDict
 
 import io
 import logging
+import os
+from os import path
 import regex as re
 import time
 
 
+log_file = 'filter.log'
 
 def log_results(text, debug=False):
     if debug:
@@ -15,7 +18,7 @@ def log_results(text, debug=False):
 
 def run_filters(filters, entry, is_logged=False, **kwargs):
     if is_logged:
-        logging.basicConfig(filename='filter.log',level=logging.DEBUG)
+        logging.basicConfig(filename=log_file,level=logging.DEBUG)
         log_results('UNFILTERED:%s' % entry, debug=is_logged)
 
     # TODO: add preprocess filter for all language fields
