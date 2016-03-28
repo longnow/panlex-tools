@@ -1082,14 +1082,14 @@ def insert_into_tilde(s1, s2, max_overlap=4, vowels='AEIOUYaeiouy'):
 
 
 def extract_taxa(entries, col, delim='‣'):
-  reqno = 0
+  # reqno = 0
   print('\nextracting taxa...')
   try:
     requests
   except:
     import requests
   try:
-    reqno += 1
+    # reqno += 1
     r = requests.get('http://127.0.0.1:3000', params={'text': 'string'})
   except:
     raise ConnectionError('Must initialize taxonfinder')
@@ -1100,7 +1100,7 @@ def extract_taxa(entries, col, delim='‣'):
       for syn in entry[col].split(delim):
         if re.search(r'\p{Latin}', syn.replace('⫷df⫸','')):
           # print(reqno, syn)
-          reqno += 1
+          # reqno += 1
           r = requests.get('http://127.0.0.1:3000', params={'text': syn}, headers={'Connection':'close'}).json()
           # if reqno % 1000 == 0:
             # sleep(1)
