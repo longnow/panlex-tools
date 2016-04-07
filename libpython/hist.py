@@ -7,9 +7,9 @@ from operator import itemgetter
 import sys
 import unicodedata
 
-control_character_map = {'\x01': 'SOH', '\x02': 'STX', '\x03': 'ETX', '\x04': 'EOT', '\x05': 'ENQ',
-               '\x06':'ACK','\x07':'BEL', '\x08':'BS', '\x09':'HT', '\n':'LF',
-               '\x0B':'VT', '\x0C':'FF', '\r':'CR', '\x20':'SP', '\t':'HT'}
+control_character_map = {'\x01': '␁', '\x02': '␂', '\x03': '␃', '\x04': '␄', '\x05': '␅',
+               '\x06':'␆','\x07':'␇', '\x08':'␈', '\x09':'␉', '\n':'␊',
+               '\x0B':'␋', '\x0C':'␌', '\r':'␍', '\x20':'␠', '\t':'␉'}
 
 control_character_name_map = {'\x09':'CHARACTER TABULATION', '\x0A':'LINE FEED', '\x0D':'CARRIAGE RETURN'}
 
