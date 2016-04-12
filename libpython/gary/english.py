@@ -1,11 +1,15 @@
 
+from os import path
+import pickle
+from random import shuffle
 import regex as re
+import sys
+
 from nltk import WordNetLemmatizer, PerceptronTagger, RegexpParser, TreebankWordTokenizer
+from nltk.corpus import brown
+from nltk.tag import UnigramTagger, BigramTagger, TrigramTagger, DefaultTagger
 from nltk.tree import Tree
 from gary.source import ignore_parens
-
-from gary.source import process_synonyms
-
 
 
 def get_words(node):
@@ -221,3 +225,40 @@ def remove_inf_to(text:str) -> str:
                 text = re.sub('^to\s+', '', text)
 
     return text
+
+
+
+class CausativeInchoatoveTagger:
+    def __init__(self):
+        tagger_file = 'tagger.pkl'
+        if path.isfile(tagger_file):
+            with open(tagger_file, 'rb') as fin:
+                self.trigram_tagger = pickle.load(fin)
+        else:
+            print('creating tagger...', file=sys.stderr)
+            sentences = brown.tagged_sents()
+            dt = DefaultTagger('NN')
+            ug = UnigramTagger(sentences, backoff=dt)
+            bg = BigramTagger(sentences, backoff=ug)
+            self.trigram_tagger = TrigramTagger(sentences, backoff=bg)
+            print('saving tagger...', file=sys.stderr)
+
+            with open(tagger_file, 'wb') as fout:
+                pickle.dump(self.trigram_tagger, fout, -1)
+
+
+    def extract_causative(self, text, pos):
+        match = re.search('^make\s+(.*)', text)
+        if match:
+            tokens = tokenizer.tokenize(text)
+            tagged_tokens = tagger.tag(tokens)
+
+            if tokens[0] == 'make':
+
+                if len(tokens) > 1:
+                    if tagged_tokens[1][1].startswith('J'):
+                        pos = 'causative:%s' % match[1]
+                    elif tokens[1] in ['narrower']:
+                        pos = 'causative:%s' % match[1]
+
+        return text,pos
