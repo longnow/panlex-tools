@@ -99,6 +99,9 @@ NBCLASSIFIER = None
 
 class HanText:
   def __init__(self, string):
+    self.update(string)
+    
+  def update(self, string):
     self.string = string.strip().replace(' ','')
     # replace all variants
     self.string = ''.join([VARIANTS[c] if c in VARIANTS else c for c in self.string])
@@ -123,7 +126,7 @@ class HanText:
 
     self.idsseqs = None
     self.idscomponents = None
-    
+
   def original_string(self):
     return self.string
 
@@ -149,23 +152,23 @@ class HanText:
 
     global SIMP_COMPONENTS, TRAD_COMPONENTS, NBCLASSIFIER
 
-    print('building component repos and training data:')
+    print('building component sets and classifier training data...')
     nbc_traindata = []
 
     all_simp_components = set()
-    print('- simplified')
+    # print('- simplified')
     for ht in [HanText(ks) for ks in KNOWN_SIMP]:
-      all_simp_components |= ht.components(cumulative=True)
+      all_simp_components |= ht.components()
       nbc_traindata.append((ht.get_features(), 'S'))
     all_trad_components = set()
-    print('- traditional')
+    # print('- traditional')
     for ht in [HanText(ks) for ks in KNOWN_TRAD]:
-      all_trad_components |= ht.components(cumulative=True)
+      all_trad_components |= ht.components()
       nbc_traindata.append((ht.get_features(), 'T'))
     all_ambi_components = set()
-    print('- ambiguous')
+    # print('- ambiguous')
     for ht in [HanText(ks) for ks in KNOWN_AMBI]:
-      all_ambi_components |= ht.components(cumulative=True)
+      all_ambi_components |= ht.components()
       nbc_traindata.append((ht.get_features(), 'B'))
 
     SIMP_COMPONENTS = all_simp_components - (all_trad_components | all_ambi_components)
@@ -196,7 +199,7 @@ class HanText:
         self.__build_component_sets()
 
       # now, use the components of the present exp to make a rule-based decision
-      comp = self.components(cumulative=True)
+      comp = self.components()
 
       if comp & SIMP_COMPONENTS and not (comp & TRAD_COMPONENTS):
         self.simp = self.string
@@ -280,6 +283,14 @@ class HanText:
     scripts = self.scripts if self.scripts else self.get_scripts()
     return 'Hans' in scripts and 'Hant' in scripts
 
+  def has_script_conflict(self):
+    if not SIMP_COMPONENTS:
+      self.__build_component_sets()
+    has_simp_only_char = True in [c in KNOWN_SIMP_CHARS for c in self.string]
+    has_trad_only_char = True in [c in KNOWN_TRAD_CHARS for c in self.string]
+    comp = self.components()
+    return (has_simp_only_char and has_trad_only_char) or bool(comp & SIMP_COMPONENTS and comp & TRAD_COMPONENTS)
+
   def cmnvar(self):
     if self.is_simp_only():
       return '0'
@@ -296,7 +307,7 @@ class HanText:
       self.idsseqs = [list(filter(None, re.split(r'([⿰⿱⿲⿳⿴⿵⿶⿷⿸⿹⿺⿻\p{Han}]|&[^;]+;)', IDS_DICT[c]))) if c in IDS_DICT else '' for c in self.string]
     return self.idsseqs
 
-  def components(self, depth=0, cumulative=False):
+  def components(self, depth=0, cumulative=True):
     # return component elements from IDS only, as a set.
     # 0 defaults to deepest
     # cumulative=True returns set of components from all levels up to given depth
@@ -342,7 +353,7 @@ class HanText:
       features[ "charbigram({})".format(self.string[i:i+2])] = True
     for j in range(len(self.string)-2):
       features["chartrigram({})".format(self.string[j:j+3])] = True
-    for comp in self.components(cumulative=True):
+    for comp in self.components():
       features["comp({})".format(comp)] = True
     for seq in self.seqs():
       if seq:
