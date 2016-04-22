@@ -137,50 +137,63 @@ class HanText:
       self.get_scripts()
     return self.trad
 
+  def get_probdist(self):
+    if not NBCLASSIFIER:
+      self.__build_component_sets()
+    probdist = NBCLASSIFIER.prob_classify(self.get_features())
+    return {sample : probdist.prob(sample) for sample in probdist.samples()}
+
+  def __build_component_sets(self):
+    # build component sets
+    # and data for classifier model
+
+    global SIMP_COMPONENTS, TRAD_COMPONENTS, NBCLASSIFIER
+
+    print('building component repos and training data:')
+    nbc_traindata = []
+
+    all_simp_components = set()
+    print('- simplified')
+    for ht in [HanText(ks) for ks in KNOWN_SIMP]:
+      all_simp_components |= ht.components(cumulative=True)
+      nbc_traindata.append((ht.get_features(), 'S'))
+    all_trad_components = set()
+    print('- traditional')
+    for ht in [HanText(ks) for ks in KNOWN_TRAD]:
+      all_trad_components |= ht.components(cumulative=True)
+      nbc_traindata.append((ht.get_features(), 'T'))
+    all_ambi_components = set()
+    print('- ambiguous')
+    for ht in [HanText(ks) for ks in KNOWN_AMBI]:
+      all_ambi_components |= ht.components(cumulative=True)
+      nbc_traindata.append((ht.get_features(), 'B'))
+
+    SIMP_COMPONENTS = all_simp_components - (all_trad_components | all_ambi_components)
+    TRAD_COMPONENTS = all_trad_components - (all_simp_components | all_ambi_components)
+
+    # train Naive Bayes classifier and test accuracy
+    """
+    print('shuffling data')
+    shuffle(nbc_traindata)
+    print('training classifier...')
+    NBCLASSIFIER = nltk.NaiveBayesClassifier.train(nbc_traindata[:int(len(nbc_traindata)*19/20)])
+
+    # accuracy test
+    print('classifier accuracy:')
+    print(nltk.classify.accuracy(NBCLASSIFIER, nbc_traindata[int(len(nbc_traindata)*19/20):]))
+    # NBCLASSIFIER.show_most_informative_features(80)
+    """
+
+    # use all data for training
+    NBCLASSIFIER = nltk.NaiveBayesClassifier.train(nbc_traindata)
+
   def get_scripts(self):
     if not self.scripts:
       # STEP 1: use unique components to decide
 
       # first build SIMP_COMPONENTS and TRAD_COMPONENTS if they don't exist already
-      global SIMP_COMPONENTS, TRAD_COMPONENTS, NBCLASSIFIER
-
       if not SIMP_COMPONENTS:
-
-        print('building component repos and training data:')
-
-        # build component sets
-        # and data for classifier model
-        nbc_traindata = []
-
-        all_simp_components = set()
-        print('- simplified')
-        for ht in [HanText(ks) for ks in KNOWN_SIMP]:
-          all_simp_components |= ht.components(cumulative=True)
-          nbc_traindata.append((ht.get_features(), 'S'))
-        all_trad_components = set()
-        print('- traditional')
-        for ht in [HanText(ks) for ks in KNOWN_TRAD]:
-          all_trad_components |= ht.components(cumulative=True)
-          nbc_traindata.append((ht.get_features(), 'T'))
-        all_ambi_components = set()
-        print('- ambiguous')
-        for ht in [HanText(ks) for ks in KNOWN_AMBI]:
-          all_ambi_components |= ht.components(cumulative=True)
-          nbc_traindata.append((ht.get_features(), 'B'))
-
-        SIMP_COMPONENTS = all_simp_components - (all_trad_components | all_ambi_components)
-        TRAD_COMPONENTS = all_trad_components - (all_simp_components | all_ambi_components)
-
-        # train Naive Bayes classifier
-        print('shuffling data')
-        shuffle(nbc_traindata)
-        print('training classifier...')
-        NBCLASSIFIER = nltk.NaiveBayesClassifier.train(nbc_traindata[:int(len(nbc_traindata)*19/20)])
-
-        # accuracy test
-        print('classifier accuracy:')
-        print(nltk.classify.accuracy(NBCLASSIFIER, nbc_traindata[int(len(nbc_traindata)*19/20):]))
-        # NBCLASSIFIER.show_most_informative_features(80)
+        self.__build_component_sets()
 
       # now, use the components of the present exp to make a rule-based decision
       comp = self.components(cumulative=True)
@@ -196,10 +209,6 @@ class HanText:
       else:
         # STEP 2: use classifier to decide
         guess = NBCLASSIFIER.classify(self.get_features())
-
-        probdist = NBCLASSIFIER.prob_classify(self.get_features())
-
-        # self.script_probdist = {sample : probdist.prob(sample) for sample in probdist.samples()}
 
         if guess == 'S':
           self.simp = self.string
