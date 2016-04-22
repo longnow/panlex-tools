@@ -7,7 +7,7 @@
 import os, glob, time, nltk
 import regex as re
 from random import shuffle
-from translator import translator
+# from .translator import translator
 
 SLEEPTIME = 0.15
 
@@ -196,6 +196,11 @@ class HanText:
       else:
         # STEP 2: use classifier to decide
         guess = NBCLASSIFIER.classify(self.get_features())
+
+        probdist = NBCLASSIFIER.prob_classify(self.get_features())
+
+        # self.script_probdist = {sample : probdist.prob(sample) for sample in probdist.samples()}
+
         if guess == 'S':
           self.simp = self.string
           self.scripts = set(['Hans'])
@@ -203,8 +208,9 @@ class HanText:
           self.trad = self.string
           self.scripts = set(['Hant'])
         elif guess == 'B':
+          self.simp = self.string
           self.trad = self.string
-          self.scripts = set(['Hant'])
+          self.scripts = set(['Hans', 'Hant'])
         else:
           raise ValueError('unexpected classification {}'.format(guess))
 
