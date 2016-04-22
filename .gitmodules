@@ -1,0 +1,3 @@
+[submodule "ids"]
+	path = ids
+	url = http://git.chise.org/git/chise/ids.git

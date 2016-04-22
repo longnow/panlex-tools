@@ -6,7 +6,6 @@ import unicodedata
 import regex as re
 from unidecode import unidecode
 from bs4 import Tag
-
 from time import sleep
 
 def preprocess(entries):
@@ -20,6 +19,11 @@ def preprocess(entries):
       col = re.sub(r'[\u200B\uFEFF \n\u200E]', ' ', col).strip()
 
       # fullwidth punctuation, numbers
+      col = col.replace('？', '?')
+      col = col.replace('！', '!')
+      # if re.search(r'\p{Nd}', col):
+      #   col = unicodedata.normalize('NFKC', col).strip()
+
       col = col.replace('？', '?')
       col = col.replace('！', '!')
       # if re.search(r'\p{Nd}', col):
@@ -162,6 +166,7 @@ EXDFPREP_RULES = {
       r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(s(?:\-|ome)(?: other )?(?:one|body|thing)[\'’]?s)\s+([^\s])' : (r'\1(\2) \3', ''),
       r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:\(?\s*to\s*\)?\s+)?be)\s+([^\(])'  : (r'\1(\2) \3', ''),
       r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(\(?(?:a\s+)?(?:kind|variety|type|sort|species) of\)?|k\.?o\.)\s*' : (r'\1(\2) ', r''),
+      r'^you sg\.?$' : (r'you (sg)', ''),
     },
     2: {
       r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)([Tt]he|[Aa]n?)\s+((?:(?:'+make_paren_regex()[1:-1]+'|[^\(\)\[\]\s]+))(?: (?:'+make_paren_regex()[1:-1]+'|[^\(\)\[\]\s]+))?)$'   : (r'\1(\2) \3', ''),      # r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(the)\s+([^\(])'   : (r'\1(\2) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun'),
@@ -186,6 +191,8 @@ EXDFPREP_RULES = {
       r' \(v\.?\)$' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal'),
       r' \(v\.?i\.?\)$' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸IntransitiveVerb'),
       r' \(v\.?t\.?\)$' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸TransitiveVerb'),
+      r' \(sg\.?\)$' : ('', '⫷dcs2:art-303⫸NumberProperty⫷dcs:art-303⫸SingularNumber'),
+      r' \(pl\.?\)$' : ('', '⫷dcs2:art-303⫸NumberProperty⫷dcs:art-303⫸PluralNumber'),
     },
   },
   'jpn-000' : {
@@ -1099,11 +1106,7 @@ def extract_taxa(entries, col, delim='‣'):
       newentry = []
       for syn in entry[col].split(delim):
         if re.search(r'\p{Latin}', syn.replace('⫷df⫸','')):
-          # print(reqno, syn)
-          # reqno += 1
           r = requests.get('http://127.0.0.1:3000', params={'text': syn}, headers={'Connection':'close'}).json()
-          # if reqno % 1000 == 0:
-            # sleep(1)
           if r:
             for match in r:
               offsets, name = match['offsets'], match['name']
@@ -1111,7 +1114,14 @@ def extract_taxa(entries, col, delim='‣'):
               if offsets[1] - offsets[0] == len(syn):
                 syn = '⫷ex:lat-003⫸' + name
               else:
-                syn = syn + '⫷ex:lat-003⫸' + name
+                # detect "sp(p)." notation and add meaning classification
+                if re.search(name + ' spp?\.?', syn):
+                  syn = re.sub(name + ' spp?\.?', ' ', syn).strip()
+                  syn += '⫷mcs2:art-300⫸IsA⫷mcs:lat-003⫸' + name
+                if syn.startswith('⫷mcs'):
+                  syn = '⫷ex:lat-003⫸' + name + syn
+                else:
+                  syn += '⫷ex:lat-003⫸' + name
         newentry.append(syn)
       entry[col] = delim.join(newentry)
       
@@ -1132,3 +1142,4 @@ def get_next_tag(tag):
     if isinstance(nexttag, Tag):
       return nexttag
   return None
+

@@ -88,7 +88,8 @@ def translator(source, target, phrase, version='0.0 test', charset='utf-8'):
     """
 
     url     = 'https://translate.googleapis.com/translate_a/single'
-    agent   = 'User-Agent',   'py-translate v{}'.format(version)
+    # agent   = 'User-Agent',   'py-translate v{}'.format(version)
+    agent   = 'User-Agent', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
     content = 'Content-Type', 'application/json; charset={}'.format(charset)
 
     params  = {'client': 'gtx', 'ie': charset, 'oe': charset,
