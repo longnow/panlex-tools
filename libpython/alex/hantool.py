@@ -65,6 +65,8 @@ for f in glob.glob(os.path.join(HANDATAFOLDER, 'ids/*.txt')):
       line = line.split('\t')
       if len(line) == 3:
         IDS_DICT[line[1].strip()] = line[2].strip()
+if not IDS_DICT:
+  raise IOError('IDS data not found. Try git pull --recurse-submodules')
 
 # throw components in a bag instead of keeping a sequence
 IDS_DICT_BAGGED = {}
