@@ -408,6 +408,7 @@ suf	art-303:Morpheme:art-303:Suffix
 suf.	art-303:Morpheme:art-303:Suffix	
 Suf.	art-303:Morpheme:art-303:Suffix	
 suffix	art-303:Morpheme:art-303:Suffix	
+suffijo	art-303:Morpheme:art-303:Suffix	
 suffix or ending	art-303:Morpheme:art-303:Suffix	
 suru-verb	art-303:PartOfSpeechProperty:art-303:Verbal	*
 svin.	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb‣art-306:STV	
