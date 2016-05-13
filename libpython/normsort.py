@@ -3,8 +3,9 @@
 import argparse
 import json
 from operator import itemgetter
+import regex as re
 
-import sys
+import termcolor
 
 
 def get_args():
@@ -32,6 +33,10 @@ def read_values(filename, min_count, max_count):
                 if word == degraded_form:
                     print('%4d %-22s => _' % (score,word))
                 else:
+                    if re.sub('\s+', '', word) == re.sub('\s+', '', degraded_form):
+                        degraded_form = termcolor.colored(degraded_form, 'red')
+                        word = termcolor.colored(word, 'red')
+
                     print('%4d %-22s => %-18s' % (score,word,degraded_form))
             else:
                 print('%4d %-22s' % (score,word))
