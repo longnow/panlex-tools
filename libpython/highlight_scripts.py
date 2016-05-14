@@ -36,7 +36,6 @@ def color_ipa_extensions(match):
 
 if __name__ == '__main__':
     args = get_args()
-    print(termcolor.ATTRIBUTES)
     if args.filename == None:
         fin = sys.stdin
     else:
