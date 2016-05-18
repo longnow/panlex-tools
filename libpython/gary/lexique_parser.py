@@ -11,8 +11,10 @@ class LexiqueParser(object):
         self._ignore_list = ['lpSpAfterEntryName', 'lpMiniHeading', 'lpPunctuation']
     
     
-    def _extract_entry(self, para):
+    def _extract_entry(self, para, src_token=None):
         record = []
+        if src_token:
+            record.append( ('LexEntryName',src_token) )
 
         for item in para.contents:
             if item.name == 'span':
@@ -20,18 +22,25 @@ class LexiqueParser(object):
                 if item['class'][0] not in self._ignore_list:
                     key = re.sub('^lp', '', item['class'][0])
 
-                    record.append((key,item.text))
+                    record.append( (key,item.text) )
 
         return record
     
     
-    def getRecords(self, filename):
+    def getRecords(self, filename:str) -> list:
         with open(filename) as fin:
             text = fin.read()
             bs = BeautifulSoup(text, 'lxml')
-            entries = bs.find_all('p',{'class':'lpLexEntryPara'})
+            entries = bs.find_all('p')
+            source = ''
+
             for para in entries:
-                yield self._extract_entry(para)
+                if 'class' in para.attrs and 'lpLexEntryPara' in para['class']:
+                    source = para.find('span', {'class':'lpLexEntryName'}).text.strip()
+                    yield self._extract_entry(para)
+                elif 'lpLexEntryPara2' in para['class']:
+                    yield self._extract_entry(para, source)
+
 
 
 
