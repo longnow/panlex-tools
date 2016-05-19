@@ -112,7 +112,7 @@ def filter_bad_parens(text):
 
 
 def trace(f):
-    def wrapper(*args,**kwargs):
+    def tracer(*args,**kwargs):
         result = f(*args,**kwargs)
         params = ', '.join([str(arg) for arg in args])
 
@@ -122,9 +122,12 @@ def trace(f):
 
         if isinstance(result, GeneratorType):
             for value in result:
-                print('%s(%s) ==> %s' % (f.__name__,params,value))
+                print('%s(%s) ==> %s' % (f.__name__,params,value),file=sys.stderr)
                 yield value
+            return
         else:
-            print('%s(%s) ==> %s' % (f.__name__,params,result))
+            print('%s(%s) ==> %s' % (f.__name__,params,result), file=sys.stderr)
             return result
-    return wrapper
+
+    return tracer
+
