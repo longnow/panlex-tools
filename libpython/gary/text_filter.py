@@ -1,6 +1,7 @@
 
 import regex as re
 import sys
+from types import GeneratorType
 import unicodedata
 
 from . import ignore_parens
@@ -81,6 +82,13 @@ def flatten_parentheses(text:str, remove=False) -> str:
 
     return ''.join(text)
 
+
+def balance_parentheses(text):
+    # TODO: handle all cases
+    text = re.sub('\([^)]*')
+    return text
+
+
 _cyrillic_chars = 'авемнорстухѐёѕіїјһӀ'
 _latin_chars = 'aBeMHopcTyxèësiïjhI'
 
@@ -95,3 +103,28 @@ def cyrillic2latin(text):
             chars[i] = _latin_chars[idx]
 
     return ''.join(chars)
+
+
+def filter_bad_parens(text):
+    text = re.sub('^([^(]+)\)\s*$', r'\1', text)
+
+    return text
+
+
+def trace(f):
+    def wrapper(*args,**kwargs):
+        result = f(*args,**kwargs)
+        params = ', '.join([str(arg) for arg in args])
+
+        if len(kwargs) > 0:
+            params += ', '
+            params += ', '.join([('%s=%s' % (key,value)) for key,value in kwargs.items()])
+
+        if isinstance(result, GeneratorType):
+            for value in result:
+                print('%s(%s) ==> %s' % (f.__name__,params,value))
+                yield value
+        else:
+            print('%s(%s) ==> %s' % (f.__name__,params,result))
+            return result
+    return wrapper
