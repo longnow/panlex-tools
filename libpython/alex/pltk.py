@@ -14,7 +14,7 @@ def preprocess(entries):
   for entry in entries:
     processed_entry = []
     for col in entry:
-      
+
       # nonstandard spaces/newlines
       col = re.sub(r'[\u200B\uFEFF \n\u200E]', ' ', col).strip()
 
@@ -61,7 +61,7 @@ def preprocess(entries):
 
       processed_entry.append(col)
     result.append(processed_entry)
-  
+
   return result
 
 
@@ -83,7 +83,7 @@ def split_outside_parens(entries, cols, delim=r',', parens=PARENS):
   minwords = 4
 
   assert parens
-  
+
   o_parens = [p[0] for p in parens]
   c_parens = [p[1] for p in parens]
 
@@ -166,7 +166,7 @@ EXDFPREP_RULES = {
       r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(s(?:\-|ome)(?: other )?(?:one|body|thing)[\'’]?s)\s+([^\s])' : (r'\1(\2) \3', ''),
       r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:\(?\s*to\s*\)?\s+)?be)\s+([^\(])'  : (r'\1(\2) \3', ''),
       r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(\(?(?:a\s+)?(?:kind|variety|type|sort|species) of\)?|k\.?o\.)\s*' : (r'\1(\2) ', r''),
-      r'^you sg\.?$' : (r'you (sg)', ''),
+      r'^you (sg|pl)\.?$' : (r'you (\1)', ''),
     },
     2: {
       r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)([Tt]he|[Aa]n?)\s+((?:(?:'+make_paren_regex()[1:-1]+'|[^\(\)\[\]\s]+))(?: (?:'+make_paren_regex()[1:-1]+'|[^\(\)\[\]\s]+))?)$'   : (r'\1(\2) \3', ''),      # r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(the)\s+([^\(])'   : (r'\1(\2) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun'),
@@ -192,7 +192,11 @@ EXDFPREP_RULES = {
       r' \(v\.?i\.?\)$' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸IntransitiveVerb'),
       r' \(v\.?t\.?\)$' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸TransitiveVerb'),
       r' \(sg\.?\)$' : ('', '⫷dcs2:art-303⫸NumberProperty⫷dcs:art-303⫸SingularNumber'),
+      r' \(singular\)$' : ('', '⫷dcs2:art-303⫸NumberProperty⫷dcs:art-303⫸SingularNumber'),
       r' \(pl\.?\)$' : ('', '⫷dcs2:art-303⫸NumberProperty⫷dcs:art-303⫸PluralNumber'),
+      r' \(plural\)$' : ('', '⫷dcs2:art-303⫸NumberProperty⫷dcs:art-303⫸SingularNumber'),
+      r'^do it$' : ('⫷df⫸do it', ''),
+      r'fæces' : ('faeces', ''),
     },
   },
   'jpn-000' : {
@@ -372,6 +376,7 @@ EXDFPREP_RULES = {
       r'^([^\.]{6,})\s*\.$' : (r'\1', ''),
       r'^\(([^\(\)]*)\)$' : (r'⫷df⫸\1', ''),
       r'^\[([^\[\]]*)\]$' : (r'⫷df⫸\1', ''),
+      r'^（([^\(\)]*)）$' : (r'⫷df⫸\1', ''),
       # numbered/lettered entries in front
       r'^[АБВГДЕЖЗабвгдежзABCDEFGHabcdefgh\d]\)\s+' : (r'', ''),
     }
@@ -453,7 +458,7 @@ def exdfprep(entries, sourcecols, tocol=-1, lang='eng-000', pretag_special_lvs=T
                 if int_m.group(1) in ['747']:
                   print('WARNING: Did not pretag potentially special number:', int_m.group(1))
                 else:
-                  syn = re.sub(r'^(?:⫷[^⫸]+⫸)?', '⫷ex:art-269⫸', syn.strip()).strip()
+                  syn = re.sub(r'^(?:⫷[^⫸]+⫸)?', '⫷ex:art-269⫸', unicodedata.normalize('NFKC', syn)).strip()
 
 
             result1.append(syn)
@@ -705,7 +710,7 @@ def resolve_xrefs(entries, fromcol, hwcol, xref_format=r'^= (.+)$'):
 
 
 def get_normalize_scores(exps, lang='eng-000'):
-  """ 
+  """
   exps = list of expressions to get scores
   lang = panlex language variety, including hyphen and 3 digit id
   returns dict of expressions and their scores
@@ -763,7 +768,7 @@ def normalize(entries, col, threshold=50, lang='eng-000'):
   return result
 
 
-JPN_NORMALIZE_EXCEPTIONS = ['おねえちゃん', 'おにいちゃん']
+JPN_NORMALIZE_EXCEPTIONS = ['おねえちゃん', 'おにいちゃん', 'のんべえ', '一人一人']
 
 def jpn_normalize(entries, col, delim='‣', maxlen=3, dftag='⫷df⫸'):
   """ Keeps, or retags entries based on expressions in given column. """
@@ -928,11 +933,11 @@ def decap(entries, cols):
       if col in cols:
         m = re.match(r'^('+make_paren_regex(cap=False)+r'?)\s*(.*)$', newcol)
         if not m:
-          raise ValueException('unexpected un-match:', newcol)
+          raise ValueException('unexpected non-match:', newcol)
         else:
           paren, rest = m.group(1), m.group(2)
           if not list(filter(None, [re.search(r'^'+nd+r'(?:\s|‣|⫷|;|,|\.|:|$)', rest) for nd in NO_DECAP])):
-            newcol = paren + ' ' + rest[0].lower() + rest[1:]
+            newcol = paren + ' ' + rest[0].lower() + rest[1:] if rest else ''
             newcol = newcol.strip()
       newentry.append(newcol)
     result.append(newentry)
@@ -1043,7 +1048,7 @@ def __degrade(s):
 def synthesize_strings(s1, s2, max_overlap=4, vowels='AEIOUYaeiouy'):
   # return a synthesis of the first and second strings, based on max_overlap amount
   max_overlap = min(max_overlap, min(len(s1),len(s2))) # account for string lengths
-  
+
   # first check for exact matches, then inexact matches, on all lengths except 1
   for overlap in range(max_overlap, 1, -1):
     for match in range(overlap, 1, -1):
@@ -1073,7 +1078,7 @@ def insert_into_tilde(s1, s2, max_overlap=4, vowels='AEIOUYaeiouy'):
     return s2
 
   s2_pre, s2_post = s2_separated.group(1), s2_separated.group(2)
-  
+
   if s2_pre.endswith(' ') and s2_post.startswith(' '):
     # tilde surrounded by space, just put s1 in there
     return s2.replace('~', s1)
@@ -1124,7 +1129,7 @@ def extract_taxa(entries, col, delim='‣'):
                   syn += '⫷ex:lat-003⫸' + name
         newentry.append(syn)
       entry[col] = delim.join(newentry)
-      
+
     return entries
     print('done')
 
@@ -1143,3 +1148,33 @@ def get_next_tag(tag):
       return nexttag
   return None
 
+def classify_cmn(entries, col, delim='‣'):
+  """ Classifies unknown cmn as simplified/traditional/both. """
+  try:
+    hantool
+  except:
+    from hantool import HanText
+
+  ht = HanText('')
+
+  simptag, tradtag = '⫷ex:cmn-000⫸', '⫷ex:cmn-001⫸'
+
+  assert col < len(entries[0])
+  result = []
+  for entry in entries:
+    if not isinstance(entry[col], list):
+      entry[col] = entry[col].split(delim)
+    newentry = []
+    for syn in entry[col]:
+      if syn:
+        ht.update(syn)
+        if ht.is_simp():
+          # print(simptag+syn)
+          newentry.append(simptag+syn)
+        if ht.is_trad():
+          # print(tradtag+syn)
+          newentry.append(tradtag+syn)
+        # if ht.is_trad_only():
+        #   print('!!!', syn)
+    result.append(entry[:col] + [delim.join(newentry).replace(delim+simptag[0],simptag[0])] + entry[col+1:])
+  return result

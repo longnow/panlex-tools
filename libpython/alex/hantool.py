@@ -100,7 +100,7 @@ NBCLASSIFIER = None
 
 
 class HanText:
-  def __init__(self, string):
+  def __init__(self, string=''):
     self.update(string)
     
   def update(self, string):
@@ -272,6 +272,14 @@ class HanText:
         #     if not self.scripts:
         #       raise ValueError('could not determine script: {}'.format(self.string))
     return self.scripts
+
+  def is_simp(self):
+    scripts = self.scripts if self.scripts else self.get_scripts()
+    return 'Hans' in scripts
+
+  def is_trad(self):
+    scripts = self.scripts if self.scripts else self.get_scripts()
+    return 'Hant' in scripts
 
   def is_simp_only(self):
     scripts = self.scripts if self.scripts else self.get_scripts()

@@ -408,8 +408,8 @@ suf	art-303:Morpheme:art-303:Suffix
 suf.	art-303:Morpheme:art-303:Suffix	
 Suf.	art-303:Morpheme:art-303:Suffix	
 suffix	art-303:Morpheme:art-303:Suffix	
-sufijo	art-303:Morpheme:art-303:Suffix	
 suffix or ending	art-303:Morpheme:art-303:Suffix	
+sufijo	art-303:Morpheme:art-303:Suffix	
 suru-verb	art-303:PartOfSpeechProperty:art-303:Verbal	*
 svin.	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb‣art-306:STV	
 TEMP	art-303:PartOfSpeechProperty:art-303:Adverbial	
@@ -497,9 +497,19 @@ vtrm.	art-303:PartOfSpeechProperty:art-303:TransitiveVerb‣art-303:PartOfSpeech
 weak	art-303:Class:art-253:weak(scn>grammar)	
 ZEW	art-303:PartOfSpeechProperty:art-303:NumeralClassifier	
 Zählwort	art-303:PartOfSpeechProperty:art-303:NumeralClassifier	
+介詞	art-303:PartOfSpeechProperty:art-303:Preposition	
+代詞	art-303:PartOfSpeechProperty:art-303:Pronominal	
 副詞	art-303:PartOfSpeechProperty:art-303:Adverbial	
+助詞	art-303:PartOfSpeechProperty:art-303:Auxiliary	
+動詞	art-303:PartOfSpeechProperty:art-303:Verbal	
+名詞	art-303:PartOfSpeechProperty:art-303:Noun	
+嘆詞	art-303:PartOfSpeechProperty:art-303:Interjection	
+形容詞	art-303:PartOfSpeechProperty:art-303:Adjectival	
 感	art-303:PartOfSpeechProperty:art-303:Interjection	
 感動詞	art-303:PartOfSpeechProperty:art-303:Interjection	
 指示詞	art-303:PartOfSpeechProperty:art-303:Demonstrative	
+數詞	art-303:PartOfSpeechProperty:art-303:CardinalNumeral	
 謙譲語	art-317:register:art-306:HBL	
 連体詞	art-303:LinguisticProperty:art-253:attributive(icl>adj,ant>predicative)	
+連詞	art-303:PartOfSpeechProperty:art-303:Conjunction	
+量詞	art-303:PartOfSpeechProperty:art-303:NumeralClassifier	
