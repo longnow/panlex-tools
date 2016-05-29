@@ -16,6 +16,11 @@ def log_results(text, debug=False):
         logging.debug(text)
 
 
+def default_str(text):
+    return text or ''
+
+
+
 def run_filters(filters, entry, is_logged=False, **kwargs):
     if is_logged:
         logging.basicConfig(filename=log_file,level=logging.DEBUG)
@@ -75,32 +80,77 @@ class Entry(object):
 
 
 def ignore_parens(proc):
-    pat = re.compile('\([^)]*\)')
+    pat = re.compile('(\([^)]*\))|(\[[^\]]*\])')
 
-    def wrapper(text):
+    def parens_wrapper(text, *args, **kwargs):
         if not pat.search(text):
-            return proc(text)
+            return proc(text, *args, **kwargs)
 
         out = io.StringIO()
 
         i = j = 0
         for match in pat.finditer(text):
             j = match.start()
-            out.write( proc(text[i:j]))
+            out.write( proc(text[i:j], *args, **kwargs))
             i = match.end()
             out.write( text[j:i])
 
-        out.write( proc(text[i:]))
+        out.write( proc(text[i:], *args, **kwargs))
         text = out.getvalue()
         out.close()
-        return text
 
-    return wrapper
+        if len(args) > 0:
+            ls = [text]
+            ls.extend(args)
+            return tuple(ls)
+        else:
+            return text
+
+    parens_wrapper.__name__ = 'ignore_parens(%s)' % proc.__name__
+    return parens_wrapper
+
+
+
+def ignore_parens_list(proc):
+    pat = re.compile('(\([^)]*\))|(\[[^\]]*\])')
+
+    def parens_wrapper(text):
+        if not pat.search(text):
+            return proc(text)
+
+        outlist = []
+        i = j = 0
+
+        for match in pat.finditer(text):
+            j = match.start()
+            results = proc(text[i:j])
+            i = match.end()
+            results[-1] += text[j:i]
+            if len(results) > 0:
+                outlist.extend(results)
+
+        final = proc(text[i:])
+        if len(final) > 0:
+            outlist.extend( final)
+
+        return [item for item in outlist if len(item) > 0]
+
+    parens_wrapper.__name__ = 'ignore_parens_list(%s)' % proc.__name__
+    return parens_wrapper
+
+
+def filter_unique(items_list):
+    new_list = []
+    for item in items_list:
+        if len(item.strip()) > 0 and item.strip() not in new_list:
+            new_list.append(item.strip())
+
+    return new_list
 
 
 def process_synonyms(proc):
     # s = '‣'
-    def wrapper(text):
+    def syn_wrapper(text):
         mn_fields = text.split('⁋')
 
         for i in range(len(mn_fields)):
@@ -111,13 +161,73 @@ def process_synonyms(proc):
 
             mn_fields[i] = '‣'.join( syn_fields)
 
+        mn_fields = filter_unique(mn_fields)
         return '⁋'.join(mn_fields)
 
-    return wrapper
+    return syn_wrapper
+
+
+def process_plx_synonyms(proc):
+    # s = '‣'
+    def plx_wrapper(text):
+        idx_list = [ex_match.start() for ex_match in re.finditer('⫷(?:ex|df)(?::\w{1,4}-\d{1,3})?⫸', text)]
+        if len(idx_list) == 0:
+            return process_synonyms(proc)(text)
+        idx_list.append( len(text))
+        final_exp = []
+
+        for idx in range(len(idx_list) - 1):
+            ex = text[ idx_list[idx] : idx_list[idx+1]]
+            match = re.search('(⫷(?:ex|df)(?::\w{1,4}-\d{1,3})?⫸)([^⫷]*)(⫷.*)?', ex)
+            if match:
+                result = proc(match[2])
+                final_exp.append('%s%s%s' % (match[1],result,default_str(match[3])) )
+
+        final_exp = filter_unique(final_exp)
+        text = ''.join(final_exp)
+        return text
+
+    return plx_wrapper
+
+
+def process_plx_dual_synonyms(proc):
+    # s = '‣'
+    def plx_dual_wrapper(text,metadata):
+        idx_list = [ex_match.start() for ex_match in re.finditer('⫷(?:ex|df)(?::\w{1,4}-\d{1,3})?⫸', text)]
+
+        if len(idx_list) == 0:
+            # fields = re.split('‣', text)
+            #
+            # for i in range(len(fields)):
+            #     fields[i],new_metadata = proc(fields[i],metadata)
+            #     if not re.search('^⫷ex(:\w{3}-\d{3})?⫸', fields[i]):
+            #         fields[i] = '⫷ex⫸%s' % fields[i]
+            #     metadata = append_synonym(metadata, new_metadata)
+            #
+            # fields = filter_unique(fields)
+            # text = ''.join(fields)
+
+            return process_text_synonym_extract(proc)(text,metadata)
+
+        idx_list.append( len(text))
+        final_exp = []
+
+        for idx in range(len(idx_list) - 1):
+            ex = text[ idx_list[idx] : idx_list[idx+1]]
+            match = re.search('(⫷(?:ex|df)(?::\w{1,4}-\d{1,3})?⫸)([^⫷]*)(⫷.*)?', ex)
+            if match:
+                new_text,new_metadata = proc(match[2], metadata)
+                metadata = append_synonym(metadata, new_metadata)
+                final_exp.append('%s%s%s' % (match[1],new_text,default_str(match[3])) )
+
+        final_exp = filter_unique(final_exp)
+        text = ''.join(final_exp)
+        return text,metadata
+
+    return plx_dual_wrapper
 
 
 def process_method_synonyms(proc):
-    # s = '‣'
     def wrapper(text):
         fields = text.split('‣')
         for i in range(len(fields)):
@@ -132,7 +242,8 @@ def process_text_synonym_extract(proc):
         fields1 = text1.split('‣')
 
         for i in range(len(fields1)):
-            fields1[i],text2 = proc(fields1[i],text2)
+            fields1[i],new_text2 = proc(fields1[i],text2)
+            text2 = append_synonym(text2, new_text2)
 
         fields1 = [f for f in fields1 if len(f) > 0]
         text1 = '‣'.join( fields1)
@@ -179,6 +290,24 @@ def append_synonym(text, elem):
             return text
 
 
+def append_plx_synonym(text, elem):
+    fields = []
+    for match in re.finditer('(⫷(?:ex|df)(?::\w{3}-\d{3})?⫸)([^⫷]*)', text):
+        curr = match[2].strip()
+        if curr not in fields and len(curr) > 0:
+            fields.append('%s%s' % (match[1],curr))
+
+    new_match = re.search('^(⫷(?:ex|df)(?::\w{3}-\d{3})?⫸)?\s*([^⫷]*?)\s*$', elem)
+    if new_match:
+        if new_match[2] not in fields and len(new_match[2].strip()) > 0:
+            if new_match[1]:
+                fields.append('%s%s' % (new_match[1],new_match[2]))
+            else:
+                fields.append('⫷ex⫸%s' % new_match[2])
+
+    return ''.join(fields)
+
+
 def append_meaning(text, elem):
     fields = text.split('\s*⁋\s*')
 
@@ -199,15 +328,28 @@ def join_synonyms(syn_ls):
     syn_ls = [syn for syn in syn_ls if syn != None and len(syn) > 0]
     return '‣'.join(syn_ls)
 
+
 def pretag_df(text):
     match = re.search('^(?:⫷[^⫸]*⫸)?(.*)$', text)
     text = '⫷df⫸%s' % match[1]
     return text
 
 
-def pretag_ex(text):
+def pretag_ex(text, langid=None):
     match = re.search('^(?:⫷[^⫸]*⫸)?(.*)$', text)
-    text = '⫷ex⫸%s' % match[1]
+    if langid and re.search('^\w{3}-\d{3}$'):
+        text = '⫷ex⫸%s' % (match[1], langid)
+    else:
+        text = '⫷ex⫸%s' % match[1]
+    return text
+
+
+def delimToPanlex(text, lang=None):
+    fields = text.split('‣')
+    if lang and re.search('^\w{3}-\d{3}$', lang):
+        text = ''.join([('⫷ex:%s⫸%s' % (lang,field)) for field in fields])
+    else:
+        text = ''.join([('⫷ex⫸%s' % field) for field in fields])
     return text
 
 
@@ -280,7 +422,7 @@ class DcsMapper(object):
 
 
     def __getitem__(self, key):
-        return self.mapping[key]
+        return ''.join([self.mapping[k] for k in key.split('‣')])
 
 
     def __setitem__(self, key, value):
@@ -297,5 +439,4 @@ class DcsMapper(object):
                 results.append(tag)
 
         return ''.join(results)
-
 
