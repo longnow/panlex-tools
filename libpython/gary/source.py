@@ -196,17 +196,6 @@ def process_plx_dual_synonyms(proc):
         idx_list = [ex_match.start() for ex_match in re.finditer('⫷(?:ex|df)(?::\w{1,4}-\d{1,3})?⫸', text)]
 
         if len(idx_list) == 0:
-            # fields = re.split('‣', text)
-            #
-            # for i in range(len(fields)):
-            #     fields[i],new_metadata = proc(fields[i],metadata)
-            #     if not re.search('^⫷ex(:\w{3}-\d{3})?⫸', fields[i]):
-            #         fields[i] = '⫷ex⫸%s' % fields[i]
-            #     metadata = append_synonym(metadata, new_metadata)
-            #
-            # fields = filter_unique(fields)
-            # text = ''.join(fields)
-
             return process_text_synonym_extract(proc)(text,metadata)
 
         idx_list.append( len(text))
@@ -218,7 +207,8 @@ def process_plx_dual_synonyms(proc):
             if match:
                 new_text,new_metadata = proc(match[2], metadata)
                 metadata = append_synonym(metadata, new_metadata)
-                final_exp.append('%s%s%s' % (match[1],new_text,default_str(match[3])) )
+                if len(match[2].strip()) > 0:
+                    final_exp.append('%s%s%s' % (match[1],new_text,default_str(match[3])) )
 
         final_exp = filter_unique(final_exp)
         text = ''.join(final_exp)
@@ -330,26 +320,51 @@ def join_synonyms(syn_ls):
 
 
 def pretag_df(text):
+    before = text
+    if len(text.strip()) == 0:
+        return ''
     match = re.search('^(?:⫷[^⫸]*⫸)?(.*)$', text)
     text = '⫷df⫸%s' % match[1]
     return text
 
 
 def pretag_ex(text, langid=None):
-    match = re.search('^(?:⫷[^⫸]*⫸)?(.*)$', text)
-    if langid and re.search('^\w{3}-\d{3}$'):
-        text = '⫷ex⫸%s' % (match[1], langid)
+    if len(text.strip()) == 0:
+        # do not add tag if empty, causes problems in serialization
+        return ''
+
+    match = re.search('^(?:⫷(?:ex|df)(:\w{3}-\d{3})?⫸)?(.*)$', text)
+
+    if langid and re.search('^\w{3}-\d{3}$', langid):
+        text = '⫷ex:%s⫸%s' % (langid,match[2])
+    elif langid == None and match[1] != None:
+        text = '⫷ex%s⫸%s' % (match[1],match[2])
     else:
-        text = '⫷ex⫸%s' % match[1]
+        text = '⫷ex⫸%s' % match[2]
+
     return text
 
 
+# TODO: handle each case
+# 1) lang given, no lang in field -> add lang to field
+# 2) lang given, lang in field -> update lang in field?
+# 3) no lang given -> no change
 def delimToPanlex(text, lang=None):
     fields = text.split('‣')
-    if lang and re.search('^\w{3}-\d{3}$', lang):
-        text = ''.join([('⫷ex:%s⫸%s' % (lang,field)) for field in fields])
-    else:
-        text = ''.join([('⫷ex⫸%s' % field) for field in fields])
+    for i in range(len(fields)):
+        plx_match = re.search('^⫷(?:ex|df)(:\w{2,}-\d{3,})?⫸', fields[i])
+        if plx_match:
+            if lang != None:
+                if len(fields[i][plx_match.end:].strip()) > 0:
+                    fields[i] = '⫷ex:%s⫸%s' % (lang,fields[i][plx_match.end:])
+        else:
+            if lang != None and len(fields[i].strip()) > 0:
+                fields[i] = '⫷ex:%s⫸%s' % (lang,fields[i])
+            elif len(fields[i].strip()) > 0:
+                fields[i] = '⫷ex⫸%s' % (fields[i])
+
+    text = ''.join(fields)
+
     return text
 
 
