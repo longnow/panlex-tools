@@ -180,7 +180,7 @@ sub cmd_fetch {
     }
 
     my $ua = LWP::UserAgent->new;
-    $ua->credentials('dev.panlex.org:80', 'PanLex source browser', $ENV{PANLEX_ARCHIVE_USERNAME}, $ENV{PANLEX_ARCHIVE_PASSWORD});
+    $ua->credentials('dev.panlex.org:80', 'PanLex resource browser', $ENV{PANLEX_ARCHIVE_USERNAME}, $ENV{PANLEX_ARCHIVE_PASSWORD});
 
     my $r;
 
