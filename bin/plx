@@ -14,7 +14,7 @@ use Unicode::Normalize;
 use lib "$ENV{PANLEX_TOOLDIR}/lib";
 use PanLex::Client;
 
-my $SOURCE_ARCHIVE_URL = 'http://dev.panlex.org/resources';
+my $RESOURCE_ARCHIVE_URL = 'http://dev.panlex.org/resources';
 my $PANLEM_URL = 'http://panlex.org/u';
 
 usage(), exit(0) unless @ARGV;
@@ -185,7 +185,7 @@ sub cmd_fetch {
     my $r;
 
     foreach my $dir (qw/ incoming main /) {
-        my $url = "${SOURCE_ARCHIVE_URL}/download/${dir}/${source}.zip";
+        my $url = "${RESOURCE_ARCHIVE_URL}/download/${dir}/${source}.zip";
         $r = $ua->get($url);
 
         if ($r->is_success) {
@@ -323,10 +323,10 @@ sub cmd_upload {
     system('zip', '-r', $zippath, $dirname);
 
     my $ua = LWP::UserAgent->new;
-    $ua->credentials('dev.panlex.org:80', 'PanLex source browser', $ENV{PANLEX_ARCHIVE_USERNAME}, $ENV{PANLEX_ARCHIVE_PASSWORD});
+    $ua->credentials('dev.panlex.org:80', 'PanLex resource browser', $ENV{PANLEX_ARCHIVE_USERNAME}, $ENV{PANLEX_ARCHIVE_PASSWORD});
 
     print STDERR "Uploading zip file ...\n";
-    my $r = $ua->post("${SOURCE_ARCHIVE_URL}/upload", 
+    my $r = $ua->post("${RESOURCE_ARCHIVE_URL}/upload", 
         Content_Type => 'form-data',
         Content => [
             editor  => encode('utf8', $ENV{PANLEX_ARCHIVE_NAME}),
