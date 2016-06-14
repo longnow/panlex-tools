@@ -14,7 +14,7 @@ use Unicode::Normalize;
 use lib "$ENV{PANLEX_TOOLDIR}/lib";
 use PanLex::Client;
 
-my $SOURCE_ARCHIVE_URL = 'http://dev.panlex.org/sources';
+my $SOURCE_ARCHIVE_URL = 'http://dev.panlex.org/resources';
 my $PANLEM_URL = 'http://panlex.org/u';
 
 usage(), exit(0) unless @ARGV;
