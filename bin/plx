@@ -305,6 +305,12 @@ sub cmd_upload {
         print(STDERR "You need to specify a valid source directory.\n"), return;        
     }
 
+    my $type = 'analyzed';
+
+    if (defined $_[0] and ($_[0] eq 'new' or $_[0] eq 'analyzed')) {
+        $type = shift;
+    }
+
     my $note = join ' ', @_;
     print(STDERR "You need to specify a note.\n"), return if $note eq '';
 
@@ -331,6 +337,7 @@ sub cmd_upload {
         Content => [
             editor  => encode('utf8', $ENV{PANLEX_ARCHIVE_NAME}),
             email   => encode('utf8', $ENV{PANLEX_ARCHIVE_EMAIL}),
+            type    => $type,
             notes   => encode('utf8', $note),
             zip     => [encode('utf8', $zippath), undef],
         ]
@@ -370,20 +377,20 @@ Commands:
 
 cp <tool> (<dest>)
     copy PanLex tool into the current directory
-fetch <source_dir>|<source_label>|<source_id>
-    fetch PanLex source from archive into the current directory and unzip it
+fetch <resource_dir>|<source_label>|<source_id>
+    fetch PanLex resource from archive into the current directory and unzip it
 submit (<file>) (<source_id>|<source_label>) (replace|add|check)
     submit final source file to PanLem
-upload (<dir>) <note>
-    upload PanLex source directory to archive with note
+upload (<dir>) (analyzed|new) <note>
+    upload analyzed/new PanLex resource directory to archive with note
 server <port>
     run HTTP server (experimental)
 
 Environment variables:
 
 PANLEX_TOOLDIR              panlex-tools directory path
-PANLEX_ARCHIVE_USERNAME     PanLex source archive username
-PANLEX_ARCHIVE_PASSWORD     PanLex source archive password
+PANLEX_ARCHIVE_USERNAME     PanLex resource archive username
+PANLEX_ARCHIVE_PASSWORD     PanLex resource archive password
 PANLEX_ARCHIVE_NAME         full name of PanLex editor
 PANLEX_ARCHIVE_EMAIL        email of PanLex editor
 PANLEX_PANLEM_USER          PanLem numeric user id
