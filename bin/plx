@@ -295,6 +295,13 @@ sub cmd_submit {
 }
 
 sub cmd_upload {
+    my $type = 'analyzed';
+
+    if (defined $_[0] and $_[0] eq '-n') {
+        $type = 'new';
+        shift;
+    }
+
     my $dirpath;
 
     if (defined $_[0] and -d $_[0]) {
@@ -303,12 +310,6 @@ sub cmd_upload {
         $dirpath = curdir();
     } else {
         print(STDERR "You need to specify a valid source directory.\n"), return;        
-    }
-
-    my $type = 'analyzed';
-
-    if (defined $_[0] and ($_[0] eq 'new' or $_[0] eq 'analyzed')) {
-        $type = shift;
     }
 
     my $note = join ' ', @_;
@@ -381,8 +382,8 @@ fetch <resource_dir>|<source_label>|<source_id>
     fetch PanLex resource from archive into the current directory and unzip it
 submit (<file>) (<source_id>|<source_label>) (replace|add|check)
     submit final source file to PanLem
-upload (<dir>) (analyzed|new) <note>
-    upload analyzed/new PanLex resource directory to archive with note
+upload (-n) (<dir>) <note>
+    upload analyzed (default) or new (-n) PanLex resource directory to archive with note
 server <port>
     run HTTP server (experimental)
 
