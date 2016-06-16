@@ -1,4 +1,4 @@
-from gary import process_method_synonyms, process_synonyms
+from gary import process_method_synonyms, process_synonyms, process_plx_synonyms, process_plx_dual_synonyms
 from gary import source
 
 
@@ -36,6 +36,35 @@ class SynonymFilter(object):
             langObj = entry.__getattribute__(langId)
             result = self.func(langObj.text, **kwargs)
             langObj.text = result
+
+
+class PanlexSynonymFilter:
+    def __init__(self, func, *languages):
+        self.name = func.__name__
+        self.func = process_plx_synonyms(func)
+        self.langs = languages
+
+    def __call__(self, entry, *args, **kwargs):
+        for langId in self.langs:
+            langObj = entry.__getattribute__(langId)
+            result = self.func(langObj.text, **kwargs)
+            langObj.text = result
+
+
+class PanlexExtractorFilter:
+    def __init__(self, dual_func, fromField, toField, **kwargs):
+        self.func = process_plx_dual_synonyms(dual_func)
+        self.name = dual_func.__name__
+        self.fromProps = fromField.split('.')
+        self.toProps = toField.split('.')
+
+    def __call__(self, entry, *args, **kwargs):
+        fromField = entry.__getattribute__(self.fromProps[0]).__getattribute__(self.fromProps[1])
+        toField = entry.__getattribute__(self.toProps[0]).__getattribute__(self.toProps[1])
+        result = self.func(fromField, toField)
+        fromResult,toResult = result
+        entry.__getattribute__(self.fromProps[0]).__setattr__(self.fromProps[1], fromResult)
+        entry.__getattribute__(self.toProps[0]).__setattr__(self.toProps[1], toResult)
 
 
 

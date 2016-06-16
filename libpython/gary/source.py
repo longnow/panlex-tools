@@ -154,12 +154,15 @@ def process_synonyms(proc):
         mn_fields = text.split('⁋')
 
         for i in range(len(mn_fields)):
+            dest_fields = []
             syn_fields = mn_fields[i].split('‣')
 
-            for j in range(len(syn_fields)):
-                syn_fields[j] = proc(syn_fields[j])
+            for syn_field in syn_fields:
+                syn_field = proc(syn_field)
+                if len(syn_field.strip()) > 0 and syn_field not in dest_fields:
+                    dest_fields.append(syn_field)
 
-            mn_fields[i] = '‣'.join( syn_fields)
+            mn_fields[i] = '‣'.join(dest_fields)
 
         mn_fields = filter_unique(mn_fields)
         return '⁋'.join(mn_fields)
