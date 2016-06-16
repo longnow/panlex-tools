@@ -295,10 +295,10 @@ sub cmd_submit {
 }
 
 sub cmd_upload {
-    my $type = 'analyzed';
+    my $type = 'source';
 
-    if (defined $_[0] and $_[0] eq '-n') {
-        $type = 'unanalyzed';
+    if (defined $_[0] and $_[0] eq '-r') {
+        $type = 'resource';
         shift;
     }
 
@@ -382,8 +382,8 @@ fetch <resource_dir>|<source_label>|<source_id>
     fetch PanLex resource from archive into the current directory and unzip it
 submit (<file>) (<source_id>|<source_label>) (replace|add|check)
     submit final source file to PanLem
-upload (-n) (<dir>) <note>
-    upload analyzed (default) or unanalyzed (-n) PanLex resource directory to archive with note
+upload (-r) (<dir>) <note>
+    upload source (default) or resource (-r) directory to archive with note
 server <port>
     run HTTP server (experimental)
 
