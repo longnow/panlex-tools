@@ -24,10 +24,9 @@ def preprocess(entries):
       # if re.search(r'\p{Nd}', col):
       #   col = unicodedata.normalize('NFKC', col).strip()
 
-      col = col.replace('？', '?')
-      col = col.replace('！', '!')
-      # if re.search(r'\p{Nd}', col):
-      #   col = unicodedata.normalize('NFKC', col).strip()
+      # parenthesis standardization
+      if '(' in col or ')' in col:
+        col = col.replace('（','(').replace('）',')')
 
       # hyphen to hyphen-minus
       col = col.replace('‐','-')
@@ -194,7 +193,11 @@ EXDFPREP_RULES = {
       r' \(sg\.?\)$' : ('', '⫷dcs2:art-303⫸NumberProperty⫷dcs:art-303⫸SingularNumber'),
       r' \(singular\)$' : ('', '⫷dcs2:art-303⫸NumberProperty⫷dcs:art-303⫸SingularNumber'),
       r' \(pl\.?\)$' : ('', '⫷dcs2:art-303⫸NumberProperty⫷dcs:art-303⫸PluralNumber'),
-      r' \(plural\)$' : ('', '⫷dcs2:art-303⫸NumberProperty⫷dcs:art-303⫸SingularNumber'),
+      r' \(plural\)$' : ('', '⫷dcs2:art-303⫸NumberProperty⫷dcs:art-303⫸PluralNumber'),
+      r' \(excl?(usive)?\)$' : ('', '⫷dcs2:art-303⫸PersonProperty⫷dcs:art-303⫸FirstPersonExclusive'),
+      r' \(incl?(usive)?\)$' : ('', '⫷dcs2:art-303⫸PersonProperty⫷dcs:art-303⫸FirstPersonInclusive'),
+      r' \(impol(ite)?\)$' : ('', '⫷dcs2:art-317⫸register⫷dcs:art-317⫸vulgarRegister'),
+      r' \(pol(ite)?\)$' : ('', '⫷dcs2:art-317⫸register⫷dcs:art-306⫸POL'),
       r'^do it$' : ('⫷df⫸do it', ''),
       r'fæces' : ('faeces', ''),
     },
@@ -280,10 +283,15 @@ EXDFPREP_RULES = {
       r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)å\s+' : (r'\1(å) ', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal'),
     },
   },
+  'dan-000' : {
+    1: {
+      r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(e[nt])\s+' : (r'\1(\2) ', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun'),
+    },
+  },
   'fra-000' : {
     1 : {
       r'^(.+)\s+(quelqu[\'’]un|quelque chose)' : (r'\1 (\2)', ''),
-      r'\(?(q\.?q\.?(?:ch|un?)\.?)\)?' : (r'(\1)', ''),
+      r'\(?(q\.?q\.?(?:ch|un?|n)\.?)\)?' : (r'(\1)', ''),
       r'^([Ll][\'’])([^\s\(])' : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun'),
       r'^([Ll]e)\s+([^\s\(])'     : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸MasculineGender'),
       r'^([Ll]a)\s+([^\s\(])'     : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸FeminineGender'),
@@ -294,7 +302,7 @@ EXDFPREP_RULES = {
       r'^(\(?(?:type|sorte|espèce) d[e\']\)?)\s*(.+)$' : (r'(\1) \2', r'⫷mcs2:art-300⫸IsA⫷mcs:fra-000⫸\2'),
     },
     2: {
-      r'^devenir\s+([^\s]+)$' : (r'devenir \1', r'⫷dcs2:art-316⫸Inchoative_of⫷dcs⫸\1'),
+      r'^devenir\s+([^\s]+)((?:\s*'+make_paren_regex(cap=False)+r')?$)' : (r'devenir \1\2', r'⫷dcs2:art-316⫸Inchoative_of⫷dcs⫸\1'),
       r' \(m\.?\)$' : ('', '⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸MasculineGender'),
       r' \(f\.?\)$' : ('', '⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸FeminineGender'),
     }
@@ -369,7 +377,7 @@ EXDFPREP_RULES = {
     },
     999 : {
       r'(.)[！!]$'  : (r'\1', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Interjection'),
-      r'(.)[？\?]$' : (r'\1', '⫷dcs2:art-303⫸ForceProperty⫷dcs:art-303⫸InterrogativeForce'),
+      # r'(.)[？\?]$' : (r'\1', '⫷dcs2:art-303⫸ForceProperty⫷dcs:art-303⫸InterrogativeForce'),
       r'^\?+$' : ('', ''),
       r'["“”]'  : ('', ''),
       # delete periods at end, but only when no periods in exp already, and len > 6
@@ -952,6 +960,11 @@ def delete_col(entries, col):
   assert col < len(entries[0])
   return [entry[:col] + entry[col+1:] for entry in entries]
 
+def delete_cols(entries, cols):
+  result = entries
+  for col in sorted(cols, reverse=True):
+    result = delete_col(result, col)
+  return result
 
 def correct_homoglyphs(entries, cols, target_script='Latn'):
   # convert any stray characters from other scripts (Latin, Cyrillic, Greek)

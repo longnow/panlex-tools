@@ -14,7 +14,7 @@ use Unicode::Normalize;
 use lib "$ENV{PANLEX_TOOLDIR}/lib";
 use PanLex::Client;
 
-my $SOURCE_ARCHIVE_URL = 'http://dev.panlex.org/sources';
+my $RESOURCE_ARCHIVE_URL = 'http://dev.panlex.org/resources';
 my $PANLEM_URL = 'http://panlex.org/u';
 
 usage(), exit(0) unless @ARGV;
@@ -180,12 +180,12 @@ sub cmd_fetch {
     }
 
     my $ua = LWP::UserAgent->new;
-    $ua->credentials('dev.panlex.org:80', 'PanLex source browser', $ENV{PANLEX_ARCHIVE_USERNAME}, $ENV{PANLEX_ARCHIVE_PASSWORD});
+    $ua->credentials('dev.panlex.org:80', 'PanLex resource browser', $ENV{PANLEX_ARCHIVE_USERNAME}, $ENV{PANLEX_ARCHIVE_PASSWORD});
 
     my $r;
 
     foreach my $dir (qw/ incoming main /) {
-        my $url = "${SOURCE_ARCHIVE_URL}/download/${dir}/${source}.zip";
+        my $url = "${RESOURCE_ARCHIVE_URL}/download/${dir}/${source}.zip";
         $r = $ua->get($url);
 
         if ($r->is_success) {
@@ -295,6 +295,13 @@ sub cmd_submit {
 }
 
 sub cmd_upload {
+    my $type = 'source';
+
+    if (defined $_[0] and $_[0] eq '-r') {
+        $type = 'resource';
+        shift;
+    }
+
     my $dirpath;
 
     if (defined $_[0] and -d $_[0]) {
@@ -323,14 +330,15 @@ sub cmd_upload {
     system('zip', '-r', $zippath, $dirname);
 
     my $ua = LWP::UserAgent->new;
-    $ua->credentials('dev.panlex.org:80', 'PanLex source browser', $ENV{PANLEX_ARCHIVE_USERNAME}, $ENV{PANLEX_ARCHIVE_PASSWORD});
+    $ua->credentials('dev.panlex.org:80', 'PanLex resource browser', $ENV{PANLEX_ARCHIVE_USERNAME}, $ENV{PANLEX_ARCHIVE_PASSWORD});
 
     print STDERR "Uploading zip file ...\n";
-    my $r = $ua->post("${SOURCE_ARCHIVE_URL}/upload", 
+    my $r = $ua->post("${RESOURCE_ARCHIVE_URL}/upload", 
         Content_Type => 'form-data',
         Content => [
             editor  => encode('utf8', $ENV{PANLEX_ARCHIVE_NAME}),
             email   => encode('utf8', $ENV{PANLEX_ARCHIVE_EMAIL}),
+            type    => $type,
             notes   => encode('utf8', $note),
             zip     => [encode('utf8', $zippath), undef],
         ]
@@ -370,20 +378,20 @@ Commands:
 
 cp <tool> (<dest>)
     copy PanLex tool into the current directory
-fetch <source_dir>|<source_label>|<source_id>
-    fetch PanLex source from archive into the current directory and unzip it
+fetch <resource_dir>|<source_label>|<source_id>
+    fetch PanLex resource from archive into the current directory and unzip it
 submit (<file>) (<source_id>|<source_label>) (replace|add|check)
     submit final source file to PanLem
-upload (<dir>) <note>
-    upload PanLex source directory to archive with note
+upload (-r) (<dir>) <note>
+    upload source (default) or resource (-r) directory to archive with note
 server <port>
     run HTTP server (experimental)
 
 Environment variables:
 
 PANLEX_TOOLDIR              panlex-tools directory path
-PANLEX_ARCHIVE_USERNAME     PanLex source archive username
-PANLEX_ARCHIVE_PASSWORD     PanLex source archive password
+PANLEX_ARCHIVE_USERNAME     PanLex resource archive username
+PANLEX_ARCHIVE_PASSWORD     PanLex resource archive password
 PANLEX_ARCHIVE_NAME         full name of PanLex editor
 PANLEX_ARCHIVE_EMAIL        email of PanLex editor
 PANLEX_PANLEM_USER          PanLem numeric user id
