@@ -5,10 +5,15 @@ import os
 import requests
 from collections import defaultdict
 
-data_directory = os.path.dirname(__file__) + '/data/iso639/'
+data_directory = os.path.dirname(__file__) + '/data/'
+iso639_data_directory = data_directory + '/iso639/'
 
 try:
     os.mkdir(data_directory)
+except FileExistsError: pass
+
+try:
+    os.mkdir(iso639_data_directory)
 except FileExistsError: pass
 
 iso_639_files = {
@@ -18,19 +23,23 @@ iso_639_files = {
     }
 def _get_ISO_639_data_files(iso_639_file):
     url_base = 'http://www-01.sil.org/iso639-3/'
-    with open(data_directory + iso_639_file, 'w', encoding='utf-8') as file:
+    with open(iso639_data_directory + iso_639_file, 'w', encoding='utf-8') as file:
         r = requests.get(url_base + iso_639_file)
         r.encoding = 'utf-8'
         file.write(r.text)
+
+def update():
+    for iso_639_file in iso_639_files:
+        _get_ISO_639_data_files(iso_639_file)
 
 iso639_dict = defaultdict(list)
 
 def _initialize_ISO_639():
     for iso_639_file in iso_639_files:
-        if os.path.exists(data_directory + iso_639_file): pass
+        if os.path.exists(iso639_data_directory + iso_639_file): pass
         else: _get_ISO_639_data_files(iso_639_file)
 
-    with open(data_directory + 'iso-639-3.tab', 'r') as data_file:
+    with open(iso639_data_directory + 'iso-639-3.tab', 'r') as data_file:
         for line in data_file:
             if line.startswith('Id') or not line.strip(): continue
             for i, attr in enumerate(iso_639_files['iso-639-3.tab']):
@@ -40,10 +49,10 @@ iso639_macro_dict = defaultdict(list)
 
 def _initialize_ISO_639_macro():
     for iso_639_file in iso_639_files:
-        if os.path.exists(data_directory + iso_639_file): pass
+        if os.path.exists(iso639_data_directory + iso_639_file): pass
         else: _get_ISO_639_data_files(iso_639_file)
 
-    with open(data_directory + 'iso-639-3-macrolanguages.tab', 'r') as data_file:
+    with open(iso639_data_directory + 'iso-639-3-macrolanguages.tab', 'r') as data_file:
         for line in data_file:
             if line.startswith('M_Id') or not line.strip(): continue
             iso639_macro_dict[line.split('\t')[0]].append(line.split('\t')[1])
