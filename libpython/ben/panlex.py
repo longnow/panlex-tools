@@ -628,10 +628,33 @@ def mnsplit(data, split_re, lv_list=[], max_splits=0):
                     data.insert(i + 1, new_mn)
             except IndexError: pass
 
-def charset(data, lv):
+def charset(data, lv_list):
+    """Returns a set of all of the characters found in all of the expressions in
+    the given language varieties in all of the denotations in all of the
+    meanings in the data set.
+    
+    Args:
+        data: data set. a list of Mns
+        
+        lv_list: a list of lvs (as str in the format xxx-###). can also consist
+        of a single lv, which is automatically converted to a list of length 1
+
+    Returns:
+        Returns a set of single characters. 
+        
+    Examples:
+        >>> charset(data, ['eng-000', 'hye-000'])
+        {'a', 'b', ..., 'z', '-', ..., 'ա', 'բ', ..., 'օ', 'ֆ', ...}
+        >>> charset(data, 'eng-000')
+        {'a', 'b', ..., 'z', '-', ...}
+    """
+
+    if isinstance(lv_list, str):
+        lv_list = [lv_list]
     outset = set()
     for mn in data:
-        for dn in mn(lv):
-            for c in str(dn.ex):
-                outset.add(c)
+        for lv in lv_list:
+            for dn in mn(lv):
+                for c in str(dn.ex):
+                    outset.add(c)
     return outset
