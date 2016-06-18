@@ -133,7 +133,6 @@ def convert(string, outtype='part3', intype='print_name', exact=False):
                         output.extend(iso639_dict[code][outtype])
                     else:
                         output.append(iso639_dict[code][outtype])
-        if output: return [out for out in sorted(set(output)) if out]
     else:
         for code in iso639_dict:
             if intype in ['inverted_name', 'print_name']:
@@ -149,8 +148,8 @@ def convert(string, outtype='part3', intype='print_name', exact=False):
                         output.extend(iso639_dict[code][outtype])
                     else:
                         output.append(iso639_dict[code][outtype])
-        if output: return [out for out in sorted(set(output)) if out]
-    return []
+    return [out for out in sorted(set(output)) if out]
+
 
 
 def expand_macrolanguage(part3, include_self=False):
