@@ -72,11 +72,49 @@ class Entry(object):
             self.__setattr__(langid, langdata)
             self.langfields[lang] = langdata
 
+
+    def __split_fields(self, label):
+        fields = label.split('.')
+        langId = fields[0]
+        if len(fields) == 1:
+            columnId = 'text'
+        else:
+            columnId = fields[1]
+
+        return langId,columnId
+
+
+    def __getitem__(self, key):
+        langId,fieldId = self.__split_fields(key)
+        langObj = self.__getattribute__(langId)
+        return langObj.__getattribute__(fieldId)
+
+
+    def __setitem__(self, key, value):
+        langId,fieldId = self.__split_fields(key)
+        langObj = self.__getattribute__(langId)
+        langObj.__setattr__(fieldId, value)
+
+
+    # def getField(self,langId:str,column:str) -> str:
+    #     langObj = self.__getattribute__(langId)
+    #     columnValue = langObj.__getattribute__(column)
+    #     return columnValue
+    #
+    #
+    # def setField(self, value, langId, column):
+    #     langObj = self.__getattribute__(langId)
+    #     langObj.__setattr__(column, value)
+    #     return
+
+
     def __str__(self):
         return '\t'.join([str(field) for field in self.langfields.values()])
 
+
     def __repr__(self):
         return '<Entry:%s>' % ','.join([('%s:%s' % (langid,repr(lang))) for langid,lang in self.langfields.items()])
+
 
 
 def ignore_parens(proc):
@@ -139,13 +177,24 @@ def ignore_parens_list(proc):
     return parens_wrapper
 
 
-def filter_unique(items_list):
+def filter_unique_meanings(items_list):
     new_list = []
+
     for item in items_list:
         if len(item.strip()) > 0 and item.strip() not in new_list:
             new_list.append(item.strip())
 
     return new_list
+
+
+def filter_unique_synonyms(fields:list) -> list:
+    result_fields = []
+
+    for field in fields:
+        if len(field.strip()) > 0 and field not in result_fields:
+            result_fields.append(field)
+
+    return result_fields
 
 
 def process_synonyms(proc):
@@ -154,39 +203,57 @@ def process_synonyms(proc):
         mn_fields = text.split('⁋')
 
         for i in range(len(mn_fields)):
-            dest_fields = []
             syn_fields = mn_fields[i].split('‣')
 
-            for syn_field in syn_fields:
-                syn_field = proc(syn_field)
-                if len(syn_field.strip()) > 0 and syn_field not in dest_fields:
-                    dest_fields.append(syn_field)
+            for j in range(len(syn_fields)):
+                syn_fields[j] = proc(syn_fields[j])
 
-            mn_fields[i] = '‣'.join(dest_fields)
+            mn_fields[i] = '‣'.join( filter_unique_synonyms( syn_fields))
 
-        mn_fields = filter_unique(mn_fields)
+        mn_fields = filter_unique_meanings(mn_fields)
         return '⁋'.join(mn_fields)
 
     return syn_wrapper
 
 
+def get_plx_fields(text):
+    match = re.search('(⫷(?:ex|df)(?::\w{1,4}-\d{1,3})?⫸)([^⫷]*)(⫷.*)?', text)
+    if match:
+        new_text = match[2] or ''
+        attributes = match[3] or ''
+        return (match[1],new_text,attributes)
+    else:
+        return ('⫷ex⫸',text,'')
+
+
 def process_plx_synonyms(proc):
     # s = '‣'
     def plx_wrapper(text):
+        before = text
+        text = delimToPanlex(text)
         idx_list = [ex_match.start() for ex_match in re.finditer('⫷(?:ex|df)(?::\w{1,4}-\d{1,3})?⫸', text)]
         if len(idx_list) == 0:
             return process_synonyms(proc)(text)
+
         idx_list.append( len(text))
+        if len(text[ 0:idx_list[0] ].strip()) > 0:
+            idx_list.insert(0,0)
         final_exp = []
 
         for idx in range(len(idx_list) - 1):
             ex = text[ idx_list[idx] : idx_list[idx+1]]
-            match = re.search('(⫷(?:ex|df)(?::\w{1,4}-\d{1,3})?⫸)([^⫷]*)(⫷.*)?', ex)
-            if match:
-                result = proc(match[2])
-                final_exp.append('%s%s%s' % (match[1],result,default_str(match[3])) )
 
-        final_exp = filter_unique(final_exp)
+            tag,ex_text,attributes = get_plx_fields(ex)
+            result = proc(ex_text)
+            result_match = re.search('(⫷(?:ex|df)(?::\w{1,4}-\d{1,3})?⫸)(.*)', result)
+            if result_match:
+                if len(result_match[3].strip()) > 0:
+                    final_exp.append('%s%s' % (result,attributes))
+            else:
+                if len(result.strip()) > 0:
+                    final_exp.append('%s%s%s' % (tag,result,attributes))
+
+        final_exp = filter_unique_meanings(final_exp)
         text = ''.join(final_exp)
         return text
 
@@ -213,7 +280,7 @@ def process_plx_dual_synonyms(proc):
                 if len(match[2].strip()) > 0:
                     final_exp.append('%s%s%s' % (match[1],new_text,default_str(match[3])) )
 
-        final_exp = filter_unique(final_exp)
+        final_exp = filter_unique_meanings(final_exp)
         text = ''.join(final_exp)
         return text,metadata
 
@@ -358,8 +425,8 @@ def delimToPanlex(text, lang=None):
         plx_match = re.search('^⫷(?:ex|df)(:\w{2,}-\d{3,})?⫸', fields[i])
         if plx_match:
             if lang != None:
-                if len(fields[i][plx_match.end:].strip()) > 0:
-                    fields[i] = '⫷ex:%s⫸%s' % (lang,fields[i][plx_match.end:])
+                if len(fields[i][plx_match.end():].strip()) > 0:
+                    fields[i] = '⫷ex:%s⫸%s' % (lang,fields[i][plx_match.end():])
         else:
             if lang != None and len(fields[i].strip()) > 0:
                 fields[i] = '⫷ex:%s⫸%s' % (lang,fields[i])
@@ -457,4 +524,15 @@ class DcsMapper(object):
                 results.append(tag)
 
         return ''.join(results)
+
+
+def make_phonetic_rep(text):
+    if len(text.strip()) > 0:
+        return '⫷dpp:art-303⫸phoneticRep⫷dpp⫸%s' % text
+    else:
+        return ''
+
+
+def make_phonemic_rep(text):
+    return '⫷dpp:art-303⫸phonemicRep⫷dpp⫸%s' % text
 

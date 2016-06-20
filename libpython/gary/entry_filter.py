@@ -1,74 +1,76 @@
-from gary import process_method_synonyms, process_synonyms, process_plx_synonyms, process_plx_dual_synonyms
-from gary import source
+from gary import process_method_synonyms, process_synonyms,process_plx_synonyms,process_plx_dual_synonyms
 
 
-class SimpleFilter(object):
+class EntryFilter(object):
+    # def extract_fields(self, *fields)-> list:
+    #     pass
+    #
+    #
+    # def setFields(self, entry, fieldId:str):
+    #     # PRE: field ID is never null
+    #     labels = fieldId.split('.')
+    #     entry.setField(labels[0], labels[1])
+
+
+    def _splitFields(self, label:str) -> str:
+        fields = label.split('.')
+
+        if len(fields) == 1:
+            column = 'text'
+        else:
+            column = fields[1]
+
+        return '%s.%s' % (fields[0],column)
+
+
+
+class SimpleFilter(EntryFilter):
     def __init__(self, func, *fields):
         self.func = func
         self.name = func.__name__
         self.fields = []
         for field in fields:
-            if len(field.split('.')) == 1:
-                self.fields.append('%s.text' % field)
-            else:
-                self.fields.append(field)
+            result = self._splitFields(field)
+            self.fields.append(result)
 
 
     def __call__(self, entry, *args, **kwargs):
         for fieldId in self.fields:
-            parts = fieldId.split('.')
-            langObj = entry.__getattribute__(parts[0])
-            langValue = langObj.__getattribute__(parts[1])
-            result = self.func(langValue, **kwargs)
-            langObj.__setattr__(parts[1], result)
+            entry[fieldId] = self.func(entry[fieldId])
 
+        return entry
 
 
 class SynonymFilter(object):
-    def __init__(self, func, *languages):
+    def __init__(self, func, *filtered_fields):
         self.name = func.__name__
         self.func = process_synonyms(func)
-        self.langs = languages
+        self.fields = filtered_fields
 
 
     def __call__(self, entry, *args, **kwargs):
-        for langId in self.langs:
-            langObj = entry.__getattribute__(langId)
-            result = self.func(langObj.text, **kwargs)
-            langObj.text = result
+        for fieldId in self.fields:
+            entry[fieldId] = self.func(entry[fieldId])
+
+        return entry
+
 
 
 class PanlexSynonymFilter:
-    def __init__(self, func, *languages):
+    def __init__(self, func, *fields):
         self.name = func.__name__
         self.func = process_plx_synonyms(func)
-        self.langs = languages
+        self.fields = fields
 
-    def __call__(self, entry, *args, **kwargs):
-        for langId in self.langs:
-            langObj = entry.__getattribute__(langId)
-            result = self.func(langObj.text, **kwargs)
-            langObj.text = result
+    def __call__(self, entry):
+        for fieldId in self.fields:
+            entry[fieldId] = self.func(entry[fieldId])
 
-
-class PanlexExtractorFilter:
-    def __init__(self, dual_func, fromField, toField, **kwargs):
-        self.func = process_plx_dual_synonyms(dual_func)
-        self.name = dual_func.__name__
-        self.fromProps = fromField.split('.')
-        self.toProps = toField.split('.')
-
-    def __call__(self, entry, *args, **kwargs):
-        fromField = entry.__getattribute__(self.fromProps[0]).__getattribute__(self.fromProps[1])
-        toField = entry.__getattribute__(self.toProps[0]).__getattribute__(self.toProps[1])
-        result = self.func(fromField, toField)
-        fromResult,toResult = result
-        entry.__getattribute__(self.fromProps[0]).__setattr__(self.fromProps[1], fromResult)
-        entry.__getattribute__(self.toProps[0]).__setattr__(self.toProps[1], toResult)
+        return entry
 
 
 
-class PredicateFilter(object):
+class PredicateFilter(EntryFilter):
     def __init__(self, func, *field_list):
         self.func = func
         self.name = func.__name__
@@ -93,8 +95,9 @@ class PredicateFilter(object):
 
 
 
-class ExtractorFilter(object):
+class ExtractorFilter(EntryFilter):
     def __init__(self, dual_func, fromField, toField, **kwargs):
+        print('DEPRECATED: ExtractorFilter')
         self.func = dual_func
         self.name = dual_func.__name__
         self.fromProps = fromField.split('.')
@@ -109,17 +112,17 @@ class ExtractorFilter(object):
 
 
 
-
-class TextExtractorFilter(object):
+class PanlexExtractorFilter:
     def __init__(self, dual_func, fromField, toField, **kwargs):
+        self.func = process_plx_dual_synonyms(dual_func)
         self.name = dual_func.__name__
-        self.func = source.process_text_synonym_extract(dual_func)
-        self.fromProps = fromField.split('.')
-        self.toProps = toField.split('.')
+        self.fromProps = fromField
+        self.toProps = toField
 
     def __call__(self, entry, *args, **kwargs):
-        fromField = entry.__getattribute__(self.fromProps[0]).__getattribute__(self.fromProps[1])
-        toField = entry.__getattribute__(self.toProps[0]).__getattribute__(self.toProps[1])
-        fromResult,toResult = self.func(fromField, toField)
-        entry.__getattribute__(self.fromProps[0]).__setattr__(self.fromProps[1], fromResult)
-        entry.__getattribute__(self.toProps[0]).__setattr__(self.toProps[1], toResult)
+        fromField = entry[self.fromProps]
+        toField = entry[self.toProps]
+        result = self.func(fromField, toField)
+        fromResult,toResult = result
+        entry[self.fromProps] = fromResult
+        entry[self.toProps] = toResult
