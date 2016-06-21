@@ -338,7 +338,6 @@ class Mn:
             dn_list=repr(self.dn_list), df_list=repr(self.df_list), pp_list=self.pp_list, cs_list=self.cs_list)
 
     def __bool__(self):
-        # if any([self.dn_list, self.df_list, self.pp_list, self.cs_list]): return True
         if any([any(self.dn_list), any(self.df_list), any(self.pp_list), any(self.cs_list)]): return True
         else: return False
 
