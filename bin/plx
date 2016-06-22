@@ -61,7 +61,7 @@ sub cmd_cp {
         }
     }
 
-    my @tabularize = glob(catfile($ENV{PANLEX_TOOLDIR}, 'tabularize', '*', $tool));
+    my @tabularize = glob('"' . catfile($ENV{PANLEX_TOOLDIR}, 'tabularize', '*', $tool) . '"');
     
     if (@tabularize) {
         cp_file($tabularize[0], "${source}.${dest}", $source);
