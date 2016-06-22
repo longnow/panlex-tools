@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 import argparse
 import json
@@ -31,13 +31,15 @@ def read_values(filename, min_count, max_count):
                     continue
                 
                 if word == degraded_form:
+                    # don't print degraded form if identical
                     print('%4d %-22s => _' % (score,word))
                 else:
+                    word = '%-22s' % word
                     if re.sub('\s+', '', word) == re.sub('\s+', '', degraded_form):
                         degraded_form = termcolor.colored(degraded_form, 'red')
                         word = termcolor.colored(word, 'red')
 
-                    print('%4d %-22s => %-18s' % (score,word,degraded_form))
+                    print('%4d %s => %-18s' % (score,word,degraded_form))
             else:
                 print('%4d %-22s' % (score,word))
 
