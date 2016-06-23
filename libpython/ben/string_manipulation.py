@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import regex as re
-from spacy.en import English
 parser = None
 
 def initialize_parser():
+    from spacy.en import English
     global parser
     if not parser:
         parser = English()
