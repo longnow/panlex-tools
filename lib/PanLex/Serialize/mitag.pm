@@ -20,7 +20,7 @@ sub mitag {
     my ($micol);
     
     if (ref $args eq 'HASH') {
-        $micol    = $args->{col};
+        $micol   = $args->{col};
     } else {
         ($micol) = @$args;
     }

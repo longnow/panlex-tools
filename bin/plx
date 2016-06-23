@@ -61,7 +61,7 @@ sub cmd_cp {
         }
     }
 
-    my @tabularize = glob(catfile($ENV{PANLEX_TOOLDIR}, 'tabularize', '*', $tool));
+    my @tabularize = glob('"' . catfile($ENV{PANLEX_TOOLDIR}, 'tabularize', '*', $tool) . '"');
     
     if (@tabularize) {
         cp_file($tabularize[0], "${source}.${dest}", $source);
@@ -216,8 +216,9 @@ sub cmd_fetch {
 }
 
 sub cmd_submit {
+    check_env(qw/PANLEX_PANLEM_USER PANLEX_PANLEM_PASSWORD/);
+
     my ($final, $ap, $aptt);
-    my $sr = 'dossnd1'; # submit file
     my $op = '2'; # replace
 
     if (defined $_[0] && -f $_[0]) {
@@ -239,8 +240,6 @@ sub cmd_submit {
             $aptt //= $arg;
         }
     }
-
-    check_env(qw/PANLEX_PANLEM_USER PANLEX_PANLEM_PASSWORD/);
 
     if (!defined $ap) {
         print STDERR "No source id argument provided, trying to look it up ...\n";
@@ -269,10 +268,10 @@ sub cmd_submit {
     my $r = $ua->post($PANLEM_URL,
         Content_Type => 'form-data',
         Content => [
-            us      => $ENV{PANLEX_PANLEM_USER},
-            pwd     => "'$ENV{PANLEX_PANLEM_PASSWORD}'",
+            us      => $ENV{PANLEX_PANLEM_USER}, # username
+            pwd     => "'$ENV{PANLEX_PANLEM_PASSWORD}'", # password
             uslv    => '187', # user's interface lv
-            sr      => $sr, # state routine
+            sr      => 'dossnd1', # state routine: submit file
             op      => $op, # operation
             ap      => $ap, # source id
             dbg     => '', # whole - see
@@ -295,6 +294,8 @@ sub cmd_submit {
 }
 
 sub cmd_upload {
+    check_env(qw/PANLEX_ARCHIVE_USERNAME PANLEX_ARCHIVE_PASSWORD PANLEX_ARCHIVE_NAME PANLEX_ARCHIVE_EMAIL/);
+
     my $type = 'source';
 
     if (defined $_[0] and $_[0] eq '-r') {
@@ -314,8 +315,6 @@ sub cmd_upload {
 
     my $note = join ' ', @_;
     print(STDERR "You need to specify a note.\n"), return if $note eq '';
-
-    check_env(qw/PANLEX_ARCHIVE_USERNAME PANLEX_ARCHIVE_PASSWORD PANLEX_ARCHIVE_NAME PANLEX_ARCHIVE_EMAIL/);
 
     my @dirs = splitdir(rel2abs($dirpath));
     my $dirname = pop @dirs; # name of the source dir

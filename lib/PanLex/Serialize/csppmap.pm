@@ -40,7 +40,7 @@ sub csppmap {
     my $type        = $args->{type} // 'd';
     my $delim       = $args->{delim} // '‣';
     my $default     = $args->{default} // 'art-303⁋LinguisticProperty';
-    my $mapdefault   = $args->{mapdefault} // 'art-303⁋LinguisticProperty';
+    my $mapdefault  = $args->{mapdefault} // 'art-303⁋LinguisticProperty';
     my $log         = $args->{log} // 0;
 
     die "type paremeter must be 'd' or 'm'" unless $type =~ /^[dm]$/;

@@ -9,9 +9,13 @@ my $BASENAME = 'aaa-bbb-Author';
 # The initial version to use.
 my $VERSION = 1;
 
+# Array of default specifications (column index + colon + variety UID)
+# for apostrophe and out-full-0.
+my @SPECS = qw( 0:eng-000 1:rus-000 );
+
 my @TOOLS = (
 
-#'apostrophe'   => { specs => [ '0:eng-000', '1:rus-000' ] },
+#'apostrophe'   => { specs => \@SPECS },
 # Converts a tab-delimited source file's apostrophes.
 # Arguments:
 #   specs:  array of specifications (column index + colon + variety UID) of
@@ -199,7 +203,7 @@ my @TOOLS = (
 #   from:   regex matching any string(s) to be replaced.
 #   to:     new string to use.
 
-#'out-full-0'   => { specs => [ '0:eng-000', '1:rus-000' ] },
+#'out-full-0'   => { specs => \@SPECS },
 # Converts a standard tagged source file to a full-text varilingual source file.
 # Arguments:
 #   specs:  array of specifications (column index + colon + variety UID) of
