@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import regex as re
+from collections import defaultdict
 from collections.abc import Iterable
 from progress.bar import Bar
 from ben.string_manipulation import *
@@ -657,3 +658,20 @@ def charset(data, lv_list):
                 for c in str(dn.ex):
                     outset.add(c)
     return outset
+
+def csppmap(mapfile):
+    output = defaultdict(list)
+    for line in mapfile:
+        splitline = line.split('\t')
+        if len(splitline) < 2: continue
+        key = splitline[0]
+        cs_str_list = splitline[1].split('‣')
+        for cs_str in cs_str_list:
+            split_cs = cs_str.split(':')
+            cs = None
+            if len(split_cs) == 2:
+                cs = Cs(class_ex=Ex(split_cs[1], split_cs[0]))
+            if len(split_cs) == 4:
+                cs = Cs(class_ex=Ex(split_cs[3], split_cs[2]), superclass_ex=Ex(split_cs[1], split_cs[0]))
+            if cs: output[key].append(cs)
+    return dict(output)
