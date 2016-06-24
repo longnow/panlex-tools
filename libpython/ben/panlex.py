@@ -6,6 +6,7 @@ from collections import defaultdict
 from collections.abc import Iterable
 from progress.bar import Bar
 from ben.string_manipulation import *
+from os import environ
 
 class Ex:
 
@@ -267,7 +268,7 @@ class Dn:
         else: return False
 
     def __hash__(self):
-        return hash((self.ex, *list(set(self.pp_list)), *list(set(self.cs_list))))
+        return hash((self.ex,) + tuple(set(self.pp_list)) + tuple(set(self.cs_list)))
 
     @property
     def ex(self):
@@ -659,7 +660,16 @@ def charset(data, lv_list):
                     outset.add(c)
     return outset
 
-def csppmap(mapfile):
+def build_csppmap(mapfile=None):
+    if not mapfile:
+        try:
+            mapfile = open('csppmap.txt')
+        except FileNotFoundError:
+            mapfile = open(environ['PANLEX_TOOLDIR'] + '/serialize/data/csppmap.txt')
+    try:
+        mapfile = open(mapfile)
+    except TypeError:
+        pass
     output = defaultdict(list)
     for line in mapfile:
         splitline = line.split('\t')
