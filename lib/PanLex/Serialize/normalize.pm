@@ -13,7 +13,7 @@
 #   ui:       array of source group IDs whose meanings are to be ignored in
 #               normalization; [] if none. default [].
 #   log:      set to 1 to log normalize scores to normalize.json, 0 otherwise.
-#               default 0.
+#               default 1.
 #   failtag:  tag with which to retag proposed expressions not accepted as 
 #               expressions and not having replacements accepted as expressions; 
 #               '' (blank) if they are to be converted to pre-normalized 
@@ -57,7 +57,7 @@ sub normalize {
         $min        = $args->{min};
         $mindeg     = $args->{mindeg};
         $ui         = $args->{ui} // $args->{ap} // [];
-        $log        = $args->{log} // 0;
+        $log        = $args->{log} // 1;
         $failtag    = $args->{failtag} // $args->{dftag} // '⫷df⫸';
         $ignore     = $args->{ignore} // '';
         @propcols   = @{$args->{propcols} || []};

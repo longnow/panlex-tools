@@ -9,7 +9,7 @@
 #   ui:       array of source group IDs whose meanings are to be ignored in
 #               normalization; [] if none. default [].
 #   log:      set to 1 to log normalize scores to normalizedf.json, 0 otherwise.
-#               default 0.
+#               default 1.
 #   ignore:   regex matching expressions to be ignored in normalization; or ''
 #               (blank) if none. default ''.
 #   extag:    expression tag. default '⫷ex⫸'.
@@ -42,7 +42,7 @@ sub normalizedf {
         $mindeg     = $args->{mindeg};
         $ui         = $args->{ui} // $args->{ap} // [];
         $strict     = $args->{strict} // 1;
-        $log        = $args->{log} // 0;
+        $log        = $args->{log} // 1;
         $ignore     = $args->{ignore} // '';
         $extag      = $args->{extag} // '⫷ex⫸';
         $exptag     = $args->{exptag} // '⫷exp⫸';

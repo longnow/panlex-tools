@@ -26,7 +26,7 @@ sub wctag {
     
     if (ref $args eq 'HASH') {
         $wccol  = $args->{col};
-        $log    = $args->{log} // 0; 
+        $log    = $args->{log} // 1; 
     } else {
         ($wccol) = @$args;
         $log = 0;

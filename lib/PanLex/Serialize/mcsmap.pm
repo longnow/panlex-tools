@@ -5,7 +5,7 @@
 #   intradelim: intra-classification delimiter in file and columns. default ':'.
 #   interdelim: inter-classification delimiter in columns. default '‣'.
 #   log:        set to 1 to log unconvertible items to mcsmap.log, 0 otherwise.
-#                 default 0.
+#                 default 1.
 
 package PanLex::Serialize::mcsmap;
 use strict;
@@ -28,7 +28,7 @@ sub mcsmap {
     my $file        = $args->{file} // 'mcsmap.txt';
     my $intradelim  = $args->{intradelim} // ':';
     my $interdelim  = $args->{interdelim} // '‣';
-    my $log         = $args->{log} // 0;
+    my $log         = $args->{log} // 1;
 
     $file = catfile($ENV{PANLEX_TOOLDIR}, 'serialize', 'data', $file)
         unless -e $file;
