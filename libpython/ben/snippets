@@ -1,0 +1,136 @@
+# Opening:
+
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
+import regex as re
+from ben.panlex import *
+from glob import glob
+from bs4 import BeautifulSoup
+import wget
+
+base_file_name = 'dzo-eng-DED'
+# Identify file version number
+version = 0
+
+lv_list = [
+    'dzo-000',
+    'eng-000',
+]
+
+data = []
+
+
+# Kludger:
+
+kludge_dict = {}
+
+kludge_dict['eng-000'] = {
+    'chille': 'chili',
+}
+
+for i, mn in enumerate(data):
+    for j, dn in enumerate(mn.dn_list):
+        try:
+            mn.dn_list[j] = dn.copy(kludge_dict[dn.lv][str(dn.ex)])
+        except KeyError:
+            pass
+            
+
+# Replace character:
+
+for mn in data:
+    mn.sub(r"'n", "ʼn", dn_list=mn('afr-000'))
+
+# Replace dns with lists of dns:
+
+for mn in data:
+    mn.dn_list = flatten([dn.copy_list(expand_parens(str(dn.ex), '{}')) for dn in mn.dn_list])
+    for i, dn in enumerate(mn.dn_list):
+        mn.dn_list[i] = dn.copy(clean_str(str(dn.ex)))
+
+# Create dn classification:
+
+cs_map = {
+    r'\(m\)' : Cs(Ex('MasculineGender', 'art-303'), Ex('GenderProperty', 'art-303')),
+    r'\(f\)' : Cs(Ex('FeminineGender', 'art-303'), Ex('GenderProperty', 'art-303')),
+    r'^to be ' : Cs(Ex('Adjectival', 'art-303'), Ex('PartOfSpeechProperty', 'art-303')),
+    r'^to ' : Cs(Ex('Verbal', 'art-303'), Ex('PartOfSpeechProperty', 'art-303')),
+    r'^a ' : Cs(Ex('Noun', 'art-303'), Ex('PartOfSpeechProperty', 'art-303')),
+    r'^the ' : Cs(Ex('Noun', 'art-303'), Ex('PartOfSpeechProperty', 'art-303')),
+}
+for mn in data:
+    for dn in mn('eng-000'):
+        cs_list = dn.extract_cs(cs_map)
+        if cs_list:
+            dn.cs_list.extend(cs_list)
+            # If propagated:
+            for dn2 in mn('acw-000'):
+                dn2.cs_list.extend(cs_list)
+
+# Parenthesizing dn classification:
+
+cs_map = {
+    r'^to (be) ' : Cs(Ex('Adjectival', 'art-303'), Ex('PartOfSpeechProperty', 'art-303')),
+}
+for mn in data:
+    for dn in mn('eng-000'):
+        cs_list = dn.extract_cs(cs_map, replace_with='({}) ')
+        if cs_list:
+            dn.cs_list.extend(cs_list)
+
+# Create mn classification:
+
+cs_map = {
+    r'cause to (.+)' : Cs(Ex('{}', 'eng-000'), Ex('Causative_of', 'art-316')),
+    r'make (.+)' : Cs(Ex('{}', 'eng-000'), Ex('Causative_of', 'art-316')),
+    r'\?' : Cs(Ex('InterrogativeForce', 'art-303'), Ex('ForceProperty', 'art-303')),
+}
+for mn in data:
+    for dn in mn('eng-000'):
+        mn.cs_list.extend(dn.extract_cs(cs_map, remove=False))
+
+# exdftag:
+
+for mn in data:
+    for i, dn in enumerate(mn.dn_list):
+        if dn.lv == 'eng-000':
+            new_ex, new_df = exdftag(dn.ex, subrx = r'^$')
+            mn.dn_list[i] = dn.copy(new_ex)
+            if new_df: mn.df_list.append(new_df)
+
+# remove extraneous parens in definitions:
+
+for mn in data:
+    mn.df_list = [df.sub(r'^\((.*)\)$', '\g<1>') for df in mn.df_list]
+
+
+# mnsplit:
+
+mnsplit(data, r';', ['eng-000'])
+
+# dnsplit:
+
+for mn in data:
+    mn.dn_list = flatten([dn.split(r', (?![^(]*\))') for dn in mn.dn_list])
+    for i, dn in enumerate(mn.dn_list):
+        mn.dn_list[i] = dn.copy(clean_str(str(dn.ex)))
+
+# Remove duplicates:
+
+for mn in data:
+    mn.clean()
+
+# Output:
+
+with open(base_file_name + '-' + str(version + 1) + '.txt', 'w', encoding='utf-8') as output_file:
+    tabularize(source, output_file, lv_list=lv_list, tagged = True)
+
+# tab_log:
+
+tab_log(source, [(r'^[A-Z]', 'eng-000')], tagged = True)
+
+
+# normalize (for serialize.pl):
+
+'normalize'    => { col => 2, uid => 'eng-000', min => 50, mindeg => 10, log => 1, extag => "⫷ex:eng-000⫸", failtag => "⫷df:eng-000⫸" },
