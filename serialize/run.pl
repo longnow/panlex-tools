@@ -1,5 +1,6 @@
 # this file is needed for backwards compat only
 use strict;
+use warnings 'FATAL', 'all';
 use PanLex::Serialize;
 
 sub run {

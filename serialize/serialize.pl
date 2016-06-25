@@ -1,6 +1,7 @@
 #!/usr/bin/env perl
 # Converts a tab-delimited source file for uploading to PanLex.
 use strict;
+use warnings 'FATAL', 'all';
 use utf8;
 
 # The basename of the source file.

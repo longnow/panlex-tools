@@ -38,16 +38,16 @@ sub cmd_cp {
     my $sourcedir = rel2abs(curdir());
     utf8::decode($sourcedir);
 
-    my $source;
+    my $source_basename;
     foreach my $dir (reverse splitdir($sourcedir)) {
         if ($dir =~ /^[a-z]{3}-/) {
-            $source = $dir;
+            $source_basename = $dir;
             last;
         }
     }
-    $source //= 'aaa-bbb-Author';
+    $source_basename //= 'aaa-bbb-Author';
 
-    cp_makefile($source), return if $tool =~ /^makefile$/i;
+    cp_makefile($source_basename), return if $tool =~ /^makefile$/i;
 
     $tool .= '.pl' unless $tool =~ /\./;
     $dest //= $tool;
@@ -56,7 +56,8 @@ sub cmd_cp {
         my $file = catfile($ENV{PANLEX_TOOLDIR}, @$dir, $tool);
         
         if (-e $file) {
-            cp_file($file, $dest, $source);
+            my $detect_version = $tool eq 'serialize.pl' ? 1 : 0;
+            cp_file($file, $dest, $source_basename, $detect_version);
             return;
         }
     }
@@ -64,7 +65,7 @@ sub cmd_cp {
     my @tabularize = glob('"' . catfile($ENV{PANLEX_TOOLDIR}, 'tabularize', '*', $tool) . '"');
     
     if (@tabularize) {
-        cp_file($tabularize[0], "${source}.${dest}", $source);
+        cp_file($tabularize[0], "${source_basename}.${dest}", $source_basename);
         return;
     }
     
@@ -72,7 +73,7 @@ sub cmd_cp {
 }
 
 sub cp_file {
-    my ($source_file, $target_file, $source_label) = @_;
+    my ($source_file, $target_file, $source_basename, $detect_version) = @_;
 
     print(STDERR "$target_file already exists, aborting\n"), return if -e $target_file;
 
@@ -80,7 +81,17 @@ sub cp_file {
     my $data = do { local $/; <$fd> };
     close $fd;
     
-    $data =~ s/aaa-bbb-Author/$source_label/;
+    $data =~ s/aaa-bbb-Author/$source_basename/;
+
+    if ($detect_version) {
+        my $version;
+
+        for (my $test_version = 0; -r "${source_basename}-${test_version}.txt"; $test_version++) {
+            $version = $test_version;
+        }
+
+        $data =~ s/(?<=\$VERSION = )1(?=;)/$version/ if defined $version;
+    }
     
     open $fd, '>', $target_file or die $!;
     print $fd $data;
@@ -91,28 +102,28 @@ sub cp_file {
 }
 
 sub cp_makefile {
-    my ($source) = @_;
+    my ($source_basename) = @_;
 
-    my $fromfile = get_glob("${source}-0.*");
+    my $fromfile = get_glob("${source_basename}-0.*");
 
     my (@deps, $tab);
 
     if ($tab = get_glob('tabularize-*.*')) {
-        die "can't find file matching pattern ${source}-0.*" unless defined $fromfile;
-        push @deps, [ "${source}-1.txt", [ $fromfile, $tab ], add_interp($tab) ];
+        die "can't find file matching pattern ${source_basename}-0.*" unless defined $fromfile;
+        push @deps, [ "${source_basename}-1.txt", [ $fromfile, $tab ], add_interp($tab) ];
     } else {
         if ($tab = get_glob('*-scrape.*')) {
-            $fromfile = get_glob("${source}.*");
-            die "can't find file matching pattern ${source}.*" unless defined $fromfile;
-            push @deps, [ "${source}-0.txt", [ $fromfile, $tab ], add_interp($tab) ];
-            $fromfile = "${source}-0.txt";
+            $fromfile = get_glob("${source_basename}.*");
+            die "can't find file matching pattern ${source_basename}.*" unless defined $fromfile;
+            push @deps, [ "${source_basename}-0.txt", [ $fromfile, $tab ], add_interp($tab) ];
+            $fromfile = "${source_basename}-0.txt";
         }
 
         my ($x, $y) = (0, 1);
 
         while ($tab = get_glob("*${x}to${y}.*")) {
-            push @deps, [ "${source}-${y}.txt", [ $fromfile, $tab ], add_interp($tab) ];
-            $fromfile = "${source}-${y}.txt";
+            push @deps, [ "${source_basename}-${y}.txt", [ $fromfile, $tab ], add_interp($tab) ];
+            $fromfile = "${source_basename}-${y}.txt";
             $x++, $y++;
         }
     }
@@ -121,15 +132,15 @@ sub cp_makefile {
     my $firstser = $deps[-1][0] =~ s/^.+-([0-9]+)\.txt$/$1/r;
     $firstser++;
 
-    push @deps, [ "${source}-final.txt", [ $deps[-1][0], 'serialize.pl' ], 'perl serialize.pl' ]; 
+    push @deps, [ "${source_basename}-final.txt", [ $deps[-1][0], 'serialize.pl' ], 'perl serialize.pl' ];
 
     open my $fd, '>', 'Makefile' or die $!;
 
     print $fd "SHELL = /bin/bash\n\n";
     print $fd "all: tab ser\n\n";
     print $fd "tab: @tabs\n\n";
-    print $fd "ser: ${source}-final.txt\n\n";
-    print $fd "clean:\n\trm -f @tabs ${source}-{${firstser}..50}.txt ${source}-final.txt\n\n";
+    print $fd "ser: ${source_basename}-final.txt\n\n";
+    print $fd "clean:\n\trm -f @tabs ${source_basename}-{${firstser}..50}.txt ${source_basename}-final.txt\n\n";
 
     foreach my $d (@deps) {
         print $fd "$d->[0]: @{$d->[1]}\n\t$d->[2]\n\n";
