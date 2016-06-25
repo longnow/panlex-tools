@@ -5,7 +5,7 @@ use utf8;
 use parent 'Exporter';
 use File::Spec::Functions;
 
-our @EXPORT = qw/parse_specs parse_tags combine_complex_tags serialize_tags tags_match tag_type/;
+our @EXPORT = qw/parse_specs parse_tags combine_complex_tags serialize_tags serialize_tag tags_match tag_type/;
 
 # takes an arrayref of column-uid specifications and returns a hashref whose 
 # keys are column indexes and values are uids.
@@ -76,12 +76,28 @@ sub serialize_tags {
     return $str;
 }
 
+# serializes a single tag.
+sub serialize_tag {
+    my ($tag) = @_;
+
+    my $str = '';
+    $str .= "⫷$tag->[0]";
+    $str .= ":$tag->[1]" if defined $tag->[1];
+    $str .= "⫸$tag->[2]";
+
+    return $str;
+}
+
 # returns true if the two passed parsed tag arrayrefs match in both
 # type and uid (if any), otherwise returns false.
+# the optional third argument specifies a uid that will cause a match
+# if (and only if) the first tag has the uid of the third argument and
+# the second tag has no uid.
 sub tags_match {
-    my ($x, $y) = @_;
+    my ($x, $y, $uid_loose_match) = @_;
 
     return 0 if $x->[0] ne $y->[0];
+    return 1 if defined $uid_loose_match && defined $x->[1] && !defined $y->[1] && $x->[1] eq $uid_loose_match;
     return 0 if defined $x->[1] != defined $y->[1];
     return 0 if defined $x->[1] && $x->[1] ne $y->[1];
     return 1;

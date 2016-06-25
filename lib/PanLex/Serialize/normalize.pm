@@ -73,10 +73,17 @@ sub normalize {
     validate_col($excol);
     validate_uid($uid);
 
-    my $failtag_obj;
-    $failtag_obj = validate_tag($failtag) if $failtag ne '';
-    my $extag_obj = validate_tag($extag);
+    my $extag_str = $extag;
+    my $failtag_str = $failtag;
+
+    $failtag = $failtag eq '' ? undef : validate_tag($failtag);
+    $extag = validate_tag($extag);
     $exptag = validate_tag($exptag);
+
+    my $failtag_propagate_uid = defined $failtag && $extag->[0] =~ /^(?:ex|df|[dm]cs)$/ && $failtag->[0] =~ /^(?:ex|df|[dm]cs)$/ && !defined $extag->[1] && !defined $failtag->[1];
+    my ($extag_full_str, $failtag_full_str);
+    $extag_full_str = serialize_tag([$extag->[0], $uid, $extag->[2]]) unless defined $extag->[1];
+    $failtag_full_str = serialize_tag([$failtag->[0], ($failtag_propagate_uid ? $uid : $failtag->[1]), $failtag->[2]]) if defined $failtag;
 
     die "invalid min value: $min" unless valid_int($min) && $min >= 0;
     die "invalid mindeg value: $mindeg" unless $mindeg eq '' || (valid_int($mindeg) && $mindeg >= 0);
@@ -107,8 +114,7 @@ sub normalize {
 
             my $subtag = ref $tag->[0] eq 'ARRAY' ? $tag->[1] : $tag;
             # Identify the tag or subtag that may contain an expression.
-
-            if (tags_match($subtag, $extag_obj)) {
+            if (tags_match($subtag, $extag, $uid)) {
             # If it is tagged as an expression:
 
                 die "don't know how to handle delimited expressions in complex tags"
@@ -117,7 +123,7 @@ sub normalize {
                 foreach my $ex (PsList($subtag->[2], $delim)) {
                 # For the expression, or for each expression if it is a pseudo-list:
 
-                    if (length $ignore && $ex =~ /$ignore/) {
+                    if (length $ignore and $ex =~ /$ignore/) {
                     # If the expression is to be ignored:
 
                         $exok{$ex} = '';
@@ -161,7 +167,7 @@ sub normalize {
 
             # For each proposed expression that is a highest-scoring expression in the variety with
             # its degradation and whose score is sufficient for acceptance as an expression:
-            if ($norm->{score} >= $mindeg && defined $norm->{tt}) {
+            if ($norm->{score} >= $mindeg and defined $norm->{tt}) {
                 if ($tt eq $norm->{tt}) {
                     $exok{$tt} = '';
                 } else {
@@ -185,7 +191,7 @@ sub normalize {
             my $subtag = ref $tag->[0] eq 'ARRAY' ? $tag->[1] : $tag;
             # Identify the tag or subtag that may contain an expression.
 
-            if (tags_match($subtag, $extag_obj)) {
+            if (tags_match($subtag, $extag, $uid)) {
             # If it is tagged as an expression:
 
                 $excount++;
@@ -202,7 +208,7 @@ sub normalize {
                 foreach my $ex (@ex) {
                 # For each of them:
 
-                    unless (exists $exok{$ex} || exists $ttto{$ex}) {
+                    unless (exists $exok{$ex} or exists $ttto{$ex}) {
                     # If it is not classifiable as an expression without
                     # replacement or after being replaced:
 
@@ -230,7 +236,7 @@ sub normalize {
                         # If it is classifiable as an expression without
                         # replacement:
 
-                            push @newtags, [ $extag_obj->[0], $extag_obj->[1], $ex ];
+                            push @newtags, [ $subtag->[0], $subtag->[1], $ex ];
                             # Append it, with an expression tag, to the tag list.
                         }
 
@@ -240,7 +246,7 @@ sub normalize {
 
                             push @newtags, 
                                 [ $exptag->[0], $exptag->[1], $ex ], 
-                                [ $extag_obj->[0], $extag_obj->[1], $ttto{$ex} ];
+                                [ $subtag->[0], $subtag->[1], $ttto{$ex} ];
                             # Append it, with a pre-normalized
                             # expression tag, and its replacement, with
                             # an expression tag, to the tag list.
@@ -269,11 +275,13 @@ sub normalize {
                     my $newtag;
                     # Identify a variable that will contain the rewritten tag.
 
-                    if (length $failtag) {
+                    if ($failtag) {
                     # If proposed expressions not classifiable as expressions
                     # are to be converted to another tag:
 
-                        $newtag = [ $failtag_obj->[0], $failtag_obj->[1], $subtag->[2] ];
+                        my $newuid = $failtag_propagate_uid && defined $subtag->[1] ? $subtag->[1] : $failtag->[1];
+
+                        $newtag = [ $failtag->[0], $newuid, $subtag->[2] ];
                         # Set the new tag to it with the tag indicating failure.
 
                         $failcount++;
@@ -290,7 +298,7 @@ sub normalize {
 
                     }
 
-                    if ($subtag == $tag || $newtag->[0] !~ /^[dm](?:cs|pp)$/) {
+                    if ($subtag == $tag or $newtag->[0] !~ /^[dm](?:cs|pp)$/) {
                     # If it is a simple tag, or its replacement is not a classification
                     # or property:
 
@@ -326,7 +334,8 @@ sub normalize {
             foreach my $propcol (@propcols) {
             # For each column to which the conversion is to be propagated:
 
-                $line->[$propcol] =~ s/$extag/$failtag/g;
+                $line->[$propcol] =~ s/$extag_str/$failtag_str/g;
+                $line->[$propcol] =~ s/$extag_full_str/$failtag_full_str/g if defined $extag_full_str;
                 # Convert all expression tags in it to the other tag.
 
             }
