@@ -175,11 +175,54 @@ sub add_interp {
     return "$interp $filename";
 }
 
+sub cmd_edit {
+    my ($ap) = @_;
+
+    check_env(qw/PANLEX_PANLEM_USER PANLEX_PANLEM_PASSWORD/);
+    print(STDERR "You need to specify a source label or ID.\n"), return unless $ap;
+
+    if ($ap =~ /:/) {
+        print(STDERR "Looking up source ID from label ...\n");
+
+        my $result = panlex_query("/ap/$ap");
+        $ap = $result->{ap}{ap};
+        die "could not find source ID" unless defined $ap;
+        print STDERR "$ap\n\n";
+    }
+
+    print "Requesting editorship on PanLem ...\n";
+
+    my $ua = LWP::UserAgent->new;
+    my $r = $ua->post($PANLEM_URL,
+        Content_Type => 'form-data',
+        Content => [
+            us      => $ENV{PANLEX_PANLEM_USER}, # user id
+            pwd     => "'$ENV{PANLEX_PANLEM_PASSWORD}'", # password
+            uslv    => '187', # user's interface lv
+            sr      => 'apviz1', # state routine: view source
+            apviz1  => 'redok', # request permision to edit
+            ap      => $ap, # source id
+        ]
+    );
+
+    if ($r->is_success) {
+        my $content = $r->decoded_content;
+
+        if ($content =~ /"bad"/) {
+            print STDERR "failed: are your username and password set correctly, did you pass a valid source, and have you not already requested editorship of the source?\n\n";
+        } else {
+            print STDERR "done.\n\n";
+        }
+    } else {
+        print STDERR "failed: ", $r->code, ' ', $r->message, "\n\n";
+    }
+}
+
 sub cmd_fetch {
     my ($source) = @_;
 
-    print(STDERR "You need to specify a source directory, label, or ID.\n"), return unless $source;
     check_env(qw/PANLEX_ARCHIVE_USERNAME PANLEX_ARCHIVE_PASSWORD/);
+    print(STDERR "You need to specify a source directory, label, or ID.\n"), return unless $source;
 
     if ($source =~ /:|^\d+$/) {
         print(STDERR "Looking up source directory from label/ID ...\n");
@@ -279,7 +322,7 @@ sub cmd_submit {
     my $r = $ua->post($PANLEM_URL,
         Content_Type => 'form-data',
         Content => [
-            us      => $ENV{PANLEX_PANLEM_USER}, # username
+            us      => $ENV{PANLEX_PANLEM_USER}, # user id
             pwd     => "'$ENV{PANLEX_PANLEM_PASSWORD}'", # password
             uslv    => '187', # user's interface lv
             sr      => 'dossnd1', # state routine: submit file
@@ -388,6 +431,8 @@ Commands:
 
 cp <tool> (<dest>)
     copy PanLex tool into the current directory
+edit <source_label>|<source_id>
+    request editorship of a source through PanLem
 fetch <resource_dir>|<source_label>|<source_id>
     fetch PanLex resource from archive into the current directory and unzip it
 submit (<file>) (<source_id>|<source_label>) (replace|add|check)
