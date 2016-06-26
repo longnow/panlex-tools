@@ -26,9 +26,7 @@ use PanLex::Validation;
 our @EXPORT = qw/spellcheck/;
 
 sub spellcheck {
-    my $in = shift;
-    my $out = shift;
-    my $args = ref $_[0] ? $_[0] : \@_;
+    my ($in, $out, $args) = @_;
         
     my $excol   = $args->{col};
     my $engine  = $args->{engine};

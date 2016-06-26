@@ -30,25 +30,17 @@ use JSON;
 our @EXPORT = qw/normalizedf/;
 
 sub normalizedf {
-    my $in = shift;
-    my $out = shift;
-    my $args = ref $_[0] ? $_[0] : \@_;
+    my ($in, $out, $args) = @_;
     
-    my ($excol, $uid, $mindeg, $ui, $strict, $log, $ignore, $extag, $exptag);
-    
-    if (ref $args eq 'HASH') {
-        $excol      = $args->{col};
-        $uid        = $args->{uid};
-        $mindeg     = $args->{mindeg};
-        $ui         = $args->{ui} // $args->{ap} // [];
-        $strict     = $args->{strict} // 1;
-        $log        = $args->{log} // 1;
-        $ignore     = $args->{ignore} // '';
-        $extag      = $args->{extag} // '⫷ex⫸';
-        $exptag     = $args->{exptag} // '⫷exp⫸';
-    } else {
-        die "invalid arguments: you must pass a hashref";
-    }
+    my $excol   = $args->{col};
+    my $uid     = $args->{uid};
+    my $mindeg  = $args->{mindeg};
+    my $ui      = $args->{ui} // $args->{ap} // [];
+    my $strict  = $args->{strict} // 1;
+    my $log     = $args->{log} // 1;
+    my $ignore  = $args->{ignore} // '';
+    my $extag   = $args->{extag} // '⫷ex⫸';
+    my $exptag  = $args->{exptag} // '⫷exp⫸';
 
     validate_col($excol);
     validate_uid($uid);

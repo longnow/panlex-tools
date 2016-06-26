@@ -67,7 +67,7 @@ sub normalize {
     } else {
         (undef, $extag, $excol, $min, $mindeg, $uid, $exptag, $failtag, $delim) = @$args;
         $ignore = '';
-        $log = 0;
+        $log = 1;
     }
 
     validate_col($excol);
