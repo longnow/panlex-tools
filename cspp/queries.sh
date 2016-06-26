@@ -1,4 +1,6 @@
-psql -A -t -F $'\t' plx
+#!/bin/bash
+
+psql -A -t -F $'\t' plx << 'EOQ'
 
 \o mcs.txt
 
@@ -44,3 +46,5 @@ JOIN lv lv0 ON (lv0.lv = ex0.lv)
 GROUP BY lcvc(lv0.lc, lv0.vc), ex0.tt
 ORDER BY lcvc(lv0.lc, lv0.vc), ex0.tt
 ;
+
+EOQ
