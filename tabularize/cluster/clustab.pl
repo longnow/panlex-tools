@@ -55,8 +55,8 @@ use strict;
 use utf8;
 # Make Perl interpret the script as UTF-8 rather than bytes.
 
-use open IO => ':raw :encoding(utf8)';
-# Set UTF-8 as the default for opening files, and turn off automatic newline conversion.
+use open IN => ':crlf :encoding(utf8)', OUT => ':raw :encoding(utf8)';
+# Set UTF-8 as the default for opening files, and convert CRLF to LF if necessary.
 
 my ($in) = @ARGV;
 # Identify the arguments.

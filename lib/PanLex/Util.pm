@@ -1,7 +1,7 @@
 package PanLex::Util;
 use strict;
 use utf8;
-use open IO => ':raw :encoding(utf8)';
+use open IN => ':crlf :encoding(utf8)', OUT => ':raw :encoding(utf8)';
 use parent 'Exporter';
 use Unicode::Normalize 'NFC';
 

@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 use utf8;
-use open IO => ':raw :encoding(utf8)';
+use open IN => ':crlf :encoding(utf8)', OUT => ':raw :encoding(utf8)';
 
 my %seen;
 
