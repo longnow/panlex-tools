@@ -65,7 +65,7 @@ sub out_full_0 {
 
     my $report_error = sub {
         my ($errstr, $line) = @_;
-        die $errstr if $error eq 'fail';
+        die "$errstr\n$line\n" if $error eq 'fail';
         $error_count++;        
         return "ERROR: $errstr\n$line";
     };
