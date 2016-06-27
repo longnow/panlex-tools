@@ -18,7 +18,7 @@ lv_list = [
     'eng-000',
 ]
 
-data = []
+source = []
 
 
 # Kludger:
@@ -39,7 +39,7 @@ for i, mn in enumerate(data):
 
 # Replace character:
 
-for mn in data:
+for mn in source:
     mn.sub(r"'n", "ʼn", dn_list=mn('afr-000'))
 
 # Replace dns with lists of dns:
@@ -107,18 +107,22 @@ for mn in data:
 
 # mnsplit:
 
-mnsplit(data, r';', ['eng-000'])
+mnsplit(source, r';', ['eng-000'])
 
 # dnsplit:
 
-for mn in data:
+for mn in source:
     mn.dn_list = flatten([dn.split(r', (?![^(]*\))') for dn in mn.dn_list])
+
+# clean strings:
+
+for mn in source:
     for i, dn in enumerate(mn.dn_list):
         mn.dn_list[i] = dn.copy(clean_str(str(dn.ex)))
 
 # Remove duplicates:
 
-for mn in data:
+for mn in source:
     mn.clean()
 
 # Output:
