@@ -37,13 +37,12 @@ use PanLex::Serialize::wctag;
 
 sub serialize {
     my ($BASENAME, $VERSION, $TOOLS) = @_;
-    my @TOOLS = @$TOOLS;
 
     print "\n";
     die "could not find PANLEX_TOOLDIR" unless -d $ENV{PANLEX_TOOLDIR};
-    die "odd number of items in \@TOOLS" unless @TOOLS % 2 == 0;
+    die "odd number of items in \@TOOLS" unless @$TOOLS % 2 == 0;
 
-    my $log = { tools => \@TOOLS, basename => $BASENAME, version => $VERSION };
+    my $log = { tools => $TOOLS, basename => $BASENAME, version => $VERSION };
 
     # get the panlex-tools revision.
     my $pwd = rel2abs(curdir());
@@ -53,8 +52,8 @@ sub serialize {
     chdir $pwd;
     $log->{git_revision} = $rev;
 
-    for (my $i = 0; $i < @TOOLS; $i += 2) {
-        my ($tool, $args) = @TOOLS[$i, $i+1];
+    for (my $i = 0; $i < @$TOOLS; $i += 2) {
+        my ($tool, $args) = @{$TOOLS}[$i, $i+1];
 
         my $input = "$BASENAME-$VERSION.txt";
         die "could not find file $input" unless -e $input;
@@ -85,6 +84,8 @@ sub serialize {
 
         close $in;
         close $out;
+
+        last if $tool =~ /^out/;
     }
 
     $log->{time} = time();
