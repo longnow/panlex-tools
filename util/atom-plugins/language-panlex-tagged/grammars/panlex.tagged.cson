@@ -1,0 +1,39 @@
+'scopeName': 'text.panlex.tagged'
+'name': 'Panlex - Tagged'
+# 'fileTypes': ['txt']
+'firstLineMatch': '^.*⫷.*⫸.*'
+'patterns': [
+  {
+    # 'match': '⫷...?.?:[a-z]{3}-\\d{3}⫸(.*?)(?=⫷|$)'
+    'match': '(⫷ex.*?⫸)(.*?)(?=⫷|$)'
+    'captures':
+        '1':
+            'name': 'tag.comment.panlex.tagged'
+        '2':
+            'name': 'string.ex.panlex.tagged'
+  }
+  {
+    'match': '(⫷df.*?⫸)(.*?)(?=⫷|$)'
+    'captures':
+        '1':
+            'name': 'tag.comment.panlex.tagged'
+        '2':
+            'name': 'string.df.panlex.tagged'
+  }
+  {
+    'match': '(⫷[md](?:cs|pp).*?⫸)(.*?)(?=⫷|$)'
+    'captures':
+        '1':
+            'name': 'tag.comment.panlex.tagged'
+        '2':
+            'name': 'string.cs.pp.markup.italic.panlex.tagged'
+  }
+  {
+    'match': '⫷.*?⫸(.*?)(?=⫷|$)'
+    'name': 'tag.comment.panlex.tagged'
+    'captures':
+        '1':
+            'name': 'string.panlex.tagged'
+  }
+
+]
