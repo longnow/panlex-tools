@@ -2,38 +2,69 @@
 # -*- coding: utf-8 -*-
 
 import regex as re
-parser = None
+spacy_parser = None
+frogclient = None
+supported_langs = ['eng', 'nld']
 
-def initialize_parser():
+def initialize_spacy_parser():
     from spacy.en import English
-    global parser
-    if not parser:
-        parser = English()
+    global spacy_parser
+    if not spacy_parser:
+        spacy_parser = English()
 
-def parts_of_speech(string):
-    initialize_parser()
+def initialize_frog_parser(port=12345):
+    from pynlpl.clients.frogclient import FrogClient
+    import subprocess
+    import atexit
+    import time
+    global frogclient
+    if not frogclient:
+        frogserver_sp = subprocess.Popen(['frog', '-S', str(port)], stderr=subprocess.DEVNULL)
+        atexit.register(frogserver_sp.terminate)
+        time.sleep(10)
+        frogclient = FrogClient('localhost', port)
+
+def parts_of_speech(string, lang='eng'):
     output = []
-    for token in parser(string):
-        output.append(token.pos_)
+    if lang == 'eng':
+        initialize_spacy_parser()
+        for token in spacy_parser(string):
+            output.append(token.pos_)
+    elif lang == 'nld':
+        initialize_frog_parser()
+        for token in frogclient.process(string):
+            output.append(token[3])
+    else:
+        raise TypeError('currently supported languages are ' + str(supported_langs))
     return output
 
-def lemmas(string):
-    initialize_parser()
+def lemmas(string, lang='eng'):
     output = []
-    for token in parser(string):
-        output.append(token.lemma_)
+    if lang == 'eng':
+        initialize_spacy_parser()
+        for token in spacy_parser(string):
+            output.append(token.lemma_)
+    elif lang == 'nld':
+        initialize_frog_parser()
+        for token in frogclient.process(string):
+            output.append(token[1])
+    else:
+        raise TypeError('currently supported languages are ' + str(supported_langs))
     return output
 
-def lemmatized(string, to_skip_list=None):
-    initialize_parser()
+def lemmatized(string, to_skip_list=None, lang='eng'):
     if to_skip_list:
         skip_re = re.compile('|'.join(to_skip_list))
     output = ''
-    for token in parser(string):
-        if to_skip_list and skip_re.search(token.text): 
-            output += token.text_with_ws
-            continue
-        output += token.text_with_ws.replace(token.text, token.lemma_)
+    if lang == 'eng':
+        initialize_spacy_parser()
+        for token in spacy_parser(string):
+            if to_skip_list and skip_re.search(token.text): 
+                output += token.text_with_ws
+                continue
+            output += token.text_with_ws.replace(token.text, token.lemma_)
+    else:
+        raise TypeError('currently supported languages for this function are ' + str(['eng']))
     return output
 
 prohibited_chars = [
