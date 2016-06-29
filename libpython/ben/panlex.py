@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import regex as re
@@ -618,16 +618,21 @@ def exdftag(ex, rx=r'(?:\([^()]+\)|（[^（）]+）)', subrx=r'[][/,;?!~]', maxc
     else:
         return ex, Df('', lv)
 
-def mnsplit(data, split_re, lv_list=[], max_splits=0):
+def mnsplit(data, split_re, lv_list=None, dn_filter=None, max_splits=0):
+    if lv_list:
+        dn_filter = lambda dn: dn.lv in lv_list
+    elif not dn_filter:
+        raise TypeError('must pass either lv_list or filter_function')
     for i, mn in enumerate(data):
         for dn in mn.dn_list:
-            if lv_list and dn.lv not in lv_list: continue
-            new_mns = mn.split(split_re, dn, max_splits=max_splits)
-            data[i] = new_mns[0]
-            try:
-                for new_mn in new_mns[1:]:
-                    data.insert(i + 1, new_mn)
-            except IndexError: pass
+            if dn_filter(dn):
+                new_mns = mn.split(split_re, dn, max_splits=max_splits)
+                data[i] = new_mns[0]
+                try:
+                    for new_mn in new_mns[1:]:
+                        data.insert(i + 1, new_mn)
+                except IndexError: pass
+
 
 def charset(data, lv_list):
     """Returns a set of all of the characters found in all of the expressions in
