@@ -52,7 +52,7 @@ def lemmas(string, lang='eng'):
         raise TypeError('currently supported languages are ' + str(supported_langs))
     return output
 
-def lemmatized(string, to_skip_list=None, lang='eng'):
+def lemmatized(string, lang='eng', to_skip_list=None):
     if to_skip_list:
         skip_re = re.compile('|'.join(to_skip_list))
     output = ''
