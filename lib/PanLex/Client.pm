@@ -25,6 +25,8 @@ sub panlex_query {
     $req->content(encode_json($body || {}));
     
     my $ua = LWP::UserAgent->new;
+    $ua->timeout(1800);
+
     my $res = $ua->request($req);
 
     my $content = $res->decoded_content;
