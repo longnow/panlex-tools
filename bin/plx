@@ -361,7 +361,7 @@ sub cmd_upload {
 
     if (defined $_[0] and -d $_[0]) {
         $dirpath = shift;
-    } elsif (-e 'log.json') {
+    } elsif ($type eq 'resource' or -e 'log.json') {
         $dirpath = curdir();
     } else {
         print(STDERR "You need to specify a valid source directory.\n"), return;        
