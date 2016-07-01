@@ -5,11 +5,12 @@ use open IN => ':crlf :encoding(utf8)', OUT => ':raw :encoding(utf8)';
 binmode STDOUT, ':encoding(utf8)';
 binmode STDERR, ':encoding(utf8)';
 
-our @EXPORT = qw/serialize/;
+our @EXPORT = qw(serialize);
 
 use JSON;
-use File::Spec::Functions qw/catfile curdir rel2abs/;
-use Scalar::Util 'blessed';
+use File::Spec::Functions qw(catfile curdir rel2abs);
+use List::Util qw(first);
+use Scalar::Util qw(blessed);
 
 use PanLex::Serialize::apostrophe;
 use PanLex::Serialize::copydntag;
@@ -35,6 +36,8 @@ use PanLex::Serialize::replace;
 use PanLex::Serialize::spellcheck;
 use PanLex::Serialize::wctag;
 
+my @try_extensions = qw(txt csv tsv);
+
 sub serialize {
     my ($basename, $version, $tools) = @_;
 
@@ -55,14 +58,9 @@ sub serialize {
     for (my $i = 0; $i < @$tools; $i += 2) {
         my ($tool, $args) = @{$tools}[$i, $i+1];
 
-        my $input;
-        if (-e "$basename-$version.txt") {
-            $input = "$basename-$version.txt";
-        } elsif (-e "$basename-$version.csv") {
-            $input = "$basename-$version.csv";
-        } else {
-            die "could not find file $basename-$version.txt or $basename-$version.csv";
-        }
+        my $input = first { -e $_ } map { "$basename-$version.$_" } @try_extensions;
+        die "could not find file " . join(' or ', map { "$basename-$version.$_" } @try_extensions) 
+            unless defined $input;
 
         open my $in, '<', $input or die $!;
 
