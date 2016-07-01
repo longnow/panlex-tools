@@ -32,7 +32,7 @@ use PanLex::Client::Normalize;
 use PanLex::MungeJson;
 use JSON;
 
-our @EXPORT = qw/normalizedf/;
+our @EXPORT = qw(normalizedf);
 
 sub normalizedf {
     my ($in, $out, $args) = @_;

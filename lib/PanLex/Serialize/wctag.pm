@@ -15,7 +15,7 @@ use parent 'Exporter';
 use PanLex::Validation;
 use PanLex::Serialize::csppmap;
 
-our @EXPORT = qw/wctag/;
+our @EXPORT = qw(wctag);
 
 sub wctag {
     my $in = shift;

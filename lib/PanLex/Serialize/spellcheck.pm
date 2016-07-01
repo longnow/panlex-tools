@@ -23,7 +23,7 @@ use open IN => ':crlf :encoding(utf8)', OUT => ':raw :encoding(utf8)';
 use parent 'Exporter';
 use PanLex::Validation;
 
-our @EXPORT = qw/spellcheck/;
+our @EXPORT = qw(spellcheck);
 
 sub spellcheck {
     my ($in, $out, $args) = @_;

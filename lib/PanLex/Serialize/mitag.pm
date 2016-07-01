@@ -10,7 +10,7 @@ use parent 'Exporter';
 use PanLex::Validation;
 use PanLex::Serialize::mpptag;
 
-our @EXPORT = qw/mitag/;
+our @EXPORT = qw(mitag);
 
 sub mitag {
     my $in = shift;

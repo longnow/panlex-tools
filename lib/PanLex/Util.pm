@@ -5,7 +5,7 @@ use open IN => ':crlf :encoding(utf8)', OUT => ':raw :encoding(utf8)';
 use parent 'Exporter';
 use Unicode::Normalize 'NFC';
 
-our @EXPORT = qw/Trim NormTrim Dedup Delimiter DelimiterIf DelimiterIfRegex ExpandParens ExpandParensEachEx EachEx LoadMap MapStr NestedParensToBrackets/;
+our @EXPORT = qw(Trim NormTrim Dedup Delimiter DelimiterIf DelimiterIfRegex ExpandParens ExpandParensEachEx EachEx LoadMap MapStr NestedParensToBrackets);
 
 ### Trim
 # Delete superfluous spaces in the specified string.

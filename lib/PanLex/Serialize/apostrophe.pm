@@ -12,7 +12,7 @@ use PanLex::Client;
 use PanLex::Validation;
 use PanLex::Serialize::Util;
 
-our @EXPORT = qw/apostrophe/;
+our @EXPORT = qw(apostrophe);
 
 sub apostrophe {
     my $in = shift;

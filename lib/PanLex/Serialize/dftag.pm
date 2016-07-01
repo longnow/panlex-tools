@@ -10,7 +10,7 @@ use utf8;
 use parent 'Exporter';
 use PanLex::Validation;
 
-our @EXPORT = qw/dftag/;
+our @EXPORT = qw(dftag);
 
 sub dftag {
     my $in = shift;

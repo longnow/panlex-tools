@@ -12,7 +12,7 @@ use utf8;
 use parent 'Exporter';
 use PanLex::Validation;
 
-our @EXPORT = qw/replace retag/;
+our @EXPORT = qw(replace retag);
 
 sub replace {
     my ($in, $out, $args) = @_;

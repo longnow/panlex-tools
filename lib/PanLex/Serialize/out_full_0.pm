@@ -23,7 +23,7 @@ use PanLex::Client;
 use panlex_ucd;
 use JSON;
 
-our @EXPORT = qw/out_full_0/;
+our @EXPORT = qw(out_full_0);
 
 my $UID = qr/[a-z]{3}-\d{3}/; # matches a language variety UID
 
@@ -143,7 +143,7 @@ sub out_full_0 {
                 $seen{$type}{$str} = '';
 
                 if ($type eq 'dn') {
-                    $seen{$_} = {} for (qw/ dcs1 dcs2 dpp /);
+                    $seen{$_} = {} for (qw( dcs1 dcs2 dpp ));
                     # Reset the duplicate tables for denotation items.
                 }
             }

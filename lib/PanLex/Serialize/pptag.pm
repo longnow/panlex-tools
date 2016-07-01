@@ -5,8 +5,8 @@ use utf8;
 use parent 'Exporter';
 use PanLex::Validation;
 
-our @EXPORT = qw/pptag/;
-our @EXPORT_OK = qw/pptag_item/;
+our @EXPORT = qw(pptag);
+our @EXPORT_OK = qw(pptag_item);
 
 sub pptag {
     my ($in, $out, $args) = @_;

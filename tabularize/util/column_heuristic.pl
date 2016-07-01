@@ -1,6 +1,6 @@
 use strict;
 use utf8;
-use List::Util qw/max min sum/;
+use List::Util qw(max min sum);
 
 # the number of positions to look (left and right) for candidate boundaries.
 my $LOOK_RANGE = 15;

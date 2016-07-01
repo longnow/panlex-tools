@@ -52,7 +52,7 @@ my %seen;
 foreach my $entry ($dom->find('section e p')->each) {
     my @col;
 
-    push @col, extract_side($entry->at($_)) for qw/l r/;
+    push @col, extract_side($entry->at($_)) for qw(l r);
 
     next if skip(@col);
 

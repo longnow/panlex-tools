@@ -17,7 +17,7 @@ use File::Spec::Functions;
 use PanLex::Validation;
 use PanLex::Serialize::cstag 'cstag_item';
 
-our @EXPORT = qw/mcsmap/;
+our @EXPORT = qw(mcsmap);
 
 sub mcsmap {
     my ($in, $out, $args) = @_;

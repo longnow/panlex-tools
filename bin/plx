@@ -6,7 +6,7 @@ use open IN => ':crlf :encoding(utf8)', OUT => ':raw :encoding(utf8)';
 binmode STDOUT, ':encoding(utf8)';
 binmode STDERR, ':encoding(utf8)';
 
-use File::Spec::Functions qw/catdir catfile curdir rel2abs splitdir/;
+use File::Spec::Functions qw(catdir catfile curdir rel2abs splitdir);
 use LWP::UserAgent;
 use Encode 'encode';
 use Unicode::Normalize;
@@ -178,7 +178,7 @@ sub add_interp {
 sub cmd_edit {
     my ($ap) = @_;
 
-    check_env(qw/PANLEX_PANLEM_USER PANLEX_PANLEM_PASSWORD/);
+    check_env(qw(PANLEX_PANLEM_USER PANLEX_PANLEM_PASSWORD));
     print(STDERR "You need to specify a source label or ID.\n"), return unless $ap;
 
     if ($ap =~ /:/) {
@@ -221,7 +221,7 @@ sub cmd_edit {
 sub cmd_fetch {
     my ($source) = @_;
 
-    check_env(qw/PANLEX_ARCHIVE_USERNAME PANLEX_ARCHIVE_PASSWORD/);
+    check_env(qw(PANLEX_ARCHIVE_USERNAME PANLEX_ARCHIVE_PASSWORD));
     print(STDERR "You need to specify a source directory, label, or ID.\n"), return unless $source;
 
     if ($source =~ /:|^\d+$/) {
@@ -238,7 +238,7 @@ sub cmd_fetch {
 
     my $r;
 
-    foreach my $dir (qw/ incoming main /) {
+    foreach my $dir (qw( incoming main )) {
         my $url = "${RESOURCE_ARCHIVE_URL}/download/${dir}/${source}.zip";
         $r = $ua->get($url);
 
@@ -270,7 +270,7 @@ sub cmd_fetch {
 }
 
 sub cmd_submit {
-    check_env(qw/PANLEX_PANLEM_USER PANLEX_PANLEM_PASSWORD/);
+    check_env(qw(PANLEX_PANLEM_USER PANLEX_PANLEM_PASSWORD));
 
     my ($final, $ap, $aptt);
     my $op = '2'; # replace
@@ -348,7 +348,7 @@ sub cmd_submit {
 }
 
 sub cmd_upload {
-    check_env(qw/PANLEX_ARCHIVE_USERNAME PANLEX_ARCHIVE_PASSWORD PANLEX_ARCHIVE_NAME PANLEX_ARCHIVE_EMAIL/);
+    check_env(qw(PANLEX_ARCHIVE_USERNAME PANLEX_ARCHIVE_PASSWORD PANLEX_ARCHIVE_NAME PANLEX_ARCHIVE_EMAIL));
 
     my $type = 'source';
 

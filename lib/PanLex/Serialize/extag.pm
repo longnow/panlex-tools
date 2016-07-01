@@ -14,7 +14,7 @@ use utf8;
 use parent 'Exporter';
 use PanLex::Validation;
 
-our @EXPORT = qw/extag/;
+our @EXPORT = qw(extag);
 
 sub extag {
     my $in = shift;

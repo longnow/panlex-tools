@@ -5,7 +5,7 @@ use utf8;
 use parent 'Exporter';
 use File::Spec::Functions;
 
-our @EXPORT = qw/parse_specs parse_tags combine_complex_tags serialize_tags serialize_tag tags_match tag_type/;
+our @EXPORT = qw(parse_specs parse_tags combine_complex_tags serialize_tags serialize_tag tags_match tag_type);
 
 # takes an arrayref of column-uid specifications and returns a hashref whose 
 # keys are column indexes and values are uids.

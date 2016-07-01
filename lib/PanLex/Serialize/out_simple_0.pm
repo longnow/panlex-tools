@@ -12,7 +12,7 @@ use parent 'Exporter';
 use PanLex::Validation;
 use PanLex::Serialize::Util;
 
-our @EXPORT = qw/out_simple_0/;
+our @EXPORT = qw(out_simple_0);
 
 my $UID = qr/[a-z]{3}-\d{3}/;
 

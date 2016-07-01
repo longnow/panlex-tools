@@ -11,7 +11,7 @@ use parent 'Exporter';
 use PanLex::Validation;
 use PanLex::Serialize::mcstag;
 
-our @EXPORT = qw/dmtag/;
+our @EXPORT = qw(dmtag);
 
 sub dmtag {
     my $in = shift;

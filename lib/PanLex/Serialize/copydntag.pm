@@ -11,7 +11,7 @@ use utf8;
 use parent 'Exporter';
 use PanLex::Validation;
 
-our @EXPORT = qw/copydntag/;
+our @EXPORT = qw(copydntag);
 
 my $UID = qr/[a-z]{3}-\d{3}/; # matches a language variety UID
 

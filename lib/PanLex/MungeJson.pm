@@ -2,7 +2,7 @@ package PanLex::MungeJson;
 use strict;
 use parent 'Exporter';
 
-our @EXPORT = qw/munge_json/;
+our @EXPORT = qw(munge_json);
 
 # Make JSON output a bit less pretty.
 sub munge_json {

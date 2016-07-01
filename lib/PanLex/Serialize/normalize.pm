@@ -42,7 +42,7 @@ use PanLex::Client::Normalize;
 use PanLex::MungeJson;
 use JSON;
 
-our @EXPORT = qw/normalize/;
+our @EXPORT = qw(normalize);
 
 sub normalize {
     my $in = shift;

@@ -14,7 +14,7 @@ use File::Spec::Functions;
 use PanLex::Validation;
 use PanLex::Serialize::dpptag;
 
-our @EXPORT = qw/mdtag/;
+our @EXPORT = qw(mdtag);
 
 my %varmap;
 

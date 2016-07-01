@@ -22,7 +22,7 @@ use parent 'Exporter';
 use PanLex::Validation;
 use PanLex::Serialize::Util;
 
-our @EXPORT = qw/exdftag/;
+our @EXPORT = qw(exdftag);
 
 sub exdftag {
     my $in = shift;

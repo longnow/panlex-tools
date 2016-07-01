@@ -10,7 +10,7 @@ use utf8;
 use parent 'Exporter';
 use PanLex::Validation;
 
-our @EXPORT = qw/out_simple_2/;
+our @EXPORT = qw(out_simple_2);
 
 sub out_simple_2 {
     my $in = shift;

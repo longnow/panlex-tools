@@ -28,7 +28,7 @@ use PanLex::Validation;
 use PanLex::Serialize::cstag 'cstag_item';
 use PanLex::Serialize::pptag 'pptag_item';
 
-our @EXPORT = qw/csppmap/;
+our @EXPORT = qw(csppmap);
 
 sub csppmap {
     my ($in, $out, $args) = @_;

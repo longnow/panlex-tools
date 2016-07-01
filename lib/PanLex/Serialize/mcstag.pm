@@ -12,7 +12,7 @@ use utf8;
 use parent 'Exporter';
 use PanLex::Serialize::cstag;
 
-our @EXPORT = qw/mcstag/;
+our @EXPORT = qw(mcstag);
 
 sub mcstag {
     my ($in, $out, $args) = @_;

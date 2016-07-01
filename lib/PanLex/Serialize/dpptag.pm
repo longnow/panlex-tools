@@ -12,7 +12,7 @@ use utf8;
 use parent 'Exporter';
 use PanLex::Serialize::pptag;
 
-our @EXPORT = qw/dpptag/;
+our @EXPORT = qw(dpptag);
 
 sub dpptag {
     my ($in, $out, $args) = @_;
