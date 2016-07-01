@@ -32,17 +32,22 @@ my @TOOLS = (
 #   extag:    expression tag. default '⫷ex⫸'.
 #   mntag:    meaning tag. default '⫷mn⫸'.
 
-#'normalizedf'  => { col => 0, uid => 'eng-000', mindeg => 10 },
+#'normalizedf'  => { col => 0, uid => 'eng-000', min => 100, mindeg => 10 },
 # Normalizes expressions in a tagged source file by matching them against definitions.
 # Arguments:
 #   col:      column containing expressions to be normalized.
 #   uid:      variety UID of expressions to be normalized.
-#   mindeg:   minimum score a proposed expression or its replacement must have in 
-#               order to be accepted as an expression.
-#   ui:       array of source group IDs whose meanings are to be ignored in
-#               normalization; [] if none. default [].
+#   min:      minimum score (0 or more) a proposed expression must have in order to be
+#               accepted outright as an expression. Every proposed expression with a
+#               lower (or no) score is to be replaced with the highest-scoring
+#               definition sharing its language variety and degradation, if any
+#               such definition has a higher score than it.
+#   mindeg:   minimum score an expression’s definitional replacement must have in order
+#               to be order to be accepted.
 #   strict:   set to 1 to only accept replacements differing in parentheses, 0
 #               to accept all replacements. default 1.
+#   ui:       array of source group IDs whose meanings are to be ignored in
+#               normalization; [] if none. default [].
 #   log:      set to 1 to log normalize scores to normalizedf.json, 0 otherwise.
 #               default 1.
 #   ignore:   regex matching expressions to be ignored in normalization; or ''

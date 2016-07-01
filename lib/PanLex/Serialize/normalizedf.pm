@@ -2,8 +2,13 @@
 # Arguments:
 #   col:      column containing expressions to be normalized.
 #   uid:      variety UID of expressions to be normalized.
-#   mindeg:   minimum score a proposed expression or its replacement must have in 
-#               order to be accepted as an expression.
+#   min:      minimum score (0 or more) a proposed expression must have in order to be
+#               accepted outright as an expression. Every proposed expression with a
+#               lower (or no) score is to be replaced with the highest-scoring
+#               definition sharing its language variety and degradation, if any
+#               such definition has a higher score than it.
+#   mindeg:   minimum score an expression’s definitional replacement must have in order
+#               to be order to be accepted.
 #   strict:   set to 1 to only accept replacements differing in parentheses, 0
 #               to accept all replacements. default 1.
 #   ui:       array of source group IDs whose meanings are to be ignored in
@@ -34,6 +39,7 @@ sub normalizedf {
     
     my $excol   = $args->{col};
     my $uid     = $args->{uid};
+    my $min     = $args->{min};
     my $mindeg  = $args->{mindeg};
     my $ui      = $args->{ui} // $args->{ap} // [];
     my $strict  = $args->{strict} // 1;
@@ -48,6 +54,7 @@ sub normalizedf {
     $extag = validate_tag($extag);
     $exptag = validate_tag($exptag);
 
+    die "invalid min value: $mindeg" unless valid_int($min) && $min >= 0;
     die "invalid mindeg value: $mindeg" unless valid_int($mindeg) && $mindeg >= 0;
         
     my (%ex, %exok, $log_obj);
@@ -101,15 +108,33 @@ sub normalizedf {
         }
     }
 
+    my $result = panlex_norm('ex', $uid, [keys %ex], 0, $ui);
+    # Identify a reference to a table whose keys are the proposed expression texts and whose
+    # values are ex-type “norm” objects with “degrade” false, as defined by the PanLex API.
+
+    $log_obj->{stage1} = $result if $log;
+    # Log the table if logging is being performed.
+
+    foreach my $tt (keys %$result) {
+    # For each proposed expression text:
+
+        # For each proposed expression that has a score and whose score is sufficient for
+        # outright acceptance as an expression:
+        if ($result->{$tt}{score} >= $min) {
+            $exok{$tt} = delete $ex{$tt};
+        }
+
+    }
+
     my %ttto;
 
-    my $result = panlex_norm('df', $uid, [keys %ex], 1, $ui);
+    $result = panlex_norm('df', $uid, [keys %ex], 1, $ui);
     # Identify a reference to a table whose keys are the proposed expression texts and whose
     # values are df-type “norm” objects with “degrade” true, as defined by the PanLex API. Each “norm”
     # object is an array of score-text pairs, ordered from highest to lowest score, containing the
     # score of a definition text with matching degradation and the definition text itself.
 
-    $log_obj = $result if $log;
+    $log_obj->{stage2} = $result if $log;
     # Log the table if logging is being performed.
 
     foreach my $tt (keys %$result) {

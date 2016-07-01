@@ -145,11 +145,9 @@ sub normalize {
     $log_obj->{stage1} = $result if $log;
 
     foreach my $tt (keys %$result) {
-        my $norm = $result->{$tt};
-
         # For each proposed expression that has a score and whose score is sufficient for
         # outright acceptance as an expression:
-        if ($norm->{score} >= $min) {
+        if ($result->{$tt}{score} >= $min) {
             $exok{$tt} = delete $ex{$tt};
         }
     }
