@@ -36,13 +36,13 @@ use PanLex::Serialize::spellcheck;
 use PanLex::Serialize::wctag;
 
 sub serialize {
-    my ($BASENAME, $VERSION, $TOOLS) = @_;
+    my ($basename, $version, $tools) = @_;
 
     print "\n";
     die "could not find PANLEX_TOOLDIR" unless -d $ENV{PANLEX_TOOLDIR};
-    die "odd number of items in \@TOOLS" unless @$TOOLS % 2 == 0;
+    die "odd number of items in \@tools" unless @$tools % 2 == 0;
 
-    my $log = { tools => $TOOLS, basename => $BASENAME, version => $VERSION };
+    my $log = { tools => $tools, basename => $basename, version => $version };
 
     # get the panlex-tools revision.
     my $pwd = rel2abs(curdir());
@@ -52,17 +52,24 @@ sub serialize {
     chdir $pwd;
     $log->{git_revision} = $rev;
 
-    for (my $i = 0; $i < @$TOOLS; $i += 2) {
-        my ($tool, $args) = @{$TOOLS}[$i, $i+1];
+    for (my $i = 0; $i < @$tools; $i += 2) {
+        my ($tool, $args) = @{$tools}[$i, $i+1];
 
-        my $input = "$BASENAME-$VERSION.txt";
-        die "could not find file $input" unless -e $input;
+        my $input;
+        if (-e "$basename-$version.txt") {
+            $input = "$basename-$version.txt";
+        } elsif (-e "$basename-$version.csv") {
+            $input = "$basename-$version.csv";
+        } else {
+            die "could not find file $basename-$version.txt or $basename-$version.csv";
+        }
+
         open my $in, '<', $input or die $!;
 
-        $VERSION = $tool =~ /^out/ ? 'final' : $VERSION+1;
+        $version = $tool =~ /^out/ ? 'final' : $version+1;
 
-        my $output = "$BASENAME-$VERSION.txt";
-        open my $out, '>', "$BASENAME-$VERSION.txt" or die $!;
+        my $output = "$basename-$version.txt";
+        open my $out, '>', "$basename-$version.txt" or die $!;
 
         printf "%-13s %s => %s\n", $tool.':', $input, $output;
 
