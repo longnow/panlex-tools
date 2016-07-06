@@ -2,6 +2,7 @@
 
 
 import regex as re
+import time
 
 from bs4 import BeautifulSoup
 
@@ -18,7 +19,6 @@ class LexiqueParser(object):
 
         for item in para.contents:
             if item.name == 'span':
-
                 if item['class'][0] not in self._ignore_list:
                     key = re.sub('^lp', '', item['class'][0])
 
@@ -29,18 +29,23 @@ class LexiqueParser(object):
     
     def getRecords(self, filename:str) -> list:
         with open(filename) as fin:
-            text = fin.read()
+            text = self._preprocess(fin.read())
             bs = BeautifulSoup(text, 'lxml')
             entries = bs.find_all('p')
             source = ''
 
             for para in entries:
-                if 'class' in para.attrs and 'lpLexEntryPara' in para['class']:
-                    source = para.find('span', {'class':'lpLexEntryName'}).text.strip()
-                    yield self._extract_entry(para)
-                elif 'lpLexEntryPara2' in para['class']:
-                    yield self._extract_entry(para, source)
+                if 'class' in para.attrs:
+                    if 'lpLexEntryPara' in para['class'] or 'lpLexEntryPara_KeepWithNext' in para['class']:
+                        source = para.find('span', {'class':'lpLexEntryName'}).text.strip()
+                        yield self._extract_entry(para)
+                    elif 'lpLexEntryPara2' in para['class']:
+                        yield self._extract_entry(para, source)
 
+    def _preprocess(self,text):
+        text = re.sub('<a [^>]*>', '', text)
+        text = re.sub('</a' ,'', text)
+        return text
 
 
 
