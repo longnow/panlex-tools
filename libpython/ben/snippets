@@ -95,7 +95,7 @@ for mn in source:
 for mn in source:
     for i, dn in enumerate(mn.dn_list):
         if dn.lv == 'eng-000':
-            new_ex, new_df = exdftag(dn.ex, subrx = r'^$')
+            new_ex, new_df = exdftag(dn.ex, rx=r'(?:\([^()]+\)|（[^（）]+）)', subrx=r'[][/,;?!~]')
             mn.dn_list[i] = dn.copy(new_ex)
             if new_df: mn.df_list.append(new_df)
 
