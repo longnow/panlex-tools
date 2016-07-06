@@ -29,7 +29,7 @@ sub out_simple_2 {
 
     die "you must specify exactly two UIDs" if @uids != 2;
 
-    print $out ".\n2\n$uids[0]\n$uids[1]\n";
+    print $out ":\n2\n";
     # Output the file header.
 
     my %seen;
@@ -52,10 +52,11 @@ sub out_simple_2 {
             $seen{$_} = '';
             # Add it to the table of entries.
 
-            s/⫷ex⫸/\n/g;
-            # Convert all expression tags and the inter-column tab.
+            s/⫷ex⫸/\n  dn\n    $uids[0]\n    /;
+            s/⫷ex⫸/\n  dn\n    $uids[1]\n    /;
+            # Convert all expression tags.
 
-            print $out $_, "\n";
+            print $out "\nmn$_\n";
             # Output the converted line.
         }
     }    

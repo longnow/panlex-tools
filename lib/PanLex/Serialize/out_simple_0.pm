@@ -31,7 +31,7 @@ sub out_simple_0 {
         validate_specs(\@specs);
     }
     
-    print $out ".\n0\n";
+    print $out ":\n0\n";
     # Output the file header.
 
     my $col_uid = parse_specs(\@specs);
@@ -70,10 +70,10 @@ sub out_simple_0 {
             $seen{$rec} = '';
             # Add it to the table of entries.
 
-            $rec =~ s/⫷ex:($UID)⫸/\n$1\n/g;
+            $rec =~ s/⫷ex:($UID)⫸/\n  dn\n    $1\n    /g;
             # Convert all expression tags in it.
 
-            print $out $rec, "\n";
+            print $out "\nmn$rec\n";
             # Output the converted line.
         }
     }
