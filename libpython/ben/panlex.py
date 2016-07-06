@@ -323,7 +323,7 @@ class Dn:
                 if isinstance(cs_map[key], Cs):
                     cs_list.append(cs_map[key].format(*match.groups()))
                 else:
-                    cs_list.extend(cs_map[key])
+                    cs_list.extend([cs.format(*match.groups()) for cs in cs_map[key]])
         self.ex = self.ex.copy(ex)
         return cs_list
 
@@ -667,10 +667,10 @@ def charset(data, lv_list):
 
 def build_csppmap(mapfile=None):
     if not mapfile:
-        try:
-            mapfile = open('csppmap.txt')
-        except FileNotFoundError:
-            mapfile = open(environ['PANLEX_TOOLDIR'] + '/serialize/data/csppmap.txt')
+        # try:
+        mapfile = open('csppmap.txt')
+        # except FileNotFoundError:
+            # mapfile = open(environ['PANLEX_TOOLDIR'] + '/serialize/data/csppmap.txt')
     try:
         mapfile = open(mapfile)
     except TypeError:
