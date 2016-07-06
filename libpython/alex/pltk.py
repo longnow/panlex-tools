@@ -1,6 +1,7 @@
-'''
-PanLex ToolKit
-'''
+#!/usr/bin/env python
+# -*- coding: UTF-8 -*-
+
+# PanLex ToolKit
 
 import unicodedata
 import regex as re
@@ -159,32 +160,37 @@ def remove_parens(s, parens=PARENS):
 
 EXDFPREP_RULES = {
   'eng-000' : {
-    1 : {
-      r'([^\s])\s+(s(?:\-|ome)(?: other )?(?: other )?(?:one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|ome)(?: other )?(?:one|body|thing))?(?: (?:who|which|that) is)?|s\.[bot]\.?|o\.s\.?)([^\'’]|$)' : (r'\1 (\2)\3', ''),
-      r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(s(?:\-|ome)(?: other )?(?:one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|ome)(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\s+([^\s])' : (r'\1(\2) \3', ''),
-      r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(s(?:\-|ome)(?: other )?(?:one|body|thing)[\'’]?s)\s+([^\s])' : (r'\1(\2) \3', ''),
-      r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:\(?\s*to\s*\)?\s+)?be)\s+([^\(])'  : (r'\1(\2) \3', ''),
-      r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(\(?(?:a\s+)?(?:kind|variety|type|sort|species) of\)?|k\.?o\.)\s*' : (r'\1(\2) ', r''),
+    1: {
+      r'(^| )big bird($)' : (r'\1(big) bird\2', '⫷mcs2:art-300⫸IsA⫷mcs:eng-000⫸bird'),
       r'^you (sg|pl)\.?$' : (r'you (\1)', ''),
+      r'(^| )potatoe( |$)' : (r'\1potato\2', ''),
+      r'(^| )to day( |$)' : (r'\1today\2', ''),
     },
     2: {
-      r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)([Tt]he|[Aa]n?)\s+((?:(?:'+make_paren_regex()[1:-1]+'|[^\(\)\[\]\s]+))(?: (?:'+make_paren_regex()[1:-1]+'|[^\(\)\[\]\s]+))?)$'   : (r'\1(\2) \3', ''),      # r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(the)\s+([^\(])'   : (r'\1(\2) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun'),
-      r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)\((s(?:\-|ome)(?: other )?(?:one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|ome)(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)\s+(which|that|who|to)' : (r'\1\2 \3', ''),
-      r'\((s(?:\-|ome)(?: other )?(?:one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|ome)(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)\s+(else(?:\'s)?)' : (r'(\1 \2)', ''),
-      r'^\((s(?:\-|ome)(?: other )?(?:one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|ome)(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)\s+' : (r'\1 ', ''),
-      r'^((?:[^\s\(\)\[\]]+\s)?)((?:'+make_paren_regex(cap=False)+r')?\s*)(\(?(?:kind|variety|type|sort|species) of\)?|\(?k\.?o\.\)?)\s*([^\s]+ ?[^\s]+)$' : (r'\2 (\3) \1\4', r'⫷mcs2:art-300⫸IsA⫷mcs:eng-000⫸\4'),
-      r'^((?:'+make_paren_regex(cap=False)+r')?\s*)(\(?(?:a\s+)?(?:kind|variety|type|sort|species) of\)?|\(?k\.?o\.\)?)\s*([^\s]+ ?[^\s]+)$' : (r'\1 (\2) \3', r'⫷mcs2:art-300⫸IsA⫷mcs:eng-000⫸\3'),
+      r'([^\s])\s+(s(?:\-|o(?:me|em))(?: other )?(?: other )?(?:one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing))?(?: (?:who|which|that) is)?|s\.[bot]\.?|o\.s\.?)([^\'’]|$)' : (r'\1 (\2)\3', ''),
+      r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\s+([^\s])' : (r'\1(\2) \3', ''),
+      r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing)[\'’]?s)\s+([^\s])' : (r'\1(\2) \3', ''),
+      r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:(?:for (?:something|s\.t\.?))?\(?\s*to\s*\)?\s+)?be)\s+([^\(])'  : (r'\1(\2) \3', ''),
+      r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(\(?(?:a\s+)?(?:kind|variety|type|sort|species) of(?: an? )?\)?|k\.?o\.)\s*' : (r'\1(\2) ', r''),
     },
     3: {
+      r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)([Tt]he|[Aa]n?)\s+((?:(?:'+make_paren_regex()[1:-1]+'|[^\(\)\[\]\s]+))(?: (?:'+make_paren_regex()[1:-1]+'|[^\(\)\[\]\s]+))?)$'   : (r'\1(\2) \3', ''),      # r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(the)\s+([^\(])'   : (r'\1(\2) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun'),
+      r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)\((s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)\s+(which|that|who|to)' : (r'\1\2 \3', ''),
+      r'\((s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)\s+(else(?:\'s)?)' : (r'(\1 \2)', ''),
+      r'^\((s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)\s+' : (r'\1 ', ''),
+      r'^((?:[^\s\(\)\[\]]+\s)?)((?:'+make_paren_regex(cap=False)+r')?\s*)(\(?(?:kind|variety|type|sort|species) of(?: an?)?\)?|\(?k\.?o\.\)?)\s*([^\s]+ ?[^\s]+)$' : (r'\2 (\3) \1\4', r'⫷mcs2:art-300⫸IsA⫷mcs:eng-000⫸\4'),
+      r'^((?:'+make_paren_regex(cap=False)+r')?\s*)(\(?(?:a\s+)?(?:kind|variety|type|sort|species) of(?: an?)?\)?|\(?k\.?o\.\)?)\s*([^\s]+ ?[^\s]+)$' : (r'\1 (\2) \3', r'⫷mcs2:art-300⫸IsA⫷mcs:eng-000⫸\3'),
+    },
+    4: {
       r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:not )?)[Tt]o\s+('+make_paren_regex(cap=False)+r'?\s*)(?!the(?: |$)|you|us$|him$|her$|them$|me$|no )' : (r'\1\2(to) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal'),
       r'(^| )make to ' : (r'\1make (to) ', '')
     },
-    4: {
+    5: {
       r'(^|\s)\(a\) (lot|bit|posteriori|priori|fortiori|few|little|minute|same|while)(\s|$)' : (r'\1a \2\3', r''),
       r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:\(to\) )?)(become)\s+([^\s\()][^\s]*)$' : (r'\1\2\3 \4', r'⫷mcs2:art-316⫸Inchoative_of⫷mcs⫸\4'),
       r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:\(to\) )?)(make\s+)((?:\(to\)\s+)?)((?:'+make_paren_regex(cap=False)+r'\s*)?)\s+(?!space(?: |$)|room(?: |$)|out(?: |$)|love(?: |$))([^\s\()][^\s]*)$'   : (r'\1\2\3\4 \5 \6', r'⫷mcs2:art-316⫸Causative_of⫷mcs⫸\6'),
     },
-    5: {
+    6: {
       r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)\(([Tt]he|[Aa]n?)\)\s+((?:(?:'+make_paren_regex()[1:-1]+'|[^\(\)\[\]\s]+))(?: (?:'+make_paren_regex()[1:-1]+'|[^\(\)\[\]\s]+))?)$'   : (r'\1(\2) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun'),
       r' \(n\.?\)$' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun'),
       r' \(v\.?\)$' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal'),
@@ -249,6 +255,14 @@ EXDFPREP_RULES = {
   'cat-000' : {
     1 : {
       r'[¿\?]' : ('', '⫷dcs2:art-303⫸ForceProperty⫷dcs:art-303⫸InterrogativeForce'),
+    },
+  },
+  'nld-000' : {
+    1 : {
+      r'^soort (\S*)$' : (r'(soort) \1', r'⫷mcs2:art-300⫸IsA⫷mcs:nld-000⫸\1'),
+    },
+    2 : {
+      r'^soort (.*)$' : (r'(soort) \1', r''),
     },
   },
   'ile-000' : {
@@ -463,7 +477,7 @@ def exdfprep(entries, sourcecols, tocol=-1, lang='eng-000', pretag_special_lvs=T
               # integers
               int_m = re.match(r'^(?:⫷..⫸)?(\d+)($|⫷)', syn.strip())
               if int_m:
-                if int_m.group(1) in ['747']:
+                if int_m.group(1) in ['747','411','911','119']:
                   print('WARNING: Did not pretag potentially special number:', int_m.group(1))
                 else:
                   syn = re.sub(r'^(?:⫷[^⫸]+⫸)?', '⫷ex:art-269⫸', unicodedata.normalize('NFKC', syn)).strip()
@@ -689,14 +703,14 @@ def nodupes(ls):
       result.append(l)
   return result
 
-
-def resolve_xrefs(entries, fromcol, hwcol, xref_format=r'^= (.+)$'):
+def resolve_xrefs(entries, fromcol, hwcol, xref_format=r'^= (.+)$', delim='‣'):
   """ Resolve cross-references by copying information from other entries.
   entries = list of entries
   fromcol = column with cross-references to resolve
   hwcol   = column with headwords that are being referenced
   xref_format = regex to detect crossrefs. capture group 1 should match a potential headword.
   """
+  xref_marker = '𝀿'
   result = []
   for entry in entries:
     try: entry[fromcol]
@@ -711,10 +725,28 @@ def resolve_xrefs(entries, fromcol, hwcol, xref_format=r'^= (.+)$'):
         try: entry2[hwcol]
         except: raise ValueError('index', hwcol, 'not in entry:', entry2)
         if entry2[hwcol] == xref:
-          result.append(entry2[:hwcol] + [hw] + entry2[hwcol+1:])
+          entry2 = entry2[:fromcol] + [xref_marker+entry2[fromcol]] + entry2[fromcol+1:]
+          entry2 = entry2[:hwcol] + [hw] + entry2[hwcol+1:]
+          result.append(entry2)
     else: # no match, just pass through
       result.append(entry)
-  return result
+
+  # step2: if fromcols match, group the two together as a synonym pair
+  result2 = []
+  done_indices = []
+  for i, entry in enumerate(result):
+    if i not in done_indices:
+      hws, to = [entry[hwcol]], entry[fromcol]
+      for j, entry2 in enumerate(result):
+        hw2, to2 = entry2[hwcol], entry2[fromcol]
+        if xref_marker+to == to2:
+          hws.append(hw2)
+          done_indices.append(j)
+      result2.append(entry[:hwcol] + [delim.join(hws)] + entry[hwcol+1:])
+
+  result2 = [entry for entry in result2 if not entry[fromcol].startswith(xref_marker)]
+
+  return result2
 
 
 def get_normalize_scores(exps, lang='eng-000'):
@@ -744,10 +776,8 @@ def get_normalize_scores(exps, lang='eng-000'):
 
   # build proper query string
   query  = '{ "tt" : ["'
-  for exp in exps:
-    query += exp.replace('"', '\\"')
-    query += '","'
-  query = query[:-3] + '"] }'
+  query += '","'.join([exp.replace('"', '\\"') for exp in exps])
+  query += '"] }'
 
   req = urllib.request.Request(url, query.encode('utf-8'))
 

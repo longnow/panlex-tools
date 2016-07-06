@@ -268,6 +268,9 @@ number	art-303:PartOfSpeechProperty:art-303:Numeral
 numeral	art-303:PartOfSpeechProperty:art-303:Numeral	
 Numeral	art-303:PartOfSpeechProperty:art-303:Numeral	
 obj.pron.	art-303:PartOfSpeechProperty:art-303:Pronominal	
+onomat	art-303:PartOfSpeechProperty:art-253:onomatopoeia	
+onomat.	art-303:PartOfSpeechProperty:art-253:onomatopoeia	
+onomatopoeia	art-303:PartOfSpeechProperty:art-253:onomatopoeia	
 ord	art-303:PartOfSpeechProperty:art-303:OrdinalNumeral	
 ord.num.	art-303:PartOfSpeechProperty:art-303:OrdinalNumeral	
 Part	art-303:PartOfSpeechProperty:art-303:Particle	
