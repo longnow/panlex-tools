@@ -22,6 +22,7 @@ def pre_process(text):
     text = re.sub('\s*…\s*$', '', text)
     text = re.sub('\s*…\s*\)', ' …)', text)
     text = re.sub('\(\s*…\s*', '(… ', text)
+    text = re.sub('…\s+,', '…,', text)
     text = re.sub('(\d+)[,.;](\d+)', r'\1\2', text)
 
     return text.strip()
@@ -82,10 +83,27 @@ def flatten_parentheses(text:str, remove=False) -> str:
 
     return ''.join(text)
 
+def parens_count(text):
+    count = 0
+    for c in text:
+        if c == '(': count += 1
+        elif c == ')': count -= 1
+
+    return count
+
 
 def balance_parentheses(text):
     # TODO: handle all cases
-    text = re.sub('\([^)]*')
+    text = re.sub('\(([^)]*)$', r'\1', text)
+    count = parens_count(text)
+    while count > 0:
+        text += ')'
+        count -= 1
+
+    while count < 0:
+        text = '(' + text
+        count += 1
+
     return text
 
 

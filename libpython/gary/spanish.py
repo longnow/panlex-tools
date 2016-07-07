@@ -3,12 +3,14 @@ import regex as re
 
 from gary import append_synonym
 
-
+# dummy change for testing git
 def remove_feminine_infl(text):
     text = re.sub('(.*)/a\M', r'\1', text)
+    text = re.sub('(?<=\w\s*)\(a\)', '', text)
+    text = re.sub('a\s*\(o\)(?!\w)', 'o', text)
     text = re.sub('@$', 'o', text)
 
-    return text
+    return text.strip()
 
 
 
@@ -23,7 +25,12 @@ def normalize_adj(text,pos):
 
 
 def remove_articles(text):
-    text = re.sub('^(el|la|las|un|una)\s+', '', text)
+    match = re.search('^(el|la|las|un|una)\s+', text)
+    if match:
+        tokens = text.split()
+        if tokens[1] not in ['vez', 'poco', 'poquito', 'y', 'tras', 'de', 'del', 'mejor', 'más', 'pro']:
+            text = re.sub('^(el|la|las|un|una)\s+', '', text)
+
     return text
 
 

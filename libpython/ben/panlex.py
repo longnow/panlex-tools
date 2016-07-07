@@ -323,7 +323,7 @@ class Dn:
                 if isinstance(cs_map[key], Cs):
                     cs_list.append(cs_map[key].format(*match.groups()))
                 else:
-                    cs_list.extend(cs_map[key])
+                    cs_list.extend([cs.format(*match.groups()) for cs in cs_map[key]])
         self.ex = self.ex.copy(ex)
         return cs_list
 
@@ -462,14 +462,14 @@ class Mn:
                     self.dn_list[i] = dn.sub(pattern, repl, count, flags)
 
 
-def tabularize(data, output_file, match_re_lv_list=None, lv_list=None, tagged=False, tag_types=set(), inc_df=False):
+def tabularize(source, output_file, match_re_lv_list=None, lv_list=None, tagged=False, tag_types=set(), inc_df=False):
     if not lv_list:
-        lv_list = sorted(set(flatten([mn.lv_list() for mn in data])))
+        lv_list = sorted(set(flatten([mn.lv_list() for mn in source])))
     try:
         if isinstance(match_re_lv_list[0], str):
             match_re_lv_list = [match_re_lv_list]
     except TypeError: pass
-    for mn in Bar().iter(data):
+    for mn in Bar().iter(source):
         line = tab_line(mn, lv_list, tagged, tag_types)
         if match_re_lv_list:
             match = False
@@ -484,9 +484,9 @@ def tabularize(data, output_file, match_re_lv_list=None, lv_list=None, tagged=Fa
             print(line, file=output_file)
         else: pass
 
-def tab_log(data, match_re_lv_list=None, lv_list=None, tagged=False, tag_types=set(), inc_df=False):
+def tab_log(source, match_re_lv_list=None, lv_list=None, tagged=False, tag_types=set(), inc_df=False):
     with open("tab_log.txt", 'w', encoding='utf-8') as output_log:
-        tabularize(data, output_log, match_re_lv_list, lv_list, tagged, tag_types, inc_df)
+        tabularize(source, output_log, match_re_lv_list, lv_list, tagged, tag_types, inc_df)
 
 def tag(tag, lv=None):
     if lv: return '⫷{tag}:{lv}⫸'.format(tag=tag, lv=lv)
@@ -618,29 +618,31 @@ def exdftag(ex, rx=r'(?:\([^()]+\)|（[^（）]+）)', subrx=r'[][/,;?!~]', maxc
     else:
         return ex, Df('', lv)
 
-def mnsplit(data, split_re, lv_list=None, dn_filter=None, max_splits=0):
+def mnsplit(source, split_re, lv_list=None, dn_filter=None, max_splits=0):
     if lv_list:
         dn_filter = lambda dn: dn.lv in lv_list
     elif not dn_filter:
-        raise TypeError('must pass either lv_list or filter_function')
-    for i, mn in enumerate(data):
+        dn_filter = lambda dn: True
+    else:
+        pass
+    for i, mn in enumerate(source):
         for dn in mn.dn_list:
             if dn_filter(dn):
                 new_mns = mn.split(split_re, dn, max_splits=max_splits)
-                data[i] = new_mns[0]
+                source[i] = new_mns[0]
                 try:
                     for new_mn in new_mns[1:]:
-                        data.insert(i + 1, new_mn)
+                        source.insert(i + 1, new_mn)
                 except IndexError: pass
 
 
-def charset(data, lv_list):
+def charset(source, lv_list):
     """Returns a set of all of the characters found in all of the expressions in
     the given language varieties in all of the denotations in all of the
-    meanings in the data set.
+    meanings in the source.
     
     Args:
-        data: data set. a list of Mns
+        source: source. a list of Mns
         
         lv_list: a list of lvs (as str in the format xxx-###). can also consist
         of a single lv, which is automatically converted to a list of length 1
@@ -649,16 +651,16 @@ def charset(data, lv_list):
         Returns a set of single characters. 
         
     Examples:
-        >>> charset(data, ['eng-000', 'hye-000'])
+        >>> charset(source, ['eng-000', 'hye-000'])
         {'a', 'b', ..., 'z', '-', ..., 'ա', 'բ', ..., 'օ', 'ֆ', ...}
-        >>> charset(data, 'eng-000')
+        >>> charset(source, 'eng-000')
         {'a', 'b', ..., 'z', '-', ...}
     """
 
     if isinstance(lv_list, str):
         lv_list = [lv_list]
     outset = set()
-    for mn in data:
+    for mn in source:
         for lv in lv_list:
             for dn in mn(lv):
                 for c in str(dn.ex):
@@ -667,10 +669,10 @@ def charset(data, lv_list):
 
 def build_csppmap(mapfile=None):
     if not mapfile:
-        try:
-            mapfile = open('csppmap.txt')
-        except FileNotFoundError:
-            mapfile = open(environ['PANLEX_TOOLDIR'] + '/serialize/data/csppmap.txt')
+        # try:
+        mapfile = open('csppmap.txt')
+        # except FileNotFoundError:
+            # mapfile = open(environ['PANLEX_TOOLDIR'] + '/serialize/data/csppmap.txt')
     try:
         mapfile = open(mapfile)
     except TypeError:
