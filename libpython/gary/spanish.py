@@ -3,7 +3,7 @@ import regex as re
 
 from gary import append_synonym
 
-
+# dummy change for testing git
 def remove_feminine_infl(text):
     text = re.sub('(.*)/a\M', r'\1', text)
     text = re.sub('(?<=\w\s*)\(a\)', '', text)
