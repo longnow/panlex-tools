@@ -51,7 +51,7 @@ sub dftag {
 
                 if (length $delim) {
 
-                    $col[$i] = map { $dftag . $_ } split /$delim/, $col[$i];
+                    $col[$i] = join('', map { $dftag . $_ } split /$delim/, $col[$i]);
                     # Prefix a definition tag to each definition in the column.
 
                 }
