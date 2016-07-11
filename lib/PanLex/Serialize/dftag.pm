@@ -2,6 +2,7 @@
 # Arguments:
 #   cols:   array of columns containing definitions.
 #   dftag:  definition tag. default '⫷df⫸'.
+#   delim:  inter-definition delimiter, or '' if none. default '‣'.
 
 package PanLex::Serialize::dftag;
 use strict;
@@ -17,16 +18,18 @@ sub dftag {
     my $out = shift;
     my $args = ref $_[0] ? $_[0] : \@_;
 
-    my (@dfcol, $dftag);
+    my (@dfcol, $dftag, $delim);
 
     if (ref $args eq 'HASH') {
         validate_cols($args->{cols});
 
         @dfcol    = @{$args->{cols}};
-        $dftag    = $args->{dftag} // '⫷df⫸';      
+        $dftag    = $args->{dftag} // '⫷df⫸';
+        $delim    = $args->{delim} // '‣';
     } else {
         ($dftag, @dfcol) = @$args;
         validate_cols(\@dfcol);
+        $delim    = '';
     }
     
     while (<$in>) {
@@ -43,8 +46,25 @@ sub dftag {
 
             die "column $i not present in line" unless defined $col[$i];
 
-            $col[$i] = "$dftag$col[$i]" if length $col[$i];
-            # Prefix a definition tag to the column, if not blank.
+            if (length $col[$i]) {
+            # If the column is not blank:
+
+                if (length $delim) {
+
+                    $col[$i] = map { $dftag . $_ } split /$delim/, $col[$i];
+                    # Prefix a definition tag to each definition in the column.
+
+                }
+
+                else {
+
+                    $col[$i] = $dftag . $col[$i];
+                    # Prefix a definition tag to the column.
+
+                }
+
+            }
+
         }
 
         print $out join("\t", @col), "\n";
