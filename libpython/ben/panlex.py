@@ -53,8 +53,9 @@ class Ex:
         return outfunc
 
     def __bool__(self):
-        if str(self): return True
-        else: return False
+        # if str(self): return True
+        # else: return False
+        return bool(str(self))
 
     def __len__(self):
         return len(str(self))
@@ -264,8 +265,9 @@ class Dn:
         else: return f
 
     def __bool__(self):
-        if self.ex: return True
-        else: return False
+        # if self.ex: return True
+        # else: return False
+        return bool(self.ex)
 
     def __hash__(self):
         return hash((self.ex,) + tuple(set(self.pp_list)) + tuple(set(self.cs_list)))
@@ -340,8 +342,9 @@ class Mn:
             dn_list=repr(self.dn_list), df_list=repr(self.df_list), pp_list=self.pp_list, cs_list=self.cs_list)
 
     def __bool__(self):
-        if any([any(self.dn_list), any(self.df_list), any(self.pp_list), any(self.cs_list)]): return True
-        else: return False
+        # if any([any(self.dn_list), any(self.df_list), any(self.pp_list), any(self.cs_list)]): return True
+        # else: return False
+        return any([any(self.dn_list), any(self.df_list), any(self.pp_list), any(self.cs_list)])
 
     def __contains__(self, obj):
         if obj in self.dn_list:
