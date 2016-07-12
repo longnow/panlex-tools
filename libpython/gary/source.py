@@ -3,11 +3,12 @@ from collections import OrderedDict
 
 import io
 import logging
-import os
-from os import path
 import regex as re
 import time
 
+
+SYNDELIM = '‣'
+MNDELIM = '⁋'
 
 log_file = 'filter.log'
 
@@ -16,9 +17,16 @@ def log_results(text, debug=False):
         logging.debug(text)
 
 
+def join_synonyms_list(syn_list):
+    return SYNDELIM.join([s for s in syn_list if s])
+
+
+def join_meaning_list(mn_list):
+    return MNDELIM.join([s for s in mn_list if s])
+
+
 def default_str(text):
     return text or ''
-
 
 
 def run_filters(filters, entry, is_logged=False, **kwargs):
@@ -96,25 +104,12 @@ class Entry(object):
         langObj.__setattr__(fieldId, value)
 
 
-    # def getField(self,langId:str,column:str) -> str:
-    #     langObj = self.__getattribute__(langId)
-    #     columnValue = langObj.__getattribute__(column)
-    #     return columnValue
-    #
-    #
-    # def setField(self, value, langId, column):
-    #     langObj = self.__getattribute__(langId)
-    #     langObj.__setattr__(column, value)
-    #     return
-
-
     def __str__(self):
         return '\t'.join([str(field) for field in self.langfields.values()])
 
 
     def __repr__(self):
         return '<Entry:%s>' % ','.join([('%s:%s' % (langid,repr(lang))) for langid,lang in self.langfields.items()])
-
 
 
 def ignore_parens(proc):
