@@ -15,6 +15,8 @@ class Ex:
             self._text = text.text
             self._lc = text.lc
             self._vc = text.vc
+        elif not isinstance(text, str):
+            raise TypeError("text must be string")
         else:
             self._text = text
             if lv:
@@ -33,8 +35,9 @@ class Ex:
                     self._vc = vc
                 except ValueError: raise ValueError("vc must be a positive integer")
             else:
-                self._lc = lc
-                self._vc = vc
+                raise TypeError("{cls} requires lv".format(cls=self.__class__.__name__))
+                # self._lc = lc
+                # self._vc = vc
 
     def __repr__(self):
         return "{cls}({string}, lv={lv})".format(cls=self.__class__.__name__, string=repr(str(self)), lv=repr(self.lv))
@@ -53,8 +56,9 @@ class Ex:
         return outfunc
 
     def __bool__(self):
-        if str(self): return True
-        else: return False
+        # if str(self): return True
+        # else: return False
+        return bool(str(self))
 
     def __len__(self):
         return len(str(self))
@@ -264,8 +268,9 @@ class Dn:
         else: return f
 
     def __bool__(self):
-        if self.ex: return True
-        else: return False
+        # if self.ex: return True
+        # else: return False
+        return bool(self.ex)
 
     def __hash__(self):
         return hash((self.ex,) + tuple(set(self.pp_list)) + tuple(set(self.cs_list)))
@@ -282,6 +287,8 @@ class Dn:
         return self._pp_list
     @pp_list.setter
     def pp_list(self, new_value):
+        if not all([isinstance(pp, Pp) for pp in new_value]):
+            raise TypeError("pp_list must be a list containing only Pp objects")
         self._pp_list = new_value
 
     @property
@@ -289,6 +296,8 @@ class Dn:
         return self._cs_list
     @cs_list.setter
     def cs_list(self, new_value):
+        if not all([isinstance(cs, Cs) for cs in new_value]):
+            raise TypeError("cs_list must be a list containing only Cs objects")
         self._cs_list = new_value
 
     def clean(self):
@@ -340,8 +349,9 @@ class Mn:
             dn_list=repr(self.dn_list), df_list=repr(self.df_list), pp_list=self.pp_list, cs_list=self.cs_list)
 
     def __bool__(self):
-        if any([any(self.dn_list), any(self.df_list), any(self.pp_list), any(self.cs_list)]): return True
-        else: return False
+        # if any([any(self.dn_list), any(self.df_list), any(self.pp_list), any(self.cs_list)]): return True
+        # else: return False
+        return any([any(self.dn_list), any(self.df_list), any(self.pp_list), any(self.cs_list)])
 
     def __contains__(self, obj):
         if obj in self.dn_list:
@@ -367,6 +377,8 @@ class Mn:
         return self._dn_list
     @dn_list.setter
     def dn_list(self, new_value):
+        if not all([isinstance(dn, Dn) for dn in new_value]):
+            raise TypeError("dn_list must be a list containing only Dn objects")
         self._dn_list = new_value
 
     @property
@@ -374,6 +386,8 @@ class Mn:
         return self._df_list
     @df_list.setter
     def df_list(self, new_value):
+        if not all([isinstance(df, Df) for df in new_value]):
+            raise TypeError("df_list must be a list containing only Df objects")
         self._df_list = new_value
 
     @property
@@ -381,6 +395,8 @@ class Mn:
         return self._pp_list
     @pp_list.setter
     def pp_list(self, new_value):
+        if not all([isinstance(pp, Pp) for pp in new_value]):
+            raise TypeError("pp_list must be a list containing only Pp objects")
         self._pp_list = new_value
 
     @property
@@ -388,6 +404,8 @@ class Mn:
         return self._cs_list
     @cs_list.setter
     def cs_list(self, new_value):
+        if not all([isinstance(cs, Cs) for cs in new_value]):
+            raise TypeError("cs_list must be a list containing only Cs objects")
         self._cs_list = new_value
 
     def lv_list(self):

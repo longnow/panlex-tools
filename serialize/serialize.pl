@@ -77,6 +77,7 @@ my @TOOLS = (
 # Arguments:
 #   cols:   array of columns containing definitions.
 #   dftag:  definition tag. default '⫷df⫸'.
+#   delim:  inter-definition delimiter, or '' if none. default '‣'.
 
 #'csppmap'      => { cols => [1] },
 # Arguments:
