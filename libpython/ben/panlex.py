@@ -626,8 +626,8 @@ def exdftag(ex, rx=r'(?:\([^()]+\)|（[^（）]+）)', subrx=r'[][/,;?!~]', maxc
     lv = ex.lv
     if \
         re.search(subrx, str(ex)) or \
-        (maxchar and len(str(ex)) > maxchar) or \
-        (maxword and len(str(ex).split()) > maxword):
+        (maxchar and (len(str(ex)) > maxchar)) or \
+        (maxword and (len(str(ex).split()) > maxword)):
             return Ex('', lv), Df(str(ex), lv)
 
     elif re.search(rx, str(ex)):
