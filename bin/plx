@@ -350,10 +350,7 @@ sub cmd_submit {
 sub cmd_upload {
     check_env(qw(PANLEX_ARCHIVE_USERNAME PANLEX_ARCHIVE_PASSWORD PANLEX_ARCHIVE_NAME PANLEX_ARCHIVE_EMAIL));
 
-    my $type = 'source';
-
     if (defined $_[0] and $_[0] eq '-r') {
-        $type = 'resource';
         shift;
     }
 
@@ -361,7 +358,7 @@ sub cmd_upload {
 
     if (defined $_[0] and -d $_[0]) {
         $dirpath = shift;
-    } elsif ($type eq 'resource' or -e 'log.json') {
+    } elsif (-e 'log.json') {
         $dirpath = curdir();
     } else {
         print(STDERR "You need to specify a valid source directory.\n"), return;        
@@ -391,7 +388,6 @@ sub cmd_upload {
         Content => [
             editor  => encode('utf8', $ENV{PANLEX_ARCHIVE_NAME}),
             email   => encode('utf8', $ENV{PANLEX_ARCHIVE_EMAIL}),
-            type    => $type,
             notes   => encode('utf8', $note),
             zip     => [encode('utf8', $zippath), undef],
         ]
