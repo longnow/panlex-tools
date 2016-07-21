@@ -197,7 +197,7 @@ sub cmd_edit {
         Content => [
             us      => $ENV{PANLEX_PANLEM_USER}, # user id
             pwd     => $ENV{PANLEX_PANLEM_PASSWORD}, # password
-            uslv    => '187', # user's interface lv
+            uslv    => $ENV{PANLEX_PANLEM_LV} // '187', # user's interface lv
             sr      => 'apviz1', # state routine: view source
             apviz1  => 'redok', # request permision to edit
             ap      => $ap, # source id
@@ -322,7 +322,7 @@ sub cmd_submit {
         Content => [
             us      => $ENV{PANLEX_PANLEM_USER}, # user id
             pwd     => $ENV{PANLEX_PANLEM_PASSWORD}, # password
-            uslv    => '187', # user's interface lv
+            uslv    => $ENV{PANLEX_PANLEM_LV} // '187', # user's interface lv
             sr      => 'dossnd1', # state routine: submit file
             op      => $op, # operation
             ap      => $ap, # source id
@@ -443,6 +443,7 @@ PANLEX_ARCHIVE_NAME         full name of PanLex editor
 PANLEX_ARCHIVE_EMAIL        email of PanLex editor
 PANLEX_PANLEM_USER          PanLem numeric user id
 PANLEX_PANLEM_PASSWORD      PanLem hashed password
+PANLEX_PANLEM_LV            PanLem interface language variety id
 
 EOF
 }
