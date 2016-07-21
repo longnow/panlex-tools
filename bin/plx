@@ -197,7 +197,7 @@ sub cmd_edit {
         Content_Type => 'form-data',
         Content => [
             us      => $ENV{PANLEX_PANLEM_USER}, # user id
-            pwd     => "'$ENV{PANLEX_PANLEM_PASSWORD}'", # password
+            pwd     => $ENV{PANLEX_PANLEM_PASSWORD}, # password
             uslv    => '187', # user's interface lv
             sr      => 'apviz1', # state routine: view source
             apviz1  => 'redok', # request permision to edit
