@@ -194,14 +194,14 @@ sub cmd_edit {
 
     my $ua = LWP::UserAgent->new;
     my $r = $ua->post($PANLEM_URL,
-        Content => [
+        Content => {
             us      => $ENV{PANLEX_PANLEM_USER}, # user id
             pwd     => $ENV{PANLEX_PANLEM_PASSWORD}, # password
-            uslv    => $ENV{PANLEX_PANLEM_LV} // '187', # user's interface lv
+            uslv    => '187', # user's interface lv
             sr      => 'apviz1', # state routine: view source
             apviz1  => 'redok', # request permision to edit
             ap      => $ap, # source id
-        ]
+        },
     );
 
     if ($r->is_success) {
@@ -317,18 +317,36 @@ sub cmd_submit {
     $ua->timeout(1800);
     $ua->show_progress(1);
 
+    my $content = {
+        us      => $ENV{PANLEX_PANLEM_USER}, # user id
+        pwd     => $ENV{PANLEX_PANLEM_PASSWORD}, # password
+        sr      => 'dossnd1', # state routine: submit file
+        op      => $op, # operation
+        ap      => $ap, # source id
+        dbg     => '', # whole - see
+        res     => [encode('utf8', $final), undef], # uploaded file
+    };
+
+    my $lang;
+
+    # user's interface lv
+    if ($ENV{PANLEX_PANLEM_LV}) {
+        $content->{uslv} = $ENV{PANLEX_PANLEM_LV};
+    } else {
+        foreach my $var (qw(LANGUAGE LC_ALL LC_MESSAGES LANG)) {
+            if ($ENV{$var} and $ENV{$var} =~ /^([a-z]+)[._:]/) {
+                $lang = $1;
+                last;
+            }
+        }
+
+        $content->{uslv} = '187' unless $lang; # fall back to English
+    }
+
     my $r = $ua->post($PANLEM_URL,
         Content_Type => 'form-data',
-        Content => [
-            us      => $ENV{PANLEX_PANLEM_USER}, # user id
-            pwd     => $ENV{PANLEX_PANLEM_PASSWORD}, # password
-            uslv    => $ENV{PANLEX_PANLEM_LV} // '187', # user's interface lv
-            sr      => 'dossnd1', # state routine: submit file
-            op      => $op, # operation
-            ap      => $ap, # source id
-            dbg     => '', # whole - see
-            res     => [encode('utf8', $final), undef], # uploaded file
-        ]
+        $lang ? (Accept_Language => $lang) : (),
+        Content => $content,
     );
 
     if ($r->is_success) {
@@ -381,12 +399,12 @@ sub cmd_upload {
     print STDERR "Uploading zip file ...\n";
     my $r = $ua->post("${RESOURCE_ARCHIVE_URL}/upload", 
         Content_Type => 'form-data',
-        Content => [
+        Content => {
             editor  => encode('utf8', $ENV{PANLEX_ARCHIVE_NAME}),
             email   => encode('utf8', $ENV{PANLEX_ARCHIVE_EMAIL}),
             notes   => encode('utf8', $note),
             zip     => [encode('utf8', $zippath), undef],
-        ]
+        },
     );
 
     if ($r->is_success) {
