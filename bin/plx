@@ -194,7 +194,6 @@ sub cmd_edit {
 
     my $ua = LWP::UserAgent->new;
     my $r = $ua->post($PANLEM_URL,
-        Content_Type => 'form-data',
         Content => [
             us      => $ENV{PANLEX_PANLEM_USER}, # user id
             pwd     => $ENV{PANLEX_PANLEM_PASSWORD}, # password
@@ -206,15 +205,14 @@ sub cmd_edit {
     );
 
     if ($r->is_success) {
-        my $content = $r->decoded_content;
-
-        if ($content =~ /"bad"/) {
-            print STDERR "failed: are your username and password set correctly, do you have permission to request editorship, did you pass a valid source, and have you not already requested editorship of the source?\n\n";
-        } else {
-            print STDERR "done.\n\n";
-        }
+        print STDERR "done.\n\n";
     } else {
-        print STDERR "failed: ", $r->code, ' ', $r->message, "\n\n";
+        print STDERR "failed: ", $r->code, ' ', $r->message, "\n";
+
+        my $err = $r->decoded_content;
+        print STDERR $err, "\n" if $err ne '';
+
+        print STDERR "\n";
     }
 }
 
