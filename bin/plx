@@ -15,7 +15,7 @@ use lib "$ENV{PANLEX_TOOLDIR}/lib";
 use PanLex::Client;
 
 my $RESOURCE_ARCHIVE_URL = 'https://dev.panlex.org/resources';
-my $PANLEM_URL = 'https://panlex.org/u';
+my $PANLEM_URL = 'https://panlex.org/panlem/api';
 
 usage(), exit(0) unless @ARGV;
 
@@ -323,27 +323,25 @@ sub cmd_submit {
         Content_Type => 'form-data',
         Content => [
             us      => $ENV{PANLEX_PANLEM_USER}, # user id
-            pwd     => "'$ENV{PANLEX_PANLEM_PASSWORD}'", # password
+            pwd     => $ENV{PANLEX_PANLEM_PASSWORD}, # password
             uslv    => '187', # user's interface lv
             sr      => 'dossnd1', # state routine: submit file
             op      => $op, # operation
             ap      => $ap, # source id
             dbg     => '', # whole - see
-            ml      => 'res', # multiline parameter (must be ordered before the parameter)
             res     => [encode('utf8', $final), undef], # uploaded file
         ]
     );
 
     if ($r->is_success) {
-        my $content = $r->decoded_content;
-
-        if ($content =~ /"bad"/) {
-            print STDERR "failed: are your username and password set correctly, and are you approved to edit the source?\n\n";
-        } else {
-            print STDERR "done.\n\n";
-        }
+        print STDERR "done.\n\n";
     } else {
-        print STDERR "failed: ", $r->code, ' ', $r->message, "\n\n";
+        print STDERR "failed: ", $r->code, ' ', $r->message, "\n";
+
+        my $err = $r->decoded_content;
+        print STDERR $err, "\n" if $err ne '';
+
+        print STDERR "\n";
     }
 }
 
