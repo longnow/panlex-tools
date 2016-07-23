@@ -25,19 +25,16 @@ my ($inb, $inv) = @ARGV;
 my $in = "$inb-$inv.txt";
 # Identify the name of the file to be converted.
 
-(-r $in) || (die "could not find file $in");
-# Verify that it exists and is readable.
-
-(open my $infh, '<', $in) || (die $!);
+open my $infh, '<', $in or die $!;
 # Open it for reading.
 
-open my $outfh, '>', ("$inb-" . ($inv + 1) . '.txt');
+open my $outfh, '>', "$inb-" . ($inv + 1) . '.txt';
 # Create or truncate the output file and open it for writing.
 
 my $ln = 0;
 # Initialize the line index as 0.
 
-my (@col, $col, %col, $uid, @pf);
+my (%col, $uid, @pf);
 
 while (<$infh>) {
 # For each line of the input file:
@@ -48,18 +45,18 @@ while (<$infh>) {
     chomp;
     # Delete its trailing newline.
 
-    @col = (split /\t/, $_, -1);
+    my @col = split /\t/, $_, -1;
     # Identify the line’s columns.
 
     shift @col;
     # Delete the first of them, i.e. the meaning ID.
 
-    foreach $col (@col) {
+    foreach my $col (@col) {
     # For each of the line’s remaining columns:
 
-        (@pf = ($col =~ /^(dm|df|ex):([a-z]{3}-[0-9]{3}):/))
-            || (@pf = ($col =~ /^(mi|wc|md):/))
-            || (die "Error getting the prefix(es) of “$col” on line $ln\n");
+        (@pf = $col =~ /^(dm|df|ex):([a-z]{3}-[0-9]{3}):/)
+            || (@pf = $col =~ /^(mi|wc|md):/)
+            || die "Error getting the prefix(es) of “$col” on line $ln\n";
         # Identify its prefix(es) on which the column requirements for the output file
         # depend.
 
@@ -102,7 +99,7 @@ while (<$infh>) {
 
         }
 
-        elsif (($pf[0] ne 'wc') && ($pf[0] ne 'md')) {
+        elsif ($pf[0] ne 'wc' && $pf[0] ne 'md') {
         # Otherwise, if the column is neither a word classification nor a metadatum:
 
             die "Error in a column type on line $ln\n";
@@ -119,10 +116,10 @@ close $infh;
 
 my (@hd, %ix, $ix);
 
-$col = 0;
+my $col = 0;
 # Initialize the index as 0.
 
-my @ix = (sort (values %col));
+my @ix = sort values %col;
 # Identify the proto-indices in the table of required columns, sorted.
 
 foreach $ix (@ix) {
@@ -134,7 +131,7 @@ foreach $ix (@ix) {
 
 }
 
-foreach $col (keys %col) {
+foreach my $col (keys %col) {
 # For each required column:
 
     $col{$col} = $ix{$col{$col}};
@@ -145,34 +142,34 @@ foreach $col (keys %col) {
 
 }
 
-print $outfh ((join "\t", @hd) . "\n");
+print $outfh join("\t", @hd), "\n";;
 # Output the header line of the output file.
 
-(open $infh, '<', $in) || (die $!);
+open $infh, '<', $in or die $!;
 # Open the input file again for reading.
 
-my ($excol, @out, @pfbd);
+my ($excol, @pfbd);
 
 while (<$infh>) {
 # For each line of the input file:
 
-    @out = (('') x $col);
+    my @out = ('') x $col;
     # Initialize its output columns as blank.
 
     chomp;
     # Delete its trailing newline.
 
-    @col = (split /\t/, $_, -1);
+    my @col = split /\t/, $_, -1;
     # Identify the line’s columns.
 
     shift @col;
     # Delete the first of them, i.e. the meaning ID.
 
-    foreach $col (@col) {
+    foreach my $col (@col) {
     # For each of the line’s remaining columns:
 
-        (@pfbd = ($col =~ /^(dm|df|ex|md):([^:]+):(.+)$/)) || (@pfbd = ($col =~ /^(mi|wc):(.+)$/))
-            || (die "Error getting the prefix(es) and body of “$col” on line $ln\n");
+        (@pfbd = $col =~ /^(dm|df|ex|md):([^:]+):(.+)$/) || (@pfbd = $col =~ /^(mi|wc):(.+)$/)
+            || die "Error getting the prefix(es) and body of “$col” on line $ln\n";
         # Identify its prefix(es) on which the column assignments depend and the body.
 
         if ($pfbd[0] eq 'ex') {
@@ -184,7 +181,7 @@ while (<$infh>) {
             $excol = $col{"ex:$uid"};
             # Identify its output column index.
 
-            $out[$excol] .= (((length $out[$excol]) ? '‣' : '') . $pfbd[2]);
+            $out[$excol] .= (length $out[$excol] ? '‣' : '') . $pfbd[2];
             # Append its body to its output column, prefixed by a synonym delimiter if
             # its output column is not blank.
 
@@ -194,7 +191,7 @@ while (<$infh>) {
         # Otherwise, if the column is a domain specification:
 
             $out[$col{"dm:$pfbd[1]"}]
-                .= (((length $out[$col{"dm:$pfbd[1]"}]) ? '‣' : '') . $pfbd[2]);
+                .= (length $out[$col{"dm:$pfbd[1]"}] ? '‣' : '') . $pfbd[2];
             # Append its body to its output column, prefixed by a synonym delimiter if
             # its output column is not blank.
 
@@ -204,7 +201,7 @@ while (<$infh>) {
         # Otherwise, if the column is a definition:
 
             $out[$col{"df:$pfbd[1]"}]
-                .= (((length $out[$col{"df:$pfbd[1]"}]) ? '—' : '') . $pfbd[2]);
+                .= (length $out[$col{"df:$pfbd[1]"}] ? '—' : '') . $pfbd[2];
             # Append its body to its output column, prefixed by an em dash if
             # its output column is not blank.
 
@@ -236,7 +233,7 @@ while (<$infh>) {
 
         }
 
-        elsif (($pfbd[0] eq 'md') && ($pfbd[1] eq 'vl')) {
+        elsif ($pfbd[0] eq 'md' && $pfbd[1] eq 'vl') {
         # Otherwise, if the column is a metadatum value:
 
             $out[$excol] .= $pfbd[2];
@@ -246,7 +243,7 @@ while (<$infh>) {
 
     }
 
-    print $outfh ((join "\t", @out) . "\n");
+    print $outfh join("\t", @out), "\n";
     # Output the line.
 
 }
