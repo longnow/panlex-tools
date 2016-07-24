@@ -86,7 +86,7 @@ sub cp_file {
     if ($detect_version) {
         my $version;
 
-        for (my $test_version = 0; -r "${source_basename}-${test_version}.txt"; $test_version++) {
+        for (my $test_version = 0; () = glob("${source_basename}-${test_version}.*"); $test_version++) {
             $version = $test_version;
         }
 
