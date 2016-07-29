@@ -12,6 +12,7 @@ $PanLex::Client::ARRAY_MAX = 10000;
 my $API_URL = $ENV{PANLEX_API} || "http://api.panlex.org";
 
 if ($ENV{PANLEX_API_LIMIT}) {
+    print "limiting\n";
     require Sub::Throttler;
     require Sub::Throttler::Rate::AnyEvent;
 
@@ -84,3 +85,5 @@ sub panlex_query_all {
         $body->{offset} += $this_result->{resultNum};
     }
 }
+
+1;
