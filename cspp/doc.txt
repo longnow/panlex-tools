@@ -144,9 +144,11 @@ art-317:register:art-317:vulgarRegister
 art-317:termType:art-317:abbreviation
 art-317:termType:art-317:acronym
 art-317:termType:art-317:contraction
+art-317:termType:art-317:nonstandardizedTerm
 art-317:termType:art-317:phraseologicalUnit
 art-317:termType:art-317:placeName
 art-317:termType:art-317:symbol
+
 
 DENOTATION PROPERTIES
 

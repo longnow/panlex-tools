@@ -155,6 +155,7 @@ honorific verb	art-317:register:art-317:honorific‣art-303:PartOfSpeechProperty
 hortative	art-303:Force Property:art-303:HortatoryForce	
 Höflichkeitsform	art-317:register:art-306:POL	
 i-adjective	art-303:PartOfSpeechProperty:art-303:Adjectival	*
+ideo	art-303:SemanticProperty:art-306:IDEO	
 ideo.	art-303:SemanticProperty:art-306:IDEO	
 ideoph.	art-303:SemanticProperty:art-306:IDEO	
 ij	art-303:PartOfSpeechProperty:art-303:Interjection	
@@ -430,6 +431,8 @@ V-INTR	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb
 V-TR	art-303:PartOfSpeechProperty:art-303:TransitiveVerb	
 v.	art-303:PartOfSpeechProperty:art-303:Verbal	
 V.	art-303:PartOfSpeechProperty:art-303:Verbal	
+v.aux	art-303:PartOfSpeechProperty:art-303:Auxiliary	
+v.aux.	art-303:PartOfSpeechProperty:art-303:Auxiliary	
 v. aux.	art-303:PartOfSpeechProperty:art-303:Auxiliary	
 v. auxiliary	art-303:PartOfSpeechProperty:art-303:Auxiliary	
 v. ditr.	art-303:PartOfSpeechProperty:art-303:DitransitiveVerb	
