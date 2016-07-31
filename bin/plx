@@ -54,7 +54,7 @@ sub cmd_cp {
 
     foreach my $dir ( ['serialize'], ['serialize', 'data'], ['tabularize', 'util'] ) {
         my $file = catfile($ENV{PANLEX_TOOLDIR}, @$dir, $tool);
-        
+
         if (-e $file) {
             my $detect_version = $tool eq 'serialize.pl' ? 1 : 0;
             cp_file($file, $dest, $source_basename, $detect_version);
@@ -63,12 +63,12 @@ sub cmd_cp {
     }
 
     my @tabularize = glob('"' . catfile($ENV{PANLEX_TOOLDIR}, 'tabularize', '*', $tool) . '"');
-    
+
     if (@tabularize) {
         cp_file($tabularize[0], "${source_basename}.${dest}", $source_basename);
         return;
     }
-    
+
     print STDERR "could not find panlex tool $tool\n";
 }
 
@@ -80,7 +80,7 @@ sub cp_file {
     open my $fd, '<', $source_file or die $!;
     my $data = do { local $/; <$fd> };
     close $fd;
-    
+
     $data =~ s/aaa-bbb-Author/$source_basename/;
 
     if ($detect_version) {
@@ -92,11 +92,11 @@ sub cp_file {
 
         $data =~ s/(?<=\$VERSION = )1(?=;)/$version/ if defined $version;
     }
-    
+
     open $fd, '>', $target_file or die $!;
     print $fd $data;
     close $fd;
-    
+
     my $mode = (stat($source_file))[2] & 07777;
     chmod $mode, $target_file;
 }
@@ -276,8 +276,10 @@ sub cmd_submit {
     if (defined $_[0] && -f $_[0]) {
         $final = shift;
     } else {
-        $final = glob('*-final.txt');
-        print(STDERR "Could not locate final source file.\n"), return unless defined $final;
+        my @files = glob('*-final.txt');
+        print(STDERR "Could not find final source file.\n"), return unless @files;
+        print(STDERR "Found more than one final source file, not sure which one to use.\n"), return unless @files == 1;
+        $final = $files[0];
         utf8::decode($final);
     }
 
@@ -375,7 +377,7 @@ sub cmd_upload {
     } elsif (-e 'log.json') {
         $dirpath = curdir();
     } else {
-        print(STDERR "You need to specify a valid source directory.\n"), return;        
+        print(STDERR "You need to specify a valid source directory.\n"), return;
     }
 
     my $note = join ' ', @_;
@@ -397,7 +399,7 @@ sub cmd_upload {
     $ua->credentials('dev.panlex.org:443', 'PanLex resource browser', $ENV{PANLEX_ARCHIVE_USERNAME}, $ENV{PANLEX_ARCHIVE_PASSWORD});
 
     print STDERR "Uploading zip file ...\n";
-    my $r = $ua->post("${RESOURCE_ARCHIVE_URL}/upload", 
+    my $r = $ua->post("${RESOURCE_ARCHIVE_URL}/upload",
         Content_Type => 'form-data',
         Content => {
             editor  => encode('utf8', $ENV{PANLEX_ARCHIVE_NAME}),
@@ -468,17 +470,17 @@ EOF
 
 sub check_env {
     my %error;
-    
+
     foreach my $var (grep { !defined $ENV{$_} } @_) {
         print STDERR "The environment variable $var must be set to execute this command.\n";
         $error{$var} = 1;
     }
-    
+
     foreach my $dir (grep { /DIR$/ && ! -d $ENV{$_} && !$error{$_} } @_) {
         print STDERR "The environment variable $dir ($ENV{$dir}) must be set to a valid directory to execute this command.\n";
         $error{$dir} = 1;
     }
-    
+
     keys %error > 0 && exit(0);
 }
 
