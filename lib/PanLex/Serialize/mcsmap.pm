@@ -44,7 +44,9 @@ sub mcsmap {
 
         die "map file line does not have two columns" unless @col == 2;
 
-        $map{$col[0]} = $col[1];
+        die "map file column is too short: $col[1]" unless length $col[1] > 8;
+
+        $map{$col[0]} = [ substr($col[1], 0, 7), substr($col[1], 8) ];
     }
 
     close $mapin;
@@ -61,13 +63,13 @@ sub mcsmap {
 
             next unless length $col[$i];
 
-            my $tagged = ''; 
+            my $tagged = '';
 
             foreach my $el (split $interdelim, $col[$i]) {
                 my ($unmapped, $rest) = split /$intradelim/, $el, 2;
 
                 if (exists $map{$unmapped}) {
-                    $tagged .= cstag_item('mcs', $map{$unmapped} . $intradelim . $rest);
+                    $tagged .= cstag_item('mcs', join($intradelim, @{$map{$unmapped}}, $rest));
                 } else {
                     $notfound{$unmapped} = '';
                 }
