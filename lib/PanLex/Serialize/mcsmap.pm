@@ -3,7 +3,9 @@
 #   cols:       array of columns containing data to be mapped.
 #   file:       name of the mapping file. default 'mcsmap.txt'.
 #   intradelim: intra-classification delimiter in file and columns. default ':'.
+#                   must be a single character.
 #   interdelim: inter-classification delimiter in columns. default '‣'.
+#                   must be a single character.
 #   log:        set to 1 to log unconvertible items to mcsmap.log, 0 otherwise.
 #                 default 1.
 
@@ -29,6 +31,9 @@ sub mcsmap {
     my $intradelim  = $args->{intradelim} // ':';
     my $interdelim  = $args->{interdelim} // '‣';
     my $log         = $args->{log} // 1;
+
+    die "intradelim must be one character long" if length $intradelim != 1;
+    die "interdelim must be one character long" if length $interdelim != 1;
 
     $file = catfile($ENV{PANLEX_TOOLDIR}, 'serialize', 'data', $file)
         unless -e $file;

@@ -23,7 +23,7 @@ my @TOOLS = (
 #             columns possibly requiring apostrophe normalization.
 
 #'extag'        => { cols => [0, 1] },
-# Tags all expressions and all intra-column meaning changes in a tab-delimited 
+# Tags all expressions and all intra-column meaning changes in a tab-delimited
 # source file, disregarding any definitional parts.
 # Arguments:
 #   cols:     array of columns containing expressions.
@@ -56,10 +56,10 @@ my @TOOLS = (
 #   exptag:   pre-normalized expression tag. default '⫷exp⫸'.
 
 #'exdftag'      => { cols => [0, 1], re => '(?:\([^()]+\)|（[^（）]+）)', subre => '[][/,;?!~]' },
-# Splits definitional expressions into reduced expressions and definitions in 
+# Splits definitional expressions into reduced expressions and definitions in
 # a source file with already-tagged expressions and tags the added definitions.
 # Arguments:
-#   cols:     array of columns containing expressions that may contain 
+#   cols:     array of columns containing expressions that may contain
 #               definitional parts.
 #   re:       regex matching a definitional part of an expression, or '' if none.
 #   subre:    regex matching any substring forcing an expression to be
@@ -88,12 +88,12 @@ my @TOOLS = (
 #   delim:      inter-classification/property delimiter in file and columns.
 #                   default '‣'.
 #   default:    meaning or denotation attribute expression to use for unconvertible
-#                 items, or 'pass' if they should be left unchanged, or '' if they 
-#                 should be deleted. default 'art-303⁋LinguisticProperty', where 
-#                 'art-303' is the expression's UID, and 'LinguisticProperty' is 
+#                 items, or 'pass' if they should be left unchanged, or '' if they
+#                 should be deleted. default 'art-303⁋LinguisticProperty', where
+#                 'art-303' is the expression's UID, and 'LinguisticProperty' is
 #                 its text.
 #   mapdefault: attribute expression to use when the mapping file property column
-#                 is '*'. default 'art-303⁋LinguisticProperty', where 'art-303' is 
+#                 is '*'. default 'art-303⁋LinguisticProperty', where 'art-303' is
 #                 the expression's UID, and 'LinguisticProperty' is its text.
 #   log:        set to 1 to log unconvertible items to csppmap.log, 0 otherwise.
 #                 default 1.
@@ -115,7 +115,7 @@ my @TOOLS = (
 #             default ''.
 
 #'copydntag'      => { fromcol => 1, tocols => [0] },
-# Copies tagged denotation classifications or properties from a column to after each 
+# Copies tagged denotation classifications or properties from a column to after each
 #   expression (standardly tagged) in a list of columns, then sets the column to ''.
 # Arguments:
 #   fromcol:  column containing tag(s) to be copied.
@@ -127,7 +127,9 @@ my @TOOLS = (
 #   cols:       array of columns containing data to be mapped.
 #   file:       name of the mapping file. default 'mcsmap.txt'.
 #   intradelim: intra-classification delimiter in file and columns. default ':'.
+#                   must be a single character.
 #   interdelim: inter-classification delimiter in columns. default '‣'.
+#                   must be a single character.
 #   log:        set to 1 to log unconvertible items to mcsmap.log, 0 otherwise.
 #                 default 1.
 
@@ -151,28 +153,28 @@ my @TOOLS = (
 # Splits multi-meaning lines of a tagged source file.
 # Arguments:
 #   col:    column that may contain multiple meanings.
-#   delim:  meaning-delimitation tag. default '⫷mn⫸'.
+#   delim:  meaning-delimiter tag. default '⫷mn⫸'.
 
 #'normalize'    => { col => 0, uid => 'eng-000', min => 50, mindeg => 10 },
 # Normalizes expressions in a tagged source file.
 # Arguments:
 #   col:      column containing expressions to be normalized.
 #   uid:      variety UID of expressions to be normalized.
-#   min:      minimum score (0 or more) a proposed expression must have in order 
-#               to be accepted outright as an expression. Every proposed 
-#               expression with a lower (or no) score is to be replaced with the 
-#               highest-scoring expression sharing its language variety and 
+#   min:      minimum score (0 or more) a proposed expression must have in order
+#               to be accepted outright as an expression. Every proposed
+#               expression with a lower (or no) score is to be replaced with the
+#               highest-scoring expression sharing its language variety and
 #               degradation, if any such expression has a higher score than it.
-#   mindeg:   minimum score a proposed expression that is not accepted outright 
+#   mindeg:   minimum score a proposed expression that is not accepted outright
 #               as an expression, or its replacement, must have in order to be
 #               accepted as an expression. pass '' to disable replacement.
 #   ui:       array of source group IDs whose meanings are to be ignored in
 #               normalization; [] if none. default [].
 #   log:      set to 1 to log normalize scores to normalize.json, 0 otherwise.
 #               default 1.
-#   failtag:  tag with which to retag proposed expressions not accepted as 
-#               expressions and not having replacements accepted as expressions; 
-#               '' (blank) if they are to be converted to pre-normalized 
+#   failtag:  tag with which to retag proposed expressions not accepted as
+#               expressions and not having replacements accepted as expressions;
+#               '' (blank) if they are to be converted to pre-normalized
 #               expressions. default '⫷df⫸'.
 #   ignore:   regex matching expressions to be ignored in normalization; or ''
 #               (blank) if none. default ''.
@@ -193,12 +195,12 @@ my @TOOLS = (
 #   col:      column containing expressions to be spell-checked.
 #   engine:   spell-check engine to use ('aspell' or 'hunspell').
 #   dict:     dictionary to use. for aspell, this is one of the names returned
-#               by `aspell dicts`. for hunspell, this is the full path to the 
+#               by `aspell dicts`. for hunspell, this is the full path to the
 #               dictionary file, excluding the '.aff' or '.dic' extension.
 #   ignore:   regex matching expressions to be ignored in spell checking; or ''
 #               (blank) if none. default ''.
-#   failtag:  tag with which to retag proposed expressions not accepted as 
-#               expressions; '' (blank) if they are to be converted to 
+#   failtag:  tag with which to retag proposed expressions not accepted as
+#               expressions; '' (blank) if they are to be converted to
 #               pre-normalized expressions. default '⫷df⫸'.
 #   extag:    expression tag. default '⫷ex⫸'.
 #   exptag:   pre-normalized expression tag. default '⫷exp⫸'.

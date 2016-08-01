@@ -1,7 +1,7 @@
 # Splits multi-meaning lines of a tagged source file.
 # Arguments:
 #   col:    column that may contain multiple meanings.
-#   delim:  meaning-delimitation tag. default '⫷mn⫸'.
+#   delim:  meaning-delimiter tag. default '⫷mn⫸'.
 
 package PanLex::Serialize::mnsplit;
 use strict;
@@ -21,7 +21,7 @@ sub mnsplit {
 
     if (ref $args eq 'HASH') {
         $mncol    = $args->{col};
-        $delim    = $args->{delim} // '⫷mn⫸';      
+        $delim    = $args->{delim} // '⫷mn⫸';
     } else {
         ($delim, $mncol) = @$args;
     }
