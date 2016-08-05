@@ -396,6 +396,7 @@ sub cmd_upload {
     system('zip', '-r', $zippath, $dirname);
 
     my $ua = LWP::UserAgent->new;
+    $ua->timeout(1800);
     $ua->credentials('dev.panlex.org:443', 'PanLex resource browser', $ENV{PANLEX_ARCHIVE_USERNAME}, $ENV{PANLEX_ARCHIVE_PASSWORD});
 
     print STDERR "Uploading zip file ...\n";
