@@ -7,7 +7,7 @@ binmode STDERR, ':encoding(utf8)';
 
 our @EXPORT = qw(serialize);
 
-use JSON;
+use JSON::MaybeXS;
 use File::Spec::Functions qw(catfile curdir rel2abs);
 use List::Util qw(first);
 use Scalar::Util qw(blessed);
@@ -59,7 +59,7 @@ sub serialize {
         my ($tool, $args) = @{$tools}[$i, $i+1];
 
         my $input = first { -e $_ } map { "$basename-$version.$_" } @try_extensions;
-        die "could not find file " . join(' or ', map { "$basename-$version.$_" } @try_extensions) 
+        die "could not find file " . join(' or ', map { "$basename-$version.$_" } @try_extensions)
             unless defined $input;
 
         open my $in, '<', $input or die $!;

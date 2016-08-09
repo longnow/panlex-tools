@@ -30,13 +30,13 @@ use PanLex::Validation;
 use PanLex::Serialize::Util;
 use PanLex::Client::Normalize;
 use PanLex::MungeJson;
-use JSON;
+use JSON::MaybeXS;
 
 our @EXPORT = qw(normalizedf);
 
 sub normalizedf {
     my ($in, $out, $args) = @_;
-    
+
     my $excol   = $args->{col};
     my $uid     = $args->{uid};
     my $min     = $args->{min};
@@ -56,7 +56,7 @@ sub normalizedf {
 
     die "invalid min value: $mindeg" unless valid_int($min) && $min >= 0;
     die "invalid mindeg value: $mindeg" unless valid_int($mindeg) && $mindeg >= 0;
-        
+
     my (%ex, %exok, $log_obj);
 
     my $lentag = length $extag;
@@ -183,14 +183,14 @@ sub normalizedf {
             # If it is tagged as an expression:
 
                 my $ex = $tag->[2];
-                # Identify the item’s content, i.e. proposed text. 
+                # Identify the item’s content, i.e. proposed text.
 
                 if (!exists $exok{$ex} && exists $ttto{$ex}) {
                 # If it is not in the table of acceptable expression texts but has a replacement
                 # in the table of replacements:
 
-                    $tag = [ 
-                        [ $exptag->[0], $exptag->[1], $tag->[2] ], 
+                    $tag = [
+                        [ $exptag->[0], $exptag->[1], $tag->[2] ],
                         [ $extag->[0], $extag->[1], $ttto{$ex} ]
                     ];
                     # Rewrite it as a pre-normalized expression and

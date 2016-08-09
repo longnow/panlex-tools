@@ -1,7 +1,7 @@
 package PanLex::Client;
 use strict;
 use parent 'Exporter';
-use JSON;
+use JSON::MaybeXS;
 use HTTP::Request;
 use LWP::UserAgent;
 

@@ -2,21 +2,21 @@
 # Arguments:
 #   col:      column containing expressions to be normalized.
 #   uid:      variety UID of expressions to be normalized.
-#   min:      minimum score (0 or more) a proposed expression must have in order 
-#               to be accepted outright as an expression. Every proposed 
-#               expression with a lower (or no) score is to be replaced with the 
-#               highest-scoring expression sharing its language variety and 
+#   min:      minimum score (0 or more) a proposed expression must have in order
+#               to be accepted outright as an expression. Every proposed
+#               expression with a lower (or no) score is to be replaced with the
+#               highest-scoring expression sharing its language variety and
 #               degradation, if any such expression has a higher score than it.
-#   mindeg:   minimum score a proposed expression that is not accepted outright 
+#   mindeg:   minimum score a proposed expression that is not accepted outright
 #               as an expression, or its replacement, must have in order to be
 #               accepted as an expression. pass '' to disable replacement.
 #   ui:       array of source group IDs whose meanings are to be ignored in
 #               normalization; [] if none. default [].
 #   log:      set to 1 to log normalize scores to normalize.json, 0 otherwise.
 #               default 1.
-#   failtag:  tag with which to retag proposed expressions not accepted as 
-#               expressions and not having replacements accepted as expressions; 
-#               '' (blank) if they are to be converted to pre-normalized 
+#   failtag:  tag with which to retag proposed expressions not accepted as
+#               expressions and not having replacements accepted as expressions;
+#               '' (blank) if they are to be converted to pre-normalized
 #               expressions. default '⫷df⫸'.
 #   ignore:   regex matching expressions to be ignored in normalization; or ''
 #               (blank) if none. default ''.
@@ -40,7 +40,7 @@ use PanLex::Validation;
 use PanLex::Serialize::Util;
 use PanLex::Client::Normalize;
 use PanLex::MungeJson;
-use JSON;
+use JSON::MaybeXS;
 
 our @EXPORT = qw(normalize);
 
@@ -48,9 +48,9 @@ sub normalize {
     my $in = shift;
     my $out = shift;
     my $args = ref $_[0] ? $_[0] : \@_;
-    
+
     my ($excol, $uid, $min, $mindeg, $ui, $log, $failtag, $ignore, @propcols, $delim, $extag, $exptag);
-    
+
     if (ref $args eq 'HASH') {
         $excol      = $args->{col};
         $uid        = $args->{uid};
@@ -87,7 +87,7 @@ sub normalize {
 
     die "invalid min value: $min" unless valid_int($min) && $min >= 0;
     die "invalid mindeg value: $mindeg" unless $mindeg eq '' || (valid_int($mindeg) && $mindeg >= 0);
-    
+
     my (%ex, %exok, $log_obj);
 
     my @lines = <$in>;
@@ -202,7 +202,7 @@ sub normalize {
                 my @ex = PsList($subtag->[2], $delim);
                 # Identify the expression, or a list of the expressions in it if
                 # it is a pseudo-list.
-                
+
                 foreach my $ex (@ex) {
                 # For each of them:
 
@@ -242,8 +242,8 @@ sub normalize {
                         # Otherwise, i.e. if it is classifiable as an
                         # expression only after replacement:
 
-                            push @newtags, 
-                                [ $exptag->[0], $exptag->[1], $ex ], 
+                            push @newtags,
+                                [ $exptag->[0], $exptag->[1], $ex ],
                                 [ $subtag->[0], $subtag->[1], $ttto{$ex} ];
                             # Append it, with a pre-normalized
                             # expression tag, and its replacement, with
@@ -288,7 +288,7 @@ sub normalize {
                     }
 
                     else {
-                    # Otherwise, i.e. if such proposed expressions are to be 
+                    # Otherwise, i.e. if such proposed expressions are to be
                     # to be converted to pre-normalized expressions:
 
                         $newtag = [ $exptag->[0], $exptag->[1], $subtag->[2] ];
@@ -326,7 +326,7 @@ sub normalize {
         # Identify the rewritten column.
 
         if (@propcols and $excount == $failcount) {
-        # If failures are to be propagated to other columns and every 
+        # If failures are to be propagated to other columns and every
         # expression in the column failed normalization:
 
             foreach my $propcol (@propcols) {

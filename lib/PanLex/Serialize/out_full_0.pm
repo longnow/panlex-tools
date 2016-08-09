@@ -21,7 +21,7 @@ use PanLex::Validation;
 use PanLex::Serialize::Util;
 use PanLex::Client;
 use panlex_ucd;
-use JSON;
+use JSON::MaybeXS;
 
 our @EXPORT = qw(out_full_0);
 
@@ -33,7 +33,7 @@ sub out_full_0 {
     my $args = ref $_[0] ? $_[0] : \@_;
 
     my (@specs, $mindf, $minex, $error, $remove_tags);
-    
+
     if (ref $args eq 'HASH') {
         validate_specs($args->{specs});
 
@@ -48,7 +48,7 @@ sub out_full_0 {
         $error = 'ignore';
         $remove_tags = '^(?:exp|rm)$';
     }
-    
+
     die "invalid minimum count\n" if ($mindf < 0) || ($minex < 0);
     # If either minimum count is too small, quit and notify the user.
 
@@ -66,7 +66,7 @@ sub out_full_0 {
     my $report_error = sub {
         my ($errstr, $line) = @_;
         die "$errstr\n$line\n" if $error eq 'fail';
-        $error_count++;        
+        $error_count++;
         return "ERROR: $errstr\n$line";
     };
 
@@ -149,7 +149,7 @@ sub out_full_0 {
             }
         }
 
-        next if 
+        next if
             scalar(grep { tag_type($_) =~ /^(?:dn|df)$/ } @$tags) < $mindf ||
             scalar(grep { tag_type($_) eq 'dn' } @$tags) < $minex;
         # If the count of remaining expressions and definitions or the count of remaining
