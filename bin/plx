@@ -7,6 +7,7 @@ binmode STDOUT, ':encoding(utf8)';
 binmode STDERR, ':encoding(utf8)';
 
 use Encode 'encode';
+use File::Find;
 use File::Spec::Functions qw(catdir catfile curdir rel2abs splitdir);
 use LWP::UserAgent;
 use MIME::Base64;
@@ -375,10 +376,12 @@ sub cmd_upload {
 
     if (defined $_[0] and -d $_[0]) {
         $dirpath = shift;
-    } elsif (-e 'log.json') {
-        $dirpath = curdir();
     } else {
-        print(STDERR "You need to specify a valid source directory.\n"), return;
+        $dirpath = curdir();
+        my $is_source_dir = 0;
+        find(sub { ($_ eq 'log.json' || /-final\.txt$/) && ($is_source_dir = 1) }, $dirpath);
+
+        print(STDERR "You need to specify a valid source directory.\n"), return unless $is_source_dir;
     }
 
     my $note = join ' ', @_;
