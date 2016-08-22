@@ -146,7 +146,7 @@ def make_paren_regex(parens=PARENS, maxnested=10, cap=True):
     for p in parens:
         o, c = p
         oc = o + c
-        fld    = (o + r'(?:[^' + oc + r']|') * (maxnested - 1)
+        fld  = (o + r'(?:[^' + oc + r']|') * (maxnested - 1)
         fld += o + r'[^' + c + r']*' + c
         fld += (r')*' + c) * (maxnested - 1)
         paren_res.append(fld)
@@ -174,7 +174,7 @@ EXDFPREP_RULES = {
             r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(\(?(?:a\s+)?(?:kind|variety|type|sort|species) of(?: an?(?= ))?\)?|k\.?o\.)\s*' : (r'\1(\2) ', r''),
         },
         3: {
-            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)([Tt]he|[Aa]n?)\s+((?:(?:'+make_paren_regex()[1:-1]+'|[^\(\)\[\]\s]+))(?: (?:'+make_paren_regex()[1:-1]+'|[^\(\)\[\]\s]+))?)$'     : (r'\1(\2) \3', ''),            # r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(the)\s+([^\(])'     : (r'\1(\2) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun'),
+            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)([Tt]he|[Aa]n?)\s+((?:'+make_paren_regex(cap=False)+r'\s*)*[^\(\)\[\]\s]+)$'     : (r'\1(\2) \3', ''),            # r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(the)\s+([^\(])'     : (r'\1(\2) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun'),
             r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)\((s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)\s+(which|that|who|to)' : (r'\1\2 \3', ''),
             r'\((s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)\s+(else(?:\'s)?)' : (r'(\1 \2)', ''),
             r'^\((s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)\s+' : (r'\1 ', ''),
@@ -182,16 +182,16 @@ EXDFPREP_RULES = {
             r'^((?:'+make_paren_regex(cap=False)+r')?\s*)(\(?(?:a\s+)?(?:kind|variety|type|sort|species) of(?: an?)?\)?|\(?k\.?o\.\)?)\s*([^\s]+ ?[^\s]+)$' : (r'\1 (\2) \3', r'⫷mcs2:art-300⫸IsA⫷mcs:eng-000⫸\3'),
         },
         4: {
-            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:not )?)[Tt]o\s+('+make_paren_regex(cap=False)+r'?\s*)(?!the(?: |$)|you|us$|him$|her$|them$|me$|no )' : (r'\1\2(to) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal'),
+            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:not )?)[Tt]o\s+(?!the(?: |$)|you(?: |$)|us(?: |$)|him(?: |$)|her(?: |$)|them(?: |$)|me(?: |$)|[wt]?here(?: |$)|no(?: |$)|one\'s(?: |$)|oneself(?: |$)'+make_paren_regex(cap=True)+r'$)' : (r'\1\2(to) ', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal'),
             r'(^| )make to ' : (r'\1make (to) ', '')
         },
         5: {
-            r'(^|\s)\(a\) (lot|bit|posteriori|priori|fortiori|few|little|minute|same|while)(\s|$)' : (r'\1a \2\3', r''),
+            r'(^|\s)\(a\) (lot|bit|posteriori|priori|fortiori|few|little|minute|same|while|propos|capella)(\s|$)' : (r'\1a \2\3', r''),
             r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:\(to\) )?)(become)\s+([^\s\()][^\s]*)$' : (r'\1\2\3 \4', r'⫷mcs2:art-316⫸Inchoative_of⫷mcs⫸\4'),
             r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:\(to\) )?)(make\s+)((?:\(to\)\s+)?)((?:'+make_paren_regex(cap=False)+r'\s*)?)\s+(?!space(?: |$)|room(?: |$)|out(?: |$)|love(?: |$))([^\s\()][^\s]*)$'     : (r'\1\2\3\4 \5 \6', r'⫷mcs2:art-316⫸Causative_of⫷mcs⫸\6'),
         },
         6: {
-            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)\(([Tt]he|[Aa]n?)\)\s+((?:(?:'+make_paren_regex()[1:-1]+'|[^\(\)\[\]\s]+))(?: (?:'+make_paren_regex()[1:-1]+'|[^\(\)\[\]\s]+))?)$'     : (r'\1(\2) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun'),
+            # r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)\(([Tt]he|[Aa]n?)\)\s+((?:(?:'+make_paren_regex()[1:-1]+'|[^\(\)\[\]\s]+))(?: (?:'+make_paren_regex()[1:-1]+'|[^\(\)\[\]\s]+))?)$'     : (r'\1(\2) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun'),
             r' ?\(n\.?\)$' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun'),
             r' ?\(v\.?\)$' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal'),
             r' ?\(v\.?i\.?\)$' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸IntransitiveVerb'),
@@ -206,6 +206,8 @@ EXDFPREP_RULES = {
             r' ?\(pol(ite)?\)$' : ('', '⫷dcs2:art-317⫸register⫷dcs:art-306⫸POL'),
             r'^do it$' : ('⫷df⫸do it', ''),
             r'fæces' : ('faeces', ''),
+            r'^to become$' : ('(to) become', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal'),
+            r'\(the\) whole lot⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun' : ('the whole lot', '')
         },
     },
     'jpn-000' : {
@@ -808,7 +810,7 @@ def normalize(entries, col, threshold=50, lang='eng-000'):
 
 JPN_NORMALIZE_EXCEPTIONS = ['おねえちゃん', 'おにいちゃん', 'のんべえ', '一人一人']
 
-def jpn_normalize(entries, col, delim='‣', maxlen=3, dftag='⫷df⫸'):
+def jpn_normalize(entries, col, delim='‣', maxlen=3, dftag='⫷df⫸', suppress_print=True):
     """ Keeps, or retags entries based on expressions in given column. """
     try:
         MecabSoup
@@ -829,15 +831,18 @@ def jpn_normalize(entries, col, delim='‣', maxlen=3, dftag='⫷df⫸'):
                 syn_noparens = re.sub(exc, 'X', syn_noparens).strip()
             if len(syn_noparens) <= maxlen or not re.sub(r'\p{Katakana}+','',syn_noparens).strip(): # too short to analyze, or all katakana
                 newentry.append(syn)
-                print(syn)
+                if not suppress_print:
+                    print(syn)
             else:
                 if MecabSoup(syn_noparens).length > maxlen or '。' in syn_noparens:
                     # retag
                     newentry.append(dftag+syn)
-                    print(dftag+syn)
+                    if not suppress_print:
+                        print(dftag+syn)
                 else:
                     newentry.append(syn)
-                    print(syn)
+                    if not suppress_print:
+                        print(syn)
         result.append(entry[:col] + [delim.join(newentry).replace(delim+dftag[0],dftag[0])] + entry[col+1:])
     return result
 
@@ -1221,3 +1226,9 @@ def classify_cmn(entries, col, delim='‣'):
                 #     print('!!!', syn)
         result.append(entry[:col] + [delim.join(newentry).replace(delim+simptag[0],simptag[0])] + entry[col+1:])
     return result
+
+
+def tb_to_wn(tb):
+    # Convert Penn Treebank to WordNet POS tags
+    tb = tb[:2] if tb[:2] in ['NN','JJ','VB'] else 'RB'
+    return {'NN':wn.NOUN,'JJ':wn.ADJ,'VB':wn.VERB,'RB':wn.ADV}[tb]

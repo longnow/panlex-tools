@@ -184,6 +184,7 @@ interjection	art-303:PartOfSpeechProperty:art-303:Interjection
 Interjection	art-303:PartOfSpeechProperty:art-303:Interjection	
 interjection	art-303:PartOfSpeechProperty:art-303:Interjection	
 interrog.	art-303:ForceProperty:art-303:InterrogativeForce	
+interrogative	art-303:ForceProperty:art-303:InterrogativeForce	
 INTJ	art-303:PartOfSpeechProperty:art-303:Interjection	
 intj.	art-303:PartOfSpeechProperty:art-303:Interjection	
 intpron.	art-303:PartOfSpeechProperty:art-303:InterrogativeProform	
@@ -252,6 +253,8 @@ Noun	art-303:PartOfSpeechProperty:art-303:Noun
 NOUN	art-303:PartOfSpeechProperty:art-303:Noun	
 noun	art-303:PartOfSpeechProperty:art-303:Noun	
 noun suffix	art-303:Morpheme:art-303:Suffix	*
+pronoun suffix	art-303:Morpheme:art-303:Suffix	*
+derivational suffix	art-303:Morpheme:art-303:Suffix	*
 noun, placename	art-303:PartOfSpeechProperty:art-303:ProperNoun	
 nouns	art-303:PartOfSpeechProperty:art-303:Noun	
 Nouns	art-303:PartOfSpeechProperty:art-303:Noun	
@@ -270,6 +273,7 @@ numeral	art-303:PartOfSpeechProperty:art-303:Numeral
 Numeral	art-303:PartOfSpeechProperty:art-303:Numeral	
 obj.pron.	art-303:PartOfSpeechProperty:art-303:Pronominal	
 onomat	art-303:PartOfSpeechProperty:art-253:onomatopoeia	
+ideophone	art-303:PartOfSpeechProperty:art-253:onomatopoeia	
 onomat.	art-303:PartOfSpeechProperty:art-253:onomatopoeia	
 onomatopoeia	art-303:PartOfSpeechProperty:art-253:onomatopoeia	
 ord	art-303:PartOfSpeechProperty:art-303:OrdinalNumeral	
@@ -439,6 +443,8 @@ v. ditr.	art-303:PartOfSpeechProperty:art-303:DitransitiveVerb
 v. impers.	art-303:PartOfSpeechProperty:art-303:Verbal‣art-303:VoiceProperty:art-303:ImpersonalPassiveVoice	
 v. intr.	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb	
 v. intrans.	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb	
+verb (intransitive)	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb	
+verb (transitive)	art-303:PartOfSpeechProperty:art-303:TransitiveVerb	
 v. t.	art-303:PartOfSpeechProperty:art-303:TransitiveVerb	
 v. tr.	art-303:PartOfSpeechProperty:art-303:TransitiveVerb	
 v.i	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb	
@@ -477,7 +483,7 @@ verb	art-303:PartOfSpeechProperty:art-303:Verbal
 verb ending	art-303:Morpheme:art-303:Suffix	*
 verb phrase	art-303:PartOfSpeechProperty:art-303:Verbal‣art-303:SyntacticUnit:art-303:Phrase	*
 verb phrase	art-303:Phrase:art-303:VerbPhrase	
-verb suffix	art-303:Morpheme:art-303:Suffix	
+verb suffix	art-303:Morpheme:art-303:Suffix	*
 verb-intransitive	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb	
 verb-transitive	art-303:PartOfSpeechProperty:art-303:TransitiveVerb	
 verbal ending	art-303:Morpheme:art-303:Suffix	*
