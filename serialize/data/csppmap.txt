@@ -65,6 +65,7 @@ auxiliary	art-303:PartOfSpeechProperty:art-303:Auxiliary
 auxiliary verb	art-303:PartOfSpeechProperty:art-303:Auxiliary	
 auxv	art-303:PartOfSpeechProperty:art-303:Auxiliary	
 avv.	art-303:PartOfSpeechProperty:art-303:Adverbial	
+ben	art-303:CaseProperty:art-303:BenefactiveCase	
 bnd pfx	art-303:Morpheme:art-303:Prefix	
 bnd sfx	art-303:Morpheme:art-303:Suffix	
 c	art-303:PartOfSpeechProperty:art-303:Conjunction	
