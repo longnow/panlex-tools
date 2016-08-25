@@ -186,7 +186,7 @@ EXDFPREP_RULES = {
             r'(^| )make to ' : (r'\1make (to) ', '')
         },
         5: {
-            r'(^|\s)\(a\) (lot|bit|posteriori|priori|fortiori|few|little|minute|same|while|propos|capella)(\s|$)' : (r'\1a \2\3', r''),
+            r'(^|\s)\(a\) (lot|bit|posteriori|priori|fortiori|few|little|minute|same|while|propos|cappella)(\s|$)' : (r'\1a \2\3', r''),
             r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:\(to\) )?)(become)\s+([^\s\()][^\s]*)$' : (r'\1\2\3 \4', r'⫷mcs2:art-316⫸Inchoative_of⫷mcs⫸\4'),
             r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:\(to\) )?)(make\s+)((?:\(to\)\s+)?)((?:'+make_paren_regex(cap=False)+r'\s*)?)\s+(?!space(?: |$)|room(?: |$)|out(?: |$)|love(?: |$))([^\s\()][^\s]*)$'     : (r'\1\2\3\4 \5 \6', r'⫷mcs2:art-316⫸Causative_of⫷mcs⫸\6'),
         },
@@ -325,11 +325,21 @@ EXDFPREP_RULES = {
     },
     'isl-000' : {
         1 : {
-            r'^(vera)\s+'     : (r'(\1) ', ''),
-            r'(^|[^\s]\s+)(e\-(?:[ðimnstu]|ar?|rs?))(\s|$)' : (r'\1(\2)\3', ''),
+            r'đ'     : (r'ð', ''),
+            r'Đ'     : (r'Ð', ''),
+        },
+        2 : {
+            r'^((?:[Aa]ð )?vera)\s+'     : (r'(\1) ', ''),
+            r'^(?:[Aa]ð)\s+([^\s]+)$'     : (r'(að) \1', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal'),
+            r'^(?:[Aa]ð)\s+([^\s]+)'     : (r'(að) \1', ''),
+            r'^(verða)\s+([^\s]+)$'     : (r'\1 \2', r'⫷dcs2:art-316⫸Inchoative_of⫷dcs⫸\2'),
+            r'([^\s]\s)(e\-(?:[ðimnstu]|ar?|rs?)(?: sem er(?![^ ]))?)(,?\s(?!sem )|、|$)' : (r'\1(\2)\3', ''),
+            r'(^|\s)(e\-(?:[ðimnstu]|ar?|rs?)(?: sem er(?![^ ]))?)(,?\s(?!sem )[^\s,]|、)' : (r'\1(\2)\3', ''),
+            r'([^\s]\s)((?:ei(?:nhver(?:[ns]|j(?:ar?|ir|um?)|r(?:i|ar?))?|tthv(?:að|ert)))(?: sem er(?![^ ]))?),?(\s(?!sem )|、|$)' : (r'\1(\2)\3', ''),
+            r'(^|\s)((?:ei(?:nhver(?:[ns]|j(?:ar?|ir|um?)|r(?:i|ar?))?|tthv(?:að|ert)))(?: sem er(?![^ ]))?),?(\s(?!sem )[^\s,、]|、)' : (r'\1(\2)\3', ''),
 
             # e-a    einhverja, einhverra        (fem acc sg, msc acc pl; msc/fem/neu gen pl)
-            # e-ar einhverjar, einhverrar    (fem nom/acc pl; fem gen sg)
+            # e-ar   einhverjar, einhverrar    (fem nom/acc pl; fem gen sg)
             # e-ð    eitthvað         (neu nom/acc sg substant)
             # e-i    einhverri        (fem dat sg)
             # e-m    einhverjum     (msc dat sg, msc/fem/neu dat pl)
@@ -339,10 +349,13 @@ EXDFPREP_RULES = {
             # e-t    eitthvert        (neu nom/acc sg demonstr)
             # e-u    einhverju        (neu dat sg)
 
-            r'^([^z]*)z([^z]*)$'     : (r'\1z\2', r'⫷ex:isl-000⫸\1s\2'), # 1973 reforms
+            # r'^([^z]*)z([^z]*)$'     : (r'\1z\2', r'⫷ex:isl-000⫸\1s\2'), # 1973 reforms
         },
-        2 : {
-            r'⫷ex:isl-000⫸([^z⫷]*)z([^z⫷]*)'     : ('', ''),
+        3 : {
+            # r'⫷ex:isl-000⫸([^z⫷]*)z([^z⫷]*)'     : ('', ''),
+            r'^(?:[Aa]ð)\s+([^\s]+)$'     : (r'(að) \1', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal'),
+            r'\) eða \('     : (r' eða ', ''),
+
         },
     },
     'ces-000' : {
@@ -395,7 +408,7 @@ EXDFPREP_RULES = {
             r'(.)[！!]$'    : (r'\1', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Interjection'),
             # r'(.)[？\?]$' : (r'\1', '⫷dcs2:art-303⫸ForceProperty⫷dcs:art-303⫸InterrogativeForce'),
             r'^\?+$' : ('', ''),
-            r'["“”]'    : ('', ''),
+            r'[„"“”]'    : ('', ''),
             # delete periods at end, but only when no periods in exp already, and len > 6
             r'^([^\.]{6,})\s*\.$' : (r'\1', ''),
             r'^\(([^\(\)]*)\)$' : (r'⫷df⫸\1', ''),
