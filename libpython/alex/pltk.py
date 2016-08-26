@@ -325,29 +325,27 @@ EXDFPREP_RULES = {
     },
     'isl-000' : {
         1 : {
-            r'đ'     : (r'ð', ''),
-            r'Đ'     : (r'Ð', ''),
+            r'đ' : (r'ð', ''),
+            r'Đ' : (r'Ð', ''),
         },
         2 : {
             r'^((?:[Aa]ð )?vera)\s+'     : (r'(\1) ', ''),
             r'^(?:[Aa]ð)\s+([^\s]+)$'     : (r'(að) \1', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal'),
             r'^(?:[Aa]ð)\s+([^\s]+)'     : (r'(að) \1', ''),
             r'^(verða)\s+([^\s]+)$'     : (r'\1 \2', r'⫷dcs2:art-316⫸Inchoative_of⫷dcs⫸\2'),
-            r'([^\s]\s)(e\-(?:[ðimnstu]|ar?|rs?)(?: sem er(?![^ ]))?)(,?\s(?!sem )|、|$)' : (r'\1(\2)\3', ''),
-            r'(^|\s)(e\-(?:[ðimnstu]|ar?|rs?)(?: sem er(?![^ ]))?)(,?\s(?!sem )[^\s,]|、)' : (r'\1(\2)\3', ''),
-            r'([^\s]\s)((?:ei(?:nhver(?:[ns]|j(?:ar?|ir|um?)|r(?:i|ar?))?|tthv(?:að|ert)))(?: sem er(?![^ ]))?),?(\s(?!sem )|、|$)' : (r'\1(\2)\3', ''),
-            r'(^|\s)((?:ei(?:nhver(?:[ns]|j(?:ar?|ir|um?)|r(?:i|ar?))?|tthv(?:að|ert)))(?: sem er(?![^ ]))?),?(\s(?!sem )[^\s,、]|、)' : (r'\1(\2)\3', ''),
+            r'([^\s]\s)((?:e\-(?:[ðimnstu]|ar?|rs?)|ei(?:nhver(?:[ns]|j(?:ar?|ir|um?)|r(?:i|ar?))?|tthv(?:að|ert)))(?: sem er(?![^ ]))?)(,?\s(?!sem )|、|$)' : (r'\1(\2)\3', ''),
+            r'(^|\s)((?:e\-(?:[ðimnstu]|ar?|rs?)|ei(?:nhver(?:[ns]|j(?:ar?|ir|um?)|r(?:i|ar?))?|tthv(?:að|ert)))(?: sem er(?![^ ]))?)(,?\s(?!sem )[^\s,]|、)' : (r'\1(\2)\3', ''),
 
-            # e-a    einhverja, einhverra        (fem acc sg, msc acc pl; msc/fem/neu gen pl)
-            # e-ar   einhverjar, einhverrar    (fem nom/acc pl; fem gen sg)
-            # e-ð    eitthvað         (neu nom/acc sg substant)
-            # e-i    einhverri        (fem dat sg)
-            # e-m    einhverjum     (msc dat sg, msc/fem/neu dat pl)
-            # e-n    einhvern         (msc acc sg)
-            # e-r    einhver            (msc/fem nom sg)
-            # e-(r)s einhvers     (msc/neu gen sg)
-            # e-t    eitthvert        (neu nom/acc sg demonstr)
-            # e-u    einhverju        (neu dat sg)
+            # e-a    einhverja, einhverra     (fem acc sg, msc acc pl; msc/fem/neu gen pl)
+            # e-ar   einhverjar, einhverrar   (fem nom/acc pl; fem gen sg)
+            # e-ð    eitthvað      (neu nom/acc sg substant)
+            # e-i    einhverri     (fem dat sg)
+            # e-m    einhverjum    (msc dat sg, msc/fem/neu dat pl)
+            # e-n    einhvern      (msc acc sg)
+            # e-r    einhver       (msc/fem nom sg)
+            # e-(r)s einhvers      (msc/neu gen sg)
+            # e-t    eitthvert     (neu nom/acc sg demonstr)
+            # e-u    einhverju     (neu dat sg)
 
             # r'^([^z]*)z([^z]*)$'     : (r'\1z\2', r'⫷ex:isl-000⫸\1s\2'), # 1973 reforms
         },
