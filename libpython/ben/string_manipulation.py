@@ -228,3 +228,17 @@ def remove_extra_parens(string):
     if rx.search(outstring):
         outstring = remove_extra_parens(outstring)
     return outstring
+
+def normalize_list(in_list, in_list_name, list_type, cmp_list=None, cmp_list_name=None):
+    if cmp_list and not cmp_list_name:
+        raise TypeError('if cmp_list is defined, cmp_list_name must be defined')
+    if isinstance(in_list, list_type): out_list = [in_list]
+    else: out_list = list(in_list)[:]
+    if not all(map(lambda i: isinstance(i, list_type), out_list)):
+        raise TypeError('all items in {} must be instances of {}'.format(in_list_name, list_type.__name__))
+    if cmp_list:
+        if len(out_list) == 1:
+            out_list = out_list * len(cmp_list)
+        elif len(out_list) > 1 and len(out_list) != len(cmp_list):
+            raise TypeError('length of {} must be 0, 1, or the length of {}'.format(in_list_name, cmp_list_name))
+    return out_list
