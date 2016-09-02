@@ -17,7 +17,10 @@ def preprocess(entries):
         for col in entry:
 
             # nonstandard spaces/newlines/control characters
-            col = re.sub(r'[\x19\xa0\x7f\u200B\u200E\uFEFF\n]', ' ', col).strip()
+            col = re.sub(r'[\x19\u001f\xa0\x7f\u200B\u200E\uFEFF\n]', ' ', col).strip()
+            
+            # PUA
+            # col = re.sub(r'', '', col).strip()
 
             # fullwidth punctuation, numbers
             col = col.replace('？', '?')
@@ -490,7 +493,7 @@ def exdfprep(entries, sourcecols, tocol=-1, lang='eng-000', pretag_special_lvs=T
                             # integers
                             int_m = re.match(r'^(?:⫷..⫸)?(\d+)($|⫷)', syn.strip())
                             if int_m:
-                                if int_m.group(1) in ['747','411','911','119']:
+                                if int_m.group(1) in ['747','411','911','119','110']:
                                     print('WARNING: Did not pretag potentially special number:', int_m.group(1))
                                 else:
                                     syn = re.sub(r'^(?:⫷[^⫸]+⫸)?', '⫷ex:art-269⫸', unicodedata.normalize('NFKC', syn)).strip()
@@ -508,13 +511,13 @@ def exdfprep(entries, sourcecols, tocol=-1, lang='eng-000', pretag_special_lvs=T
 def mnsplit(entries, col, delim='⁋'):
     try: assert isinstance(col, int)
     except: raise ValueException('col must be integer')
-    if delim != '⁋':
-        entries = split_outside_parens(entries, [col], delim)
-        entries = joincol(entries, col, '⁋')
+    # if delim != '⁋':
+    #     entries = split_outside_parens(entries, [col], delim)
+    #     entries = joincol(entries, col, '⁋')
     result = []
     for entry in entries:
-        assert isinstance(entry[col], str)
-        for mn in re.split('⁋', entry[col]):
+        # assert isinstance(entry[col], str)
+        for mn in re.split(delim, entry[col]):
             result.append(entry[:col] + [mn] + entry[col+1:])
     return result
 
