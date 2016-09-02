@@ -2,6 +2,11 @@
 # -*- coding: utf-8 -*-
 
 import regex as re
+import requests
+import subprocess
+import atexit
+import os
+from time import sleep
 spacy_parser = None
 frogclient = None
 supported_langs = ['eng', 'nld']
@@ -182,14 +187,25 @@ def _initialize_taxons():
     taxon_finder_sp = subprocess.Popen(['nodejs', os.environ['PANLEX_TOOLDIR'] + "/util/taxonfinder-api"], stdin=subprocess.PIPE, stdout=subprocess.DEVNULL)
     atexit.register(taxon_finder_sp.terminate)
 
-def taxons(string):
+def taxons(string, normalize=False):
     try:
         r = requests.get('http://localhost:3000', params={'text': string})
     except requests.exceptions.ConnectionError:
         _initialize_taxons()
-        sleep(2)
-    r = requests.get('http://localhost:3000', params={'text': string})
-    return r.json()
+        sleep(3)
+    output = []
+    stringlist = [string]
+    if normalize:
+        stringlist.append(' '.join([t.lower() if i % 2 else t.title() for i, t in enumerate(string.split())]))
+        stringlist.append(' '.join([t.title() if i % 2 else t.lower() for i, t in enumerate(string.split())]))
+        stringlist.append(' '.join([t.lower() if i % 3 else t.title() for i, t in enumerate(string.split())]))
+        stringlist.append(' '.join([t.lower() if (i + 1) % 3 else t.title() for i, t in enumerate(string.split())]))
+        stringlist.append(' '.join([t.lower() if (i + 2) % 3 else t.title() for i, t in enumerate(string.split())]))
+    for st in stringlist:
+        r = requests.get('http://localhost:3000', params={'text': st})
+        for o in r.json():
+            if o not in output: output.append(o)
+    return output
 
 def multiple_replace(text, adict, regex=False):
     if not isinstance(adict, OrderedDict): adict = OrderedDict([(key, adict[key]) for key in sorted(adict, key=len, reverse=True)])
