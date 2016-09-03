@@ -7,6 +7,9 @@ from collections.abc import Iterable
 from progress.bar import Bar
 from ben.string_manipulation import *
 from os import environ
+from functools import partialmethod
+from types import FunctionType
+import ben.normalize as normalize
 
 class Ex:
 
@@ -36,11 +39,6 @@ class Ex:
                 except ValueError: raise ValueError("vc must be a positive integer")
             else:
                 raise TypeError("{cls} requires lv".format(cls=self.__class__.__name__))
-                # self._lc = lc
-                # self._vc = vc
-
-    def __repr__(self):
-        return "{cls}({string}, lv={lv})".format(cls=self.__class__.__name__, string=repr(str(self)), lv=repr(self.lv))
 
     def __getattr__(self, attr):
         f = str.__getattribute__(str(self), attr)
@@ -55,20 +53,22 @@ class Ex:
                 return out
         return outfunc
 
-    def __bool__(self):
-        # if str(self): return True
-        # else: return False
-        return bool(str(self))
+    def __special_obj__(self, method, *args, **kwargs):
+        f = str.__getattribute__(str(self), method)
+        return self.__class__(f(*args, **kwargs), self.lv)
 
-    def __len__(self):
-        return len(str(self))
+    def __special_cmp__(self, method, other):
+        f = str.__getattribute__(str(self), method)
+        if isinstance(other, str):
+            return f(other)
+        if self.lv == other.lv:
+            return f(str(other))
+        else:
+            g = str.__getattribute__(self.lv, method)
+            return g(other.lv)
 
-    def __iter__(self):
-        for char in str(self):
-            yield self.__class__(char, self.lv)
-
-    def __getitem__(self, key):
-        return self.__class__(str.__getitem__(str(self), key), self.lv)
+    def __repr__(self):
+        return "{cls}({string}, lv={lv})".format(cls=self.__class__.__name__, string=repr(str(self)), lv=repr(self.lv))
 
     def __str__(self):
         return self.text
@@ -76,17 +76,22 @@ class Ex:
     def __hash__(self):
         return hash((str(self), self.lc, self.vc))
 
-    def __eq__(self, item):
-        try:
-            if str(self) == str(item) and self.lv == item.lv: return True
-            else: return False
-        except AttributeError:
-            if str(self) == str(item): return True
-            else: return False
+    def __iter__(self):
+        for char in str(self):
+            yield self.__class__(char, self.lv)
 
-    def __contains__(self, item):
-        if str(item) in str(self): return True
-        else: return False
+    def __len__(self):
+        return len(str(self))
+
+    def __add__(self, other):
+        try:
+            if self.lv != other.lv:
+                raise TypeError('{} can only be added to {} with same lv'.format(self.__class__.__name__, other.__class__.__name__))
+        except AttributeError: pass
+        return self.__class__(str(self) + str(other), self.lv)
+
+    def __radd__(self, other):
+        return Ex(other, self.lv).__add__(self)
 
     @property
     def text(self):
@@ -121,6 +126,9 @@ class Ex:
         if string == None: string = self.text
         return self.__class__(string, self.lv)
 
+    def map(self, func):
+        return self.copy(func(str(self)))
+
     def copy_list(self, iter_of_strings):
         t = type(iter_of_strings)
         return t([self.copy(string) for string in iter_of_strings])
@@ -131,6 +139,25 @@ class Ex:
     def split(self, pattern, maxsplit=0, flags=0):
         split_list = re.split(pattern, str(self), maxsplit, flags)
         return [self.copy(split_string) for split_string in split_list]
+
+    def score(self, as_lv=None, ui=[]):
+        if not as_lv: as_lv = self.lv
+        return normalize.get_scores([str(self)], as_lv, ui)[str(self)]
+
+    def degraded_scores(self, as_lv=None, deg_func=None, include_std_deg=True, ui=[]):
+        import panlex
+        if not as_lv: as_lv = self.lv
+        if deg_func:
+            return normalize.get_custom_deg_scores([str(self)], as_lv, deg_func, include_std_deg, ui)[str(self)]
+        else:
+            return normalize.get_degraded_scores([str(self)], as_lv, ui)[str(self)]
+
+for i in ['__getitem__', '__mul__', '__rmul__', '__mod__', '__rmod__']:
+    setattr(Ex, i, partialmethod(Ex.__special_obj__, i))
+
+for i in ['__eq__', '__lt__', '__gt__', '__le__', '__ge__', '__ne__', '__contains__']:
+    setattr(Ex, i, partialmethod(Ex.__special_cmp__, i))
+
 
 class Df(Ex):
     def pretty(self, indent=0):
