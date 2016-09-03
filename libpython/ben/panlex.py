@@ -184,8 +184,8 @@ class Pp(str):
     def __hash__(self):
         return hash((str(self), self.attribute))
 
-    def __eq__(self, item):
-        try: return str(self) == str(item) and self.attribute == item.attribute
+    def __eq__(self, other):
+        try: return str(self) == str(other) and self.attribute == other.attribute
         except AttributeError: return False
 
     @property
@@ -231,8 +231,8 @@ class Cs:
     def __hash__(self):
         return hash((self.class_ex, self.superclass_ex))
 
-    def __eq__(self, item):
-        try: return self.class_ex == item.class_ex and self.superclass_ex == item.superclass_ex
+    def __eq__(self, other):
+        try: return self.class_ex == other.class_ex and self.superclass_ex == other.superclass_ex
         except AttributeError: return False
 
     @property
@@ -275,8 +275,8 @@ class Dn:
     def __contains__(self, string):
         return string in self.ex
 
-    def __eq__(self, item):
-        try: return self.ex == item.ex and set(self.pp_list) == set(item.pp_list) and set(self.cs_list) == set(item.cs_list)
+    def __eq__(self, other):
+        try: return self.ex == other.ex and set(self.pp_list) == set(other.pp_list) and set(self.cs_list) == set(other.cs_list)
         except AttributeError: return False
 
     def __getattr__(self, attr):
@@ -295,8 +295,6 @@ class Dn:
         else: return f
 
     def __bool__(self):
-        # if self.ex: return True
-        # else: return False
         return bool(self.ex)
 
     def __hash__(self):
@@ -376,8 +374,6 @@ class Mn:
             dn_list=repr(self.dn_list), df_list=repr(self.df_list), pp_list=self.pp_list, cs_list=self.cs_list)
 
     def __bool__(self):
-        # if any([any(self.dn_list), any(self.df_list), any(self.pp_list), any(self.cs_list)]): return True
-        # else: return False
         return any([any(self.dn_list), any(self.df_list), any(self.pp_list), any(self.cs_list)])
 
     def __contains__(self, obj):
@@ -388,16 +384,18 @@ class Mn:
                 if obj == dn.ex: return True
         return False
 
-    def __eq__(self, item):
+    def __eq__(self, other):
         return \
-            self.dn_list == item.dn_list and \
-            self.df_list == item.df_list and \
-            self.pp_list == item.pp_list and \
-            self.cs_list == item.cs_list
+            self.dn_list == other.dn_list and \
+            self.df_list == other.df_list and \
+            self.pp_list == other.pp_list and \
+            self.cs_list == other.cs_list
 
     def __call__(self, lv_list):
-        if isinstance(lv_list, str): lv_list = [lv_list]
-        return [dn for dn in self.dn_list if dn.lv in lv_list]
+        lv_list = normalize_list(lv_list, 'lv_list', str)
+        output = [dn for dn in self.dn_list if dn.lv in lv_list]
+        if not output: output = [dn for dn in self.dn_list if dn.lc in lv_list]
+        return output
 
     @property
     def dn_list(self):
@@ -435,12 +433,15 @@ class Mn:
             raise TypeError("cs_list must be a list containing only Cs objects")
         self._cs_list = new_value
 
+    def lv_set(self):
+        return {dn.lv for dn in self.dn_list}
+
     def lv_list(self):
-        return [dn.lv for dn in self.dn_list]
+        return sorted(self.lv_set())
 
     def ex_list(self, lv=None):
         if lv:
-            return [dn.ex for dn in self.dn_list if dn.lv == lv ]
+            return [dn.ex for dn in self.dn_list if dn.lv == lv]
         else:
             return [dn.ex for dn in self.dn_list]
 
