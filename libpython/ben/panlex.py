@@ -507,6 +507,141 @@ class Mn:
                 if re.search(pattern, str(dn)):
                     self.dn_list[i] = dn.sub(pattern, repl, count, flags)
 
+    def tag(self, lv_list, tagged=False, tag_types=set()):
+        mn_line = []
+        if tagged:
+            for lv in lv_list:
+                mn_line.append(clean_str(''.join(tag_list(self(lv), 'dn'))))
+                mn_line.append(clean_str(''.join(tag_list([df for df in self.df_list if df.lv == lv], 'df'))))
+            mn_line.append(clean_str(''.join(tag_list(self.cs_list, 'mcs'))))
+            mn_line.append(clean_str(''.join(tag_list(self.pp_list, 'mpp'))))
+        else:
+            tag_types = set(tag_types)
+            if {'ex', 'dcs', 'dpp'} <= tag_types: tag_types.add('dn')
+            if 'cs' in tag_types: tag_types.update({'dcs', 'mcs'})
+            if 'pp' in tag_types: tag_types.update({'dpp', 'mpp'})
+            for lv in lv_list:
+                if 'dn' in tag_types:
+                    mn_line.append(clean_str(''.join(tag_list(self(lv), 'dn'))))
+                else:
+                    if 'ex' in tag_types:
+                        mn_line.append(clean_str(''.join(tag_list(self.ex_list(lv), 'ex'))))
+                    else:
+                        mn_line.append(clean_str('‣'.join([str(dn.ex) for dn in self(lv)])))
+                    dcs_list = flatten([dn.cs_list for dn in self(lv)])
+                    if 'dcs' in tag_types:
+                        mn_line.append(clean_str(''.join(tag_list(dcs_list, 'dcs'))))
+                    else:
+                        mn_line.append(clean_str('‣'.join([str(cs.class_ex) for cs in dcs_list])))
+                    dpp_list = flatten([dn.pp_list for dn in self(lv)])
+                    if 'dpp' in tag_types:
+                        mn_line.append(clean_str(''.join(tag_list(dpp_list, 'dpp'))))
+                    else:
+                        mn_line.append(clean_str('‣'.join([str(pp) for pp in dpp_list])))
+                if 'df' in tag_types:
+                    mn_line.append(clean_str(''.join(tag_list([df for df in self.df_list if df.lv == lv], 'df'))))
+            if 'mcs' in tag_types:
+                mn_line.append(clean_str(''.join(tag_list(self.cs_list, 'mcs'))))
+            else:
+                mn_line.append(clean_str('‣'.join([clean_str(str(cs.class_ex)) for cs in self.cs_list])))
+            if 'mpp' in tag_types:
+                mn_line.append(clean_str(''.join(tag_list(self.pp_list, 'mpp'))))
+            else:
+                mn_line.append(clean_str('‣'.join([clean_str(str(pp)) for pp in self.pp_list])))
+
+        line = '\t'.join(mn_line)
+        return line
+
+
+class Ap(list):
+    def tabularize(self, output_file, match_re_lv_list=None, lv_list=None, tagged=False, tag_types=set(), inc_df=False):
+        if not lv_list:
+            lv_list = sorted(set(flatten([mn.lv_list() for mn in self])))
+        try:
+            if isinstance(match_re_lv_list[0], str):
+                match_re_lv_list = [match_re_lv_list]
+        except TypeError: pass
+        for mn in Bar().iter(self):
+            line = mn.tag(lv_list, tagged, tag_types)
+            if match_re_lv_list:
+                match = False
+                for rx, match_lv in match_re_lv_list:
+                    for ex in [dn.ex for dn in mn.dn_list if dn.lv == match_lv]:
+                        if re.search(rx, clean_str(str(ex))): match = True
+                    if inc_df:
+                        for df in [df for df in mn.df_list if df.lv == match_lv]:
+                            if re.search(rx, clean_str(str(df))): match = True
+                if match and clean_str(line): print(line, file=output_file)
+            elif clean_str(line):
+                print(line, file=output_file)
+            else: pass
+
+    def lv_set(self):
+        lv_set = set()
+        for mn in self:
+            lv_set.update(mn.lv_list())
+        return lv_set
+
+    def dn_set(self, lv_set=set()):
+        if not lv_set: lv_set = self.lv_set()
+        elif isinstance(lv_set, str): lv_set = {lv_set}
+        dn_set = set()
+        for mn in self:
+            for dn in mn.dn_list:
+                if dn.lv in lv_set or dn.lc in lv_set:
+                    dn_set.add(dn)
+        return dn_set
+
+    def ex_set(self, lv_set=set()):
+        if isinstance(lv_set, str):
+            lv_set = {lv_set}
+        return {dn.ex for dn in self.dn_set(lv_set)}
+
+    def sub(self, pattern, repl, count=0, flags=0, lv_set=None):
+        if not lv_set: lv_set = self.lv_set()
+        for mn in self:
+            mn.sub(pattern, repl, count, flags, mn(lv_set))
+
+    def get_scores(self, lv, as_lv=None, ui=[]):
+        if not as_lv: as_lv = lv
+        result = normalize.get_scores(map(str, self.ex_set(lv)), as_lv, ui)
+        return {ex : result[str(ex)] for ex in self.ex_set(lv)}
+
+    def get_degraded_scores(self, lv, as_lv=None, deg_func=None, include_std_deg=True, ui=[]):
+        if not as_lv: as_lv = lv
+        if deg_func:
+            result = normalize.get_custom_deg_scores(map(str, self.ex_set(lv)), as_lv, deg_func, include_std_deg, ui)
+        else:
+            result = normalize.get_degraded_scores(map(str, self.ex_set(lv)), as_lv, ui)
+        output = {}
+        for ex in self.ex_set(lv):
+            output[ex] = {Ex(s, lv) : result[str(ex)][s] for s in result[str(ex)]}
+        return output
+
+    def get_redeg_scores(self, lv, in_re, out, as_lv=None, ui=[]):
+        if not as_lv: as_lv = lv
+        result = normalize.get_redeg_scores(map(str, self.ex_set(lv)), as_lv, in_re, out, ui)
+        output = {}
+        for ex in self.ex_set(lv):
+            output[ex] = {Ex(s, lv) : result[str(ex)][s] for s in result[str(ex)]}
+        return output
+
+    def apostrophe(self, lv_set=None, progress=False):
+        if lv_set: lv_set = normalize_list(lv_set, 'lv_set', str)
+        else: lv_set = self.lv_set()
+        if progress:
+            lv_apos = {}
+            for lv in lv_set:
+                print("Getting apostrophe for {}".format(lv), end='\r')
+                lv_apos[lv] = normalize.apostrophe(lv)
+            print("Performing replacements...    ")
+        else:
+            lv_apos = {lv : normalize.apostrophe(lv) for lv in lv_set}
+        if progress: l = Bar().iter(self)
+        else: l = self
+        for mn in l:
+            for lv in lv_set:
+                mn.sub(r"'", lv_apos[lv], dn_list=mn(lv))
 
 def tabularize(source, output_file, match_re_lv_list=None, lv_list=None, tagged=False, tag_types=set(), inc_df=False):
     if not lv_list:
@@ -530,9 +665,9 @@ def tabularize(source, output_file, match_re_lv_list=None, lv_list=None, tagged=
             print(line, file=output_file)
         else: pass
 
-def tab_log(source, match_re_lv_list=None, lv_list=None, tagged=False, tag_types=set(), inc_df=False):
+def tab_log(ap, match_re_lv_list=None, lv_list=None, tagged=False, tag_types=set(), inc_df=False):
     with open("tab_log.txt", 'w', encoding='utf-8') as output_log:
-        tabularize(source, output_log, match_re_lv_list, lv_list, tagged, tag_types, inc_df)
+        ap.tabularize(output_log, match_re_lv_list, lv_list, tagged, tag_types, inc_df)
 
 def tag(tag, lv=None):
     if lv: return '⫷{tag}:{lv}⫸'.format(tag=tag, lv=lv)
