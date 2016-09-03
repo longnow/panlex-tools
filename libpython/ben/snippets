@@ -18,7 +18,7 @@ lv_list = [
     'eng-000',
 ]
 
-source = []
+ap = Ap()
 
 
 # Kludger:
@@ -128,11 +128,11 @@ for mn in source:
 # Output:
 
 with open(base_file_name + '-' + str(version + 1) + '.txt', 'w', encoding='utf-8') as output_file:
-    tabularize(source, output_file, lv_list=lv_list, tagged = True)
+    tabularize(ap, output_file, lv_list=lv_list, tagged = True)
 
 # tab_log:
 
-tab_log(source, [(r'^[A-Z]', 'eng-000')], tagged = True)
+tab_log(ap, [(r'^[A-Z]', 'eng-000')], tagged = True)
 
 
 # normalize (for serialize.pl):
