@@ -38,9 +38,9 @@ def preprocess(entries):
             # "etc"
             col = re.sub(r'[\,、;]?\s*(etc| u\.ä\.?)\.?$', '', col).strip()
             # ellipses
-            col = re.sub(r'・・・', '...', col)
-            col = re.sub(r'__+', '...', col)
-            col = re.sub(r'[～〜]', '...', col)
+            col = re.sub(r'・・・', ' … ', col)
+            col = re.sub(r'__+', ' … ', col)
+            col = re.sub(r'[～〜]', ' … ', col)
             col = re.sub(r'\.\s*\.(\s*\.)+', ' … ', col).strip()
             col = re.sub(r'\s*…\s*', ' … ', col).strip()
             col = re.sub(r'^\s*…', '', col).strip()
@@ -1076,9 +1076,16 @@ def __init_homoglyph_dicts():
         ('x','χ','х'),
         ('y','γ','у'),
         ('Ä','','Ӓ'),
+        ('Ë','','Ё'),
         ('Ö','','Ӧ'),
         ('ä','','ӓ'),
-        ('ö','','ӧ')
+        ('ë','','ё'),
+        ('ö','','ӧ'),
+        ('ə','','ә'),
+        ('Þ','Ϸ',''),
+        ('þ','ϸ',''),
+        ('Æ','Ӕ',''),
+        ('æ','ӕ',''),
         #('ß','β',''),
     ]
     TO_LATN, TO_CYRL, TO_GREK = {}, {}, {}
