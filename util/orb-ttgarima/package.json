@@ -1,0 +1,10 @@
+{
+  "name": "orb-ttgarima",
+  "version": "0.0.0",
+  "private": true,
+  "main": "index.js",
+  "dependencies": {
+    "debug": "~2.2.0",
+    "express": "~4.13.4"
+  }
+}
