@@ -151,7 +151,10 @@ def convert(string, outtype='part3', intype='print_name', exact=False):
     return [out for out in sorted(set(output)) if out]
 
 def to_name(code):
-    return convert(code, outtype='print_name', intype='part3')
+    if len(code) == 2:
+        return convert(code, outtype='print_name', intype='part1')
+    else:
+        return convert(code, outtype='print_name', intype='part3')
 
 def to_code(name, exact=True):
     output = []
