@@ -143,6 +143,18 @@ def ignore_parens(proc):
     return parens_wrapper
 
 
+def process_parens(proc):
+    def process_section(match):
+        return '(%s)' % proc(match[1])
+    
+    pat = re.compile('\(([^()]*)\)')
+
+    def parens_wrapper(text, *args, **kwargs):
+        return pat.sub(process_section, text)
+
+    parens_wrapper.__name__ = 'process_parens(%s)' % proc.__name__
+    return parens_wrapper
+
 
 def ignore_parens_list(proc):
     pat = re.compile('(\([^)]*\))|(\[[^\]]*\])')
