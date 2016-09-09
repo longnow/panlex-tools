@@ -150,7 +150,14 @@ def convert(string, outtype='part3', intype='print_name', exact=False):
                         output.append(iso639_dict[code][outtype])
     return [out for out in sorted(set(output)) if out]
 
+def to_name(code):
+    return convert(code, outtype='print_name', intype='part3')
 
+def to_code(name, exact=True):
+    output = []
+    for intype in ['print_name', 'inverted_name', 'ref_name']:
+        output.extend(convert(name, outtype='part3', intype=intype, exact=exact))
+    return [out for out in sorted(set(output)) if out]
 
 def expand_macrolanguage(part3, include_self=False):
     """Takes an ISO 639-3 macrolanguage code and returns a list of all 
