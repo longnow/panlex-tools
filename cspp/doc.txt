@@ -54,6 +54,7 @@ art-303:GenderProperty:art-303:InanimateGender
 art-303:LinguisticProperty:art-253:inchoative(icl>adj)
 art-303:LinguisticProperty:art-302:DEF
 art-303:LinguisticProperty:art-317:irregular
+art-303:LinguisticProperty:art-317:rarelyUsed
 art-303:LinguisticUnit:art-303:Compound
 art-303:LinguisticUnit:art-303:Grapheme
 art-303:LinguisticUnit:art-317:proverb
