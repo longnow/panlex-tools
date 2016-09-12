@@ -164,6 +164,7 @@ def remove_parens(s, parens=PARENS):
 EXDFPREP_RULES = {
     'eng-000' : {
         1: {
+            r'^(be|become|stay|remain) or (be|become|stay|remain) (.*)$' : (r'\1 \3‣\1 \2', '', ''),
             r'(^| )big bird($)' : (r'\1(big) bird\2', '⫷mcs2:art-300⫸IsA⫷mcs:eng-000⫸bird', ''),
             r'^you (sg|pl)\.?$' : (r'you (\1)', '', ''),
             r'(^| )potatoe( |$)' : (r'\1potato\2', '', ''),
@@ -173,7 +174,7 @@ EXDFPREP_RULES = {
             r'([^\s])\s+(s(?:\-|o(?:me|em))?(?: other )?(?:\.?b\.?|one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing))?(?: (?:who|which|that) is)?|s\.[bot]\.?|o\.s\.?)([^\'’]|$)' : (r'\1 (\2)\3', '', ''),
             r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(s(?:\-|o(?:me|em))?(?: other )?(?:\.?b\.?|one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\s+([^\s])' : (r'\1(\2) \3', '', ''),
             r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(s(?:\-|o(?:me|em))?(?: other )?(?:\.?b\.?|one|body|thing)[\'’]?s)\s+([^\s])' : (r'\1(\2) \3', '', ''),
-            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:(?:for (?:something|s\.t\.?))?\(?\s*to\s*\)?\s+)?be)\s+([^\(])'    : (r'\1(\2) \3', '', ''),
+            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:(?:for (?:something|s\.t\.?))?\(?\s*to\s*\)?\s+)?be)\s+([^\(])'    : (r'\1(\2) \3', '', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal'),
             r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(\(?(?:a\s+)?(?:kind|variety|type|sort|species) of(?: an?(?= ))?\)?|k\.?o\.)\s*' : (r'\1(\2) ', r'', ''),
         },
         3: {
@@ -185,13 +186,14 @@ EXDFPREP_RULES = {
             r'^((?:'+make_paren_regex(cap=False)+r')?\s*)(\(?(?:a\s+)?(?:kind|variety|type|sort|species) of(?: an?)?\)?|\(?k\.?o\.\)?)\s*([^\s]+ ?[^\s]+)$' : (r'\1 (\2) \3', r'⫷mcs2:art-300⫸IsA⫷mcs:eng-000⫸\3', ''),
         },
         4: {
-            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:not )?)[Tt]o\s+(?!the(?: |$)|you(?: |$)|us(?: |$)|him(?: |$)|her(?: |$)|them(?: |$)|me(?: |$)|[wt]?here(?: |$)|no(?: |$)|one\'s(?: |$)|oneself(?: |$)'+make_paren_regex(cap=True)+r'$)' : (r'\1\2(to) ', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal', ''),
+            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:not )?)[Tt]o\s+(?!'+make_paren_regex(cap=False)+r'$|the(?: |$)|you(?: |$)|us(?: |$)|him(?: |$)|her(?: |$)|them(?: |$)|me(?: |$)|[wt]?here(?: |$)|no(?: |$)|one\'s(?: |$)|oneself(?: |$)'+make_paren_regex(cap=True)+r'$)' : (r'\1\2(to) ', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal', ''),
             r'(^| )make to ' : (r'\1make (to) ', '', ''),
         },
         5: {
             r'(^|\s)\(a\) (lot|bit|posteriori|priori|fortiori|few|little|minute|same|while|propos|cappella)(\s|$)' : (r'\1a \2\3', r'', ''),
             r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:\(to\) )?)(become)\s+([^\s\()][^\s]*)$' : (r'\1\2\3 \4', r'⫷mcs2:art-316⫸Inchoative_of⫷mcs⫸\4', ''),
             r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:\(to\) )?)(make\s+)((?:\(to\)\s+)?)((?:'+make_paren_regex(cap=False)+r'\s*)?)\s+(?!space(?: |$)|room(?: |$)|out(?: |$)|love(?: |$))([^\s\()][^\s]*)$'     : (r'\1\2\3\4 \5 \6', r'⫷mcs2:art-316⫸Causative_of⫷mcs⫸\6', ''),
+            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:\(to\) )?)(stay|remain)\s+([^\s\()][^\s]*)$'     : (r'\1\2 (\3) \4', '⫷mcs2:art-303⫸AspectProperty⫷mcs:art-303⫸DurativeAspect', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal'),
         },
         6: {
             # r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)\(([Tt]he|[Aa]n?)\)\s+((?:(?:'+make_paren_regex()[1:-1]+'|[^\(\)\[\]\s]+))(?: (?:'+make_paren_regex()[1:-1]+'|[^\(\)\[\]\s]+))?)$'     : (r'\1(\2) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun', ''),
@@ -451,10 +453,9 @@ def exdfprep(entries, sourcecols, tocol=-1, lang='eng-000', pretag_special_lvs=T
             
         if othercol >= 0: # prepare new column, update source col indices
             entry.insert(othercol, '')
-            sourcecols = [col + 1 if col >= tocol else col for col in sourcecols]
+            sourcecols = [col + 1 if col >= othercol else col for col in sourcecols]
 
-        if len(lang) == 3:
-            lang += '-000'
+        if len(lang) == 3: lang += '-000'
 
         if lang not in EXDFPREP_RULES:
             print('WARNING: Language not supported by exdfprep:', lang)
@@ -469,7 +470,7 @@ def exdfprep(entries, sourcecols, tocol=-1, lang='eng-000', pretag_special_lvs=T
             if not ''.join(entry[col]).startswith('⫷df⫸'):
 
                 if not isinstance(entry[col], list):
-                    raise ValueError(entry[col], ': not a list; did you remember to do a synonym split?')
+                    raise ValueError('{} :: not a list; did you remember to do a synonym split?'.format(entry[col]))
                 else:
                     result1 = []
 
@@ -706,7 +707,7 @@ def regexsubcol(refrom, reto, cols, entries):
     return result
 
 
-def prepsyns(entries, cols, refrom, lng, delim='‣', pretag_special_lvs=True):
+def prepsyns(entries, cols, refrom, lng, delim='‣', pretag_special_lvs=True, othercol=-1):
     """ Splits at given regex (outside parens), runs exdfprep, joins with syn delimiter,
     and removes nested parens.
     entries = list of entries
@@ -720,7 +721,7 @@ def prepsyns(entries, cols, refrom, lng, delim='‣', pretag_special_lvs=True):
     # split at given delimiter
     entries = split_outside_parens(entries, cols, refrom)
     # prepare as expression
-    entries = exdfprep(entries, cols, lang=lng, pretag_special_lvs=pretag_special_lvs)
+    entries = exdfprep(entries, cols, lang=lng, pretag_special_lvs=pretag_special_lvs, othercol=othercol)
     # join with consistent synonym delimiter
     for entry in entries:
         for col in cols:
