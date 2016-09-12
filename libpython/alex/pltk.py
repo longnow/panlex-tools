@@ -164,269 +164,280 @@ def remove_parens(s, parens=PARENS):
 EXDFPREP_RULES = {
     'eng-000' : {
         1: {
-            r'(^| )big bird($)' : (r'\1(big) bird\2', '⫷mcs2:art-300⫸IsA⫷mcs:eng-000⫸bird'),
-            r'^you (sg|pl)\.?$' : (r'you (\1)', ''),
-            r'(^| )potatoe( |$)' : (r'\1potato\2', ''),
-            r'(^| )to day( |$)' : (r'\1today\2', ''),
+            r'(^| )big bird($)' : (r'\1(big) bird\2', '⫷mcs2:art-300⫸IsA⫷mcs:eng-000⫸bird', ''),
+            r'^you (sg|pl)\.?$' : (r'you (\1)', '', ''),
+            r'(^| )potatoe( |$)' : (r'\1potato\2', '', ''),
+            r'(^| )to day( |$)' : (r'\1today\2', '', ''),
         },
         2: {
-            r'([^\s])\s+(s(?:\-|o(?:me|em))(?: other )?(?: other )?(?:one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing))?(?: (?:who|which|that) is)?|s\.[bot]\.?|o\.s\.?)([^\'’]|$)' : (r'\1 (\2)\3', ''),
-            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\s+([^\s])' : (r'\1(\2) \3', ''),
-            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing)[\'’]?s)\s+([^\s])' : (r'\1(\2) \3', ''),
-            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:(?:for (?:something|s\.t\.?))?\(?\s*to\s*\)?\s+)?be)\s+([^\(])'    : (r'\1(\2) \3', ''),
-            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(\(?(?:a\s+)?(?:kind|variety|type|sort|species) of(?: an?(?= ))?\)?|k\.?o\.)\s*' : (r'\1(\2) ', r''),
+            r'([^\s])\s+(s(?:\-|o(?:me|em))?(?: other )?(?:\.?b\.?|one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing))?(?: (?:who|which|that) is)?|s\.[bot]\.?|o\.s\.?)([^\'’]|$)' : (r'\1 (\2)\3', '', ''),
+            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(s(?:\-|o(?:me|em))?(?: other )?(?:\.?b\.?|one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\s+([^\s])' : (r'\1(\2) \3', '', ''),
+            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(s(?:\-|o(?:me|em))?(?: other )?(?:\.?b\.?|one|body|thing)[\'’]?s)\s+([^\s])' : (r'\1(\2) \3', '', ''),
+            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:(?:for (?:something|s\.t\.?))?\(?\s*to\s*\)?\s+)?be)\s+([^\(])'    : (r'\1(\2) \3', '', ''),
+            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(\(?(?:a\s+)?(?:kind|variety|type|sort|species) of(?: an?(?= ))?\)?|k\.?o\.)\s*' : (r'\1(\2) ', r'', ''),
         },
         3: {
-            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)([Tt]he|[Aa]n?)\s+((?:'+make_paren_regex(cap=False)+r'\s*)*[^\(\)\[\]\s]+)$'     : (r'\1(\2) \3', ''),            # r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(the)\s+([^\(])'     : (r'\1(\2) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun'),
-            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)\((s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)\s+(which|that|who|to)' : (r'\1\2 \3', ''),
-            r'\((s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)\s+(else(?:\'s)?)' : (r'(\1 \2)', ''),
-            r'^\((s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)\s+' : (r'\1 ', ''),
-            r'^((?:[^\s\(\)\[\]]+\s)?)((?:'+make_paren_regex(cap=False)+r')?\s*)(\(?(?:kind|variety|type|sort|species) of(?: an?)?\)?|\(?k\.?o\.\)?)\s*([^\s]+ ?[^\s]+)$' : (r'\2 (\3) \1\4', r'⫷mcs2:art-300⫸IsA⫷mcs:eng-000⫸\4'),
-            r'^((?:'+make_paren_regex(cap=False)+r')?\s*)(\(?(?:a\s+)?(?:kind|variety|type|sort|species) of(?: an?)?\)?|\(?k\.?o\.\)?)\s*([^\s]+ ?[^\s]+)$' : (r'\1 (\2) \3', r'⫷mcs2:art-300⫸IsA⫷mcs:eng-000⫸\3'),
+            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)([Tt]he|[Aa]n?)\s+((?:'+make_paren_regex(cap=False)+r'\s*)*[^\(\)\[\]\s]+)$'     : (r'\1(\2) \3', '', ''),            # r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(the)\s+([^\(])'     : (r'\1(\2) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun', ''),
+            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)\((s(?:\-|o(?:me|em))?(?: other )?(?:\.?b\.?|one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)\s+(which|that|who|to)' : (r'\1\2 \3', '', ''),
+            r'\((s(?:\-|o(?:me|em))?(?: other )?(?:\.?b\.?|one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)\s+(else(?:\'s)?)' : (r'(\1 \2)', '', ''),
+            r'^\((s(?:\-|o(?:me|em))?(?: other )?(?:\.?b\.?|one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)\s+' : (r'\1 ', '', ''),
+            r'^((?:[^\s\(\)\[\]]+\s)?)((?:'+make_paren_regex(cap=False)+r')?\s*)(\(?(?:kind|variety|type|sort|species) of(?: an?)?\)?|\(?k\.?o\.\)?)\s*([^\s]+ ?[^\s]+)$' : (r'\2 (\3) \1\4', r'⫷mcs2:art-300⫸IsA⫷mcs:eng-000⫸\4', ''),
+            r'^((?:'+make_paren_regex(cap=False)+r')?\s*)(\(?(?:a\s+)?(?:kind|variety|type|sort|species) of(?: an?)?\)?|\(?k\.?o\.\)?)\s*([^\s]+ ?[^\s]+)$' : (r'\1 (\2) \3', r'⫷mcs2:art-300⫸IsA⫷mcs:eng-000⫸\3', ''),
         },
         4: {
-            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:not )?)[Tt]o\s+(?!the(?: |$)|you(?: |$)|us(?: |$)|him(?: |$)|her(?: |$)|them(?: |$)|me(?: |$)|[wt]?here(?: |$)|no(?: |$)|one\'s(?: |$)|oneself(?: |$)'+make_paren_regex(cap=True)+r'$)' : (r'\1\2(to) ', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal'),
-            r'(^| )make to ' : (r'\1make (to) ', '')
+            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:not )?)[Tt]o\s+(?!the(?: |$)|you(?: |$)|us(?: |$)|him(?: |$)|her(?: |$)|them(?: |$)|me(?: |$)|[wt]?here(?: |$)|no(?: |$)|one\'s(?: |$)|oneself(?: |$)'+make_paren_regex(cap=True)+r'$)' : (r'\1\2(to) ', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal', ''),
+            r'(^| )make to ' : (r'\1make (to) ', '', ''),
         },
         5: {
-            r'(^|\s)\(a\) (lot|bit|posteriori|priori|fortiori|few|little|minute|same|while|propos|cappella)(\s|$)' : (r'\1a \2\3', r''),
-            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:\(to\) )?)(become)\s+([^\s\()][^\s]*)$' : (r'\1\2\3 \4', r'⫷mcs2:art-316⫸Inchoative_of⫷mcs⫸\4'),
-            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:\(to\) )?)(make\s+)((?:\(to\)\s+)?)((?:'+make_paren_regex(cap=False)+r'\s*)?)\s+(?!space(?: |$)|room(?: |$)|out(?: |$)|love(?: |$))([^\s\()][^\s]*)$'     : (r'\1\2\3\4 \5 \6', r'⫷mcs2:art-316⫸Causative_of⫷mcs⫸\6'),
+            r'(^|\s)\(a\) (lot|bit|posteriori|priori|fortiori|few|little|minute|same|while|propos|cappella)(\s|$)' : (r'\1a \2\3', r'', ''),
+            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:\(to\) )?)(become)\s+([^\s\()][^\s]*)$' : (r'\1\2\3 \4', r'⫷mcs2:art-316⫸Inchoative_of⫷mcs⫸\4', ''),
+            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:\(to\) )?)(make\s+)((?:\(to\)\s+)?)((?:'+make_paren_regex(cap=False)+r'\s*)?)\s+(?!space(?: |$)|room(?: |$)|out(?: |$)|love(?: |$))([^\s\()][^\s]*)$'     : (r'\1\2\3\4 \5 \6', r'⫷mcs2:art-316⫸Causative_of⫷mcs⫸\6', ''),
         },
         6: {
-            # r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)\(([Tt]he|[Aa]n?)\)\s+((?:(?:'+make_paren_regex()[1:-1]+'|[^\(\)\[\]\s]+))(?: (?:'+make_paren_regex()[1:-1]+'|[^\(\)\[\]\s]+))?)$'     : (r'\1(\2) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun'),
-            r' ?\(n\.?\)$' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun'),
-            r' ?\(v\.?\)$' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal'),
-            r' ?\(v\.?i\.?\)$' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸IntransitiveVerb'),
-            r' ?\(v\.?t\.?\)$' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸TransitiveVerb'),
-            r' ?\(sg\.?\)$' : ('', '⫷dcs2:art-303⫸NumberProperty⫷dcs:art-303⫸SingularNumber'),
-            r' ?\(singular\)$' : ('', '⫷dcs2:art-303⫸NumberProperty⫷dcs:art-303⫸SingularNumber'),
-            r' ?\([pP]l?\.?\)$' : ('', '⫷dcs2:art-303⫸NumberProperty⫷dcs:art-303⫸PluralNumber'),
-            r' ?\(plural\)$' : ('', '⫷dcs2:art-303⫸NumberProperty⫷dcs:art-303⫸PluralNumber'),
-            r' ?\(excl?(usive)?\)$' : ('', '⫷dcs2:art-303⫸PersonProperty⫷dcs:art-303⫸FirstPersonExclusive'),
-            r' ?\(incl?(usive)?\)$' : ('', '⫷dcs2:art-303⫸PersonProperty⫷dcs:art-303⫸FirstPersonInclusive'),
-            r' ?\(impol(ite)?\)$' : ('', '⫷dcs2:art-317⫸register⫷dcs:art-317⫸vulgarRegister'),
-            r' ?\(pol(ite)?\)$' : ('', '⫷dcs2:art-317⫸register⫷dcs:art-306⫸POL'),
-            r'^do it$' : ('⫷df⫸do it', ''),
-            r'fæces' : ('faeces', ''),
-            r'^to become$' : ('(to) become', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal'),
-            r'\(the\) whole lot⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun' : ('the whole lot', '')
+            # r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)\(([Tt]he|[Aa]n?)\)\s+((?:(?:'+make_paren_regex()[1:-1]+'|[^\(\)\[\]\s]+))(?: (?:'+make_paren_regex()[1:-1]+'|[^\(\)\[\]\s]+))?)$'     : (r'\1(\2) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun', ''),
+            r'^do it$' : ('⫷df⫸do it', '', ''),
+            r'fæces' : ('faeces', '', ''),
+            r'^to become$' : ('(to) become', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal', ''),
+            r'\(the\) whole lot⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun' : ('the whole lot', '', ''),
         },
     },
     'jpn-000' : {
         1: {
-            r'^(.+)(である)$' : (r'\1(\2)', ''), # to be ~
-            r'([\p{Han}\p{Katakana}]'+make_paren_regex(cap=False)+r'?)(だ|の|な)$' : (r'\1(\2)', ''),
-            r'^(.*[\p{Han}])(らせる)$' : (r'\1\2', r'⫷mcs2:art-316⫸Causative_of⫷mcs⫸\1る'),
-            r'^(させる)$' : (r'\1', r'⫷mcs2:art-316⫸Causative_of⫷mcs⫸する'),
-            r'^(が)(\p{Han})' : (r'(\1)\2', r''),
-            # r'^(を)(\p{Han})' : (r'(\1)\2', r''),
-            r'^(を)' : (r'(\1)', r''),
-            r'(など)$' : (r'(\1)', ''),    # ... etc.
-            r'^([^…]+)(くなる)$' : (r'\1\2', r'⫷mcs2:art-316⫸Inchoative_of⫷mcs⫸\1い'),    # to become ~ (keiyoshi)
-            r'^([^…]+)(になる)$' : (r'\1\2', r'⫷mcs2:art-316⫸Inchoative_of⫷mcs⫸\1'),    # to become ~
-            r'^[…\s]*(に)(なる)$' : (r'(\1)\2', r''),    # to become
+            r'^(.+)(である)$' : (r'\1(\2)', '', ''), # to be ~
+            r'([\p{Han}\p{Katakana}]'+make_paren_regex(cap=False)+r'?)(だ|の|な)$' : (r'\1(\2)', '', ''),
+            r'^(.*[\p{Han}])(らせる)$' : (r'\1\2', r'⫷mcs2:art-316⫸Causative_of⫷mcs⫸\1る', ''),
+            r'^(させる)$' : (r'\1', r'⫷mcs2:art-316⫸Causative_of⫷mcs⫸する', ''),
+            r'^(が)(\p{Han})' : (r'(\1)\2', r'', ''),
+            # r'^(を)(\p{Han})' : (r'(\1)\2', r'', ''),
+            r'^(を)' : (r'(\1)', r'', ''),
+            r'(など)$' : (r'(\1)', '', ''),    # ... etc.
+            r'^([^…]+)(くなる)$' : (r'\1\2', r'⫷mcs2:art-316⫸Inchoative_of⫷mcs⫸\1い', ''),    # to become ~ (keiyoshi, ''),
+            r'^([^…]+)(になる)$' : (r'\1\2', r'⫷mcs2:art-316⫸Inchoative_of⫷mcs⫸\1', ''),    # to become ~
+            r'^[…\s]*(に)(なる)$' : (r'(\1)\2', '', ''),    # to become
         },
         2: {
-            r'其('+make_paren_regex(cap=False)+r'?)\(の\)' : (r'其\1の', ''),
+            r'其('+make_paren_regex(cap=False)+r'?)\(の\)' : (r'其\1の', '', ''),
         },
     },
     'arb-000' : {
         1: {
-            r'^(ال)' : (r'(\1)', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun'), # definite article
+            r'^(ال)' : (r'(\1)', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun', ''), # definite article
         }
     },
     'spa-000' : {
         1 : {
-            #r'([^\s])\s+\(?(alg(?:ui[eé]n|o|\.))\)?([^\'’])' : (r'\1 (\2)\3', ''),
-            #r'^\(?(alg(?:ui[eé]n|o|\.))\)?\s+([^\s\(])' : (r'(\1) \2', ''),
-            r'^\(?([Ee]l|[Uu]n)\)?\s+([^\s\(])'    : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun'), # Masculine not determined
-            r'^\(?([Ll]os|[Uu]nos)\)?\s+([^\s\(])'    : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸MasculineGender⫷dcs2:art-303⫸NumberProperty⫷dcs:art-303⫸PluralNumber'),
-            r'^\(?([Ll]a|[Uu]na)\)?\s+([^\s\(])'    : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸FeminineGender'),
-            r'^\(?([Ll]as|[Uu]nas)\)?\s+([^\s\(])'    : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸FeminineGender⫷dcs2:art-303⫸NumberProperty⫷dcs:art-303⫸PluralNumber'),
-            r'^\(?([Ss]er|[Ee]star)\)?\s+([^\s\(])'    : (r'(\1) \2', ''),
-            #r'\s+of(\s*(?:\([^\)]*\)\s*)*)$'                    : (r' (of)\1', ''),
-            r'^\s*¡|!\s*$'    : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Interjection'),
-            r'[¿\?]' : ('', '⫷dcs2:art-303⫸ForceProperty⫷dcs:art-303⫸InterrogativeForce'),
-            r'[¡\!]' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Interjection'),
-            r'^idioma ([^\s\(][^\s]*)$' : (r'(idioma) \1', ''),
-            r'^(\(?(?:una?\s+)?(?:clase) de\)?)\s*([^\s]+ ?[^\s]+)$' : (r'(\1) \2', r'⫷mcs2:art-300⫸IsA⫷mcs:spa-000⫸\2'),
+            #r'([^\s])\s+\(?(alg(?:ui[eé]n|o|\.))\)?([^\'’])' : (r'\1 (\2)\3', '', ''),
+            #r'^\(?(alg(?:ui[eé]n|o|\.))\)?\s+([^\s\(])' : (r'(\1) \2', '', ''),
+            r'^\(?([Ee]l|[Uu]n)\)?\s+([^\s\(])'    : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun', ''), # Masculine not determined
+            r'^\(?([Ll]os|[Uu]nos)\)?\s+([^\s\(])'    : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸MasculineGender⫷dcs2:art-303⫸NumberProperty⫷dcs:art-303⫸PluralNumber', ''),
+            r'^\(?([Ll]a|[Uu]na)\)?\s+([^\s\(])'    : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸FeminineGender', ''),
+            r'^\(?([Ll]as|[Uu]nas)\)?\s+([^\s\(])'    : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸FeminineGender⫷dcs2:art-303⫸NumberProperty⫷dcs:art-303⫸PluralNumber', ''),
+            r'^\(?([Ss]er|[Ee]star)\)?\s+([^\s\(])'    : (r'(\1) \2', '', ''),
+            #r'\s+of(\s*(?:\([^\)]*\)\s*)*)$'                    : (r' (of)\1', '', ''),
+            r'^\s*¡|!\s*$'    : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Interjection', ''),
+            r'[¿\?]' : ('', '⫷dcs2:art-303⫸ForceProperty⫷dcs:art-303⫸InterrogativeForce', ''),
+            r'[¡\!]' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Interjection', ''),
+            r'^idioma ([^\s\(][^\s]*)$' : (r'(idioma) \1', '', ''),
+            r'^(\(?(?:una?\s+)?(?:clase) de\)?)\s*([^\s]+ ?[^\s]+)$' : (r'(\1) \2', r'⫷mcs2:art-300⫸IsA⫷mcs:spa-000⫸\2', ''),
         },
         2 : {
-            r' \(m\.?\)$' : ('', '⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸MasculineGender'),
-            r' \(f\.?\)$' : ('', '⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸FeminineGender'),
+            r' \(m\.?\)$' : ('', '⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸MasculineGender', ''),
+            r' \(f\.?\)$' : ('', '⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸FeminineGender', ''),
         }
     },
     'cat-000' : {
         1 : {
-            r'[¿\?]' : ('', '⫷dcs2:art-303⫸ForceProperty⫷dcs:art-303⫸InterrogativeForce'),
+            r'[¿\?]' : ('', '⫷dcs2:art-303⫸ForceProperty⫷dcs:art-303⫸InterrogativeForce', ''),
         },
     },
     'nld-000' : {
         1 : {
-            r'^soort (\S*)$' : (r'(soort) \1', r'⫷mcs2:art-300⫸IsA⫷mcs:nld-000⫸\1'),
+            r'^soort (\S*)$' : (r'(soort) \1', r'⫷mcs2:art-300⫸IsA⫷mcs:nld-000⫸\1', ''),
         },
         2 : {
-            r'^soort (.*)$' : (r'(soort) \1', r''),
+            r'^soort (.*)$' : (r'(soort) \1', r'', ''),
         },
     },
     'ile-000' : {
         1 : {
-            r'^\(?([Ll][ie])\)?\s+([^\s\(])'    : (r'(\1) \2',    '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun'),
-            r'^\(?([Uu]n)\)?\s+([^\s\(])'    : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun'),
+            r'^\(?([Ll][ie])\)?\s+([^\s\(])'    : (r'(\1) \2',    '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun', ''),
+            r'^\(?([Uu]n)\)?\s+([^\s\(])'    : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun', ''),
         },
     },
     'ast-000' : {
         1 : {
-            r'^\(?([Ee]l)\)?\s+([^\s\(])'    : (r'(\1) \2',    '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸MasculineGender'),
-            r'^\(?([Ll]os)\)?\s+([^\s\(])'    : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸MasculineGender⫷dcs2:art-303⫸NumberProperty⫷dcs:art-303⫸PluralNumber'),
-            r'^\(?([Ll]a)\)?\s+([^\s\(])'    : (r'(\1) \2',    '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸FeminineGender'),
-            r'^\(?([Ll]es)\)?\s+([^\s\(])'    : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸FeminineGender⫷dcs2:art-303⫸NumberProperty⫷dcs:art-303⫸PluralNumber'),
+            r'^\(?([Ee]l)\)?\s+([^\s\(])'    : (r'(\1) \2',    '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸MasculineGender', ''),
+            r'^\(?([Ll]os)\)?\s+([^\s\(])'    : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸MasculineGender⫷dcs2:art-303⫸NumberProperty⫷dcs:art-303⫸PluralNumber', ''),
+            r'^\(?([Ll]a)\)?\s+([^\s\(])'    : (r'(\1) \2',    '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸FeminineGender', ''),
+            r'^\(?([Ll]es)\)?\s+([^\s\(])'    : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸FeminineGender⫷dcs2:art-303⫸NumberProperty⫷dcs:art-303⫸PluralNumber', ''),
         }
     },
     'gle-000' : {
         1 : {
-            r'^(an)\s+([^\(])' : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun'), # def art
+            r'^(an)\s+([^\(])' : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun', ''), # def art
         }
     },
     'als-000' : {
         1 : {
-            r'^(i/e|e/i|të|[ie])\s+([^\(])' : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Adjectival'),
+            r'^(i/e|e/i|të|[ie])\s+([^\(])' : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Adjectival', ''),
         }
     },
     'nob-000' : {
         1 : {
-            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:\(?\s*å\s*\)?\s+)?bli)\s+([^\(])'    : (r'\1(\2) \3', ''),
+            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:\(?\s*å\s*\)?\s+)?bli)\s+([^\(])'    : (r'\1(\2) \3', '', ''),
         },
         2: {
-            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)å\s+' : (r'\1(å) ', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal'),
+            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)å\s+' : (r'\1(å) ', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal', ''),
         },
     },
     'dan-000' : {
         1: {
-            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(e[nt])\s+' : (r'\1(\2) ', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun'),
+            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(e[nt])\s+' : (r'\1(\2) ', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun', ''),
         },
     },
     'fra-000' : {
         1 : {
-            r'^(.+)\s+(quelqu[\'’]un|quelque chose)' : (r'\1 (\2)', ''),
-            r'\(?(q\.?q\.?(?:ch|un?|n)\.?)\)?' : (r'(\1)', ''),
-            r'^([Ll][\'’])([^\s\(])' : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun'),
-            r'^([Ll]e)\s+([^\s\(])'         : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸MasculineGender'),
-            r'^([Ll]a)\s+([^\s\(])'         : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸FeminineGender'),
-            r'^([Ll]es)\s+([^\s\(])'        : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸NumberProperty⫷dcs:art-303⫸PluralNumber'),
-            r'^([Uu]n)\s+([^\s\(])'         : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸MasculineGender'),
-            r'^([Uu]ne)\s+([^\s\(])'        : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸FeminineGender'),
-            r'^(ê\.|être)\s+([^\s\(])'     : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Adjectival'),
-            r'^(\(?(?:type|sorte|espèce) d[e\']\)?)\s*(.+)$' : (r'(\1) \2', r'⫷mcs2:art-300⫸IsA⫷mcs:fra-000⫸\2'),
+            r'^(.+)\s+(quelqu[\'’]un|quelque chose)' : (r'\1 (\2)', '', ''),
+            r'\(?(q\.?q\.?(?:ch|un?|n)\.?)\)?' : (r'(\1)', '', ''),
+            r'^([Ll][\'’])([^\s\(])' : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun', ''),
+            r'^([Ll]e)\s+([^\s\(])'         : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸MasculineGender', ''),
+            r'^([Ll]a)\s+([^\s\(])'         : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸FeminineGender', ''),
+            r'^([Ll]es)\s+([^\s\(])'        : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸NumberProperty⫷dcs:art-303⫸PluralNumber', ''),
+            r'^([Uu]n)\s+([^\s\(])'         : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸MasculineGender', ''),
+            r'^([Uu]ne)\s+([^\s\(])'        : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸FeminineGender', ''),
+            r'^(ê\.|être)\s+([^\s\(])'     : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Adjectival', ''),
+            r'^(\(?(?:type|sorte|espèce) d[e\']\)?)\s*(.+)$' : (r'(\1) \2', r'⫷mcs2:art-300⫸IsA⫷mcs:fra-000⫸\2', ''),
         },
         2: {
-            r'^devenir\s+([^\s]+)((?:\s*'+make_paren_regex(cap=False)+r')?$)' : (r'devenir \1\2', r'⫷dcs2:art-316⫸Inchoative_of⫷dcs⫸\1'),
-            r' \(m\.?\)$' : ('', '⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸MasculineGender'),
-            r' \(f\.?\)$' : ('', '⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸FeminineGender'),
+            r'^devenir\s+([^\s]+)((?:\s*'+make_paren_regex(cap=False)+r')?$)' : (r'devenir \1\2', r'⫷dcs2:art-316⫸Inchoative_of⫷dcs⫸\1', ''),
+            r' \(m\.?\)$' : ('', '⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸MasculineGender', ''),
+            r' \(f\.?\)$' : ('', '⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸FeminineGender', ''),
         }
     },
     'isl-000' : {
         1 : {
-            r'đ' : (r'ð', ''),
-            r'Đ' : (r'Ð', ''),
+            r'đ' : (r'ð', '', ''),
+            r'Đ' : (r'Ð', '', ''),
         },
         2 : {
-            r'^((?:[Aa]ð )?vera)\s+'     : (r'(\1) ', ''),
-            r'^(?:[Aa]ð)\s+([^\s]+)$'     : (r'(að) \1', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal'),
-            r'^(?:[Aa]ð)\s+([^\s]+)'     : (r'(að) \1', ''),
-            r'^(verða)\s+([^\s]+)$'     : (r'\1 \2', r'⫷dcs2:art-316⫸Inchoative_of⫷dcs⫸\2'),
-            r'([^\s]\s)((?:e\-(?:[ðimnstu]|ar?|rs?)|ei(?:nhver(?:[ns]|j(?:ar?|ir|um?)|r(?:i|ar?))?|tthv(?:að|ert)))(?: sem er(?![^ ]))?)(,?\s(?!sem )|、|$)' : (r'\1(\2)\3', ''),
-            r'(^|\s)((?:e\-(?:[ðimnstu]|ar?|rs?)|ei(?:nhver(?:[ns]|j(?:ar?|ir|um?)|r(?:i|ar?))?|tthv(?:að|ert)))(?: sem er(?![^ ]))?)(,?\s(?!sem )[^\s,]|、)' : (r'\1(\2)\3', ''),
+            r'^((?:[Aa]ð )?vera)\s+'     : (r'(\1) ', '', ''),
+            r'^(?:[Aa]ð)\s+([^\s]+)$'     : (r'(að) \1', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal', ''),
+            r'^(?:[Aa]ð)\s+([^\s]+)'     : (r'(að) \1', '', ''),
+            r'^(verða)\s+([^\s]+)$'     : (r'\1 \2', r'⫷dcs2:art-316⫸Inchoative_of⫷dcs⫸\2', ''),
+            r'([^\s]\s)((?:e\-(?:[ðimnstu]|ar?|rs?)|ei(?:nhver(?:[ns]|j(?:ar?|ir|um?)|r(?:i|ar?))?|tthv(?:að|ert)))(?: sem er(?![^ ]))?)(,?\s(?!sem )|、|$)' : (r'\1(\2)\3', '', ''),
+            r'(^|\s)((?:e\-(?:[ðimnstu]|ar?|rs?)|ei(?:nhver(?:[ns]|j(?:ar?|ir|um?)|r(?:i|ar?))?|tthv(?:að|ert)))(?: sem er(?![^ ]))?)(,?\s(?!sem )[^\s,]|、)' : (r'\1(\2)\3', '', ''),
 
-            # e-a    einhverja, einhverra     (fem acc sg, msc acc pl; msc/fem/neu gen pl)
-            # e-ar   einhverjar, einhverrar   (fem nom/acc pl; fem gen sg)
-            # e-ð    eitthvað      (neu nom/acc sg substant)
-            # e-i    einhverri     (fem dat sg)
-            # e-m    einhverjum    (msc dat sg, msc/fem/neu dat pl)
-            # e-n    einhvern      (msc acc sg)
-            # e-r    einhver       (msc/fem nom sg)
-            # e-(r)s einhvers      (msc/neu gen sg)
-            # e-t    eitthvert     (neu nom/acc sg demonstr)
-            # e-u    einhverju     (neu dat sg)
+            # e-a    einhverja, einhverra     (fem acc sg, msc acc pl; msc/fem/neu gen pl, ''),
+            # e-ar   einhverjar, einhverrar   (fem nom/acc pl; fem gen sg, ''),
+            # e-ð    eitthvað      (neu nom/acc sg substant, ''),
+            # e-i    einhverri     (fem dat sg, ''),
+            # e-m    einhverjum    (msc dat sg, msc/fem/neu dat pl, ''),
+            # e-n    einhvern      (msc acc sg, ''),
+            # e-r    einhver       (msc/fem nom sg, ''),
+            # e-(r)s einhvers      (msc/neu gen sg, ''),
+            # e-t    eitthvert     (neu nom/acc sg demonstr, ''),
+            # e-u    einhverju     (neu dat sg, ''),
 
             # r'^([^z]*)z([^z]*)$'     : (r'\1z\2', r'⫷ex:isl-000⫸\1s\2'), # 1973 reforms
         },
         3 : {
-            # r'⫷ex:isl-000⫸([^z⫷]*)z([^z⫷]*)'     : ('', ''),
-            r'^(?:[Aa]ð)\s+([^\s]+)$'     : (r'(að) \1', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal'),
-            r'\) eða \('     : (r' eða ', ''),
+            # r'⫷ex:isl-000⫸([^z⫷]*)z([^z⫷]*)'     : ('', '', ''),
+            r'^(?:[Aa]ð)\s+([^\s]+)$'     : (r'(að) \1', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal', ''),
+            r'\) eða \('     : (r' eða ', '', ''),
 
         },
     },
     'ces-000' : {
-        # a (také) = and (also)
+        # a (také) = and (also, ''),
         1 : {
             r'^(být)\s+'     : (r'(\1) ', ''), # to be
-            r'^(nějaký)\s+' : (r'(\1) ', ''), # some, a(n)
+            r'^(nějaký)\s+' : (r'(\1) ', ''), # some, a(n, ''),
         },
         2: {
         }
     },
     'fin-000' : {
         1 : {
-            r'^(olla)\s+'     : (r'(\1) ', ''),
+            r'^(olla)\s+'     : (r'(\1) ', '', ''),
         },
         2: {
-            r'^(tulla)\s+(.+)$' : (r'\1 \2', r'⫷dcs2:art-316⫸Inchoative_of⫷dcs⫸\2')
+            r'^(tulla)\s+(.+)$' : (r'\1 \2', r'⫷dcs2:art-316⫸Inchoative_of⫷dcs⫸\2', ''),
         }
     },
     'deu-000' : {
         1 : {
-            r'((?:etw(?:\.|as)|jemand(?:en)?)(?: oder etwas)?(?:,? (?:der|was))?)([^\'’]|$)' : (r'(\1)\2', ''),
-            r'\s+(d\.[ih]\..*)$' : (r' (\1)', ''),
-            r'(^| )(o\.ä\.)( |$)' : (r'\1(\2)\3', ''),
-            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(ein(?:e[mnrs]?)?|die|das|de[mnrs])\s+([^\(])'     : (r'\1(\2) \3', ''),
+            r'((?:etw(?:\.|as)|jemand(?:en)?)(?: oder etwas)?(?:,? (?:der|was))?)([^\'’]|$)' : (r'(\1)\2', '', ''),
+            r'\s+(d\.[ih]\..*)$' : (r' (\1)', '', ''),
+            r'(^| )(o\.ä\.)( |$)' : (r'\1(\2)\3', '', ''),
+            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(ein(?:e[mnrs]?)?|die|das|de[mnrs])\s+([^\(])'     : (r'\1(\2) \3', '', ''),
         },
         2: {
         },
     },
     'rus-000' : {
         1: {
-            r'(^|[^ ] +)((?:что|чего|чему|ч[её]м|чьих|чей|кто|кого|кем|кому?)\-л(?:ибо|\.)?(?: в (?:что|чего|чему|ч[её]м|чьих|чей|кто|кого|кем|кому?)\-л(?:ибо|\.)?)?)( |$)' : (r'\1(\2)\3', ''),
-            r' (и т\.\s*п\.)' : (r' (\1)', ''),
+            r'(^|[^ ] +)((?:что|чего|чему|ч[её]м|чьих|чей|кто|кого|кем|кому?)\-л(?:ибо|\.)?(?: в (?:что|чего|чему|ч[её]м|чьих|чей|кто|кого|кем|кому?)\-л(?:ибо|\.)?)?)( |$)' : (r'\1(\2)\3', '', ''),
+            r' (и т\.\s*п\.)' : (r' (\1)', '', ''),
 
-            # something:    что-л (n/a), чего (g), чему (d), чем (i), чём (p)
-            # someone:        кто-л (n), кого (g/a), кому (d), кем (i), ком (p)
+            # something:    что-л (n/a), чего (g), чему (d), чем (i), чём (p, ''),
+            # someone:        кто-л (n), кого (g/a), кому (d), кем (i), ком (p, ''),
         },
         2: {
-            r'^\(((?:что|ч[её]м|чему|чего|чьих|кого|кем|кому)\-л\.?(?: в (?:что|ч[её]м|чему|чего|кого|кем|кому)\-л\.?)?)\)$' : (r'\1', ''),
+            r'^\(((?:что|ч[её]м|чему|чего|чьих|кого|кем|кому)\-л\.?(?: в (?:что|ч[её]м|чему|чего|кого|кем|кому)\-л\.?)?)\)$' : (r'\1', '', ''),
         }
     },
     'general' : {
         998 : {
-            r'(^\s*…|…\s*(?:$|⫷))' : ('', ''),
-            # # r'^((?:[^\s][^\s]?\.)+)$' : (r'\1.', ''),
-            r'\s+(\.(?:$|⫷))' : (r'\1', ''),
-            r'\s*(\))\s*\.\s*($|⫷)' : (r'\1\2', ''),
+            r'(^\s*…|…\s*(?:$|⫷))' : ('', '', ''),
+            # # r'^((?:[^\s][^\s]?\.)+)$' : (r'\1.', '', ''),
+            r'\s+(\.(?:$|⫷))' : (r'\1', '', ''),
+            r'\s*(\))\s*\.\s*($|⫷)' : (r'\1\2', '', ''),
         },
         999 : {
-            r'(.)[！!]$'    : (r'\1', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Interjection'),
-            # r'(.)[？\?]$' : (r'\1', '⫷dcs2:art-303⫸ForceProperty⫷dcs:art-303⫸InterrogativeForce'),
-            r'^\?+$' : ('', ''),
-            r'[„"“”]'    : ('', ''),
+            r' ?\(n\.?\)$' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun', ''),
+            r' ?\(v\.?\)$' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal', ''),
+            r' ?\(v\.?i\.?\)$' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸IntransitiveVerb', ''),
+            r' ?\(v\.?t\.?\)$' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸TransitiveVerb', ''),
+            r' ?\(sg\.?\)$' : ('', '⫷dcs2:art-303⫸NumberProperty⫷dcs:art-303⫸SingularNumber', ''),
+            r' ?\(sing(?:\.|ular)\)$' : ('', '⫷dcs2:art-303⫸NumberProperty⫷dcs:art-303⫸SingularNumber', ''),
+            r' ?\([pP]l?\.?\)$' : ('', '⫷dcs2:art-303⫸NumberProperty⫷dcs:art-303⫸PluralNumber', ''),
+            r' ?\(pl(?:\.|ural)\)$' : ('', '⫷dcs2:art-303⫸NumberProperty⫷dcs:art-303⫸PluralNumber', ''),
+            r' ?\(excl?(usive)?\)$' : ('', '⫷dcs2:art-303⫸PersonProperty⫷dcs:art-303⫸FirstPersonExclusive', ''),
+            r' ?\(incl?(usive)?\)$' : ('', '⫷dcs2:art-303⫸PersonProperty⫷dcs:art-303⫸FirstPersonInclusive', ''),
+            r' ?\(impol(ite)?\)$' : ('', '⫷dcs2:art-317⫸register⫷dcs:art-317⫸vulgarRegister', ''),
+            r' ?\(pol(ite)?\)$' : ('', '⫷dcs2:art-317⫸register⫷dcs:art-306⫸POL', ''),
+            # r'\(n?m\.?\)' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸MasculineGender', ''),
+            # r'\(n?f\.?\)' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸FeminineGender', ''),
+            # r'\(a(?:dj|g)\.?\)' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Adjectival', ''),
+            # r'\(art\.\)' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Article', ''),
+            # r'\(ad?v\.?\)' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Adverbal', ''),
+            # r'\(excl\.?\)' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-306⫸EXCLAM', ''),
+            # r'\(fig\.\)' : ('', '⫷dcs2:art-303⫸SemanticProperty⫷dcs:art-297⫸3.5.2.3', ''),
+            # r'\(pop\.\)' : ('', '⫷dcs:art-317⫸register⫷dcs:art-317⫸colloquialStyle', ''),
+            # r'\(volg\.?\)' : ('', '⫷dcs:art-317⫸register⫷dcs:art-317⫸vulgarRegister', ''),
+            # r'\(vulg\.?\)' : ('', '⫷dcs:art-317⫸register⫷dcs:art-317⫸vulgarRegister', ''),
+            r'(.)[！!]$'    : (r'\1', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Interjection', ''),
+            # r'(.)[？\?]$' : (r'\1', '⫷dcs2:art-303⫸ForceProperty⫷dcs:art-303⫸InterrogativeForce', ''),
+            r'^\?+$' : ('', '', ''),
+            r'[„"“”]'    : ('', '', ''),
             # delete periods at end, but only when no periods in exp already, and len > 6
-            r'^([^\.]{6,})\s*\.$' : (r'\1', ''),
-            r'^\(([^\(\)]*)\)$' : (r'⫷df⫸\1', ''),
-            r'^\[([^\[\]]*)\]$' : (r'⫷df⫸\1', ''),
-            r'^（([^\(\)]*)）$' : (r'⫷df⫸\1', ''),
+            r'^([^\.]{6,})\s*\.$' : (r'\1', '', ''),
+            r'^\(([^\(\)]*)\)$' : (r'⫷df⫸\1', '', ''),
+            r'^\[([^\[\]]*)\]$' : (r'⫷df⫸\1', '', ''),
+            r'^（([^\(\)]*)）$' : (r'⫷df⫸\1', '', ''),
             # numbered/lettered entries in front
-            r'^[АБВГДЕЖЗабвгдежзABCDEFGHabcdefgh\d]\)\s+' : (r'', ''),
+            r'^[АБВГДЕЖЗабвгдежзABCDEFGHabcdefgh\d]\)\s+' : (r'', '', ''),
         }
     }
 }
 
-def exdfprep(entries, sourcecols, tocol=-1, lang='eng-000', pretag_special_lvs=True):
+
+def exdfprep(entries, sourcecols, tocol=-1, lang='eng-000', pretag_special_lvs=True, othercol=-1):
     ''' Parenthesizes "definitional" parts of an expression, and adds appropriate pretagged elements.
     entries        = list of entries, lists of elements; column with expressions to be process must be a list
     sourcecols = list of columns (element indices) on which to perform operation
     tocol     = new col in which to deposit pretagged content (end); if -1, use end of source col
-    from        = regex of delimiters from which to convert '''
+    othercol     = new col in which to deposit "other language" content; if -1 discard '''
 
     result = []
 
@@ -436,7 +447,11 @@ def exdfprep(entries, sourcecols, tocol=-1, lang='eng-000', pretag_special_lvs=T
 
         if tocol >= 0: # prepare new column, update source col indices
             entry.insert(tocol, '')
-            sourcecols = [(col + 1 if col >= tocol else col) for col in sourcecols]
+            sourcecols = [col + 1 if col >= tocol else col for col in sourcecols]
+            
+        if othercol >= 0: # prepare new column, update source col indices
+            entry.insert(othercol, '')
+            sourcecols = [col + 1 if col >= tocol else col for col in sourcecols]
 
         if len(lang) == 3:
             lang += '-000'
@@ -460,6 +475,7 @@ def exdfprep(entries, sourcecols, tocol=-1, lang='eng-000', pretag_special_lvs=T
 
                     for syn in entry[col]:
                         pretags = ''
+                        othertags = ''
 
                         rules = EXDFPREP_RULES[lang]
 
@@ -469,7 +485,7 @@ def exdfprep(entries, sourcecols, tocol=-1, lang='eng-000', pretag_special_lvs=T
                         for stage in rules:
                             for rule in rules[stage]:
                                 if re.search(rule, syn):
-                                    replacement, pretag = rules[stage][rule]
+                                    replacement, pretag, othertag = rules[stage][rule]
                                     if '\\' in pretag:
                                         pretag_addn = re.sub(rule, pretag, syn).strip()
                                         old = syn
@@ -481,12 +497,16 @@ def exdfprep(entries, sourcecols, tocol=-1, lang='eng-000', pretag_special_lvs=T
                                         pretags += pretag_addn
                                     else:
                                         pretags += pretag.strip()
+                                    othertags += othertag.strip()
                                     syn = re.sub(rule, replacement, syn).strip()
 
                         if tocol >= 0:
                             entry[tocol] += pretags # new prepared column
                         else:
                             syn += pretags # right after source
+                            
+                        if othercol >= 0:
+                            entry[othercol] += othertags
 
                         # pretag special language varieties:
                         if pretag_special_lvs:
