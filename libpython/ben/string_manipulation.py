@@ -187,6 +187,10 @@ def _initialize_taxons():
     taxon_finder_sp = subprocess.Popen(['nodejs', os.environ['PANLEX_TOOLDIR'] + "/util/taxonfinder-api"], stdin=subprocess.PIPE, stdout=subprocess.DEVNULL)
     atexit.register(taxon_finder_sp.terminate)
 
+def _initialize_npm_util(util_name, port=3000):
+    npm_util_sp = subprocess.Popen(['nodejs', os.environ['PANLEX_TOOLDIR'] + "/util/" + util_name, str(port)], stdin=subprocess.PIPE, stdout=subprocess.DEVNULL)
+    atexit.register(npm_util_sp.terminate)
+
 def taxons(string, normalize=False):
     try:
         r = requests.get('http://localhost:3000', params={'text': string})
@@ -203,8 +207,8 @@ def taxons(string, normalize=False):
         stringlist.append(' '.join([t.lower() if (i + 2) % 3 else t.title() for i, t in enumerate(string.split())]))
     for st in stringlist:
         r = requests.get('http://localhost:3000', params={'text': st})
-        for o in r.json():
-            if o not in output: output.append(o)
+        o = r.json()
+        if o not in output: output.append(o)
     return output
 
 def multiple_replace(text, adict, regex=False):
