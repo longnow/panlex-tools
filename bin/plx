@@ -361,7 +361,7 @@ sub cmd_submit {
         my $err = $r->decoded_content;
         print STDERR $err, "\n" if $err ne '';
 
-        print STDERR "\n";
+        print STDERR "\nAre you sure your username and password are correct, and you have edit privileges on the source?\n\n";
     }
 }
 
