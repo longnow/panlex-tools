@@ -1,4 +1,4 @@
-
+import os
 from collections import OrderedDict
 
 import io
@@ -31,6 +31,8 @@ def default_str(text):
 
 def run_filters(filters, entry, is_logged=False, **kwargs):
     if is_logged:
+        # if os.path.exists(log_file):
+        #     os.remove(log_file)
         logging.basicConfig(filename=log_file,level=logging.DEBUG)
         log_results('UNFILTERED:%s' % entry, debug=is_logged)
 
