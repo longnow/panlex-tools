@@ -1,4 +1,4 @@
-
+import os
 from collections import OrderedDict
 
 import io
@@ -31,6 +31,8 @@ def default_str(text):
 
 def run_filters(filters, entry, is_logged=False, **kwargs):
     if is_logged:
+        # if os.path.exists(log_file):
+        #     os.remove(log_file)
         logging.basicConfig(filename=log_file,level=logging.DEBUG)
         log_results('UNFILTERED:%s' % entry, debug=is_logged)
 
@@ -142,6 +144,18 @@ def ignore_parens(proc):
     parens_wrapper.__name__ = 'ignore_parens(%s)' % proc.__name__
     return parens_wrapper
 
+
+def process_parens(proc):
+    def process_section(match):
+        return '(%s)' % proc(match[1])
+    
+    pat = re.compile('\(([^()]*)\)')
+
+    def parens_wrapper(text, *args, **kwargs):
+        return pat.sub(process_section, text)
+
+    parens_wrapper.__name__ = 'process_parens(%s)' % proc.__name__
+    return parens_wrapper
 
 
 def ignore_parens_list(proc):

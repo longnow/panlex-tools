@@ -23,7 +23,7 @@ def pre_process(text):
     text = re.sub('\s*…\s*\)', ' …)', text)
     text = re.sub('\(\s*…\s*', '(… ', text)
     text = re.sub('…\s+,', '…,', text)
-    text = re.sub('(\d+)[,.;](\d+)', r'\1\2', text)
+    text = re.sub('(\d+)[;](\d+)', r'\1\2', text)
 
     return text.strip()
 
