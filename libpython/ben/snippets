@@ -29,7 +29,7 @@ kludge_dict['eng-000'] = {
     'chille': 'chili',
 }
 
-for i, mn in enumerate(source):
+for i, mn in enumerate(ap):
     for j, dn in enumerate(mn.dn_list):
         try:
             mn.dn_list[j] = dn.copy(kludge_dict[dn.lv][str(dn.ex)])
@@ -39,12 +39,12 @@ for i, mn in enumerate(source):
 
 # Replace character:
 
-for mn in source:
+for mn in ap:
     mn.sub(r"'n", "ʼn", dn_list=mn('afr-000'))
 
 # Replace dns with lists of dns:
 
-for mn in source:
+for mn in ap:
     mn.dn_list = flatten([dn.copy_list(expand_parens(str(dn.ex), '{}')) for dn in mn.dn_list])
     for i, dn in enumerate(mn.dn_list):
         mn.dn_list[i] = dn.copy(clean_str(str(dn.ex)))
@@ -59,7 +59,7 @@ cs_map = {
     r'^a ' : Cs(Ex('Noun', 'art-303'), Ex('PartOfSpeechProperty', 'art-303')),
     r'^the ' : Cs(Ex('Noun', 'art-303'), Ex('PartOfSpeechProperty', 'art-303')),
 }
-for mn in source:
+for mn in ap:
     for dn in mn('eng-000'):
         cs_list = dn.extract_cs(cs_map)
         if cs_list:
@@ -73,7 +73,7 @@ for mn in source:
 cs_map = {
     r'^to (be) ' : Cs(Ex('Adjectival', 'art-303'), Ex('PartOfSpeechProperty', 'art-303')),
 }
-for mn in source:
+for mn in ap:
     for dn in mn('eng-000'):
         cs_list = dn.extract_cs(cs_map, replace_with='({}) ')
         if cs_list:
@@ -86,13 +86,13 @@ cs_map = {
     r'make (.+)' : Cs(Ex('{}', 'eng-000'), Ex('Causative_of', 'art-316')),
     r'\?' : Cs(Ex('InterrogativeForce', 'art-303'), Ex('ForceProperty', 'art-303')),
 }
-for mn in source:
+for mn in ap:
     for dn in mn('eng-000'):
         mn.cs_list.extend(dn.extract_cs(cs_map, remove=False))
 
 # exdftag:
 
-for mn in source:
+for mn in ap:
     for i, dn in enumerate(mn.dn_list):
         if dn.lv == 'eng-000':
             new_ex, new_df = exdftag(dn.ex, rx=r'(?:\([^()]+\)|（[^（）]+）)', subrx=r'[][/,;?!~]')
@@ -101,7 +101,7 @@ for mn in source:
 
 # remove extraneous parens in definitions:
 
-for mn in source:
+for mn in ap:
     mn.df_list = [df.sub(r'^\((.*)\)$', '\g<1>') for df in mn.df_list]
 
 
@@ -128,7 +128,7 @@ for mn in source:
 # Output:
 
 with open(base_file_name + '-' + str(version + 1) + '.txt', 'w', encoding='utf-8') as output_file:
-    tabularize(ap, output_file, lv_list=lv_list, tagged = True)
+    ap.tabularize(output_file, lv_list=lv_list, tagged = True)
 
 # tab_log:
 
