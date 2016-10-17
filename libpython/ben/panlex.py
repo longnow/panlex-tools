@@ -122,8 +122,10 @@ class Ex:
         out += ind + self.text + '\n'
         return out
 
-    def copy(self, string=None):
-        if string == None: string = self.text
+    # def copy(self, string=None):
+    #     if string == None: string = self.text
+    #     return self.__class__(string, self.lv)
+    def copy(self, string):
         return self.__class__(string, self.lv)
 
     def map(self, func):
@@ -575,6 +577,13 @@ class Ap(list):
             elif clean_str(line):
                 print(line, file=output_file)
             else: pass
+
+    def pretty(self, indent=0):
+        ind = '  ' * indent
+        out = ":\n0\n\n"
+        for mn in self:
+            out += mn.pretty(indent)
+        return out.strip()
 
     def lv_set(self):
         lv_set = set()
