@@ -254,9 +254,10 @@ def process_plx_synonyms(proc):
 
             tag,ex_text,attributes = get_plx_fields(ex)
             result = proc(ex_text)
-            result_match = re.search('(⫷(?:ex|df)(?::\w{1,4}-\d{1,3})?⫸)(.*)', result)
+            result_match = re.search('(⫷(?:ex|df)(?::\w{1,4}-\d{1,3})?⫸)(.+)', result)
+            
             if result_match:
-                if len(result_match[3].strip()) > 0:
+                if len(result_match[1].strip()) > 0:
                     final_exp.append('%s%s' % (result,attributes))
             else:
                 if len(result.strip()) > 0:
