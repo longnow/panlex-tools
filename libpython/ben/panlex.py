@@ -122,10 +122,8 @@ class Ex:
         out += ind + self.text + '\n'
         return out
 
-    # def copy(self, string=None):
-    #     if string == None: string = self.text
-    #     return self.__class__(string, self.lv)
-    def copy(self, string):
+    def copy(self, string=None):
+        if string is None: string = self.text
         return self.__class__(string, self.lv)
 
     def map(self, func):
