@@ -485,6 +485,7 @@ v:itr	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb
 v:tr	art-303:PartOfSpeechProperty:art-303:TransitiveVerb	
 vaux	art-303:PartOfSpeechProperty:art-303:Auxiliary	
 VAux.	art-303:PartOfSpeechProperty:art-303:Auxiliary	
+vb	art-303:PartOfSpeechProperty:art-303:Verbal	
 vbcop	art-303:PartOfSpeechProperty:art-303:Copula	
 vbdo	art-303:PartOfSpeechProperty:art-303:Verbal	
 vbex	art-303:PartOfSpeechProperty:art-303:Verbal	

@@ -47,7 +47,7 @@ def preprocess(entries):
             col = re.sub(r'…\s*$', '', col).strip()
 
             # excess whitespace
-            col = re.sub(r'    +', r' ',col).strip()
+            col = re.sub(r'  +', ' ',col).strip()
             col = re.sub(r'\( +','(',col).strip()
             col = re.sub(r' +\)',')',col).strip()
 
@@ -192,7 +192,8 @@ EXDFPREP_RULES = {
         5: {
             r'(^|\s)\(a\) (lot|bit|posteriori|priori|fortiori|few|little|minute|same|while|propos|cappella)(\s|$)' : (r'\1a \2\3', r'', ''),
             r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:\(to\) )?)(become)\s+([^\s\()][^\s]*)$' : (r'\1\2\3 \4', r'⫷mcs2:art-316⫸Inchoative_of⫷mcs⫸\4', ''),
-            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:\(to\) )?)(make\s+)((?:\(to\)\s+)?)((?:'+make_paren_regex(cap=False)+r'\s*)?)\s+(?!space(?: |$)|room(?: |$)|out(?: |$)|love(?: |$))([^\s\()][^\s]*)$'     : (r'\1\2\3\4 \5 \6', r'⫷mcs2:art-316⫸Causative_of⫷mcs⫸\6', ''),
+            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:\(to\) )?)(make\s+)((?:\(to\)\s+)?)((?:'+make_paren_regex(cap=False)+r'\s*)?)(?!space(?: |$)|room(?: |$)|fence(?: |$)|out(?: |$)|love(?: |$))([^\s\()][^\s]*)$'     : (r'\1\2\3\4\5\6', r'⫷mcs2:art-316⫸Causative_of⫷mcs⫸\6', ''),
+            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:\(to\) )?)(cause to\s+)([^\s\()][^\s]*)$'     : (r'\1\2\3\4', r'⫷mcs2:art-316⫸Causative_of⫷mcs⫸\4', ''),
             r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:\(to\) )?)(stay|remain)\s+([^\s\()][^\s]*)$'     : (r'\1\2 (\3) \4', '⫷mcs2:art-303⫸AspectProperty⫷mcs:art-303⫸DurativeAspect', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal'),
         },
         6: {
@@ -282,7 +283,7 @@ EXDFPREP_RULES = {
     'als-000' : {
         1 : {
             r'^(i/e|e/i|të|[ie])\s+([^\(])' : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Adjectival', ''),
-        }
+        },
     },
     'nob-000' : {
         1 : {
@@ -424,9 +425,9 @@ EXDFPREP_RULES = {
             r'[„"“”]'    : ('', '', ''),
             # delete periods at end, but only when no periods in exp already, and len > 6
             r'^([^\.]{6,})\s*\.$' : (r'\1', '', ''),
-            r'^\(([^\(\)]*)\)$' : (r'⫷df⫸\1', '', ''),
-            r'^\[([^\[\]]*)\]$' : (r'⫷df⫸\1', '', ''),
-            r'^（([^\(\)]*)）$' : (r'⫷df⫸\1', '', ''),
+            r'^\(([^\(\)（）]*)\)$' : (r'⫷df⫸\1', '', ''),
+            r'^\[([^\[\]］［]*)\]$' : (r'⫷df⫸\1', '', ''),
+            r'^（([^\(\)（）]*)）$' : (r'⫷df⫸\1', '', ''),
             # numbered/lettered entries in front
             r'^[АБВГДЕЖЗабвгдежзABCDEFGHabcdefgh\d]\)\s+' : (r'', '', ''),
         }
@@ -512,14 +513,31 @@ def exdfprep(entries, sourcecols, tocol=-1, lang='eng-000', pretag_special_lvs=T
                         # pretag special language varieties:
                         if pretag_special_lvs:
                             # integers
-                            int_m = re.match(r'^(?:⫷..⫸)?(\d+)($|⫷)', syn.strip())
+                            int_m = re.match(r'^(?:⫷..⫸)?([0-9]+)($|⫷)', syn.strip())
                             if int_m:
                                 if int_m.group(1) in ['747','411','911','119','110']:
                                     print('WARNING: Did not pretag potentially special number:', int_m.group(1))
                                 else:
                                     syn = re.sub(r'^(?:⫷[^⫸]+⫸)?', '⫷ex:art-269⫸', unicodedata.normalize('NFKC', syn)).strip()
-
-
+                            # arabic nums
+                            int_a_m = re.match(r'^(?:⫷..⫸)?([٠١٢٣٤٥٦٧٨٩]+)($|⫷)', syn.strip())
+                            if int_a_m:
+                                if int_a_m.group(1) in []:
+                                    print('WARNING: Did not pretag potentially special number:', int_a_m.group(1))
+                                else:
+                                    syn = re.sub(r'^(?:⫷[^⫸]+⫸)?', '⫷ex:art-269⫸', unicodedata.normalize('NFKC', syn)).strip()
+                            # common han nums
+                            int_h_m = re.match(r'^(?:⫷..⫸)?([〇零一二三四五六七八九十百千萬万億亿兆兩两]+|[〇零壹貳贰參叁肆伍陸陆柒捌玖拾佰仟]+)($|⫷)', syn.strip())
+                            if int_h_m:
+                                if int_h_m.group(1) in ['〇']:
+                                    print('WARNING: Did not pretag potentially special number:', int_h_m.group(1))
+                                else:
+                                    syn = re.sub(r'^(?:⫷[^⫸]+⫸)?(.*)$', r'\1⫷ex:art-269⫸\1', unicodedata.normalize('NFKC', syn)).strip()
+                            # possible rare han num? print warning
+                            int_rh_m = re.match(r'^(?:⫷..⫸)?([〇零一二三四五六七八九十百千萬万億亿兆兩两兆京垓秭穰溝沟澗涧正載载廿卅卌皕]+|[〇零壹貳贰參叁肆伍陸陆柒捌玖拾佰仟兆京垓秭穰溝沟澗涧正載载廿卅卌皕]+)($|⫷)', syn.strip())
+                            if int_rh_m and any(h in x for h in '兆京垓秭穰溝沟澗涧正載载廿卅卌皕'):
+                                print('WARNING: Possible rare Han numeral, needs manual tag:', int_rh_m.group(1))
+                        
                         result1.append(syn)
 
                     entry[col] = result1
@@ -538,7 +556,7 @@ def mnsplit(entries, col, delim='⁋'):
     result = []
     for entry in entries:
         # assert isinstance(entry[col], str)
-        for mn in re.split(delim, entry[col]):
+        for mn in re.split(r'(?<!\([^\)]*)(?<!\[[^\]]*)'+delim, entry[col]):
             result.append(entry[:col] + [mn] + entry[col+1:])
     return result
 
@@ -621,9 +639,9 @@ def convert_between_cols(entries, conversion_rules, fromcol, tocol=-1, syn_delim
                         else:
                             colbuffer += curr_conv_rules[rule]
                         exp = re.sub(rule, ' ', exp).strip()
-                        exp = re.sub(r'    +', ' ', exp.strip())
+                        exp = re.sub(r'  +', ' ', exp.strip())
                 newcol.append(exp)
-            colbuffer = re.sub(r'    +', ' ', colbuffer.strip())
+            colbuffer = re.sub(r'  +', ' ', colbuffer.strip())
 
             entry[fromcol] = syn_delim.join(newcol)
             entry[curr_tocol] += colbuffer
@@ -843,7 +861,7 @@ def normalize(entries, col, threshold=50, lang='eng-000'):
     return result
 
 
-JPN_NORMALIZE_EXCEPTIONS = ['おねえちゃん', 'おにいちゃん', 'のんべえ', '一人一人']
+JPN_NORMALIZE_EXCEPTIONS = ['おねえちゃん', 'おにいちゃん', 'のんべえ', '一人一人', '質のよくない']
 
 def jpn_normalize(entries, col, delim='‣', maxlen=3, dftag='⫷df⫸', suppress_print=True):
     """ Keeps, or retags entries based on expressions in given column. """
