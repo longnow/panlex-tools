@@ -36,6 +36,10 @@ class SimpleFilter(EntryFilter):
 
     def __call__(self, entry, *args, **kwargs):
         for fieldId in self.fields:
+            if type(entry[fieldId]) != str:
+                bad_type = str(type(entry[fieldId]))
+                msg = 'field %s has type %s, should be string' % (fieldId, bad_type)
+                raise TypeError(msg)
             entry[fieldId] = self.func(entry[fieldId])
 
         return entry
