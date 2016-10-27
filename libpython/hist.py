@@ -45,7 +45,7 @@ def get_unicode_name(ch):
 
     return name
 
-    
+
 
 def sort_hist(hist:dict) -> list:
     ls = list(hist.items())
@@ -73,18 +73,15 @@ def print_hist(hist:dict, mincount=1, cutoff=False):
             print('count below minimum of %d for {%s}' % (mincount,char))
             break
 
-
-        try:
-            name = get_unicode_name(char)
-        except:
-            name = ''
-
+        name = get_unicode_name(char)
         fraction = count / total
-
-        if char in control_character_map.keys():
-            print(' %-3s (U+%.6X)  %5d\t%.8f    %s' % (control_character_map[char], ord(char), count, fraction, name))
+        
+        if ord(char) <= 0xFFFF: 
+            num = '  (U+%.4X)' % ord(char)
         else:
-            print(' %-3s (U+%.6X)  %5d\t%.8f    %s' % (char,ord(char),count,fraction,name))
+            num = '(U+%.6X)' % ord(char)
+
+        print(' %-3s %s  %5d\t%.8f    %s' % (char, num, count, fraction, name))
 
 
 
