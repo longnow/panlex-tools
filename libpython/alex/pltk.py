@@ -142,7 +142,7 @@ def make_paren_regex(parens=PARENS, maxnested=10, cap=True):
     ''' Makes a regex to match any parenthetical content, up to a certain number
             of layers deep.
     parens    = list of tuples of opening and closing characters (regex escaped)
-                        to be considered parenthetical
+                to be considered parenthetical
     maxnested = max number of nested parens to match '''
 
     paren_res = []
@@ -168,6 +168,7 @@ EXDFPREP_RULES = {
             r'(^| )big bird($)' : (r'\1(big) bird\2', '⫷mcs2:art-300⫸IsA⫷mcs:eng-000⫸bird', ''),
             r'^you (sg|pl)\.?$' : (r'you (\1)', '', ''),
             r'(^| )potatoe( |$)' : (r'\1potato\2', '', ''),
+            r'(^| )lightening( |$)' : (r'\1lightning\2', '', ''),
             r'(^| )to day( |$)' : (r'\1today\2', '', ''),
         },
         2: {
@@ -175,7 +176,7 @@ EXDFPREP_RULES = {
             r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(s(?:\-|o(?:me|em))?(?: other )?(?:\.?b\.?|one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\s+([^\s])' : (r'\1(\2) \3', '', ''),
             r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(s(?:\-|o(?:me|em))?(?: other )?(?:\.?b\.?|one|body|thing)[\'’]?s)\s+([^\s])' : (r'\1(\2) \3', '', ''),
             r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:(?:for (?:something|s\.t\.?))?\(?\s*to\s*\)?\s+)?be)\s+([^\(])'    : (r'\1(\2) \3', '', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal'),
-            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(\(?(?:a\s+)?(?:kind|variety|type|sort|species) of(?: an?(?= ))?\)?|k\.?o\.)\s*' : (r'\1(\2) ', r'', ''),
+            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(\(?(?:a\s+)?(?:small |large |big )?(?:kind|variety|type|sort|species) of(?: an?(?= ))?\)?|k\.?o\.)\s*' : (r'\1(\2) ', r'', ''),
         },
         3: {
             r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)([Tt]he|[Aa]n?)\s+((?:'+make_paren_regex(cap=False)+r'\s*)*[^\(\)\[\]\s]+)$'     : (r'\1(\2) \3', '', ''),            # r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(the)\s+([^\(])'     : (r'\1(\2) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun', ''),
@@ -381,7 +382,7 @@ EXDFPREP_RULES = {
         1: {
             r'(^|[^ ] +)((?:что|чего|чему|ч[её]м|чьих|чей|кто|кого|кем|кому?)\-л(?:ибо|\.)?(?: в (?:что|чего|чему|ч[её]м|чьих|чей|кто|кого|кем|кому?)\-л(?:ибо|\.)?)?)( |$)' : (r'\1(\2)\3', '', ''),
             r' (и т\.\s*п\.)' : (r' (\1)', '', ''),
-
+        
             # something:    что-л (n/a), чего (g), чему (d), чем (i), чём (p, ''),
             # someone:        кто-л (n), кого (g/a), кому (d), кем (i), ком (p, ''),
         },
@@ -420,8 +421,9 @@ EXDFPREP_RULES = {
             # r'\(volg\.?\)' : ('', '⫷dcs:art-317⫸register⫷dcs:art-317⫸vulgarRegister', ''),
             # r'\(vulg\.?\)' : ('', '⫷dcs:art-317⫸register⫷dcs:art-317⫸vulgarRegister', ''),
             r'(.)[！!]$'    : (r'\1', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Interjection', ''),
-            # r'(.)[？\?]$' : (r'\1', '⫷dcs2:art-303⫸ForceProperty⫷dcs:art-303⫸InterrogativeForce', ''),
+            r'(.)[？\?]((?:\s*'+make_paren_regex(cap=False)+r')*)$' : (r'\1\2', '⫷dcs2:art-303⫸ForceProperty⫷dcs:art-303⫸InterrogativeForce', ''),
             r'^\?+$' : ('', '', ''),
+            r'^[\-—]+$' : ('', '', ''),
             r'[„"“”]'    : ('', '', ''),
             # delete periods at end, but only when no periods in exp already, and len > 6
             r'^([^\.]{6,})\s*\.$' : (r'\1', '', ''),

@@ -119,6 +119,7 @@ Determiner	art-303:PartOfSpeechProperty:art-303:Determiner
 detnt	art-303:PartOfSpeechProperty:art-303:Determiner	
 detr	art-303:PartOfSpeechProperty:art-303:Determiner	
 dim	art-303:SizeProperty:art-303:DiminuativeSize	
+directional noun	art-303:PartOfSpeechProperty:art-303:Noun	*
 disc	art-303:LinguisticSign:art-306:DM	
 dur.	art-303:AspectProperty:art-303:DurativeAspect	
 emph	art-303:ForceProperty:art-270:2549	
@@ -211,6 +212,7 @@ kvk.	art-303:GenderProperty:art-303:FeminineGender
 lh.þt.	art-303:PartOfSpeechProperty:art-303:Participle	
 literary noun	art-317:register:art-317:literaryStyle‣art-303:PartOfSpeechProperty:art-303:Noun	
 loc.	art-303:CaseProperty:art-303:LocativeCase	
+locational noun	art-303:PartOfSpeechProperty:art-303:Noun	*
 lýsingarorð	art-303:PartOfSpeechProperty:art-303:Adjectival	
 m	art-303:GenderProperty:art-303:MasculineGender	
 m.	art-303:GenderProperty:art-303:MasculineGender	
@@ -266,6 +268,7 @@ no.hk.	art-303:PartOfSpeechProperty:art-303:Noun‣art-303:GenderProperty:art-30
 no.hvk.	art-303:PartOfSpeechProperty:art-303:Noun‣art-303:GenderProperty:art-303:NeuterGender	
 no.kk.	art-303:PartOfSpeechProperty:art-303:Noun‣art-303:GenderProperty:art-303:MasculineGender	
 no.kvk.	art-303:PartOfSpeechProperty:art-303:Noun‣art-303:GenderProperty:art-303:FeminineGender	
+nominal suffix	art-303:Morpheme:art-303:Suffix	*
 non-sg	art-303:NumberProperty:art-302:NSG	
 noun	art-303:PartOfSpeechProperty:art-303:Noun	
 Noun	art-303:PartOfSpeechProperty:art-303:Noun	
@@ -382,6 +385,7 @@ pron. n.	art-303:PartOfSpeechProperty:art-303:Pronominal‣art-303:GenderPropert
 pron. n. sg.	art-303:PartOfSpeechProperty:art-303:Pronominal‣art-303:GenderProperty:art-303:NeuterGender‣art-303:NumberProperty:art-303:SingularNumber	
 pron. reflex.	art-303:PartOfSpeechProperty:art-303:ReflexivePronoun	
 Pron.Pess.	art-303:PartOfSpeechProperty:art-303:PersonalPronoun	
+pronominal clitic	art-303:Morpheme:art-303:Clitic‣art-303:PartOfSpeechProperty:art-303:Pronominal	
 Pronoun	art-303:PartOfSpeechProperty:art-303:Pronominal	
 pronoun	art-303:PartOfSpeechProperty:art-303:Pronominal	
 pronoun suffix	art-303:Morpheme:art-303:Suffix	*
@@ -444,8 +448,8 @@ sufijo	art-303:Morpheme:art-303:Suffix
 suru-verb	art-303:PartOfSpeechProperty:art-303:Verbal	*
 svin.	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb‣art-306:STV	
 sérnafn	art-303:PartOfSpeechProperty:art-303:ProperNoun	
-sérnafn	art-303:PartOfSpeechProperty:art-303:ProperNoun	
 TEMP	art-303:PartOfSpeechProperty:art-303:Adverbial	
+temporal noun	art-303:PartOfSpeechProperty:art-303:Noun	*
 temps.	art-303:PartOfSpeechProperty:art-303:Adverbial	
 time adverb	art-303:PartOfSpeechProperty:art-303:Adverbial	
 to-adverb	art-303:PartOfSpeechProperty:art-303:Adverbial	*
