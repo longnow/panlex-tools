@@ -239,7 +239,7 @@ EXDFPREP_RULES = {
             r'^\(?([Ss]er|[Ee]star)\)?\s+([^\s\(])'    : (r'(\1) \2', '', ''),
             #r'\s+of(\s*(?:\([^\)]*\)\s*)*)$'                    : (r' (of)\1', '', ''),
             r'^\s*¡|!\s*$'    : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Interjection', ''),
-            r'[¿\?]' : ('', '⫷dcs2:art-303⫸ForceProperty⫷dcs:art-303⫸InterrogativeForce', ''),
+            r'[¿\?]' : ('', '⫷mcs2:art-303⫸ForceProperty⫷mcs:art-303⫸InterrogativeForce', ''),
             r'[¡\!]' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Interjection', ''),
             r'^idioma ([^\s\(][^\s]*)$' : (r'(idioma) \1', '', ''),
             r'^(\(?(?:una?\s+)?(?:clase) de\)?)\s*([^\s]+ ?[^\s]+)$' : (r'(\1) \2', r'⫷mcs2:art-300⫸IsA⫷mcs:spa-000⫸\2', ''),
@@ -251,7 +251,7 @@ EXDFPREP_RULES = {
     },
     'cat-000' : {
         1 : {
-            r'[¿\?]' : ('', '⫷dcs2:art-303⫸ForceProperty⫷dcs:art-303⫸InterrogativeForce', ''),
+            r'[¿\?]' : ('', '⫷mcs2:art-303⫸ForceProperty⫷mcs:art-303⫸InterrogativeForce', ''),
         },
     },
     'nld-000' : {
@@ -354,8 +354,8 @@ EXDFPREP_RULES = {
     'ces-000' : {
         # a (také) = and (also, ''),
         1 : {
-            r'^(být)\s+'     : (r'(\1) ', ''), # to be
-            r'^(nějaký)\s+' : (r'(\1) ', ''), # some, a(n, ''),
+            r'^(být)\s+'     : (r'(\1) ', '', ''), # to be
+            r'^(nějaký)\s+' : (r'(\1) ', '', ''), # some, a(n, ''),
         },
         2: {
         }
@@ -421,7 +421,7 @@ EXDFPREP_RULES = {
             # r'\(volg\.?\)' : ('', '⫷dcs:art-317⫸register⫷dcs:art-317⫸vulgarRegister', ''),
             # r'\(vulg\.?\)' : ('', '⫷dcs:art-317⫸register⫷dcs:art-317⫸vulgarRegister', ''),
             r'(.)[！!]$'    : (r'\1', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Interjection', ''),
-            r'(.)[？\?]((?:\s*'+make_paren_regex(cap=False)+r')*)$' : (r'\1\2', '⫷dcs2:art-303⫸ForceProperty⫷dcs:art-303⫸InterrogativeForce', ''),
+            r'(.)[？\?]((?:\s*'+make_paren_regex(cap=False)+r')*)$' : (r'\1\2', '⫷mcs2:art-303⫸ForceProperty⫷mcs:art-303⫸InterrogativeForce', ''),
             r'^\?+$' : ('', '', ''),
             r'^[\-—]+$' : ('', '', ''),
             r'[„"“”]'    : ('', '', ''),
@@ -527,14 +527,14 @@ def exdfprep(entries, sourcecols, tocol=-1, lang='eng-000', pretag_special_lvs=T
                                 if int_a_m.group(1) in []:
                                     print('WARNING: Did not pretag potentially special number:', int_a_m.group(1))
                                 else:
-                                    syn = re.sub(r'^(?:⫷[^⫸]+⫸)?', '⫷ex:art-269⫸', unicodedata.normalize('NFKC', syn)).strip()
+                                    syn = re.sub(r'^(?:⫷[^⫸]+⫸)?', '⫷ex:art-340⫸', unicodedata.normalize('NFKC', syn)).strip()
                             # common han nums
                             int_h_m = re.match(r'^(?:⫷..⫸)?([〇零一二三四五六七八九十百千萬万億亿兆兩两]+|[〇零壹貳贰參叁肆伍陸陆柒捌玖拾佰仟]+)($|⫷)', syn.strip())
                             if int_h_m:
                                 if int_h_m.group(1) in ['〇']:
                                     print('WARNING: Did not pretag potentially special number:', int_h_m.group(1))
                                 else:
-                                    syn = re.sub(r'^(?:⫷[^⫸]+⫸)?(.*)$', r'\1⫷ex:art-269⫸\1', unicodedata.normalize('NFKC', syn)).strip()
+                                    syn = re.sub(r'^(?:⫷[^⫸]+⫸)?(.*)$', r'\1⫷ex:art-341⫸\1', unicodedata.normalize('NFKC', syn)).strip()
                             # possible rare han num? print warning
                             int_rh_m = re.match(r'^(?:⫷..⫸)?([〇零一二三四五六七八九十百千萬万億亿兆兩两兆京垓秭穰溝沟澗涧正載载廿卅卌皕]+|[〇零壹貳贰參叁肆伍陸陆柒捌玖拾佰仟兆京垓秭穰溝沟澗涧正載载廿卅卌皕]+)($|⫷)', syn.strip())
                             if int_rh_m and any(h in x for h in '兆京垓秭穰溝沟澗涧正載载廿卅卌皕'):
