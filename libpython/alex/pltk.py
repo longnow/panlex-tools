@@ -78,6 +78,8 @@ def split_outside_parens(entries, cols, delim=r',', parens=PARENS):
     parens    = list of tuples of opening and closing characters (regex escaped)
                         to be considered parenthetical '''
 
+    # PLEASE REWRITE THIS SOON WITH A REGEX LOOKBEHIND INSTEAD OF THIS WEIRD HACK
+    
     SOP_DELIM = ''
     TEMP_PAREN = [(r'🁾',r'🂊')]
 
@@ -91,12 +93,13 @@ def split_outside_parens(entries, cols, delim=r',', parens=PARENS):
     c_parens = [p[1] for p in parens]
 
     result = []
+
+    paren_re = make_paren_regex(parens) + r'+\s*'
+
     for entry in entries:
 
         if not isinstance(entry, list):
             raise ValueError(entry, 'not a list; did you remember to split tabs yet?')
-
-        paren_re = make_paren_regex(parens) + r'+\s*'
 
         for col in cols:
 
@@ -107,7 +110,7 @@ def split_outside_parens(entries, cols, delim=r',', parens=PARENS):
 
                 # detect sentences/other non splittable things and put special parens around them
                 # sentences: start w/ capital letter, end with period(s)
-                entry[col] = re.sub(r'(\p{Lu}(?:'+make_paren_regex(cap=False)+r'|[^\s\(\)\[\].])+(?:\s+(?:'+make_paren_regex(cap=False)+r'|[^\s\(\)\[\].])+){'+str(minwords)+r',}[\.!?]+)', TEMP_PAREN[0][0]+r'\1'+TEMP_PAREN[0][1], entry[col])
+                entry[col] = re.sub(r'(\p{Lu}(?:'+DEFAULT_PR_NOCAP+r'|[^\s\(\)\[\].])+(?:\s+(?:'+DEFAULT_PR_NOCAP+r'|[^\s\(\)\[\].])+){'+str(minwords)+r',}[\.!?]+)', TEMP_PAREN[0][0]+r'\1'+TEMP_PAREN[0][1], entry[col])
                 # commas separating decimals or digit groups
                 entry[col] = re.sub(r'(\d+(?:,\d+)+)', TEMP_PAREN[0][0]+r'\1'+TEMP_PAREN[0][1], entry[col])
 
@@ -138,6 +141,7 @@ def split_outside_parens(entries, cols, delim=r',', parens=PARENS):
     return result
 
 
+
 def make_paren_regex(parens=PARENS, maxnested=10, cap=True):
     ''' Makes a regex to match any parenthetical content, up to a certain number
             of layers deep.
@@ -158,8 +162,11 @@ def make_paren_regex(parens=PARENS, maxnested=10, cap=True):
     return result
 
 def remove_parens(s, parens=PARENS):
-    return re.sub(make_paren_regex(), '', s).strip()
+    return re.sub(DEFAULT_PR, '', s).strip()
 
+
+DEFAULT_PR_NOCAP = make_paren_regex(cap=False)
+DEFAULT_PR = make_paren_regex()
 
 EXDFPREP_RULES = {
     'eng-000' : {
@@ -169,36 +176,36 @@ EXDFPREP_RULES = {
             r'^you (sg|pl)\.?$' : (r'you (\1)', '', ''),
             r'(^| )potatoe( |$)' : (r'\1potato\2', '', ''),
             r'(^| )lightening( |$)' : (r'\1lightning\2', '', ''),
-            r'(^| )to day( |$)' : (r'\1today\2', '', ''),
+            r'(^| )to[ \-]day( |$)' : (r'\1today\2', '', ''),
         },
         2: {
             r'([^\s])\s+(s(?:\-|o(?:me|em))?(?: other )?(?:\.?b\.?|one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing))?(?: (?:who|which|that) is)?|s\.[bot]\.?|o\.s\.?)([^\'’]|$)' : (r'\1 (\2)\3', '', ''),
-            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(s(?:\-|o(?:me|em))?(?: other )?(?:\.?b\.?|one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\s+([^\s])' : (r'\1(\2) \3', '', ''),
-            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(s(?:\-|o(?:me|em))?(?: other )?(?:\.?b\.?|one|body|thing)[\'’]?s)\s+([^\s])' : (r'\1(\2) \3', '', ''),
-            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:(?:for (?:something|s\.t\.?))?\(?\s*to\s*\)?\s+)?be)\s+([^\(])'    : (r'\1(\2) \3', '', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal'),
-            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(\(?(?:a\s+)?(?:small |large |big )?(?:kind|variety|type|sort|species) of(?: an?(?= ))?\)?|k\.?o\.)\s*' : (r'\1(\2) ', r'', ''),
+            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)?)(s(?:\-|o(?:me|em))?(?: other )?(?:\.?b\.?|one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\s+([^\s])' : (r'\1(\2) \3', '', ''),
+            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)?)(s(?:\-|o(?:me|em))?(?: other )?(?:\.?b\.?|one|body|thing)[\'’]?s)\s+([^\s])' : (r'\1(\2) \3', '', ''),
+            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)?)((?:(?:for (?:something|s\.t\.?))?\(?\s*to\s*\)?\s+)?be)\s+([^\(])'    : (r'\1(\2) \3', '', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal'),
+            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)?)(\(?(?:a\s+)?(?:small |large |big )?(?:kind|variety|type|sort|species) of(?: an?(?= ))?\)?|k\.?o\.)\s*' : (r'\1(\2) ', r'', ''),
         },
         3: {
-            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)([Tt]he|[Aa]n?)\s+((?:'+make_paren_regex(cap=False)+r'\s*)*[^\(\)\[\]\s]+)$'     : (r'\1(\2) \3', '', ''),            # r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(the)\s+([^\(])'     : (r'\1(\2) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun', ''),
-            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)\((s(?:\-|o(?:me|em))?(?: other )?(?:\.?b\.?|one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)\s+(which|that|who|to)' : (r'\1\2 \3', '', ''),
+            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)?)([Tt]he|[Aa]n?)\s+((?:'+DEFAULT_PR_NOCAP+r'\s*)*[^\(\)\[\]\s]+)$'     : (r'\1(\2) \3', '', ''),            # r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)?)(the)\s+([^\(])'     : (r'\1(\2) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun', ''),
+            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)?)\((s(?:\-|o(?:me|em))?(?: other )?(?:\.?b\.?|one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)\s+(which|that|who|to)' : (r'\1\2 \3', '', ''),
             r'\((s(?:\-|o(?:me|em))?(?: other )?(?:\.?b\.?|one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)\s+(else(?:\'s)?)' : (r'(\1 \2)', '', ''),
             r'^\((s(?:\-|o(?:me|em))?(?: other )?(?:\.?b\.?|one|body|thing)(?:(?: or |\s*/\s*)s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)\s+' : (r'\1 ', '', ''),
-            r'^((?:[^\s\(\)\[\]]+\s)?)((?:'+make_paren_regex(cap=False)+r')?\s*)(\(?(?:kind|variety|type|sort|species) of(?: an?)?\)?|\(?k\.?o\.\)?)\s*([^\s]+ ?[^\s]+)$' : (r'\2 (\3) \1\4', r'⫷mcs2:art-300⫸IsA⫷mcs:eng-000⫸\4', ''),
-            r'^((?:'+make_paren_regex(cap=False)+r')?\s*)(\(?(?:a\s+)?(?:kind|variety|type|sort|species) of(?: an?)?\)?|\(?k\.?o\.\)?)\s*([^\s]+ ?[^\s]+)$' : (r'\1 (\2) \3', r'⫷mcs2:art-300⫸IsA⫷mcs:eng-000⫸\3', ''),
+            r'^((?:[^\s\(\)\[\]]+\s)?)((?:'+DEFAULT_PR_NOCAP+r')?\s*)(\(?(?:kind|variety|type|sort|species) of(?: an?)?\)?|\(?k\.?o\.\)?)\s*([^\s]+ ?[^\s]+)$' : (r'\2 (\3) \1\4', r'⫷mcs2:art-300⫸IsA⫷mcs:eng-000⫸\4', ''),
+            r'^((?:'+DEFAULT_PR_NOCAP+r')?\s*)(\(?(?:a\s+)?(?:kind|variety|type|sort|species) of(?: an?)?\)?|\(?k\.?o\.\)?)\s*([^\s]+ ?[^\s]+)$' : (r'\1 (\2) \3', r'⫷mcs2:art-300⫸IsA⫷mcs:eng-000⫸\3', ''),
         },
         4: {
-            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:not )?)[Tt]o\s+(?!'+make_paren_regex(cap=False)+r'$|the(?: |$)|you(?: |$)|us(?: |$)|him(?: |$)|her(?: |$)|them(?: |$)|me(?: |$)|[wt]?here(?: |$)|no(?: |$)|one\'s(?: |$)|oneself(?: |$)'+make_paren_regex(cap=True)+r'$)' : (r'\1\2(to) ', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal', ''),
+            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)?)((?:not )?)[Tt]o\s+(?!'+DEFAULT_PR_NOCAP+r'$|the(?: |$)|you(?: |$)|us(?: |$)|him(?: |$)|her(?: |$)|them(?: |$)|me(?: |$)|[wt]?here(?: |$)|no(?: |$)|one\'s(?: |$)|oneself(?: |$)'+make_paren_regex(cap=True)+r'$)' : (r'\1\2(to) ', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal', ''),
             r'(^| )make to ' : (r'\1make (to) ', '', ''),
         },
         5: {
             r'(^|\s)\(a\) (lot|bit|posteriori|priori|fortiori|few|little|minute|same|while|propos|cappella)(\s|$)' : (r'\1a \2\3', r'', ''),
-            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:\(to\) )?)(become)\s+([^\s\()][^\s]*)$' : (r'\1\2\3 \4', r'⫷mcs2:art-316⫸Inchoative_of⫷mcs⫸\4', ''),
-            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:\(to\) )?)(make\s+)((?:\(to\)\s+)?)((?:'+make_paren_regex(cap=False)+r'\s*)?)(?!space(?: |$)|room(?: |$)|fence(?: |$)|out(?: |$)|love(?: |$))([^\s\()][^\s]*)$'     : (r'\1\2\3\4\5\6', r'⫷mcs2:art-316⫸Causative_of⫷mcs⫸\6', ''),
-            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:\(to\) )?)(cause to\s+)([^\s\()][^\s]*)$'     : (r'\1\2\3\4', r'⫷mcs2:art-316⫸Causative_of⫷mcs⫸\4', ''),
-            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:\(to\) )?)(stay|remain)\s+([^\s\()][^\s]*)$'     : (r'\1\2 (\3) \4', '⫷mcs2:art-303⫸AspectProperty⫷mcs:art-303⫸DurativeAspect', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal'),
+            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)?)((?:\(to\) )?)(become)\s+([^\s\()][^\s]*)$' : (r'\1\2\3 \4', r'⫷mcs2:art-316⫸Inchoative_of⫷mcs⫸\4', ''),
+            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)?)((?:\(to\) )?)(make\s+)((?:\(to\)\s+)?)((?:'+DEFAULT_PR_NOCAP+r'\s*)?)(?!space(?: |$)|room(?: |$)|fence(?: |$)|out(?: |$)|love(?: |$))([^\s\()][^\s]*)$'     : (r'\1\2\3\4\5\6', r'⫷mcs2:art-316⫸Causative_of⫷mcs⫸\6', ''),
+            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)?)((?:\(to\) )?)(cause to\s+)([^\s\()][^\s]*)$'     : (r'\1\2\3\4', r'⫷mcs2:art-316⫸Causative_of⫷mcs⫸\4', ''),
+            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)?)((?:\(to\) )?)(stay|remain)\s+([^\s\()][^\s]*)$'     : (r'\1\2 (\3) \4', '⫷mcs2:art-303⫸AspectProperty⫷mcs:art-303⫸DurativeAspect', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal'),
         },
         6: {
-            # r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)\(([Tt]he|[Aa]n?)\)\s+((?:(?:'+make_paren_regex()[1:-1]+'|[^\(\)\[\]\s]+))(?: (?:'+make_paren_regex()[1:-1]+'|[^\(\)\[\]\s]+))?)$'     : (r'\1(\2) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun', ''),
+            # r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)?)\(([Tt]he|[Aa]n?)\)\s+((?:(?:'+DEFAULT_PR[1:-1]+'|[^\(\)\[\]\s]+))(?: (?:'+DEFAULT_PR[1:-1]+'|[^\(\)\[\]\s]+))?)$'     : (r'\1(\2) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun', ''),
             r'^do it$' : ('⫷df⫸do it', '', ''),
             r'fæces' : ('faeces', '', ''),
             r'^to become$' : ('(to) become', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal', ''),
@@ -208,7 +215,7 @@ EXDFPREP_RULES = {
     'jpn-000' : {
         1: {
             r'^(.+)(である)$' : (r'\1(\2)', '', ''), # to be ~
-            r'([\p{Han}\p{Katakana}]'+make_paren_regex(cap=False)+r'?)(だ|の|な)$' : (r'\1(\2)', '', ''),
+            r'([\p{Han}\p{Katakana}]'+DEFAULT_PR_NOCAP+r'?)(だ|の|な)$' : (r'\1(\2)', '', ''),
             r'^(.*[\p{Han}])(らせる)$' : (r'\1\2', r'⫷mcs2:art-316⫸Causative_of⫷mcs⫸\1る', ''),
             r'^(させる)$' : (r'\1', r'⫷mcs2:art-316⫸Causative_of⫷mcs⫸する', ''),
             r'^(が)(\p{Han})' : (r'(\1)\2', r'', ''),
@@ -220,7 +227,7 @@ EXDFPREP_RULES = {
             r'^[…\s]*(に)(なる)$' : (r'(\1)\2', '', ''),    # to become
         },
         2: {
-            r'其('+make_paren_regex(cap=False)+r'?)\(の\)' : (r'其\1の', '', ''),
+            r'其('+DEFAULT_PR_NOCAP+r'?)\(の\)' : (r'其\1の', '', ''),
         },
     },
     'arb-000' : {
@@ -288,15 +295,15 @@ EXDFPREP_RULES = {
     },
     'nob-000' : {
         1 : {
-            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)((?:\(?\s*å\s*\)?\s+)?bli)\s+([^\(])'    : (r'\1(\2) \3', '', ''),
+            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)?)((?:\(?\s*å\s*\)?\s+)?bli)\s+([^\(])'    : (r'\1(\2) \3', '', ''),
         },
         2: {
-            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)å\s+' : (r'\1(å) ', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal', ''),
+            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)?)å\s+' : (r'\1(å) ', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal', ''),
         },
     },
     'dan-000' : {
         1: {
-            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(e[nt])\s+' : (r'\1(\2) ', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun', ''),
+            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)?)(e[nt])\s+' : (r'\1(\2) ', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun', ''),
         },
     },
     'fra-000' : {
@@ -313,7 +320,7 @@ EXDFPREP_RULES = {
             r'^(\(?(?:type|sorte|espèce) d[e\']\)?)\s*(.+)$' : (r'(\1) \2', r'⫷mcs2:art-300⫸IsA⫷mcs:fra-000⫸\2', ''),
         },
         2: {
-            r'^devenir\s+([^\s]+)((?:\s*'+make_paren_regex(cap=False)+r')?$)' : (r'devenir \1\2', r'⫷dcs2:art-316⫸Inchoative_of⫷dcs⫸\1', ''),
+            r'^devenir\s+([^\s]+)((?:\s*'+DEFAULT_PR_NOCAP+r')?$)' : (r'devenir \1\2', r'⫷dcs2:art-316⫸Inchoative_of⫷dcs⫸\1', ''),
             r' \(m\.?\)$' : ('', '⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸MasculineGender', ''),
             r' \(f\.?\)$' : ('', '⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸FeminineGender', ''),
         }
@@ -373,7 +380,7 @@ EXDFPREP_RULES = {
             r'((?:etw(?:\.|as)|jemand(?:en)?)(?: oder etwas)?(?:,? (?:der|was))?)([^\'’]|$)' : (r'(\1)\2', '', ''),
             r'\s+(d\.[ih]\..*)$' : (r' (\1)', '', ''),
             r'(^| )(o\.ä\.)( |$)' : (r'\1(\2)\3', '', ''),
-            r'^((?:'+make_paren_regex(cap=False)+r'\s*)?)(ein(?:e[mnrs]?)?|die|das|de[mnrs])\s+([^\(])'     : (r'\1(\2) \3', '', ''),
+            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)?)(ein(?:e[mnrs]?)?|die|das|de[mnrs])\s+([^\(])'     : (r'\1(\2) \3', '', ''),
         },
         2: {
         },
@@ -421,7 +428,7 @@ EXDFPREP_RULES = {
             # r'\(volg\.?\)' : ('', '⫷dcs:art-317⫸register⫷dcs:art-317⫸vulgarRegister', ''),
             # r'\(vulg\.?\)' : ('', '⫷dcs:art-317⫸register⫷dcs:art-317⫸vulgarRegister', ''),
             r'(.)[！!]$'    : (r'\1', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Interjection', ''),
-            r'(.)[？\?]((?:\s*'+make_paren_regex(cap=False)+r')*)$' : (r'\1\2', '⫷mcs2:art-303⫸ForceProperty⫷mcs:art-303⫸InterrogativeForce', ''),
+            r'(.)[？\?]((?:\s*'+DEFAULT_PR_NOCAP+r')*)$' : (r'\1\2', '⫷mcs2:art-303⫸ForceProperty⫷mcs:art-303⫸InterrogativeForce', ''),
             r'^\?+$' : ('', '', ''),
             r'^[\-—]+$' : ('', '', ''),
             r'[„"“”]'    : ('', '', ''),
@@ -446,9 +453,9 @@ def exdfprep(entries, sourcecols, tocol=-1, lang='eng-000', pretag_special_lvs=T
 
     result = []
 
+    paren_re = DEFAULT_PR
+    
     for entry in entries:
-
-        paren_re = make_paren_regex()
 
         if tocol >= 0: # prepare new column, update source col indices
             entry.insert(tocol, '')
@@ -872,6 +879,8 @@ def jpn_normalize(entries, col, delim='‣', maxlen=3, dftag='⫷df⫸', suppres
     except:
         from MecabSoup import MecabSoup
 
+    paren_regex = DEFAULT_PR
+
     assert col < len(entries[0])
     result = []
     for entry in entries:
@@ -879,7 +888,7 @@ def jpn_normalize(entries, col, delim='‣', maxlen=3, dftag='⫷df⫸', suppres
             entry[col] = entry[col].split(delim)
         newentry = []
         for syn in entry[col]:
-            syn_noparens = re.sub(make_paren_regex(), '', syn).strip()
+            syn_noparens = re.sub(paren_regex, '', syn).strip()
             syn_noparens = re.sub(r'⫷.*', '', syn_noparens).strip()
             syn_noparens = re.sub(r'\s*…\s*', '', syn_noparens).strip()
             for exc in JPN_NORMALIZE_EXCEPTIONS:
@@ -953,10 +962,11 @@ def lemmatize_verb(text):
     return lemmatized_verbs
 
 
+
 def single_expsplit(exp, splitdelim='/', expdelim='‣'):
-    assert isinstance(exp, str)
     """ splits individual expressions based on some punctuation cue """
-    p = make_paren_regex()[1:-1]
+    assert isinstance(exp, str)
+    p = DEFAULT_PR[1:-1]
     prs = ''.join([r[0] for r in PARENS]) + ''.join([r[1] for r in PARENS])
     done = False
     while not done:
@@ -1017,7 +1027,7 @@ def expsplit(entries, cols, splitdelim='/', expdelim='‣'):
         result.append(newentry)
     return result
 
-NO_DECAP = ['I', 'March', 'May', 'Turkey', 'Ashavan', 'Asha', 'Zarathushtra', 'Ahura', 'Khwarrah', 'Fravashi', 'Fravashis', 'Mazda', 'Mithra']
+NO_DECAP = ["Africa","AIDS","Albania","America","American","Antarctica","April","Argentina","Asia","August","Australia","Austria","Belgium","Brazil","Buddhist","Bulgaria","Canada","Chanukah","China","Christmas","Colombia","Cuba","Czech Republic","December","Denmark","Easter","Egypt","English","Europe","European","February","Finland","France","French","Friday","Germany","Great Britain","Greece","Hindu","Hungary","I","I.D.","ID","India","Indian","Indonesia","Internet","Iran","Iraq","Ireland","Israel","Italian","Italy","January","Japan","Jewish","July","June","Jupiter","Mandarin","March","Mars","May","Mercury","Mexico","Monday","Mongolia","Ms.","Mr.","Neptune","Netherlands","North America","North Korea","Norway","November","October","Pakistan","Pluto","Poland","Pope","Portugal","Portuguese","Romania","Romanian","Romanova","Russia","Saturday","Saturn","Saudi Arabia","September","Slovak Republic","South Africa","South America","South Korea","Spain","Spanish","Sunday","Sweden","Switzerland","Thailand","Thursday","Tuesday","God","Turkey","Ukraine","United Kingdom","United States","Uranus","Venezuela","Venus","Vietnam","Wednesday","Yugoslavia","Ashavan","Asha","Zarathushtra","Ahura","Khwarrah","Fravashi","Fravashis","Mazda","Mithra"]
 
 def decap(entries, cols):
     # decapitalize the first (after parens) letter of each given column (except for some key words)
@@ -1029,7 +1039,7 @@ def decap(entries, cols):
         for col in range(len(entry)):
             newcol = entry[col]
             if col in cols:
-                m = re.match(r'^('+make_paren_regex(cap=False)+r'?)\s*(.*)$', newcol)
+                m = re.match(r'^('+DEFAULT_PR_NOCAP+r'?)\s*(.*)$', newcol)
                 if not m:
                     raise ValueException('unexpected non-match:', newcol)
                 else:
@@ -1251,11 +1261,25 @@ def get_next_sibling_tag(tag):
             return nextsib
     return None
 
+def get_prev_sibling_tag(tag):
+    # previous tag method for beautifulsoup (siblings only)
+    for prevsib in tag.previous_siblings:
+        if isinstance(prevsib, Tag):
+            return prevsib
+    return None
+
 def get_next_tag(tag):
     # next tag method for beautifulsoup
     for nexttag in tag.next_elements:
         if isinstance(nexttag, Tag):
             return nexttag
+    return None
+    
+def get_prev_tag(tag):
+    # previous tag method for beautifulsoup
+    for prevtag in tag.previous_elements:
+        if isinstance(prevtag, Tag):
+            return prevtag
     return None
 
 def classify_cmn(entries, col, delim='‣'):
