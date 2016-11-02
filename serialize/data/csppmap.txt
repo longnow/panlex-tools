@@ -153,8 +153,10 @@ expr	art-303:SyntacticUnit:art-303:Phrase
 expr.	art-303:SyntacticUnit:art-303:Phrase	
 expression	art-303:SyntacticUnit:art-303:Phrase	
 f	art-303:GenderProperty:art-303:FeminineGender	
+f, m	art-303:GenderProperty:art-303:FeminineGender‣art-303:GenderProperty:art-303:MasculineGender	
 f.	art-303:GenderProperty:art-303:FeminineGender	
 f.v.	art-303:SyntactitUnit:art-303:VerbPhrase	
+f/m	art-303:GenderProperty:art-303:FeminineGender‣art-303:GenderProperty:art-303:MasculineGender	
 female expression	art-317:register:art-317:female‣art-303:SyntacticUnit:art-303:Phrase	
 female interjection	art-317:register:art-317:female‣art-303:PartOfSpeechProperty:art-303:Interjection	
 fleirtala	art-303:NumberProperty:art-303:PluralNumber	
@@ -164,6 +166,7 @@ formal	art-317:register:art-317:formalRegister
 formal noun	art-317:register:art-317:formalRegister‣art-303:PartOfSpeechProperty:art-303:Noun	
 fornafn	art-303:PartOfSpeechProperty:art-303:Pronominal	
 forskeyti	art-303:Morpheme:art-303:Prefix	
+fpl	art-303:GenderProperty:art-303:FeminineGender‣art-303:NumberProperty:art-303:PluralNumber	
 frac	art-303:PartOfSpeechProperty:art-303:CardinalNumeral‣art-307:NumType:art-307:Frac	
 frequ.	art-303:AspectProperty:art-303:FrequentiveAspect	
 fut	art-303:TenseProperty:art-303:FutureTense	
@@ -231,9 +234,14 @@ loc.	art-303:CaseProperty:art-303:LocativeCase
 locational noun	art-303:PartOfSpeechProperty:art-303:Noun	*
 lýsingarorð	art-303:PartOfSpeechProperty:art-303:Adjectival	
 m	art-303:GenderProperty:art-303:MasculineGender	
+m or f	art-303:GenderProperty:art-303:FeminineGender‣art-303:GenderProperty:art-303:MasculineGender	
+m pl	art-303:GenderProperty:art-303:MasculineGender‣art-303:NumberProperty:art-303:PluralNumber	
+m, f	art-303:GenderProperty:art-303:FeminineGender‣art-303:GenderProperty:art-303:MasculineGender	
+m,f	art-303:GenderProperty:art-303:FeminineGender‣art-303:GenderProperty:art-303:MasculineGender	
 m.	art-303:GenderProperty:art-303:MasculineGender	
 M.	art-303:GenderProperty:art-303:MasculineGender	
 m.gr.		
+m/f	art-303:GenderProperty:art-303:FeminineGender‣art-303:GenderProperty:art-303:MasculineGender	
 male expression	art-317:register:art-317:male‣art-303:SyntacticUnit:art-303:Phrase	
 male interjection	art-317:register:art-317:male‣art-303:PartOfSpeechProperty:art-303:Interjection	
 measure word	art-303:PartOfSpeechProperty:art-303:NumeralClassifier	
@@ -242,6 +250,8 @@ mid.voi.	art-303:VoiceProperty:art-303:PlainMiddleVoice
 MOD	art-303:PartOfSpeechProperty:art-303:Modal	
 mod	art-303:PartOfSpeechProperty:art-303:Modal	
 mod.avv.	art-303:PartOfSpeechProperty:art-303:Adverbial‣art-303:PartOfSpeechProperty:art-303:Modal	
+mp	art-303:GenderProperty:art-303:MasculineGender‣art-303:NumberProperty:art-303:PluralNumber	
+mpl	art-303:GenderProperty:art-303:MasculineGender‣art-303:NumberProperty:art-303:PluralNumber	
 n	art-303:PartOfSpeechProperty:art-303:Noun	
 N	art-303:PartOfSpeechProperty:art-303:Noun	
 N Próprio.	art-303:PartOfSpeechProperty:art-303:ProperNoun	
@@ -366,6 +376,7 @@ pp	art-303:PartOfSpeechProperty:art-303:Preposition
 pp.	art-303:PartOfSpeechProperty:art-303:Preposition	
 pr	art-303:PartOfSpeechProperty:art-303:Preposition	
 pr.	art-303:PartOfSpeechProperty:art-303:Pronominal	
+pr. indef.	art-303:PartOfSpeechProperty:art-303:IndefinitePronoun	
 pr. pers.	art-303:PartOfSpeechProperty:art-303:PersonalPronoun	
 pr.dem.	art-303:PartOfSpeechProperty:art-303:Demonstrative	
 pr.indef.	art-303:PartOfSpeechProperty:art-303:IndefinitePronoun	
@@ -385,8 +396,8 @@ pref.	art-303:Morpheme:art-303:Prefix
 prefix	art-303:Morpheme:art-303:Prefix	
 prep	art-303:PartOfSpeechProperty:art-303:Preposition	
 prep.	art-303:PartOfSpeechProperty:art-303:Preposition	
-prep.phr.	art-303:PartOfSpeechProperty:art-317:prepositionalPhrase	
 prep. phr.	art-303:PartOfSpeechProperty:art-317:prepositionalPhrase	
+prep.phr.	art-303:PartOfSpeechProperty:art-317:prepositionalPhrase	
 Preposition	art-303:PartOfSpeechProperty:art-303:Preposition	
 pres	art-303:TenseProperty:art-303:PresentTense	
 prn	art-303:PartOfSpeechProperty:art-303:Pronominal	
@@ -454,6 +465,7 @@ refl.	art-302:REFL
 rel	art-303:PartOfSpeechProperty:art-303:Conjunction	
 rel. pron.	art-303:PartOfSpeechProperty:art-303:RelativePronoun	
 rel.pron.	art-303:PartOfSpeechProperty:art-303:RelativePronoun	
+relative pronoun	art-303:PartOfSpeechProperty:art-303:RelativePronoun	
 relpron.	art-303:PartOfSpeechProperty:art-303:RelativePronoun	
 RFLX PRO	art-303:PartOfSpeechProperty:art-303:ReflexivePronoun	
 s	art-303:PartOfSpeechProperty:art-303:Noun	
