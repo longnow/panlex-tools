@@ -194,7 +194,7 @@ EXDFPREP_RULES = {
             r'^((?:'+DEFAULT_PR_NOCAP+r')?\s*)(\(?(?:a\s+)?(?:kind|variety|type|sort|species) of(?: an?)?\)?|\(?k\.?o\.\)?)\s*([^\s]+ ?[^\s]+)$' : (r'\1 (\2) \3', r'⫷mcs2:art-300⫸IsA⫷mcs:eng-000⫸\3', ''),
         },
         4: {
-            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)?)((?:not )?)[Tt]o\s+(?!'+DEFAULT_PR_NOCAP+r'$|the(?: |$)|you(?: |$)|us(?: |$)|him(?: |$)|her(?: |$)|them(?: |$)|me(?: |$)|[wt]?here(?: |$)|no(?: |$)|one\'s(?: |$)|oneself(?: |$)'+make_paren_regex(cap=True)+r'$)' : (r'\1\2(to) ', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal', ''),
+            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)?)((?:not )?)[Tt]o\s+(?!'+DEFAULT_PR_NOCAP+r'$|the(?: |$)|you(?: |$)|us(?: |$)|him(?: |$)|her(?: |$)|them(?: |$)|me(?: |$)|[wt]?here(?: |$)|no(?: |$)|one[\'’]s(?: |$)|oneself(?: |$)|a[n](?: |$))' : (r'\1\2(to) ', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal', ''),
             r'(^| )make to ' : (r'\1make (to) ', '', ''),
         },
         5: {
