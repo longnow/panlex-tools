@@ -1,0 +1,121 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+from collections import Counter
+import ben.iso15924 as iso15924
+import ben.unicode as unicode
+import ben.fontmaps as fontmaps
+from ben.panlex import *
+import regex as re
+
+def most_common_script(string):
+    c = Counter(list(map(lambda x: iso15924.convert(unicode.get_property(x, 'Script'), 'code', 'pva', exact=True)[-1], string)))
+    return c.most_common(1)[0][0]
+
+def get_tables(a, cont=True):
+    output = []
+    for element in a.next_elements:
+        if element.name == 'a': break
+        if element.name == 'table': output.append(element)
+    if cont:
+        if not output:
+            next_a = a.find_next('a')
+            if next_a.has_attr('href'):
+                output.extend(get_tables(a.parent.find('a', {'name' : next_a['href'][1:]})))
+                output.extend(get_tables(next_a, cont=False))
+                return output
+            else:
+                return get_tables(a.find_next('a'))
+        else:
+            return output
+    else:
+        return output
+
+def get_next_table(a):
+    for element in a.next_elements:
+        if element.name == 'table': return element
+
+def text_after_a(a):
+    output = ''
+    for element in a.next_siblings:
+        if element.name in ['table', 'a']: break
+        else:
+            try:
+                out = element.text
+            except AttributeError:
+                out = element.string
+            output += out
+    return output
+
+def text_before_table(table):
+    output = []
+    for element in table.previous_siblings:
+        if element.name in ['table', 'a']: break
+        else:
+            try:
+                out = element.text
+            except AttributeError:
+                out = element.string
+            output.append(out)
+    return ''.join(reversed(output))
+
+
+def merge_table(table, columns):
+    for tr in table('tr'):
+        i = 0
+        while tr.name and len(tr('td')) < columns:
+            try:
+                for td in tr.find_next('tr')('td')[:columns - len(tr('td'))]:
+                    tr.append(td)
+                tr.find_next('tr').decompose()
+            except TypeError:
+                pass
+
+def vert_table(table, lv_dict):
+    ap = Ap([Mn() for i in range(len(table.tr('td')) - 1)])
+    for tr in table('tr'):
+        lv_tag_set = set()
+        for acronym in tr.td('acronym'):
+            lv_tag_set.add(acronym.text.strip(' |'))
+        for i, td in enumerate(tr('td')[1:]):
+            t = re.sub(r'\(.*?\)', '', clean_str(td.text))
+            for split_text in re.split(r';\s', t):
+                for split_by_script in re.split(r'\s/\s', split_text):
+                    if clean_str(split_by_script) == '?': continue
+                    if not clean_str(split_by_script): continue
+                    try:
+                        script = most_common_script(clean_str(split_by_script))
+                    except IndexError:
+                        raise TypeError('problem with {}'.format(lv_tag_set))
+                    if script == 'Zzzz': script = 'Hmng'
+                    for lv_tag in lv_tag_set:
+                        if not lv_tag: continue
+                        try:
+                            lv = lv_dict[lv_tag][0][script]
+                        except (IndexError, KeyError) as e:
+                            raise TypeError('problem with {} {}'.format(lv_tag, script))
+                        if script == 'Hmng':
+                            text = clean_str(fontmaps.decode(split_by_script, 'JG_Pahawh_Third_Version.ttf'))
+                        elif script == 'Mymr':
+                            text = clean_str(fontmaps.decode(split_by_script, 'Myanmar1.ttf'))
+                        else:
+                            text = clean_str(split_by_script)
+                        ap[i].dn_list.append(Dn(Ex(text, lv)))
+    return ap
+
+def write_lvs(ap, base_file_name):
+    import panlex, requests, os
+    lv_code_list = [l['lv'] for l in panlex.query_all('/lv', {'uid': sorted(ap.lv_set())})['result']]
+    ap_code = panlex.query('/ap/' + re.sub(r'^([a-z]{3}(?:-[a-z]{3})*)-(.+?)$', '\g<1>:\g<2>', base_file_name), {})['ap']['ap']
+    r = requests.post('https://panlex.org/panlem/api', data = {
+        'us': os.environ['PANLEX_PANLEM_USER'],
+        'pwd': os.environ['PANLEX_PANLEM_PASSWORD'],
+        'lvstf': '',
+        'apviz1': 'apred',
+        'do': 'vs',
+        'sr': 'apred4',
+        'rt': 'apnom',
+        'ap': ap_code,
+        'uslv': 187,
+        'lvs': lv_code_list,
+        'mod': 'lvs'
+        })
