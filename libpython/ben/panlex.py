@@ -4,12 +4,13 @@
 import regex as re
 from collections import defaultdict
 from collections.abc import Iterable
-from progress.bar import Bar
+from tqdm import tqdm
 from ben.string_manipulation import *
 from os import environ
 from functools import partialmethod
 from types import FunctionType
 import ben.normalize as normalize
+from alex.pltk import preprocess, prepsyns
 
 class Ex:
 
@@ -136,9 +137,14 @@ class Ex:
     def sub(self, pattern, repl, count=0, flags=0):
         return self.copy(re.sub(pattern, repl, str(self), count, flags))
 
-    def split(self, pattern, maxsplit=0, flags=0):
+    def split(self, pattern, maxsplit=0, flags=0, out_lvs=[''], dupe=False):
         split_list = re.split(pattern, str(self), maxsplit, flags)
-        return [self.copy(split_string) for split_string in split_list]
+        out_lvs = [out_lv if out_lv else self.lv for out_lv in out_lvs]
+        out_lvs += [out_lvs[-1]] * (len(split_list) - len(out_lvs))
+        if dupe:
+            split_list += [split_list[-1]] * (len(out_lvs) - len(split_list))
+        # return [self.copy(split_string) for split_string in split_list]
+        return [Ex(split_string, lv) for split_string, lv in zip(split_list, out_lvs)]
 
     def score(self, as_lv=None, ui=[]):
         if not as_lv: as_lv = self.lv
@@ -326,8 +332,8 @@ class Dn:
         self._cs_list = new_value
 
     def clean(self):
-        self.cs_list = list(set(self.cs_list))
-        self.pp_list = list(set(self.pp_list))
+        self.cs_list = list(set([cs for cs in self.cs_list if cs]))
+        self.pp_list = list(set([pp for pp in self.pp_list if pp]))
 
     def example():
         return Dn(Ex.example(), pp_list=[Pp.example()], cs_list=[Cs.example(1), Cs.example(2)])
@@ -361,6 +367,8 @@ class Dn:
         self.ex = self.ex.copy(ex)
         return cs_list
 
+    def merge(self, dn):
+        return Dn(dn.ex, pp_list=self.pp_list + dn.pp_list, cs_list=self.cs_list + dn.cs_list)
 
 class Mn:
     def __init__(self, dn_list=[], df_list=[], pp_list=[], cs_list=[]):
@@ -448,10 +456,10 @@ class Mn:
     def clean(self):
         for dn in self.dn_list:
             dn.clean()
-        self.dn_list = list(set(self.dn_list))
-        self.df_list = list(set(self.df_list))
-        self.pp_list = list(set(self.pp_list))
-        self.cs_list = list(set(self.cs_list))
+        self.dn_list = list(set([dn for dn in self.dn_list if dn]))
+        self.df_list = list(set([df for df in self.df_list if df]))
+        self.pp_list = list(set([pp for pp in self.pp_list if pp]))
+        self.cs_list = list(set([cs for cs in self.cs_list if cs]))
 
     def pretty(self, indent=0):
         ind = '  ' * indent
@@ -507,6 +515,31 @@ class Mn:
                 if re.search(pattern, str(dn)):
                     self.dn_list[i] = dn.sub(pattern, repl, count, flags)
 
+    def merge(self, mn):
+        return Mn(
+            dn_list=self.dn_list + mn.dn_list,
+            df_list=self.df_list + mn.df_list,
+            pp_list=self.pp_list + mn.pp_list,
+            cs_list=self.cs_list + mn.cs_list,)
+
+    def alex_process(self, re_delim, lv_set=None):
+        if not lv_set: lv_set = self.lv_set()
+        dn_list = []
+        for i, dn in enumerate(self.dn_list):
+            if dn.lv in lv_set:
+                output = preprocess([[str(dn.ex)]])
+                output = prepsyns(output, [0], re_delim, dn.lv)[0][0]
+                out_ap = untag(output, dn.lv)
+                for out_mn in out_ap:
+                    for out_dn in out_mn.dn_list:
+                        dn_list.append(dn.merge(out_dn))
+                    self.df_list.extend(out_mn.df_list)
+                    self.pp_list.extend(out_mn.pp_list)
+                    self.cs_list.extend(out_mn.cs_list)
+                self.dn_list[i] = None
+        self.dn_list.extend(dn_list)
+        self.dn_list = [dn for dn in self.dn_list if dn is not None]
+
     def tag(self, lv_list, tagged=False, tag_types=set()):
         mn_line = []
         if tagged:
@@ -561,7 +594,7 @@ class Ap(list):
             if isinstance(match_re_lv_list[0], str):
                 match_re_lv_list = [match_re_lv_list]
         except TypeError: pass
-        for mn in Bar().iter(self):
+        for mn in tqdm(self):
             line = mn.tag(lv_list, tagged, tag_types)
             if match_re_lv_list:
                 match = False
@@ -579,8 +612,8 @@ class Ap(list):
     def pretty(self, indent=0):
         ind = '  ' * indent
         out = ":\n0\n\n"
-        for mn in self:
-            out += mn.pretty(indent)
+        for mn in tqdm(self):
+            out += mn.pretty(indent) + '\n'
         return out.strip()
 
     def lv_set(self):
@@ -644,11 +677,61 @@ class Ap(list):
             print("Performing replacements...    ")
         else:
             lv_apos = {lv : normalize.apostrophe(lv) for lv in lv_set}
-        if progress: l = Bar().iter(self)
+        if progress: l = tqdm(self)
         else: l = self
         for mn in l:
             for lv in lv_set:
                 mn.sub(r"'", lv_apos[lv], dn_list=mn(lv))
+
+def untag(string, default_lv='und-000'):
+    ap = Ap()
+    string = string.replace('⁋⫷mn', '⫷mn')
+    string = string.replace('⁋', '⫷mn⫸')
+    string = string.replace('‣⫷ex', '⫷ex')
+    string = string.replace('‣', '⫷ex⫸')
+    mn = None
+    dn = None
+    superclass_ex = None
+    attribute = None
+    tag_split = [s for s in re.split(r'(⫷.*?⫸[^⫷]+)', string) if s]
+    if not tag_split: return ap
+    if tag_split[0] != '⫷mn⫸':
+        tag_split.insert(0, '⫷mn⫸')
+    if not tag_split[1].startswith('⫷'):
+        tag_split[1] = '⫷ex⫸' + tag_split[1]
+    for s in tag_split:
+        obj, lv, text = re.search(r'⫷(.+?)(?::([a-z]{3}-\d{3}))?⫸(.*)', s).groups()
+        if not lv: lv = default_lv
+        if obj == 'mn':
+            if mn: ap.append(mn)
+            mn = Mn()
+        if obj == 'ex':
+            if dn: mn.dn_list.append(dn)
+            dn = Dn(Ex(text, lv))
+        if obj == 'df':
+            mn.df_list.append(Df(text, lv))
+        if re.match(r'[dm]cs[12]?', obj):
+            if obj[-1] == '2':
+                superclass_ex = Ex(text, lv)
+            else:
+                if obj.startswith('m'):
+                    mn.cs_list.append(Cs(Ex(text, lv), superclass_ex))
+                if obj.startswith('d'):
+                    dn.cs_list.append(Cs(Ex(text, lv), superclass_ex))
+                superclass_ex = None
+        if re.match(r'[dm]pp', obj):
+            if attribute is None:
+                attribute = Ex(text, lv)
+            else:
+                if obj.startswith('m'):
+                    mn.pp_list.append(Pp(text, attribute))
+                if obj.startswith('d'):
+                    dn.pp_list.append(Pp(text, attribute))
+                attribute = None
+    if dn: mn.dn_list.append(dn)
+    if mn: ap.append(mn)
+    return ap
+
 
 def tabularize(source, output_file, match_re_lv_list=None, lv_list=None, tagged=False, tag_types=set(), inc_df=False):
     if not lv_list:
@@ -657,7 +740,7 @@ def tabularize(source, output_file, match_re_lv_list=None, lv_list=None, tagged=
         if isinstance(match_re_lv_list[0], str):
             match_re_lv_list = [match_re_lv_list]
     except TypeError: pass
-    for mn in Bar().iter(source):
+    for mn in tqdm(source):
         line = tab_line(mn, lv_list, tagged, tag_types)
         if match_re_lv_list:
             match = False

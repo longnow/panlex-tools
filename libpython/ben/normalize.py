@@ -17,7 +17,10 @@ def get_lv_code(lv):
     conn = sqlite3.connect(data_directory + 'db.sqlite')
     c = conn.cursor()
     c.execute("SELECT lv FROM lv WHERE lc=? AND vc=?", (lc, vc))
-    return c.fetchone()[0]
+    try:
+        return c.fetchone()[0]
+    except TypeError:
+        return None
 
 def all_ex(lv):
     conn = sqlite3.connect(data_directory + 'db.sqlite')
