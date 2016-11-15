@@ -33,7 +33,7 @@ for filename in ['melou-trad.txt', 'unihan-trad.txt', 'sayjack-trad.txt', 'cldr-
 # list derived from Wikipedia and added as encountered during mul:MeloU analysis
 KNOWN_AMBI_SINGLES  = '与乾体余叶吒吨咤它帘广惊摺洁离篱虫虮踊麽'
 KNOWN_AMBI_SINGLES += '内凄硅捱湊繙凼昵僮褵迴眯咨茍醣於扠皁罫置'
-KNOWN_AMBI_SINGLES += '采𦊕丱卝'
+KNOWN_AMBI_SINGLES += '采𦊕丱卝妘'
 
 # add more known single chars from file
 # for filename in ['melou-ambi-single.txt', 'sayjack-ambi.txt', 'cjkdi-ambi-single.txt']:
