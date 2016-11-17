@@ -22,7 +22,7 @@ class LexiqueParser(object):
                     key = re.sub('^lp', '', item['class'][0])
 
                     record.append( (key,item.text) )
-        print('RECORD: %s' % record)
+        
         return record
     
     

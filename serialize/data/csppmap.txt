@@ -195,7 +195,7 @@ impf.	art-303:AspectProperty:art-303:ImperfectiveAspect
 inclusive	art-303:PersonProperty:art-303:FirstPersonInclusive	
 ind.det.	art-303:PartOfSpeechProperty:art-303:Determiner‣art-302:INDF	
 ind.pron.	art-303:PartOfSpeechProperty:art-303:IndefinitePronoun	
-indef	art-303:PartOfSpeechProperty:art-303:DefiniteArticle	
+indef	art-303:PartOfSpeechProperty:art-303:IndefiniteArticle	
 indef.art	art-303:PartOfSpeechProperty:art-303:IndefiniteArticle	
 indpron.	art-303:PartOfSpeechProperty:art-303:IndefinitePronoun	
 inf.	art-303:PartOfSpeechProperty:art-303:Verbal	
