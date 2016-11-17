@@ -7,8 +7,12 @@ import ben.fontmaps as fontmaps
 from ben.panlex import *
 import regex as re
 
-def most_common_script(string):
+def most_common_script(string, skip=[]):
     c = Counter(list(map(lambda x: iso15924.convert(unicode.get_property(x, 'Script'), 'code', 'pva', exact=True)[-1], string)))
+    for sc in c.most_common():
+        script = sc[0]
+        if script not in skip:
+            return script
     return c.most_common(1)[0][0]
 
 def get_tables(a, cont=True):
@@ -77,13 +81,13 @@ def vert_table(table, lv_dict):
         for acronym in tr.td('acronym'):
             lv_tag_set.add(acronym.text.strip(' |'))
         for i, td in enumerate(tr('td')[1:]):
-            t = re.sub(r'\(.*?\)', '', clean_str(td.text))
+            t = re.sub(r'\s\(.*?\)', '', clean_str(td.text))
             for split_text in re.split(r';\s', t):
                 for split_by_script in re.split(r'\s/\s', split_text):
                     if clean_str(split_by_script) == '?': continue
                     if not clean_str(split_by_script): continue
                     try:
-                        script = most_common_script(clean_str(split_by_script))
+                        script = most_common_script(clean_str(split_by_script), {'Zyyy'})
                     except IndexError:
                         raise TypeError('problem with {}'.format(lv_tag_set))
                     if script == 'Zzzz': script = 'Hmng'
@@ -102,6 +106,43 @@ def vert_table(table, lv_dict):
                         ap[i].dn_list.append(Dn(Ex(text, lv)))
     return ap
 
+def horz_table(a, lv_dict, ap, title_mn=None):
+    lv_tag = a['name']
+    for i, table in enumerate(get_tables(a)):
+        if title_mn is not None:
+            title_text = re.sub(r'\(.*?\)', '', clean_str(text_before_table(table)))
+            try:
+                title_text = title_text.split(':')[1]
+            except IndexError:
+                title_text = ''
+            for text in re.split(r'\s/\s', title_text):
+                text = clean_str(text)
+                if not text: continue
+                script = most_common_script(text, {'Zyyy'})
+                if script == 'Zzzz': script = 'Hmng'
+                try:
+                    lv = lv_dict[lv_tag][i][script]
+                except (IndexError, KeyError) as e:
+                    raise TypeError('problem with "{}" ({})'.format(text, lv_tag))
+                title_mn.dn_list.append(Dn(Ex(text, lv)))
+        merge_table(table, len(ap))
+        for tr in table('tr'):
+            script = most_common_script(tr.text, {'Zyyy'})
+            if script == 'Zzzz': script = 'Hmng'
+            try:
+                lv = lv_dict[lv_tag][i][script]
+            except (IndexError, KeyError) as e:
+                raise TypeError('problem with {}'.format(lv_tag))
+            for j, td in enumerate(tr('td')):
+                if clean_str(td.text) == '?': continue
+                if script == 'Hmng':
+                    text = clean_str(fontmaps.decode(td.text, 'JG_Pahawh_Third_Version.ttf'))
+                elif script == 'Mymr':
+                    text = clean_str(fontmaps.decode(td.text, 'Myanmar1.ttf'))
+                else:
+                    text = clean_str(td.text)
+                ap[j].dn_list.append(Dn(Ex(text, lv)))
+
 def write_lvs(ap, base_file_name):
     import panlex, requests, os
     lv_code_list = [l['lv'] for l in panlex.query_all('/lv', {'uid': sorted(ap.lv_set())})['result']]
@@ -119,3 +160,7 @@ def write_lvs(ap, base_file_name):
         'lvs': lv_code_list,
         'mod': 'lvs'
         })
+
+def soup_sub(rx, replacement, soup):
+    for s in soup.find_all(text = re.compile(rx)):
+        s.replace_with(re.sub(rx, replacement, s))
