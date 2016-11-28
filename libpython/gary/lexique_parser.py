@@ -34,17 +34,18 @@ class LexiqueParser(object):
                 bs = BeautifulSoup(text, 'lxml')
         elif isinstance(inputfile, io.TextIOWrapper):
             bs = BeautifulSoup(inputfile, 'lxml')
-            entries = bs.find_all('p')
-            source = ''
+        
+        entries = bs.find_all('p')
+        source = ''
 
-            for para in entries:
-                if 'class' in para.attrs:
-                    
-                    if 'lpLexEntryPara' in para['class'] or 'lpLexEntryPara_KeepWithNext' in para['class']:
-                        source = para.find('span', {'class':'lpLexEntryName'}).text.strip()
-                        yield self._extract_entry(para)
-                    elif 'lpLexEntryPara2' in para['class']:
-                        yield self._extract_entry(para, source)
+        for para in entries:
+            if 'class' in para.attrs:
+                
+                if 'lpLexEntryPara' in para['class'] or 'lpLexEntryPara_KeepWithNext' in para['class']:
+                    source = para.find('span', {'class':'lpLexEntryName'}).text.strip()
+                    yield self._extract_entry(para)
+                elif 'lpLexEntryPara2' in para['class']:
+                    yield self._extract_entry(para, source)
 
 
     def _preprocess(self,text):
