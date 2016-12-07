@@ -3,6 +3,8 @@
 
 # PanLex ToolKit
 
+import time
+
 import unicodedata
 import regex as re
 from unidecode import unidecode
@@ -70,31 +72,35 @@ def preprocess(entries):
 
 PARENS = [(r'\(',r'\)'),(r'\[',r'\]'),(r'\{',r'\}'),(r'（',r'）'),(r'【',r'】')]
 
-def split_outside_parens(entries, cols, delim=r',', parens=PARENS):
+def split_outside_parens(entries, cols, delim=r',', parens=PARENS, max_wd_single_ex=999):
     ''' Peforms a split of each specified column, but ignores anything in parens.
-    entries        = list of entries, which are lists of columns
-    cols        = list of columns (element indices) on which to perform operation
+    entries   = list of entries, which are lists of columns
+    cols      = list of columns (element indices) on which to perform operation
     delim     = regex of delimiter(s) at which to split
     parens    = list of tuples of opening and closing characters (regex escaped)
-                        to be considered parenthetical '''
+                to be considered parenthetical
+    max_wd_single_ex = maximum number of words in a single section indicating
+                       split should not be performed (definitional) '''
 
     # PLEASE REWRITE THIS SOON WITH A REGEX LOOKBEHIND INSTEAD OF THIS WEIRD HACK
     
     SOP_DELIM = ''
     TEMP_PAREN = [(r'🁾',r'🂊')]
-
+    
     # detect sentences
     parens += TEMP_PAREN
     minwords = 4
 
     assert parens
 
-    o_parens = [p[0] for p in parens]
-    c_parens = [p[1] for p in parens]
+    # o_parens = [p[0] for p in parens]
+    # c_parens = [p[1] for p in parens]
 
+    not_in_parens_regex = r'(?<!{}){}'.format(r'|'.join(r'{}[^{}]*'.format(o, c) for o, c in parens), delim)
+    
     result = []
 
-    paren_re = make_paren_regex(parens) + r'+\s*'
+    # paren_re = make_paren_regex(parens) + r'+\s*'
 
     for entry in entries:
 
@@ -114,25 +120,35 @@ def split_outside_parens(entries, cols, delim=r',', parens=PARENS):
                 # commas separating decimals or digit groups
                 entry[col] = re.sub(r'(\d+(?:,\d+)+)', TEMP_PAREN[0][0]+r'\1'+TEMP_PAREN[0][1], entry[col])
 
-                count = 0
+                # count = 0
+                # 
+                # entry_letters = []
+                # 
+                # for l in entry[col]:
+                #     if list(filter(None, [re.match(o_paren, l) for o_paren in o_parens])):
+                #         # if letter is open paren
+                #         entry_letters.append(l)
+                #         count += 1
+                #     elif list(filter(None, [re.match(c_paren, l) for c_paren in c_parens])):
+                #         # if letter is close paren
+                #         entry_letters.append(l)
+                #         count -= 1
+                #     elif count == 0 and re.match(delim, l):
+                #         entry_letters.append(SOP_DELIM)
+                #     else:
+                #         entry_letters.append(l)
+                
+                entry_split = re.split(not_in_parens_regex, entry[col])
 
-                entry_letters = []
+                # test for long single expressions; if so, ignore split entirely
+                if len(entry_split) > 1 and max(len(s.strip().split(' ')) for s in entry_split) >= max_wd_single_ex:
+                    # print([len(s.strip().split(' ')) for s in entry_split])
+                    # print(entry_split)
+                    entry_split = [entry[col]]
+                
 
-                for l in entry[col]:
-                    if list(filter(None, [re.match(o_paren, l) for o_paren in o_parens])):
-                        # if letter is open paren
-                        entry_letters.append(l)
-                        count += 1
-                    elif list(filter(None, [re.match(c_paren, l) for c_paren in c_parens])):
-                        # if letter is close paren
-                        entry_letters.append(l)
-                        count -= 1
-                    elif count == 0 and re.match(delim, l):
-                        entry_letters.append(SOP_DELIM)
-                    else:
-                        entry_letters.append(l)
-
-                entry[col] = [re.sub(r'['+TEMP_PAREN[0][0]+TEMP_PAREN[0][1]+r']', '',    c).strip() for c in ''.join(entry_letters).split(SOP_DELIM)]
+                # entry[col] = [re.sub(r'['+TEMP_PAREN[0][0]+TEMP_PAREN[0][1]+r']', '',    c).strip() for c in ''.join(entry_letters).split(SOP_DELIM)]
+                entry[col] = [re.sub(r'['+TEMP_PAREN[0][0]+TEMP_PAREN[0][1]+r']', '', c).strip() for c in entry_split]
 
             else:
                 entry[col] = [entry[col]]
@@ -180,7 +196,7 @@ EXDFPREP_RULES = {
             r'^the last one$' : (r'(the last one)', '', ''),
         },
         2: {
-            r'([^\s])\s+(s(?:\-|o(?:me|em))?(?: other )?(?:body|one|thing)(?:(?: or |\s*/\s*)s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing))?(?: (?:who|which|that) is)?|s\.[bot]\.?|o\.s\.?)([^\'’]|$)' : (r'\1 (\2)\3', '', ''),
+            r'([^\s])\s+(s(?:\-|o(?:me|em))?(?: other )?(?:body|one|thing)(?:(?: or |\s*/\s*)s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)([^\'’]|$)' : (r'\1 (\2)\3', '', ''),
             r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)?)(s(?:\-|o(?:me|em))?(?: other )?(?:body|one|thing)(?:(?: or |\s*/\s*)s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\s+([^\s])' : (r'\1(\2) \3', '', ''),
             r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)?)(s(?:\-|o(?:me|em))?(?: other )?(?:body|one|thing)[\'’]?s)\s+([^\s])' : (r'\1(\2) \3', '', ''),
             r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)?)((?:(?:for (?:something|s\.t\.?))?\(?\s*to\s*\)?\s+)?be)\s+([^\(])'    : (r'\1(\2) \3', '', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal'),
@@ -413,6 +429,7 @@ EXDFPREP_RULES = {
         },
         999 : {
             # r' ?\(n\.?\)$' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun', ''),
+            r' ?\(adj\.?\)$' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Adjectival', ''),
             r' ?\(v\.?\)$' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal', ''),
             r' ?\(v\.?i\.?\)$' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸IntransitiveVerb', ''),
             r' ?\(v\.?t\.?\)$' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸TransitiveVerb', ''),
@@ -420,10 +437,10 @@ EXDFPREP_RULES = {
             r' ?\(sing(?:\.|ular)\)$' : ('', '⫷dcs2:art-303⫸NumberProperty⫷dcs:art-303⫸SingularNumber', ''),
             r' ?\([pP]l?\.?\)$' : ('', '⫷dcs2:art-303⫸NumberProperty⫷dcs:art-303⫸PluralNumber', ''),
             r' ?\(pl(?:\.|ural)\)$' : ('', '⫷dcs2:art-303⫸NumberProperty⫷dcs:art-303⫸PluralNumber', ''),
-            r' ?\(excl?(usive)?\)$' : ('', '⫷dcs2:art-303⫸PersonProperty⫷dcs:art-303⫸FirstPersonExclusive', ''),
-            r' ?\(incl?(usive)?\)$' : ('', '⫷dcs2:art-303⫸PersonProperty⫷dcs:art-303⫸FirstPersonInclusive', ''),
-            r' ?\(impol(ite)?\)$' : ('', '⫷dcs2:art-317⫸register⫷dcs:art-317⫸vulgarRegister', ''),
-            r' ?\(pol(ite)?\)$' : ('', '⫷dcs2:art-317⫸register⫷dcs:art-306⫸POL', ''),
+            r' ?\(excl?(\.|usive)?\)$' : ('', '⫷dcs2:art-303⫸PersonProperty⫷dcs:art-303⫸FirstPersonExclusive', ''),
+            r' ?\(incl?(\.|usive)?\)$' : ('', '⫷dcs2:art-303⫸PersonProperty⫷dcs:art-303⫸FirstPersonInclusive', ''),
+            r' ?\(impol(\.|ite)?\)$' : ('', '⫷dcs2:art-317⫸register⫷dcs:art-317⫸vulgarRegister', ''),
+            r' ?\(pol(\.|ite)?\)$' : ('', '⫷dcs2:art-317⫸register⫷dcs:art-306⫸POL', ''),
             # r'\(n?m\.?\)' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸MasculineGender', ''),
             # r'\(n?f\.?\)' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸FeminineGender', ''),
             # r'\(a(?:dj|g)\.?\)' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Adjectival', ''),
@@ -453,11 +470,11 @@ EXDFPREP_RULES = {
 
 def exdfprep(entries, sourcecols, tocol=-1, lang='eng-000', pretag_special_lvs=True, othercol=-1):
     ''' Parenthesizes "definitional" parts of an expression, and adds appropriate pretagged elements.
-    entries        = list of entries, lists of elements; column with expressions to be process must be a list
+    entries    = list of entries, lists of elements; column with expressions to be process must be a list
     sourcecols = list of columns (element indices) on which to perform operation
-    tocol     = new col in which to deposit pretagged content (end); if -1, use end of source col
-    othercol     = new col in which to deposit "other language" content; if -1 discard '''
-
+    tocol      = new col in which to deposit pretagged content (end); if -1, use end of source col
+    othercol   = new col in which to deposit "other language" content; if -1 discard '''
+    
     result = []
 
     paren_re = DEFAULT_PR
@@ -741,7 +758,7 @@ def regexsubcol(refrom, reto, cols, entries):
     return result
 
 
-def prepsyns(entries, cols, refrom, lng, delim='‣', pretag_special_lvs=True, othercol=-1):
+def prepsyns(entries, cols, refrom, lng, delim='‣', pretag_special_lvs=True, othercol=-1, max_wd_single_ex=12):
     """ Splits at given regex (outside parens), runs exdfprep, joins with syn delimiter,
     and removes nested parens.
     entries = list of entries
@@ -753,7 +770,7 @@ def prepsyns(entries, cols, refrom, lng, delim='‣', pretag_special_lvs=True, o
     assert isinstance(cols, list)
     result = []
     # split at given delimiter
-    entries = split_outside_parens(entries, cols, refrom)
+    entries = split_outside_parens(entries, cols, refrom, max_wd_single_ex=max_wd_single_ex)
     # prepare as expression
     entries = exdfprep(entries, cols, lang=lng, pretag_special_lvs=pretag_special_lvs, othercol=othercol)
     # join with consistent synonym delimiter
@@ -1048,7 +1065,7 @@ def decap(entries, cols):
             if col in cols:
                 m = re.match(r'^('+DEFAULT_PR_NOCAP+r'?)\s*(.*)$', newcol)
                 if not m:
-                    raise ValueException('unexpected non-match:', newcol)
+                    raise ValueError('unexpected non-match:', newcol)
                 else:
                     paren, rest = m.group(1), m.group(2)
                     if not list(filter(None, [re.search(r'^'+nd+r'(?:\s|‣|⫷|;|,|\.|:|$)', rest) for nd in NO_DECAP])):

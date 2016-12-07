@@ -69,6 +69,12 @@ art.indef.	art-303:PartOfSpeechProperty:art-303:IndefiniteArticle
 article	art-303:PartOfSpeechProperty:art-303:Article	
 attr.	art-303:LinguisticProperty:art-253:attributive(icl>adj,ant>predicative)	
 attributive verb	art-303:LinguisticProperty:art-253:attributive(icl>adj,ant>predicative)‣art-303:PartOfSpeechProperty:art-303:Verbal	
+predicative adjective	art-303:LinguisticProperty:art-253:predicative(icl>adj,ant>attributive)‣art-303:PartOfSpeechProperty:art-303:Adjectival	
+predicate adjective	art-303:LinguisticProperty:art-253:predicative(icl>adj,ant>attributive)‣art-303:PartOfSpeechProperty:art-303:Adjectival	
+predic adj	art-303:LinguisticProperty:art-253:predicative(icl>adj,ant>attributive)‣art-303:PartOfSpeechProperty:art-303:Adjectival	
+predic-adj	art-303:LinguisticProperty:art-253:predicative(icl>adj,ant>attributive)‣art-303:PartOfSpeechProperty:art-303:Adjectival	
+predic.adj.	art-303:LinguisticProperty:art-253:predicative(icl>adj,ant>attributive)‣art-303:PartOfSpeechProperty:art-303:Adjectival	
+predicadj	art-303:LinguisticProperty:art-253:predicative(icl>adj,ant>attributive)‣art-303:PartOfSpeechProperty:art-303:Adjectival	
 atviksorð	art-303:PartOfSpeechProperty:art-303:Adverbial	
 Ausruf	art-303:PartOfSpeechProperty:art-303:Interjection	
 aux	art-303:PartOfSpeechProperty:art-303:Auxiliary	
@@ -189,6 +195,7 @@ ideophone	art-303:PartOfSpeechProperty:art-253:onomatopoeia
 ij	art-303:PartOfSpeechProperty:art-303:Interjection	
 ijec	art-303:PartOfSpeechProperty:art-303:Interjection	
 Imperativ	art-303:ForceProperty:art-303:ImperativeForce	
+imper	art-303:ForceProperty:art-303:ImperativeForce	
 imperative auxiliary	art-303:ForceProperty:art-303:ImperativeForce‣art-303:PartOfSpeechProperty:art-303:Auxiliary	
 imperative verb	art-303:ForceProperty:art-303:ImperativeForce‣art-303:PartOfSpeechProperty:art-303:Verbal	
 impf.	art-303:AspectProperty:art-303:ImperfectiveAspect	
@@ -212,6 +219,8 @@ interjec.	art-303:PartOfSpeechProperty:art-303:Interjection
 interjection	art-303:PartOfSpeechProperty:art-303:Interjection	
 Interjection	art-303:PartOfSpeechProperty:art-303:Interjection	
 interjection	art-303:PartOfSpeechProperty:art-303:Interjection	
+interr	art-303:ForceProperty:art-303:InterrogativeForce	
+interr pron	art-303:PartOfSpeechProperty:art-303:InterrogativeProform	
 interrog.	art-303:ForceProperty:art-303:InterrogativeForce	
 interrogative	art-303:ForceProperty:art-303:InterrogativeForce	
 INTJ	art-303:PartOfSpeechProperty:art-303:Interjection	
@@ -339,6 +348,7 @@ pcl	art-303:PartOfSpeechProperty:art-303:Particle
 pcle	art-303:PartOfSpeechProperty:art-303:Particle	
 pers. pron	art-303:PartOfSpeechProperty:art-303:PersonalPronoun	
 pers. pronoun	art-303:PartOfSpeechProperty:art-303:PersonalPronoun	
+pers pron	art-303:PartOfSpeechProperty:art-303:PersonalPronoun	
 pers.pron.	art-303:PartOfSpeechProperty:art-303:PersonalPronoun	
 pf.	art-303:AspectProperty:art-303:PerfectiveAspect	
 phr: v	art-303:SyntacticUnit:art-303:VerbPhrase	
@@ -383,6 +393,7 @@ pr.indef.	art-303:PartOfSpeechProperty:art-303:IndefinitePronoun
 pr.interrog.	art-303:PartOfSpeechProperty:art-303:InterrogativeProform	
 pr.pers.	art-303:PartOfSpeechProperty:art-303:PersonalPronoun	
 pr.poss.	art-303:PartOfSpeechProperty:art-303:PossessivePronoun	
+poss pron	art-303:PartOfSpeechProperty:art-303:PossessivePronoun	
 pr.rel.	art-303:PartOfSpeechProperty:art-303:RelativePronoun	
 pr.rel.abs.	art-303:PartOfSpeechProperty:art-303:RelativePronoun	*
 pr.rel.indef.	art-303:PartOfSpeechProperty:art-303:RelativePronoun	*
@@ -428,6 +439,9 @@ pron. m. sg.	art-303:PartOfSpeechProperty:art-303:Pronominal‣art-303:GenderPro
 pron. n.	art-303:PartOfSpeechProperty:art-303:Pronominal‣art-303:GenderProperty:art-303:NeuterGender	
 pron. n. sg.	art-303:PartOfSpeechProperty:art-303:Pronominal‣art-303:GenderProperty:art-303:NeuterGender‣art-303:NumberProperty:art-303:SingularNumber	
 pron. reflex.	art-303:PartOfSpeechProperty:art-303:ReflexivePronoun	
+refl pron	art-303:PartOfSpeechProperty:art-303:ReflexivePronoun	
+refl.pron.	art-303:PartOfSpeechProperty:art-303:ReflexivePronoun	
+pron.refl.	art-303:PartOfSpeechProperty:art-303:ReflexivePronoun	
 Pron.Pess.	art-303:PartOfSpeechProperty:art-303:PersonalPronoun	
 pronominal clitic	art-303:Morpheme:art-303:Clitic‣art-303:PartOfSpeechProperty:art-303:Pronominal	
 Pronoun	art-303:PartOfSpeechProperty:art-303:Pronominal	
@@ -472,6 +486,7 @@ s	art-303:PartOfSpeechProperty:art-303:Noun
 s.	art-303:PartOfSpeechProperty:art-303:Noun	
 s. pl.	art-303:PartOfSpeechProperty:art-303:Noun‣art-303:NumberProperty:art-303:PluralNumber	
 s. sg	art-303:PartOfSpeechProperty:art-303:Noun‣art-303:NumberProperty:art-303:SingularNumber	
+sg.	art-303:NumberProperty:art-303:SingularNumber	
 s. sg.	art-303:PartOfSpeechProperty:art-303:Noun‣art-303:NumberProperty:art-303:SingularNumber	
 s.f.	art-303:PartOfSpeechProperty:art-303:Noun‣art-303:GenderProperty:art-303:FeminineGender	
 s.f.pl.	art-303:PartOfSpeechProperty:art-303:Noun‣art-303:GenderProperty:art-303:FeminineGender‣art-303:NumberProperty:art-303:PluralNumber	
