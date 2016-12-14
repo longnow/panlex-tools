@@ -284,6 +284,7 @@ name	art-303:PartOfSpeechProperty:art-303:ProperNoun
 NAME	art-303:PartOfSpeechProperty:art-303:ProperNoun	
 name	art-303:PartOfSpeechProperty:art-303:ProperNoun	
 name.	art-303:PartOfSpeechProperty:art-303:ProperNoun	
+neg value	art-303:PartOfSpeechProperty:art-302:NEG	
 neg	art-303:PartOfSpeechProperty:art-303:NegationOperator	
 neg.	art-303:PartOfSpeechProperty:art-303:NegationOperator	
 negative sa-adjective	art-303:PolarityProperty:art-303:NegativePolarity‣art-303:PartOfSpeechProperty:art-303:Adjectival	*
