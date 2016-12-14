@@ -517,7 +517,13 @@ class DcsMapper(object):
 
 
     def __getitem__(self, key):
-        return ''.join([self.mapping[k] for k in key.split('‣')])
+        results = set()
+        for k in key.split('‣'):
+            if k not in self.mapping:
+                results.add('⫷dpp:art-303⫸LinguisticProperty⫷dpp⫸%s' % k)
+            else:
+                results.add(self.mapping[k])
+        return ''.join(results)
 
 
     def __setitem__(self, key, value):
@@ -527,13 +533,14 @@ class DcsMapper(object):
     def __standardize(self, text):
         fields = text.split('‣')
         results = []
+        
         for field in fields:
             match = re.search('\s*(\w{3}-\d{1,3}):([^:]+):(\w{3}-\d{1,3}):([^:]+)\s*$', field)
             if match:
                 tag = '⫷dcs2:%s⫸%s⫷dcs:%s⫸%s' % match.groups()
                 results.append(tag)
 
-        return ''.join(results)
+        return ''.join(list(set(results)))
 
 
 def make_phonetic_rep(text):
