@@ -611,6 +611,7 @@ vi.	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb
 vin.	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb	
 vint	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb	
 Vint.	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb	
+voc	art-303:CaseProperty:art-303:VocativeCase	
 volitional auxiliary	art-303:PartOfSpeechProperty:art-303:Auxiliary	
 vpart	art-303:PartOfSpeechProperty:art-303:Particle	
 vr	art-303:PartOfSpeechProperty:art-303:Verbal‣art-302:REFL	
