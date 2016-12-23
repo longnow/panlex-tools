@@ -271,6 +271,7 @@ n.loc.	art-303:PartOfSpeechProperty:art-303:Noun
 n.m.	art-303:PartOfSpeechProperty:art-303:Noun‣art-303:GenderProperty:art-303:MasculineGender	
 n.manner.	art-303:PartOfSpeechProperty:art-303:Noun	
 n.n.	art-303:PartOfSpeechProperty:art-303:Noun	
+n pl	art-303:PartOfSpeechProperty:art-303:Noun‣art-303:NumberProperty:art-303:PluralNumber	
 n.pl.	art-303:PartOfSpeechProperty:art-303:Noun‣art-303:NumberProperty:art-303:PluralNumber	
 n.pro.	art-303:PartOfSpeechProperty:art-303:ProperNoun	
 n.qual.	art-303:PartOfSpeechProperty:art-303:Noun	

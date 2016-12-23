@@ -212,7 +212,7 @@ EXDFPREP_RULES = {
         },
         4: {
             r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)?)((?:not )?)[Tt]o\s+(?!(?:'+DEFAULT_PR_NOCAP+r'$|the|you|us|him|her|them|me|[wt]?here|no|one[\'’]s|oneself|a[n])(?: |$))' : (r'\1\2(to) ', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal', ''),
-            r'(^| )make to ' : (r'\1make (to) ', '', ''),
+            r'(^| make to ' : (r'\1make (to) ', '', ''),
         },
         5: {
             r'(^|\s)\(a\) (lot|bit|posteriori|priori|fortiori|few|little|minute|same|while|propos|cappella)(\s|$)' : (r'\1a \2\3', r'', ''),
@@ -1063,14 +1063,19 @@ def decap(entries, cols):
         for col in range(len(entry)):
             newcol = entry[col]
             if col in cols:
-                m = re.match(r'^('+DEFAULT_PR_NOCAP+r'?)\s*(.*)$', newcol)
-                if not m:
-                    raise ValueError('unexpected non-match:', newcol)
-                else:
-                    paren, rest = m.group(1), m.group(2)
-                    if not list(filter(None, [re.search(r'^'+nd+r'(?:\s|‣|⫷|;|,|\.|:|$)', rest) for nd in NO_DECAP])):
-                        newcol = paren + ' ' + rest[0].lower() + rest[1:] if rest else ''
-                        newcol = newcol.strip()
+                newcol_split = newcol.split('‣')
+                newcol_split_new = []
+                for nc in newcol_split:
+                    m = re.match(r'^('+DEFAULT_PR_NOCAP+r'?)\s*(.*)$', nc)
+                    if not m:
+                        raise ValueError('unexpected non-match:', nc)
+                    else:
+                        paren, rest = m.group(1), m.group(2)
+                        if not list(filter(None, [re.search(r'^'+nd+r'(?:\s|‣|⫷|;|,|\.|:|$)', rest) for nd in NO_DECAP])):
+                            nc = paren + ' ' + rest[0].lower() + rest[1:] if rest else ''
+                            nc = nc.strip()
+                    newcol_split_new.append(nc)
+                newcol = '‣'.join(newcol_split_new)
             newentry.append(newcol)
         result.append(newentry)
     return result
