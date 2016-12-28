@@ -3,7 +3,6 @@ use strict;
 use warnings;
 use lib "$ENV{PANLEX_TOOLDIR}/lib";
 use PanLex::Client;
-use List::Util 'uniq';
 binmode STDOUT, ':encoding(utf8)';
 
 my @ISO_UID = qw( art-001 art-002 art-003 art-005 art-015 );
@@ -54,9 +53,15 @@ foreach my $langname (@langnames) {
     my $td = $langname_td{$langname};
 
     my @info = ($langname);
-    push @info, join('; ', sort { $a cmp $b } uniq @{$td{uid}{$td} || []});
-    push @info, join('; ', sort { $a cmp $b } uniq @{$td{iso}{$td} || []});
-    push @info, join('; ', sort { $a cmp $b } uniq @{$td{glotto}{$td} || []});
+    push @info, join('; ', sort { $a cmp $b } uniq(@{$td{uid}{$td} || []}));
+    push @info, join('; ', sort { $a cmp $b } uniq(@{$td{iso}{$td} || []}));
+    push @info, join('; ', sort { $a cmp $b } uniq(@{$td{glotto}{$td} || []}));
 
     print join("\t", @info), "\n";
+}
+
+sub uniq {
+    my %seen;
+    @seen{@_} = ();
+    return keys %seen;
 }
