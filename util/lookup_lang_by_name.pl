@@ -17,10 +17,8 @@ my (@langnames, %langname_td, %td);
 
 open my $fh, '<:crlf:encoding(utf-8)', $filename or die $!;
 
-while (<$fh>) {
-    chomp;
-    push @langnames, $_;
-}
+@langnames = <$fh>;
+chomp @langnames;
 
 close $fh;
 
@@ -52,12 +50,12 @@ print join("\t", 'Name', 'PanLex UIDs', 'ISO 639 codes', 'Glottocodes'), "\n";
 foreach my $langname (@langnames) {
     my $td = $langname_td{$langname};
 
-    my @info = ($langname);
-    push @info, join('; ', sort { $a cmp $b } uniq(@{$td{uid}{$td} || []}));
-    push @info, join('; ', sort { $a cmp $b } uniq(@{$td{iso}{$td} || []}));
-    push @info, join('; ', sort { $a cmp $b } uniq(@{$td{glotto}{$td} || []}));
-
-    print join("\t", @info), "\n";
+    print join("\t",
+        $langname,
+        join('; ', sort { $a cmp $b } uniq(@{$td{uid}{$td} || []})),
+        join('; ', sort { $a cmp $b } uniq(@{$td{iso}{$td} || []})),
+        join('; ', sort { $a cmp $b } uniq(@{$td{glotto}{$td} || []})),
+    ), "\n";
 }
 
 sub uniq {
