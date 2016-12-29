@@ -3,37 +3,48 @@ use strict;
 use warnings;
 use lib "$ENV{PANLEX_TOOLDIR}/lib";
 use PanLex::Client;
-binmode STDOUT, ':encoding(utf8)';
+binmode STDOUT, ':encoding(utf-8)';
+binmode STDERR, ':encoding(utf-8)';
 
 my @ISO_UID = qw( art-001 art-002 art-003 art-005 art-015 );
 my $GLOTTO_UID = 'art-327';
 
-die "you must provide a filename (one language name per line)" unless @ARGV;
-
-my ($filename) = @ARGV;
-die "could not read file: $filename" unless -r $filename;
-
 my (@langnames, %langname_td, %td);
 
-open my $fh, '<:crlf:encoding(utf-8)', $filename or die $!;
+print STDERR "\n";
 
-@langnames = <$fh>;
+if (@ARGV and $ARGV[0] ne '-') {
+    my ($filename) = @ARGV;
+    die "cannot read $filename" unless -r $filename;
+
+    print STDERR "reading language names from $filename (one name per line) ...\n";
+    open my $fh, '<:crlf:encoding(utf-8)', $filename or die $!;
+    @langnames = <$fh>;
+    close $fh;
+
+}
+else {
+    print STDERR "reading language names from stdin (one name per line) ...\n";
+    @langnames = <STDIN>;
+}
+
 chomp @langnames;
 
-close $fh;
-
+print STDERR "generating text degradations of languge names ...\n";
 my $data = panlex_query('/td', { tt => \@langnames });
 
 foreach my $langname (keys %{$data->{td}}) {
     $langname_td{$langname} = $data->{td}{$langname};
 }
 
+print STDERR "looking up all PanLex language variety default names ...\n";
 $data = panlex_query_all('/lv', {});
 
 foreach my $lv (@{$data->{result}}) {
     push @{$td{uid}{$lv->{td}}}, $lv->{uid};
 }
 
+print STDERR "looking up ISO 639 codes and Glottocodes corresponding to language names ...\n";
 $data = panlex_query_all('/ex', {
     uid => [ @ISO_UID, $GLOTTO_UID ],
     trtd => \@langnames,
@@ -44,6 +55,8 @@ foreach my $ex (@{$data->{result}}) {
     my $type = $ex->{uid} eq $GLOTTO_UID ? 'glotto' : 'iso';
     push @{$td{$type}{$ex->{trtd}}}, $ex->{tt};
 }
+
+print STDERR "done.\n\n";
 
 print join("\t", 'Name', 'PanLex UIDs', 'ISO 639 codes', 'Glottocodes'), "\n";
 
