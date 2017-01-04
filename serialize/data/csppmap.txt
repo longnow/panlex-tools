@@ -138,6 +138,7 @@ dim	art-303:SizeProperty:art-303:DiminuativeSize
 directional noun	art-303:PartOfSpeechProperty:art-303:Noun	*
 disc	art-303:LinguisticSign:art-306:DM	
 dur.	art-303:AspectProperty:art-303:DurativeAspect	
+egennavn	art-303:PartOfSpeechProperty:art-317:placeName	
 emph	art-303:ForceProperty:art-270:2549	
 encl	art-303:Morpheme:art-303:Enclitic	
 enclitique	art-303:Morpheme:art-303:Enclitic	
@@ -342,6 +343,7 @@ participle	art-303:PartOfSpeechProperty:art-303:Participle
 particle	art-303:PartOfSpeechProperty:art-303:Particle	
 particles	art-303:PartOfSpeechProperty:art-303:Particle	
 past verb	art-303:PartOfSpeechProperty:art-303:Verbal	
+påpek. pron.	art-303:PartOfSpeechProperty:art-303:Demonstrative	
 pcl	art-303:PartOfSpeechProperty:art-303:Particle	
 pcle	art-303:PartOfSpeechProperty:art-303:Particle	
 pers pron	art-303:PartOfSpeechProperty:art-303:PersonalPronoun	
@@ -486,6 +488,7 @@ rel. pron.	art-303:PartOfSpeechProperty:art-303:RelativePronoun
 rel.pron.	art-303:PartOfSpeechProperty:art-303:RelativePronoun	
 relative pronoun	art-303:PartOfSpeechProperty:art-303:RelativePronoun	
 relpron.	art-303:PartOfSpeechProperty:art-303:RelativePronoun	
+resipr. pron.	art-303:PartOfSpeechProperty:art-303:ReciprocalPronoun	
 RFLX PRO	art-303:PartOfSpeechProperty:art-303:ReflexivePronoun	
 s	art-303:PartOfSpeechProperty:art-303:Noun	
 s.	art-303:PartOfSpeechProperty:art-303:Noun	
@@ -512,10 +515,12 @@ sm.	art-303:PartOfSpeechProperty:art-303:Noun‣art-303:GenderProperty:art-303:M
 splu	art-303:PartOfSpeechProperty:art-303:Noun‣art-303:NumberProperty:art-303:PluralNumber	
 spn	art-303:PartOfSpeechProperty:art-303:Pronominal	
 spost	art-303:PartOfSpeechProperty:art-303:Postposition	
+spørrepron.	art-303:PartOfSpeechProperty:art-303:InterrogativeProform	
 Sprichwort	art-303:SyntacticUnit:art-303:Phrase	
 strong	art-303:Class:art-253:strong(fld>grammer)	
 stytting	art-317:termType:art-317:abbreviation	
 subj.pron.	art-303:PartOfSpeechProperty:art-303:Pronominal	
+subst.	art-303:PartOfSpeechProperty:art-303:Noun	
 suf	art-303:Morpheme:art-303:Suffix	
 suf.	art-303:Morpheme:art-303:Suffix	
 Suf.	art-303:Morpheme:art-303:Suffix	
@@ -537,6 +542,7 @@ transitive verb	art-303:PartOfSpeechProperty:art-303:TransitiveVerb
 tu-adverb	art-303:PartOfSpeechProperty:art-303:Adverbial	*
 TV	art-303:PartOfSpeechProperty:art-303:TransitiveVerb	
 upphrópun	art-303:PartOfSpeechProperty:art-303:Interjection	
+uttrykk	art-303:SyntacticUnit:art-303:Phrase	
 v	art-303:PartOfSpeechProperty:art-303:Verbal	
 V	art-303:PartOfSpeechProperty:art-303:Verbal	
 V-INTR	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb	
