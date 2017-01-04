@@ -5,7 +5,7 @@ use JSON::MaybeXS;
 use HTTP::Request;
 use LWP::UserAgent;
 
-our @EXPORT = qw(panlex_query panlex_query_all);
+our @EXPORT = qw(panlex_query panlex_query_all panlex_query_map panlex_norm);
 
 $PanLex::Client::ARRAY_MAX = 10000;
 
@@ -83,6 +83,52 @@ sub panlex_query_all {
         return $result if $this_result->{resultNum} < $this_result->{resultMax};
         $body->{offset} += $this_result->{resultNum};
     }
+}
+
+#### panlex_query_map
+# Iteratively query the PanLex API, mapping input strings to output strings.
+# Arguments:
+#   0: URL.
+#   1: body.
+#   2: key to JSON object.
+
+sub panlex_query_map {
+    my ($url, $body, $key) = @_;
+    my $result = {};
+    my $tt = $body->{$key};
+
+    for (my $i = 0; $i < @$tt; $i += $PanLex::Client::ARRAY_MAX) {
+        my $last = $i + $PanLex::Client::ARRAY_MAX - 1;
+        $last = $#{$tt} if $last > $#{$tt};
+
+        # get the next set of results.
+        my $this_result = panlex_query($url, { %$body, $key => [@{$tt}[$i .. $last]] });
+
+        # merge with the previous results, if any.
+        $result = { %$result, %{$this_result->{$key}} };
+    }
+
+    return $result;
+}
+
+#### panlex_norm
+# Iteratively query the PanLex api at /norm and return the results.
+# Arguments:
+#   0: norm type ('ex' or 'df').
+#   1: variety UID.
+#   2: tt parameter containing expression texts (arrayref).
+#   3: degrade parameter (boolean).
+#   4: ui parameter (arrayref).
+
+sub panlex_norm {
+    my ($type, $uid, $tt, $degrade, $ui) = @_;
+
+    return panlex_query_map("/norm/${type}/$uid", {
+        tt      => $tt,
+        ui      => $ui // [],
+        degrade => $degrade,
+        cache   => 0,
+    });
 }
 
 1;

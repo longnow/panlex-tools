@@ -28,7 +28,7 @@ use open IN => ':crlf :encoding(utf8)', OUT => ':raw :encoding(utf8)';
 use parent 'Exporter';
 use PanLex::Validation;
 use PanLex::Serialize::Util;
-use PanLex::Client::Normalize;
+use PanLex::Client;
 use PanLex::MungeJson;
 use JSON::MaybeXS;
 
