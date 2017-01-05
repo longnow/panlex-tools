@@ -33,7 +33,6 @@ adv2	art-303:PartOfSpeechProperty:art-303:Adverbial
 adv3	art-303:PartOfSpeechProperty:art-303:Adverbial
 advb	art-303:PartOfSpeechProperty:art-303:Adverbial
 adverb	art-303:PartOfSpeechProperty:art-303:Adverbial
-Adverb	art-303:PartOfSpeechProperty:art-303:Adverbial
 adverbial expression	art-303:PartOfSpeechProperty:art-303:Adverbial‣art-303:SyntacticUnit:art-303:Phrase
 aff	art-303:Morpheme:art-303:Affix
 aff.	art-303:Morpheme:art-303:Affix
@@ -86,7 +85,6 @@ conj.co.	art-303:PartOfSpeechProperty:art-303:CoordinatingConnective
 conj.coord.	art-303:PartOfSpeechProperty:art-303:CoordinatingConnective
 conj.loc.	art-303:PartOfSpeechProperty:art-303:Conjunction	*
 conjunction	art-303:PartOfSpeechProperty:art-303:Conjunction
-Conjunction	art-303:PartOfSpeechProperty:art-303:Conjunction
 coord.	art-303:PartOfSpeechProperty:art-303:CoordinatingConnective
 cop	art-303:PartOfSpeechProperty:art-303:Copula
 copula	art-303:PartOfSpeechProperty:art-303:Copula
@@ -100,7 +98,6 @@ dem.pro.	art-303:PartOfSpeechProperty:art-303:Demonstrative
 dem.pron.	art-303:PartOfSpeechProperty:art-303:Demonstrative
 demin.	art-303:SizeProperty:art-303:DiminuativeSize
 demonstrative	art-303:PartOfSpeechProperty:art-303:Demonstrative
-Demonstrative	art-303:PartOfSpeechProperty:art-303:Demonstrative
 demonstrative adj	art-303:PartOfSpeechProperty:art-303:Demonstrative‣art-303:PartOfSpeechProperty:art-303:Adjectival
 derivational suffix	art-303:Morpheme:art-303:Suffix	*
 det	art-303:PartOfSpeechProperty:art-303:Determiner
@@ -214,7 +211,6 @@ m pl	art-303:GenderProperty:art-303:MasculineGender‣art-303:NumberProperty:art
 m, f	art-303:GenderProperty:art-303:FeminineGender‣art-303:GenderProperty:art-303:MasculineGender
 m,f	art-303:GenderProperty:art-303:FeminineGender‣art-303:GenderProperty:art-303:MasculineGender
 m.	art-303:GenderProperty:art-303:MasculineGender
-m.gr.
 m/f	art-303:GenderProperty:art-303:FeminineGender‣art-303:GenderProperty:art-303:MasculineGender
 male expression	art-317:register:art-317:male‣art-303:SyntacticUnit:art-303:Phrase
 male interjection	art-317:register:art-317:male‣art-303:PartOfSpeechProperty:art-303:Interjection
@@ -222,7 +218,6 @@ measure word	art-303:PartOfSpeechProperty:art-303:NumeralClassifier
 mehrzahl	art-303:NumberProperty:art-303:PluralNumber
 mid.voi.	art-303:VoiceProperty:art-303:PlainMiddleVoice
 mod	art-303:PartOfSpeechProperty:art-303:Modal
-MOD	art-303:PartOfSpeechProperty:art-303:Modal
 mod.avv.	art-303:PartOfSpeechProperty:art-303:Adverbial‣art-303:PartOfSpeechProperty:art-303:Modal
 mp	art-303:GenderProperty:art-303:MasculineGender‣art-303:NumberProperty:art-303:PluralNumber
 mpl	art-303:GenderProperty:art-303:MasculineGender‣art-303:NumberProperty:art-303:PluralNumber
@@ -328,7 +323,6 @@ post2	art-303:PartOfSpeechProperty:art-303:Postposition
 post3	art-303:PartOfSpeechProperty:art-303:Postposition
 postadv	art-303:PartOfSpeechProperty:art-303:Adverbial
 postp	art-303:PartOfSpeechProperty:art-303:Postposition
-Postp	art-303:PartOfSpeechProperty:art-303:Postposition
 postp.	art-303:PartOfSpeechProperty:art-303:Postposition
 postpos.	art-303:PartOfSpeechProperty:art-303:Postposition
 pr.dem.	art-303:PartOfSpeechProperty:art-303:Demonstrative
@@ -388,8 +382,8 @@ pronoun	art-303:PartOfSpeechProperty:art-303:Pronominal
 pronoun suffix	art-303:Morpheme:art-303:Suffix	*
 prop n.	art-303:PartOfSpeechProperty:art-303:ProperNoun
 prop.n.	art-303:PartOfSpeechProperty:art-303:ProperNoun
-proper noun	art-303:PartOfSpeechProperty:art-303:ProperNoun
 Proper Noun	art-303:PartOfSpeechProperty:art-303:ProperNoun
+proper noun	art-303:PartOfSpeechProperty:art-303:ProperNoun
 prspron.	art-303:PartOfSpeechProperty:art-303:PersonalPronoun
 Präposition	art-303:PartOfSpeechProperty:art-303:Preposition
 prép	art-303:PartOfSpeechProperty:art-303:Preposition
