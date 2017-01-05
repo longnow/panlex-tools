@@ -90,25 +90,32 @@ sub panlex_query_all {
 # Arguments:
 #   0: URL.
 #   1: body.
-#   2: key to JSON object.
+#   2: array key in body.
+#   3: key in result object.
 
 sub panlex_query_map {
-    my ($url, $body, $key) = @_;
-    my $result = {};
-    my $tt = $body->{$key};
+    my ($url, $body, $b_key, $r_key) = @_;
+    my $result;
+    my $tt = $body->{$b_key};
+
 
     for (my $i = 0; $i < @$tt; $i += $PanLex::Client::ARRAY_MAX) {
         my $last = $i + $PanLex::Client::ARRAY_MAX - 1;
         $last = $#{$tt} if $last > $#{$tt};
 
         # get the next set of results.
-        my $this_result = panlex_query($url, { %$body, $key => [@{$tt}[$i .. $last]] });
+        my $this_result = panlex_query($url, { %$body, $b_key => [@{$tt}[$i .. $last]] });
 
         # merge with the previous results, if any.
-        $result = { %$result, %{$this_result->{$key}} };
+        if ($result) {
+            $result->{$r_key} = { %{$result->{$r_key}}, %{$this_result->{$r_key}} };
+        }
+        else {
+            $result = $this_result;
+        }
     }
 
-    return $result;
+    return $result->{$r_key};
 }
 
 #### panlex_norm
@@ -128,7 +135,7 @@ sub panlex_norm {
         ui      => $ui // [],
         degrade => $degrade,
         cache   => 0,
-    });
+    }, 'tt', 'norm');
 }
 
 1;

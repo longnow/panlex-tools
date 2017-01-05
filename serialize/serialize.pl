@@ -95,6 +95,8 @@ my @TOOLS = (
 #   mapdefault: attribute expression to use when the mapping file property column
 #                 is '*'. default 'art-303⁋LinguisticProperty', where 'art-303' is
 #                 the expression's UID, and 'LinguisticProperty' is its text.
+#   degrade:    whether to compare texts in their PanLex degraded form.
+#                 default 1.
 #   log:        set to 1 to log unconvertible items to csppmap.log, 0 otherwise.
 #                 default 1.
 

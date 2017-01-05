@@ -1,1 +1,1 @@
-../serialize/data/csppmap.txt
+serialize/data/csppmap.txt

@@ -7,13 +7,15 @@
 #   delim:      inter-classification/property delimiter in file and columns.
 #                   default '‣'.
 #   default:    meaning or denotation attribute expression to use for unconvertible
-#                 items, or 'pass' if they should be left unchanged, or '' if they 
-#                 should be deleted. default 'art-303⁋LinguisticProperty', where 
-#                 'art-303' is the expression's UID, and 'LinguisticProperty' is 
+#                 items, or 'pass' if they should be left unchanged, or '' if they
+#                 should be deleted. default 'art-303⁋LinguisticProperty', where
+#                 'art-303' is the expression's UID, and 'LinguisticProperty' is
 #                 its text.
 #   mapdefault: attribute expression to use when the mapping file property column
-#                 is '*'. default 'art-303⁋LinguisticProperty', where 'art-303' is 
+#                 is '*'. default 'art-303⁋LinguisticProperty', where 'art-303' is
 #                 the expression's UID, and 'LinguisticProperty' is its text.
+#   degrade:    whether to compare texts in their PanLex degraded form.
+#                 default 1.
 #   log:        set to 1 to log unconvertible items to csppmap.log, 0 otherwise.
 #                 default 1.
 
@@ -25,6 +27,7 @@ use open IN => ':crlf :encoding(utf8)', OUT => ':raw :encoding(utf8)';
 use parent 'Exporter';
 use File::Spec::Functions;
 use PanLex::Validation;
+use PanLex::Client;
 use PanLex::Serialize::cstag 'cstag_item';
 use PanLex::Serialize::pptag 'pptag_item';
 
@@ -41,6 +44,7 @@ sub csppmap {
     my $delim       = $args->{delim} // '‣';
     my $default     = $args->{default} // 'art-303⁋LinguisticProperty';
     my $mapdefault  = $args->{mapdefault} // 'art-303⁋LinguisticProperty';
+    my $degrade     = $args->{degrade} // 1;
     my $log         = $args->{log} // 1;
 
     die "type paremeter must be 'd' or 'm'" unless $type =~ /^[dm]$/;
@@ -70,8 +74,8 @@ sub csppmap {
         die "map file line does not have three columns" unless @col == 3;
         $col[2] = $mapdefault . $col[0] if $col[2] eq '*';
 
-        $map{$col[0]} = { 
-            cs => [ split /$delim/, $col[1] ], 
+        $map{$col[0]} = {
+            cs => [ split /$delim/, $col[1] ],
             pp => [ split /$delim/, $col[2] ],
         };
     }
@@ -80,40 +84,65 @@ sub csppmap {
 
     my %notfound;
 
-    while (<$in>) {
-        chomp;
+    if ($degrade) {
+        my (@lines, $in_td);
 
-        my @col = split /\t/, $_, -1;
+        while (<$in>) {
+            chomp;
 
-        foreach my $i (@csppmapcol) {
-            die "column $i not present in line" unless defined $col[$i];
+            my @col = split /\t/, $_, -1;
 
-            next unless length $col[$i];
+            foreach my $i (@csppmapcol) {
+                die "column $i not present in line" unless defined $col[$i];
 
-            my $tagged = ''; 
+                next unless length $col[$i];
 
-            foreach my $el (split $delim, $col[$i]) {
-                if (exists $map{$el}) {
-                    my $mapped = $map{$el};
+                $col[$i] = [ split $delim, $col[$i] ];
 
-                    $tagged .= cstag_item("${type}cs", $_) for @{$mapped->{cs}};
-                    $tagged .= pptag_item("${type}pp", $_) for @{$mapped->{pp}};
-                } else {
-                    $notfound{$el} = '';
+                $in_td->{$_} = undef for @{$col[$i]};
 
-                    if ($default eq 'pass') {
-                        $tagged .= $delim if length $tagged;
-                        $tagged .= $el;
-                    } elsif ($default ne '') {
-                        $tagged .= pptag_item("${type}pp", $default . $el);
-                    }
-                }
+                push @lines, \@col;
             }
-
-            $col[$i] = $tagged;
         }
 
-        print $out join("\t", @col), "\n";
+        $in_td = panlex_query_map('/td', { tt => [keys %$in_td] }, 'tt', 'td');
+        my %td_map = reverse %{ panlex_query_map('/td', { tt => [keys %map] }, 'tt', 'td') };
+
+        foreach my $col (@lines) {
+            foreach my $i (@csppmapcol) {
+                next unless length $col->[$i];
+
+                $col->[$i] = tag_column(
+                    $col->[$i], \%map, sub { $td_map{$in_td->{$_[0]}} },
+                    $type, $default, $delim, \%notfound
+                );
+            }
+
+            print $out join("\t", @$col), "\n";
+        }
+
+    }
+    else {
+        while (<$in>) {
+            chomp;
+
+            my @col = split /\t/, $_, -1;
+
+            foreach my $i (@csppmapcol) {
+                die "column $i not present in line" unless defined $col[$i];
+
+                next unless length $col[$i];
+
+                my $els = [ split $delim, $col[$i] ];
+
+                $col[$i] = tag_column(
+                    $els, \%map, sub { $_[0] },
+                    $type, $default, $delim, \%notfound
+                );
+            }
+
+            print $out join("\t", @col), "\n";
+        }
     }
 
     if ($log) {
@@ -122,6 +151,34 @@ sub csppmap {
         close $log_fh;
     }
 
+}
+
+sub tag_column {
+    my ($col, $map, $transform, $type, $default, $delim, $notfound) = @_;
+    my $tagged = '';
+
+    foreach my $el (@$col) {
+        my $match = $transform->($el);
+
+        if (exists $map->{$match}) {
+            my $mapped = $map->{$match};
+
+            $tagged .= cstag_item("${type}cs", $_) for @{$mapped->{cs}};
+            $tagged .= pptag_item("${type}pp", $_) for @{$mapped->{pp}};
+        }
+        else {
+            $notfound->{$el} = '';
+
+            if ($default eq 'pass') {
+                $tagged .= $delim if length $tagged;
+                $tagged .= $el;
+            } elsif ($default ne '') {
+                $tagged .= pptag_item("${type}pp", $default . $el);
+            }
+        }
+    }
+
+    return $tagged;
 }
 
 1;
