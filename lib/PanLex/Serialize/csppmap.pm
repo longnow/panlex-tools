@@ -110,7 +110,7 @@ sub csppmap {
 
         foreach my $col (@lines) {
             foreach my $i (@csppmapcol) {
-                next unless length $col->[$i];
+                next unless ref $col->[$i];
 
                 $col->[$i] = tag_column(
                     $col->[$i], \%map, sub { $td_map{$in_td->{$_[0]}} },
