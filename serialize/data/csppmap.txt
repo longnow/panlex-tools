@@ -378,10 +378,6 @@ Postp	art-303:PartOfSpeechProperty:art-303:Postposition
 postp.	art-303:PartOfSpeechProperty:art-303:Postposition	
 Postp.	art-303:PartOfSpeechProperty:art-303:Postposition	
 postpos.	art-303:PartOfSpeechProperty:art-303:Postposition	
-pp	art-303:PartOfSpeechProperty:art-303:Preposition	
-pp.	art-303:PartOfSpeechProperty:art-303:Preposition	
-pr	art-303:PartOfSpeechProperty:art-303:Preposition	
-pr.	art-303:PartOfSpeechProperty:art-303:Pronominal	
 pr. indef.	art-303:PartOfSpeechProperty:art-303:IndefinitePronoun	
 pr. pers.	art-303:PartOfSpeechProperty:art-303:PersonalPronoun	
 pr.dem.	art-303:PartOfSpeechProperty:art-303:Demonstrative	
