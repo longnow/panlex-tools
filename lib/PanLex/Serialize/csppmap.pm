@@ -70,6 +70,7 @@ sub csppmap {
         chomp;
 
         my @col = split /\t/, $_, -1;
+        push @col, '' if @col == 2; # re-insert stripped final tab
 
         die "map file line does not have three columns" unless @col == 3;
         $col[2] = $mapdefault . $col[0] if $col[2] eq '*';
