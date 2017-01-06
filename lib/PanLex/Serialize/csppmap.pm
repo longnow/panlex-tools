@@ -171,7 +171,7 @@ sub tag_column {
             $notfound->{$el} = '';
 
             if ($default eq 'pass') {
-                $tagged .= $delim if length $tagged;
+                $tagged .= $delim if length $tagged && $el !~ /[⫷⫸]/;
                 $tagged .= $el;
             } elsif ($default ne '') {
                 $tagged .= pptag_item("${type}pp", $default . $el);
