@@ -161,7 +161,7 @@ sub tag_column {
     foreach my $el (@$col) {
         my $match = $transform->($el);
 
-        if (exists $map->{$match}) {
+        if (defined $match and exists $map->{$match}) {
             my $mapped = $map->{$match};
 
             $tagged .= cstag_item("${type}cs", $_) for @{$mapped->{cs}};
