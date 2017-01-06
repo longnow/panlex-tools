@@ -25,10 +25,8 @@ def preprocess(entries):
             # col = re.sub(r'', '', col).strip()
 
             # fullwidth punctuation, numbers
-            col = col.replace('？', '?')
-            col = col.replace('！', '!')
-            # if re.search(r'\p{Nd}', col):
-            #     col = unicodedata.normalize('NFKC', col).strip()
+            for fw in "０１２３４５６７８９？！":
+                col.replace(fw, unicodedata.normalize('NFKC', fw))
 
             # parenthesis standardization
             if '(' in col or ')' in col:
@@ -212,7 +210,7 @@ EXDFPREP_RULES = {
         },
         4: {
             r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)?)((?:not )?)[Tt]o\s+(?!(?:'+DEFAULT_PR_NOCAP+r'$|the|you|us|him|her|them|me|[wt]?here|no|one[\'’]s|oneself|a[n])(?: |$))' : (r'\1\2(to) ', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal', ''),
-            r'(^| make to ' : (r'\1make (to) ', '', ''),
+            r'(^| )make to ' : (r'\1make (to) ', '', ''),
         },
         5: {
             r'(^|\s)\(a\) (lot|bit|posteriori|priori|fortiori|few|little|minute|same|while|propos|cappella)(\s|$)' : (r'\1a \2\3', r'', ''),
@@ -242,9 +240,17 @@ EXDFPREP_RULES = {
             r'^([^…]+)(くなる)$' : (r'\1\2', r'⫷mcs2:art-316⫸Inchoative_of⫷mcs⫸\1い', ''),    # to become ~ (keiyoshi, ''),
             r'^([^…]+)(になる)$' : (r'\1\2', r'⫷mcs2:art-316⫸Inchoative_of⫷mcs⫸\1', ''),    # to become ~
             r'^[…\s]*(に)(なる)$' : (r'(\1)\2', '', ''),    # to become
+            r'^([猫人]の名|童名)$' : (r'(\1)', '', ''),
+            r'^(または?、)' : (r'(\1)', '', ''),
         },
         2: {
+            r'^(.{1,6})(の名)$' : (r'\1(\2)', r'⫷mcs2:art-300⫸IsA⫷mcs:jpn-000⫸\1', ''),
             r'其('+DEFAULT_PR_NOCAP+r'?)\(の\)' : (r'其\1の', '', ''),
+            r'^地名$' : (r'⫷df⫸地名', '⫷mcs2:art-317⫸termType⫷mcs:art-317⫸placeName', ''),
+            r'^(.*)(の意味?)$' : (r'\1(\2)', '', ''),
+        },
+        3: {
+            r'^(植物|道具|衣服|行事|料理|動物|魚)(の?名)$' : (r'\1(\2)', r'⫷mcs2:art-300⫸IsA⫷mcs:jpn-000⫸\1', ''),
         },
     },
     'arb-000' : {
@@ -560,7 +566,7 @@ def exdfprep(entries, sourcecols, tocol=-1, lang='eng-000', pretag_special_lvs=T
                                 else:
                                     syn = re.sub(r'^(?:⫷[^⫸]+⫸)?', '⫷ex:art-340⫸', unicodedata.normalize('NFKC', syn)).strip()
                             # common han nums
-                            int_h_m = re.match(r'^(?:⫷..⫸)?([〇零一二三四五六七八九十百千萬万億亿兆兩两]+|[〇零壹貳贰參叁肆伍陸陆柒捌玖拾佰仟]+)($|⫷)', syn.strip())
+                            int_h_m = re.match(r'^(?:⫷..⫸)?([〇零一二三四五六七八九十百千萬万億亿兆兩两]+|[〇零壹貳贰參叁肆伍陆柒捌玖拾佰仟]+)($|⫷)', syn.strip())
                             if int_h_m:
                                 if int_h_m.group(1) in ['〇']:
                                     print('WARNING: Did not pretag potentially special number:', int_h_m.group(1))
@@ -568,7 +574,7 @@ def exdfprep(entries, sourcecols, tocol=-1, lang='eng-000', pretag_special_lvs=T
                                     syn = re.sub(r'^(?:⫷[^⫸]+⫸)?(.*)$', r'\1⫷ex:art-341⫸\1', unicodedata.normalize('NFKC', syn)).strip()
                             # possible rare han num? print warning
                             int_rh_m = re.match(r'^(?:⫷..⫸)?([〇零一二三四五六七八九十百千萬万億亿兆兩两兆京垓秭穰溝沟澗涧正載载廿卅卌皕]+|[〇零壹貳贰參叁肆伍陸陆柒捌玖拾佰仟兆京垓秭穰溝沟澗涧正載载廿卅卌皕]+)($|⫷)', syn.strip())
-                            if int_rh_m and any(h in x for h in '兆京垓秭穰溝沟澗涧正載载廿卅卌皕'):
+                            if int_rh_m and any(h in syn for h in '兆京垓秭穰溝沟澗涧正載载廿卅卌皕陸'):
                                 print('WARNING: Possible rare Han numeral, needs manual tag:', int_rh_m.group(1))
                         
                         result1.append(syn)
