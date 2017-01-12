@@ -96,11 +96,10 @@ sub csppmap {
             foreach my $i (@csppmapcol) {
                 die "column $i not present in line" unless defined $col[$i];
 
-                next unless length $col[$i];
-
-                $col[$i] = [ split $delim, $col[$i] ];
-
-                $in_td->{$_} = undef for @{$col[$i]};
+                if (length $col[$i]) {
+                    $col[$i] = [ split $delim, $col[$i] ];
+                    $in_td->{$_} = undef for @{$col[$i]};
+                }
 
                 push @lines, \@col;
             }
