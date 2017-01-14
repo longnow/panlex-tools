@@ -12,6 +12,59 @@ from types import FunctionType
 import ben.normalize as normalize
 from alex.pltk import preprocess, prepsyns
 
+class Lv(str):
+    import panlex
+    _cache = defaultdict(dict)
+    _include = {'cp', 'cu', 'dncount', 'excount', 'sc'}
+
+    def __repr__(self):
+        return "{cls}({string})".format(cls=self.__class__.__name__, string=repr(str(self)))
+
+    def __getattr__(self, attr):
+        if attr in ['_ipython_canary_method_should_not_exist_', '_ipython_display_']:
+            return getattr(str(self), attr)
+        try:
+            return self._cache[self][attr]
+        except KeyError:
+            include = []
+            if attr in self._include:
+                include.append(attr)
+            self._cache[self].update(self.panlex.query('/lv/{}'.format(self), {'include': include})['lv'])
+            try:
+                return self._cache[self][attr]
+            except KeyError:
+                raise AttributeError('"{attr}" is not a valid {cls} object'.format(attr=attr, cls=self.__class__.__name__))
+
+    @classmethod
+    def precache(cls, lv_list, include=[]):
+        if isinstance(include, str):
+            include = [include]
+        include = list(set(include) & cls._include)
+        result = cls.panlex.query_all('/lv', {'uid': lv_list, 'include': include})['result']
+        for r in result:
+            cls._cache[r['uid']].update(r)
+
+    @classmethod
+    def from_lc(cls, lc, include=[]):
+        if isinstance(include, str):
+            include = [include]
+        include = list(set(include) & cls._include)
+        output = []
+        result = cls.panlex.query_all('/lv', {'lc': lc, 'include': include})['result']
+        for r in result:
+            cls._cache[r['uid']].update(r)
+            output.append(Lv(r['uid']))
+        return output
+
+    # def ex_list(self):
+    #     try:
+    #         return self._cache[self]['ex_list']
+    #     except KeyError:
+    #         result = self.panlex.query_all('/ex', {'lv': self.lv})['result']
+    #         self._cache[self]['ex_list'] = [ex['tt'] for ex in result]
+    #         return self._cache[self]['ex_list']
+
+
 class Ex:
 
     def __init__(self, text, lv=None, lc=None, vc=None):
@@ -269,8 +322,8 @@ class Cs:
 class Dn:
     def __init__(self, ex, pp_list=[], cs_list=[]):
         self.ex = ex
-        self.pp_list = pp_list[:]
-        self.cs_list = cs_list[:]
+        self.pp_list = pp_list
+        self.cs_list = cs_list
 
     def __repr__(self):
         return "Dn(ex={ex}, pp_list={pp_list}, cs_list={cs_list})".format(ex=repr(self.ex), pp_list=self.pp_list, cs_list=self.cs_list)
@@ -320,7 +373,7 @@ class Dn:
     def pp_list(self, new_value):
         if not all([isinstance(pp, Pp) for pp in new_value]):
             raise TypeError("pp_list must be a list containing only Pp objects")
-        self._pp_list = new_value
+        self._pp_list = new_value[:]
 
     @property
     def cs_list(self):
@@ -329,7 +382,7 @@ class Dn:
     def cs_list(self, new_value):
         if not all([isinstance(cs, Cs) for cs in new_value]):
             raise TypeError("cs_list must be a list containing only Cs objects")
-        self._cs_list = new_value
+        self._cs_list = new_value[:]
 
     def clean(self):
         self.cs_list = list(set([cs for cs in self.cs_list if cs]))
@@ -372,10 +425,10 @@ class Dn:
 
 class Mn:
     def __init__(self, dn_list=[], df_list=[], pp_list=[], cs_list=[]):
-        self.dn_list = dn_list[:]
-        self.df_list = df_list[:]
-        self.pp_list = pp_list[:]
-        self.cs_list = cs_list[:]
+        self.dn_list = dn_list
+        self.df_list = df_list
+        self.pp_list = pp_list
+        self.cs_list = cs_list
 
     def __repr__(self):
         return "Mn(dn_list={dn_list}, df_list={df_list}, pp_list={pp_list}, cs_list={cs_list})".format(
@@ -412,7 +465,7 @@ class Mn:
     def dn_list(self, new_value):
         if not all([isinstance(dn, Dn) for dn in new_value]):
             raise TypeError("dn_list must be a list containing only Dn objects")
-        self._dn_list = new_value
+        self._dn_list = new_value[:]
 
     @property
     def df_list(self):
@@ -421,7 +474,7 @@ class Mn:
     def df_list(self, new_value):
         if not all([isinstance(df, Df) for df in new_value]):
             raise TypeError("df_list must be a list containing only Df objects")
-        self._df_list = new_value
+        self._df_list = new_value[:]
 
     @property
     def pp_list(self):
@@ -430,7 +483,7 @@ class Mn:
     def pp_list(self, new_value):
         if not all([isinstance(pp, Pp) for pp in new_value]):
             raise TypeError("pp_list must be a list containing only Pp objects")
-        self._pp_list = new_value
+        self._pp_list = new_value[:]
 
     @property
     def cs_list(self):
@@ -439,7 +492,7 @@ class Mn:
     def cs_list(self, new_value):
         if not all([isinstance(cs, Cs) for cs in new_value]):
             raise TypeError("cs_list must be a list containing only Cs objects")
-        self._cs_list = new_value
+        self._cs_list = new_value[:]
 
     def lv_set(self):
         return {dn.lv for dn in self.dn_list}
@@ -508,12 +561,31 @@ class Mn:
             mn_list.append(mn)
         return mn_list
 
+    def split_even(self, split_re, dns_to_split=[], max_splits=0):
+        mn_list = []
+        if not dns_to_split:
+            dns_to_split = self.dn_list[:]
+        if not set(dns_to_split) <= set(self.dn_list):
+            raise ValueError("all Dns in dns_to_split must be in self.dn_list")
+        remaining_dns = list(filter(lambda dn: dn not in dns_to_split, self.dn_list))
+        split_dns = list(map(lambda dn: dn.split(split_re, max_splits), dns_to_split))
+        if len(set(map(len, split_dns))) > 1:
+            raise ValueError('uneven number of splits. consider setting max_splits')
+        for dn_list in zip(*split_dns):
+            mn = Mn()
+            mn.dn_list.extend(list(dn_list) + remaining_dns)
+            mn_list.append(mn)
+        return mn_list
+
     def sub(self, pattern, repl, count=0, flags=0, dn_list=[]):
         if not dn_list: dn_list = self.dn_list
         for i, dn in enumerate(self.dn_list):
             if dn in dn_list:
-                if re.search(pattern, str(dn)):
-                    self.dn_list[i] = dn.sub(pattern, repl, count, flags)
+                self.dn_list[i] = dn.sub(pattern, repl, count, flags)
+
+    def replace(self, *args, **kwargs):
+        for i, dn in enumerate(self.dn_list):
+            self.dn_list[i] = dn.replace(*args, **kwargs)
 
     def merge(self, mn):
         return Mn(
@@ -889,23 +961,30 @@ def exdftag(ex, rx=r'(?:\([^()]+\)|（[^（）]+）)', subrx=r'[][/,;?!~]', maxc
     else:
         return ex, Df('', lv)
 
-def mnsplit(source, split_re, lv_list=None, dn_filter=None, max_splits=0):
+def mnsplit(ap, split_re, lv_list=None, dn_filter=None, max_splits=0, even=False):
     if lv_list:
         dn_filter = lambda dn: dn.lv in lv_list
-    elif not dn_filter:
-        dn_filter = lambda dn: True
-    else:
-        pass
-    for i, mn in enumerate(source):
-        for dn in mn.dn_list:
-            if dn_filter(dn):
+    for i, mn in enumerate(ap):
+        dn_list = list(filter(dn_filter, mn.dn_list))
+        if even:
+            try:
+                new_mns = mn.split_even(split_re, dn_list, max_splits)
+            except ValueError:
+                raise ValueError('uneven number of splits in {}'.format(mn))
+            ap[i] = new_mns[0]
+            try:
+                for new_mn in new_mns[1:]:
+                    ap.insert(i + 1, new_mn)
+            except IndexError:
+                pass
+        else:
+            for dn in dn_list:
                 new_mns = mn.split(split_re, dn, max_splits=max_splits)
-                source[i] = new_mns[0]
+                ap[i] = new_mns[0]
                 try:
                     for new_mn in new_mns[1:]:
-                        source.insert(i + 1, new_mn)
+                        ap.insert(i + 1, new_mn)
                 except IndexError: pass
-
 
 def charset(source, lv_list):
     """Returns a set of all of the characters found in all of the expressions in
