@@ -3,59 +3,66 @@
 import argparse
 import json
 from operator import itemgetter
-import regex as re
+import signal
+import sys
 
 import termcolor
 
 
 def get_args():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(prog='normsort')
+    
     parser.add_argument('filename', type=str, nargs='?', help='file to list')
-    parser.add_argument('--min', default=0, type=int, help='minimum score to show (default 0)')
+    # parser.add_argument('--min', default=0, type=int, help='minimum score to show (default 0)')
     parser.add_argument('--max', default=50, type=int, help='maximum score to show (default 50)')
-    return parser.parse_args()
+    
+    args = parser.parse_args()
+    
+    if not args.filename:
+        print('no filename given')
+        parser.print_usage()
+        sys.exit(0)
+    
+    return args
 
 
-
-def read_values(filename, min_count, max_count):
+def get_entries(filename):
     with open(filename) as fin:
-        text = fin.read()
-        data = json.loads(text)
-        stage2 = data['stage2']
-        records = get_sorted_list(stage2)
+        data = json.load(fin)
+        return data['stage1'],data['stage2']
+
+
+def show_scores(stage1:dict,stage2:dict, maxcount=50):
+    # get key list sorted by score descending
+    keys = [k for k,v in sorted([(k,v['score']) for k,v in stage1.items()],key=itemgetter(1),reverse=True)]
+
+    for key in keys:
+        score1 = stage1[key]['score']
+        if score1 > maxcount:
+            continue
         
-        for word,degraded_form,score in records:
+        if key in stage2:
+            norm_text = stage2[key]['tt']
+            score2 = stage2[key]['score']
             
-            if degraded_form != None:
-                if score < min_count or score > max_count:
-                    continue
-                
-                if word == degraded_form:
-                    # don't print degraded form if identical
-                    print('%4d %-22s => _' % (score,word))
+            if norm_text:
+                if norm_text == key:
+                    print('%4d %-30s => %3d _' % (score1,key,score2))
                 else:
-                    word = '%-22s' % word
-                    if re.sub('\s+', '', word) == re.sub('\s+', '', degraded_form):
-                        degraded_form = termcolor.colored(degraded_form, 'red')
-                        word = termcolor.colored(word, 'red')
-
-                    print('%4d %s => %-18s' % (score,word,degraded_form))
+                    print('%4d %-30s => %3d %s' % (score1,key,score2,norm_text))
             else:
-                print('%4d %-22s' % (score,word))
+                print('%4d %-30s =|' % (score1,key))
+        else:
+            print('%4d %-30s' % (score1,key))
 
-    return
-
-
-
-def get_sorted_list(records):
-    wordlist = [(k,v['tt'],int(v['score'])) for k,v in records.items()]
-    return sorted(wordlist, key=itemgetter(2), reverse=True)
 
 
 if __name__=="__main__":
+    signal.signal(signal.SIGPIPE, signal.SIG_DFL)
     args = get_args()
-
-    if not args.filename:
-        print('no filename given')
-
-    read_values(args.filename, args.min, args.max)
+    stage1,stage2 = get_entries(args.filename)
+    try:
+        show_scores(stage1,stage2, args.max)
+    except BrokenPipeError:
+        pass
+    
