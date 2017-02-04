@@ -111,12 +111,12 @@ sub cp_makefile {
     my (@deps, $tab);
 
     if ($tab = get_glob('tabularize-*.*')) {
-        die "can't find file matching pattern ${source_basename}-0.*" unless defined $fromfile;
+        die "can't find file matching pattern ${source_basename}-0.*\n" unless defined $fromfile;
         push @deps, [ "${source_basename}-1.txt", [ $fromfile, $tab ], add_interp($tab) ];
     } else {
         if ($tab = get_glob('*-scrape.*')) {
             $fromfile = get_glob("${source_basename}.*");
-            die "can't find file matching pattern ${source_basename}.*" unless defined $fromfile;
+            die "can't find file matching pattern ${source_basename}.*\n" unless defined $fromfile;
             push @deps, [ "${source_basename}-0.txt", [ $fromfile, $tab ], add_interp($tab) ];
             $fromfile = "${source_basename}-0.txt";
         }
@@ -171,7 +171,7 @@ sub add_interp {
     } elsif ($filename =~ /\.js$/) {
         $interp = 'node';
     } else {
-        die "don't know what interpreter to use for $filename";
+        die "don't know what interpreter to use for $filename\n";
     }
 
     return "$interp $filename";
@@ -188,7 +188,7 @@ sub cmd_edit {
 
         my $result = panlex_query("/ap/$ap");
         $ap = $result->{ap}{ap};
-        die "could not find source ID" unless defined $ap;
+        die "could not find source ID\n" unless defined $ap;
         print STDERR "$ap\n\n";
     }
 
@@ -229,7 +229,7 @@ sub cmd_fetch {
 
         my $result = panlex_query("/ap/$source");
         $source = $result->{ap}{fp};
-        die "could not find source directory" unless defined $source;
+        die "could not find source directory\n" unless defined $source;
         print STDERR "$source\n\n";
     }
 
@@ -273,7 +273,7 @@ sub cmd_submit {
     check_env(qw(PANLEX_PANLEM_USER PANLEX_PANLEM_PASSWORD));
 
     my ($final, $ap, $aptt);
-    my $op = '2'; # replace
+    my $op = '2'; # primary
 
     if (defined $_[0] && -f $_[0]) {
         $final = shift;
@@ -288,12 +288,16 @@ sub cmd_submit {
     foreach my $arg (@_) {
         if ($arg eq 'check') {
             $op = '0';
-        } elsif ($arg eq 'add') {
-            $op = '1';
+        } elsif ($arg eq 'primary') {
+            $op = '2';
+        } elsif ($arg eq 'metadata') {
+            $op = '3';
         } elsif ($arg =~ /^\d+$/) {
             $ap //= $arg;
         } elsif ($arg =~ /:/) {
             $aptt //= $arg;
+        } else {
+            die "unknown argument: $arg\n";
         }
     }
 
@@ -451,7 +455,7 @@ edit <source_label>|<source_id>
     request editorship of a source through PanLem
 fetch <resource_dir>|<source_label>|<source_id>
     fetch PanLex resource from archive into the current directory and unzip it
-submit (<file>) (<source_id>|<source_label>) (replace|add|check)
+submit (<file>) (<source_id>|<source_label>) (primary|metadata|check)
     submit final source file to PanLem
 upload (-r) (<dir>) <note>
     upload source (default) or resource (-r) directory to archive with note
