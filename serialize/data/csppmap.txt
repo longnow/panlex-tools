@@ -449,6 +449,7 @@ zew	art-303:PartOfSpeechProperty:art-303:NumeralClassifier
 Zählwort	art-303:PartOfSpeechProperty:art-303:NumeralClassifier	
 ófn.	art-303:PartOfSpeechProperty:art-303:IndefinitePronoun	
 óákveðið fornafn	art-303:PartOfSpeechProperty:art-303:IndefinitePronoun	
+глаг.	art-303:PartOfSpeechProperty:art-303:Verbal	
 мест.	art-303:PartOfSpeechProperty:art-303:Pronominal	
 мест.вопр.	art-303:PartOfSpeechProperty:art-303:InterrogativeProform	
 мест.личн.	art-303:PartOfSpeechProperty:art-303:PersonalPronoun	
@@ -459,9 +460,12 @@ Zählwort	art-303:PartOfSpeechProperty:art-303:NumeralClassifier
 послелог	art-303:PartOfSpeechProperty:art-303:Postposition	
 презр.	art-317:register:art-317:vulgarRegister	
 презрение	art-317:register:art-317:vulgarRegister	
+прил.	art-303:PartOfSpeechProperty:art-303:Adjectival	
+прилаг.	art-303:PartOfSpeechProperty:art-303:Adjectival	
 разг.	art-317:register:art-317:colloquialStyle	
 редко	art-303:LinguisticProperty:art-317:rarelyUsed	
 служебное слово	art-303:PartOfSpeechProperty:art-303:Particle	
+сущ.	art-303:PartOfSpeechProperty:art-303:Noun	
 уст.	art-317:Usage:art-317:obsoleteTerm	
 частица	art-303:PartOfSpeechProperty:art-303:Particle	
 частица модальная	art-303:PartOfSpeechProperty:art-303:Particle‣art-303:PartOfSpeechProperty:art-303:Modal	
@@ -470,6 +474,7 @@ Zählwort	art-303:PartOfSpeechProperty:art-303:NumeralClassifier
 частица усил.	art-303:PartOfSpeechProperty:art-303:Particle	*
 частица усилительная	art-303:PartOfSpeechProperty:art-303:Particle	*
 частица утв.	art-303:PartOfSpeechProperty:art-303:Particle	*
+част.	art-303:PartOfSpeechProperty:art-303:Particle	
 числ.	art-303:PartOfSpeechProperty:art-303:Numeral	
 числ.разд.	art-303:PartOfSpeechProperty:art-303:OrdinalNumeral	
 介詞	art-303:PartOfSpeechProperty:art-303:Preposition	

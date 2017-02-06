@@ -6,8 +6,20 @@ import sqlite3
 import regex as re
 from collections import defaultdict, Counter
 import os
+import zipfile
+import requests
+from tqdm import tqdm
 
 data_directory = os.path.dirname(__file__) + '/data/'
+
+# def update_panlex_lite():
+#     r = requests.get('http://dev.panlex.org/db/panlex_lite.zip', stream=True)
+#     with open(data_directory + 'panlex_lite.zip', 'wb') as f:
+#         total_length = int(r.headers.get('content-length'))
+#         for chunk in tqdm(r.iter_content(chunk_size=1024), total=total_length): 
+#             if chunk:
+#                 f.write(chunk)
+#                 f.flush()
 
 def get_lv_code(lv):
     if re.match(r'^[a-z]{3}-[0-9]{3,}$', lv):

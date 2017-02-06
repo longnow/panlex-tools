@@ -7,13 +7,32 @@ import ben.fontmaps as fontmaps
 from ben.panlex import *
 import regex as re
 
-def most_common_script(string, skip=[]):
+def most_common_script(string, skip=[], soft_skip=[]):
+    skip = set(skip)
+    soft_skip = set(soft_skip)
+    if not string:
+        raise ValueError('string is empty')
     c = Counter(list(map(lambda x: iso15924.convert(unicode.get_property(x, 'Script'), 'code', 'pva', exact=True)[-1], string)))
-    for sc in c.most_common():
-        script = sc[0]
-        if script not in skip:
-            return script
-    return c.most_common(1)[0][0]
+    most_common = [sc for sc in c.most_common() if sc[0] not in skip]
+    try:
+        if most_common[0][1] == most_common[1][1]:
+            tied_scripts = set()
+            for sc in most_common:
+                if sc[1] == most_common[0][1]: tied_scripts.add(sc[0])
+            if len(tied_scripts - soft_skip) == 1:
+                return list(tied_scripts - soft_skip)[0]
+            raise ValueError('{} are equally common in {}'.format(tied_scripts, string))
+    except IndexError:
+        pass
+    try:
+        return most_common[0][0]
+    except IndexError:
+        raise ValueError('string only contains characters in skipped scripts')
+    # for sc in c.most_common():
+    #     script = sc[0]
+    #     if script not in skip:
+    #         return script
+    # return c.most_common(1)[0][0]
 
 def get_tables(a, cont=True):
     output = []
@@ -34,9 +53,17 @@ def get_tables(a, cont=True):
     else:
         return output
 
-def get_next_table(a):
+def get_next_table(a, min_trs=0):
     for element in a.next_elements:
-        if element.name == 'table': return element
+        if element.name == 'table':
+            try:
+                assert(element['border'] == '1')
+            except (KeyError, AssertionError) as e:
+                continue
+            if len(element('tr')) >= min_trs:
+                return element
+        if element.name == 'a' and element.has_attr('name'):
+            raise TypeError('went too far')
 
 def text_after_a(a):
     output = ''
@@ -78,8 +105,12 @@ def vert_table(table, lv_dict):
     ap = Ap([Mn() for i in range(len(table.tr('td')) - 1)])
     for tr in table('tr'):
         lv_tag_set = set()
-        for acronym in tr.td('acronym'):
-            lv_tag_set.add(acronym.text.strip(' |'))
+        if not tr.td: continue
+        try:
+            for acronym in tr.td('acronym'):
+                lv_tag_set.add(acronym.text.strip(' |'))
+        except TypeError:
+            raise TypeError('problem with {}'.format(tr.text))
         for i, td in enumerate(tr('td')[1:]):
             t = re.sub(r'\s\(.*?\)', '', clean_str(td.text))
             for split_text in re.split(r';\s', t):
@@ -87,8 +118,8 @@ def vert_table(table, lv_dict):
                     if clean_str(split_by_script) == '?': continue
                     if not clean_str(split_by_script): continue
                     try:
-                        script = most_common_script(clean_str(split_by_script), {'Zyyy'})
-                    except IndexError:
+                        script = most_common_script(clean_str(split_by_script), {'Zyyy', 'Zinh'}, {'Hani'})
+                    except ValueError:
                         raise TypeError('problem with {}'.format(lv_tag_set))
                     if script == 'Zzzz': script = 'Hmng'
                     for lv_tag in lv_tag_set:
@@ -96,14 +127,17 @@ def vert_table(table, lv_dict):
                         try:
                             lv = lv_dict[lv_tag][0][script]
                         except (IndexError, KeyError) as e:
-                            raise TypeError('problem with {} {}'.format(lv_tag, script))
+                            raise TypeError('problem with {} {} {}'.format(split_by_script, lv_tag, script))
                         if script == 'Hmng':
                             text = clean_str(fontmaps.decode(split_by_script, 'JG_Pahawh_Third_Version.ttf'))
                         elif script == 'Mymr':
                             text = clean_str(fontmaps.decode(split_by_script, 'Myanmar1.ttf'))
                         else:
                             text = clean_str(split_by_script)
-                        ap[i].dn_list.append(Dn(Ex(text, lv)))
+                        try:
+                            ap[i].dn_list.append(Dn(Ex(text, lv)))
+                        except IndexError:
+                            raise TypeError('problem with {}'.format(lv_tag))
     return ap
 
 def horz_table(a, lv_dict, ap, title_mn=None):
