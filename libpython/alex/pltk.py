@@ -205,8 +205,8 @@ EXDFPREP_RULES = {
             r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)?)\((s(?:\-|o(?:me|em))?(?: other )?(?:body|one|thing)(?:(?: or |\s*/\s*)s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)\s+(which|that|who|to)' : (r'\1\2 \3', '', ''),
             r'\((s(?:\-|o(?:me|em))?(?: other )?(?:body|one|thing)(?:(?: or |\s*/\s*)s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)\s+(else(?:\'s)?)' : (r'(\1 \2)', '', ''),
             r'^\((s(?:\-|o(?:me|em))?(?: other )?(?:body|one|thing)(?:(?: or |\s*/\s*)s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)\s+' : (r'\1 ', '', ''),
-            r'^((?:[^\s\(\)\[\]]+\s)?)((?:'+DEFAULT_PR_NOCAP+r')?\s*)(\(?(?:kind|variety|type|sort|species) of(?: an?)?\)?|\(?k\.?o\.\)?)\s*([^\s]+ ?[^\s]+)$' : (r'\2 (\3) \1\4', r'⫷mcs2:art-300⫸IsA⫷mcs:eng-000⫸\4', ''),
-            r'^((?:'+DEFAULT_PR_NOCAP+r')?\s*)(\(?(?:a\s+)?(?:kind|variety|type|sort|species) of(?: an?)?\)?|\(?k\.?o\.\)?)\s*([^\s]+ ?[^\s]+)$' : (r'\1 (\2) \3', r'⫷mcs2:art-300⫸IsA⫷mcs:eng-000⫸\3', ''),
+            r'^((?:[^\s\(\)\[\]]+\s)?)((?:'+DEFAULT_PR_NOCAP+r')?\s*)\(?((?:kind|variety|type|sort|species) of(?: an?)?|k\.?o\.)\)?\s*([^\s]+ ?[^\s]+)$' : (r'\2 (\3) \1\4', r'⫷mcs2:art-300⫸IsA⫷mcs:eng-000⫸\4', ''),
+            r'^((?:'+DEFAULT_PR_NOCAP+r')?\s*)\(?((?:a\s+)?(?:kind|variety|type|sort|species) of(?: an?)?|k\.?o\.)\)?\s*([^\s]+ ?[^\s]+)$' : (r'\1 (\2) \3', r'⫷mcs2:art-300⫸IsA⫷mcs:eng-000⫸\3', ''),
         },
         4: {
             r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)?)((?:not )?)[Tt]o\s+(?!(?:'+DEFAULT_PR_NOCAP+r'$|the|you|us|him|her|them|me|[wt]?here|no|one[\'’]s|oneself|a[n])(?: |$))' : (r'\1\2(to) ', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal', ''),
@@ -237,17 +237,19 @@ EXDFPREP_RULES = {
             # r'^(を)(\p{Han})' : (r'(\1)\2', r'', ''),
             r'^(を)' : (r'(\1)', r'', ''),
             r'(など)$' : (r'(\1)', '', ''),    # ... etc.
-            r'^([^…]+)(くなる)$' : (r'\1\2', r'⫷mcs2:art-316⫸Inchoative_of⫷mcs⫸\1い', ''),    # to become ~ (keiyoshi, ''),
-            r'^([^…]+)(になる)$' : (r'\1\2', r'⫷mcs2:art-316⫸Inchoative_of⫷mcs⫸\1', ''),    # to become ~
+            r'^([^…]{1,6})(くなる)$' : (r'\1\2', r'⫷mcs2:art-316⫸Inchoative_of⫷mcs⫸\1い', ''),    # to become ~ (keiyoshi, ''),
+            r'^([^…]{1,6})(になる)$' : (r'\1\2', r'⫷mcs2:art-316⫸Inchoative_of⫷mcs⫸\1', ''),    # to become ~
             r'^[…\s]*(に)(なる)$' : (r'(\1)\2', '', ''),    # to become
             r'^([猫人]の名|童名)$' : (r'(\1)', '', ''),
             r'^(または?、)' : (r'(\1)', '', ''),
+            r'^([\p{Han}]+)(のこと)$' : (r'\1(\2)', '', ''),
+            r'^(転じて、?)(.+)$' : (r'(\1)\2', '', ''), # conversely, ...
         },
         2: {
-            r'^(.{1,6})(の名)$' : (r'\1(\2)', r'⫷mcs2:art-300⫸IsA⫷mcs:jpn-000⫸\1', ''),
+            r'^(.{1,6})(の(?:名|一?種類?))$' : (r'\1(\2)', r'⫷mcs2:art-300⫸IsA⫷mcs:jpn-000⫸\1', ''),
             r'其('+DEFAULT_PR_NOCAP+r'?)\(の\)' : (r'其\1の', '', ''),
-            r'^地名$' : (r'⫷df⫸地名', '⫷mcs2:art-317⫸termType⫷mcs:art-317⫸placeName', ''),
-            r'^(.*)(の意味?)$' : (r'\1(\2)', '', ''),
+            r'^地名$' : (r'⫷df⫸地名', '⫷mcs2:art-317⫸termType⫷mcs:art-317⫸placeName‣', ''),
+            r'^(.*)(の意味?(?:を(?:あらわ|[表現])す)?)$' : (r'\1(\2)', '', ''),
         },
         3: {
             r'^(植物|道具|衣服|行事|料理|動物|魚)(の?名)$' : (r'\1(\2)', r'⫷mcs2:art-300⫸IsA⫷mcs:jpn-000⫸\1', ''),
@@ -447,6 +449,8 @@ EXDFPREP_RULES = {
             r' ?\(incl?(\.|usive)?\)$' : ('', '⫷dcs2:art-303⫸PersonProperty⫷dcs:art-303⫸FirstPersonInclusive', ''),
             r' ?\(impol(\.|ite)?\)$' : ('', '⫷dcs2:art-317⫸register⫷dcs:art-317⫸vulgarRegister', ''),
             r' ?\(pol(\.|ite)?\)$' : ('', '⫷dcs2:art-317⫸register⫷dcs:art-306⫸POL', ''),
+            r' ?\([Ff]ormal\)$' : ('', '⫷dcs2:art-317⫸register⫷dcs:art-317⫸formalRegister', ''),
+            r' ?\([Ii]nformal\)$' : ('', '⫷dcs2:art-317⫸register⫷dcs:art-317⫸informal', ''),
             # r'\(n?m\.?\)' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸MasculineGender', ''),
             # r'\(n?f\.?\)' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸FeminineGender', ''),
             # r'\(a(?:dj|g)\.?\)' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Adjectival', ''),
@@ -785,7 +789,7 @@ def prepsyns(entries, cols, refrom, lng, delim='‣', pretag_special_lvs=True, o
             entry[col] = delim.join(nodupes(filter(None, entry[col])))
         result.append(entry)
     # remove nested parens
-    result = remove_nested_parens(entries, cols)
+    # result = remove_nested_parens(entries, cols)
     # detect taxa, report if extract_taxa is advised
     # detect_taxa(entries, cols, delim=delim)
     return result
@@ -1088,7 +1092,7 @@ def decap(entries, cols):
 
 
 def tsv_to_entries(infile):
-    entries = [line.split('\t') for line in infile.readlines()]
+    entries = [line.split('\t') for line in infile.readlines() if line.strip()]
     return preprocess(entries)
 
 def delete_col(entries, col):
@@ -1323,9 +1327,9 @@ def classify_cmn(entries, col, delim='‣'):
         hantool
     except:
         from hantool import HanText
-
+    
     ht = HanText('')
-
+    
     simptag, tradtag = '⫷ex:cmn-000⫸', '⫷ex:cmn-001⫸'
 
     assert col < len(entries[0])
@@ -1348,6 +1352,10 @@ def classify_cmn(entries, col, delim='‣'):
         result.append(entry[:col] + [delim.join(newentry).replace(delim+simptag[0],simptag[0])] + entry[col+1:])
     return result
 
+def has_unbalanced_parens(s):
+    s = re.sub(make_paren_regex(), '', s)
+    allparens = set(p[0].replace('\\', '') for p in PARENS).union(set(p[1].replace('\\', '') for p in PARENS))
+    return any(p in s for p in allparens)
 
 def tb_to_wn(tb):
     # Convert Penn Treebank to WordNet POS tags
