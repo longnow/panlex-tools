@@ -20,7 +20,7 @@ sub apostrophe {
     my $args = ref $_[0] ? $_[0] : \@_;
 
     my @specs;
-    
+
     if (ref $args eq 'HASH') {
         validate_specs($args->{specs});
         @specs = @{$args->{specs}};
@@ -31,9 +31,9 @@ sub apostrophe {
 
     my $col_uid = parse_specs(\@specs);
     my @uniq_uid = uniq(values %$col_uid);
-    
-    my $result = panlex_query_all('/lv', { uid => \@uniq_uid, include => 'cp' });
-    
+
+    my $result = panlex_query_all('/langvar', { uid => \@uniq_uid, include => 'langvar_char' });
+
     my %apos;
 
     # Add data on the best apostrophe, making it U+02bc for varieties without any data on
@@ -41,17 +41,17 @@ sub apostrophe {
     foreach my $lv (@{$result->{result}}) {
         my $best;
 
-        if (@{$lv->{cp}}) {
+        if (@{$lv->{langvar_char}}) {
             my ($hpg, $slt, $mtc, $rq);
 
-            foreach my $cp (@{$lv->{cp}}) {
+            foreach my $cp (@{$lv->{langvar_char}}) {
                 $hpg = 1 if $cp->[0] <= 0x05f3 && $cp->[1] >= 0x05f3; # Hebrew punctuation geresh
                 $slt = 1 if $cp->[0] <= 0xa78c && $cp->[1] >= 0xa78c; # lowercase saltillo
                 $mtc = 1 if $cp->[0] <= 0x02bb && $cp->[1] >= 0x02bb; # modifier letter turned comma
                 $rq = 1 if $cp->[0] <= 0x2019 && $cp->[1] >= 0x2019; # right single quotation mark
                 #$ma = 1 if $cp->[0] <= 0x02bc && $cp->[1] >= 0x02bc; # modifier letter apostrophe
             }
-            
+
             if ($hpg) {
                 $best = "\x{05f3}";
             }
@@ -60,7 +60,7 @@ sub apostrophe {
             }
             elsif ($mtc) {
                 $best = "\x{02bb}";
-            } 
+            }
             elsif ($rq) {
                 $best = "\x{2019}";
             }
@@ -84,7 +84,7 @@ sub apostrophe {
 
     while (<$in>) {
     # For each line of the input file:
-        
+
         chomp;
         # Remove its trailing newline.
 

@@ -9,7 +9,7 @@ our @EXPORT = qw(panlex_query panlex_query_all panlex_query_map panlex_norm);
 
 $PanLex::Client::ARRAY_MAX = 10000;
 
-my $API_URL = $ENV{PANLEX_API} || "http://api.panlex.org";
+my $API_URL = $ENV{PANLEX_API} || "http://api.panlex.org/v2";
 
 if ($ENV{PANLEX_API_LIMIT}) {
     require Sub::Throttler;
@@ -96,15 +96,15 @@ sub panlex_query_all {
 sub panlex_query_map {
     my ($url, $body, $b_key, $r_key) = @_;
     my $result;
-    my $tt = $body->{$b_key};
+    my $txt = $body->{$b_key};
 
 
-    for (my $i = 0; $i < @$tt; $i += $PanLex::Client::ARRAY_MAX) {
+    for (my $i = 0; $i < @$txt; $i += $PanLex::Client::ARRAY_MAX) {
         my $last = $i + $PanLex::Client::ARRAY_MAX - 1;
-        $last = $#{$tt} if $last > $#{$tt};
+        $last = $#{$txt} if $last > $#{$txt};
 
         # get the next set of results.
-        my $this_result = panlex_query($url, { %$body, $b_key => [@{$tt}[$i .. $last]] });
+        my $this_result = panlex_query($url, { %$body, $b_key => [@{$txt}[$i .. $last]] });
 
         # merge with the previous results, if any.
         if ($result) {
@@ -121,21 +121,21 @@ sub panlex_query_map {
 #### panlex_norm
 # Iteratively query the PanLex api at /norm and return the results.
 # Arguments:
-#   0: norm type ('ex' or 'df').
+#   0: norm type ('expr' or 'definition').
 #   1: variety UID.
-#   2: tt parameter containing expression texts (arrayref).
+#   2: txt parameter containing expression texts (arrayref).
 #   3: degrade parameter (boolean).
-#   4: ui parameter (arrayref).
+#   4: grp parameter (arrayref).
 
 sub panlex_norm {
-    my ($type, $uid, $tt, $degrade, $ui) = @_;
+    my ($type, $uid, $txt, $degrade, $grp) = @_;
 
     return panlex_query_map("/norm/${type}/$uid", {
-        tt      => $tt,
-        ui      => $ui // [],
+        txt     => $txt,
+        grp     => $grp // [],
         degrade => $degrade,
         cache   => 0,
-    }, 'tt', 'norm');
+    }, 'txt', 'norm');
 }
 
 1;

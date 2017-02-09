@@ -26,7 +26,7 @@ while (<$mapin>) {
 
 close $mapin;
 
-my $key_td = panlex_query_map('/td', { tt => [keys %map] }, 'tt', 'td');
+my $key_td = panlex_query_map('/txt_degr', { txt => [keys %map] }, 'txt', 'txt_degr');
 
 my %td_map;
 

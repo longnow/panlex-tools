@@ -105,8 +105,8 @@ sub csppmap {
             }
         }
 
-        $in_td = panlex_query_map('/td', { tt => [keys %$in_td] }, 'tt', 'td');
-        my %td_map = reverse %{ panlex_query_map('/td', { tt => [keys %map] }, 'tt', 'td') };
+        $in_td = panlex_query_map('/txt_degr', { txt => [keys %$in_td] }, 'txt', 'txt_degr');
+        my %td_map = reverse %{ panlex_query_map('/txt_degr', { txt => [keys %map] }, 'txt', 'txt_degr') };
 
         foreach my $col (@lines) {
             foreach my $i (@csppmapcol) {

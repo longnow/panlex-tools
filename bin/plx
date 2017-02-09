@@ -178,18 +178,18 @@ sub add_interp {
 }
 
 sub cmd_edit {
-    my ($ap) = @_;
+    my ($source) = @_;
 
     check_env(qw(PANLEX_PANLEM_USER PANLEX_PANLEM_PASSWORD));
-    print(STDERR "You need to specify a source label or ID.\n"), return unless $ap;
+    print(STDERR "You need to specify a source label or ID.\n"), return unless $source;
 
-    if ($ap =~ /:/) {
+    if ($source =~ /:/) {
         print(STDERR "Looking up source ID from label ...\n");
 
-        my $result = panlex_query("/ap/$ap");
-        $ap = $result->{ap}{ap};
-        die "could not find source ID\n" unless defined $ap;
-        print STDERR "$ap\n\n";
+        my $result = panlex_query("/source/$source");
+        $source = $result->{source}{id};
+        die "could not find source ID\n" unless defined $source;
+        print STDERR "$source\n\n";
     }
 
     print "Requesting editorship on PanLem ...\n";
@@ -202,7 +202,7 @@ sub cmd_edit {
             uslv    => '187', # user's interface lv
             sr      => 'apviz1', # state routine: view source
             apviz1  => 'redok', # request permision to edit
-            ap      => $ap, # source id
+            ap      => $source, # source id
         },
     );
 
@@ -227,8 +227,8 @@ sub cmd_fetch {
     if ($source =~ /:|^\d+$/) {
         print(STDERR "Looking up source directory from label/ID ...\n");
 
-        my $result = panlex_query("/ap/$source");
-        $source = $result->{ap}{fp};
+        my $result = panlex_query("/source/$source");
+        $source = $result->{source}{directory};
         die "could not find source directory\n" unless defined $source;
         print STDERR "$source\n\n";
     }
@@ -272,7 +272,7 @@ sub cmd_fetch {
 sub cmd_submit {
     check_env(qw(PANLEX_PANLEM_USER PANLEX_PANLEM_PASSWORD));
 
-    my ($final, $ap, $aptt);
+    my ($final, $source, $source_label);
     my $op = '2'; # primary
 
     if (defined $_[0] && -f $_[0]) {
@@ -293,30 +293,30 @@ sub cmd_submit {
         } elsif ($arg eq 'metadata') {
             $op = '3';
         } elsif ($arg =~ /^\d+$/) {
-            $ap //= $arg;
+            $source //= $arg;
         } elsif ($arg =~ /:/) {
-            $aptt //= $arg;
+            $source_label //= $arg;
         } else {
             die "unknown argument: $arg\n";
         }
     }
 
-    if (!defined $ap) {
+    if (!defined $source) {
         print STDERR "No source id argument provided, trying to look it up ...\n";
 
-        if (!defined $aptt) {
+        if (!defined $source_label) {
             my $dirname = (splitdir(rel2abs(curdir())))[-1];
             utf8::decode($dirname);
 
             print(STDERR "Unable to infer source label from directory name: $dirname\n"), return
                 unless $dirname =~ /^([a-z]{3}(?:-[a-z]{3})*)-(.+?)$/;
 
-            $aptt = NFC("$1:$2");
+            $source_label = NFC("$1:$2");
         }
 
-        my $result = panlex_query("/ap/$aptt");
-        $ap = $result->{ap}{ap};
-        print STDERR "$ap\n\n";
+        my $result = panlex_query("/source/$source_label");
+        $source = $result->{source}{id};
+        print STDERR "$source\n\n";
     }
 
     print "Submitting $final to PanLem ...\n";
@@ -330,7 +330,7 @@ sub cmd_submit {
         pwd     => $ENV{PANLEX_PANLEM_PASSWORD}, # password
         sr      => 'dossnd1', # state routine: submit file
         op      => $op, # operation
-        ap      => $ap, # source id
+        ap      => $source, # source id
         dbg     => '', # whole - see
         res     => [encode('utf8', $final), undef], # uploaded file
     };

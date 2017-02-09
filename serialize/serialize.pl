@@ -46,7 +46,7 @@ my @TOOLS = (
 #               to be order to be accepted.
 #   strict:   set to 1 to only accept replacements differing in parentheses, 0
 #               to accept all replacements. default 1.
-#   ui:       array of source group IDs whose meanings are to be ignored in
+#   grp:      array of source group IDs whose meanings are to be ignored in
 #               normalization; [] if none. default [].
 #   log:      set to 1 to log normalize scores to normalizedf.json, 0 otherwise.
 #               default 1.
@@ -170,7 +170,7 @@ my @TOOLS = (
 #   mindeg:   minimum score a proposed expression that is not accepted outright
 #               as an expression, or its replacement, must have in order to be
 #               accepted as an expression. pass '' to disable replacement.
-#   ui:       array of source group IDs whose meanings are to be ignored in
+#   grp:      array of source group IDs whose meanings are to be ignored in
 #               normalization; [] if none. default [].
 #   log:      set to 1 to log normalize scores to normalize.json, 0 otherwise.
 #               default 1.

@@ -10,7 +10,7 @@
 #   mindeg:   minimum score a proposed expression that is not accepted outright
 #               as an expression, or its replacement, must have in order to be
 #               accepted as an expression. pass '' to disable replacement.
-#   ui:       array of source group IDs whose meanings are to be ignored in
+#   grp:      array of source group IDs whose meanings are to be ignored in
 #               normalization; [] if none. default [].
 #   log:      set to 1 to log normalize scores to normalize.json, 0 otherwise.
 #               default 1.
@@ -49,14 +49,14 @@ sub normalize {
     my $out = shift;
     my $args = ref $_[0] ? $_[0] : \@_;
 
-    my ($excol, $uid, $min, $mindeg, $ui, $log, $failtag, $ignore, @propcols, $delim, $extag, $exptag);
+    my ($excol, $uid, $min, $mindeg, $grp, $log, $failtag, $ignore, @propcols, $delim, $extag, $exptag);
 
     if (ref $args eq 'HASH') {
         $excol      = $args->{col};
         $uid        = $args->{uid};
         $min        = $args->{min};
         $mindeg     = $args->{mindeg};
-        $ui         = $args->{ui} // $args->{ap} // [];
+        $grp        = $args->{grp} // $args->{ui} // $args->{ap} // [];
         $log        = $args->{log} // 1;
         $failtag    = $args->{failtag} // $args->{dftag} // '⫷df⫸';
         $ignore     = $args->{ignore} // '';
@@ -141,7 +141,7 @@ sub normalize {
         }
     }
 
-    my $result = panlex_norm('ex', $uid, [keys %ex], 0, $ui);
+    my $result = panlex_norm('expr', $uid, [keys %ex], 0, $grp);
     $log_obj->{stage1} = $result if $log;
 
     foreach my $tt (keys %$result) {
@@ -155,7 +155,7 @@ sub normalize {
     my %ttto;
 
     if ($mindeg ne '') {
-        $result = panlex_norm('ex', $uid, [keys %ex], 1, $ui);
+        $result = panlex_norm('expr', $uid, [keys %ex], 1, $grp);
         $log_obj->{stage2} = $result if $log;
 
         foreach my $tt (keys %$result) {
@@ -165,11 +165,11 @@ sub normalize {
 
             # For each proposed expression that is a highest-scoring expression in the variety with
             # its degradation and whose score is sufficient for acceptance as an expression:
-            if ($norm->{score} >= $mindeg and defined $norm->{tt}) {
-                if ($tt eq $norm->{tt}) {
+            if ($norm->{score} >= $mindeg and defined $norm->{txt}) {
+                if ($tt eq $norm->{txt}) {
                     $exok{$tt} = '';
                 } else {
-                    $ttto{$tt} = $norm->{tt};
+                    $ttto{$tt} = $norm->{txt};
                 }
             }
         }

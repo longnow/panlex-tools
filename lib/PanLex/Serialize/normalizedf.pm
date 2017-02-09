@@ -11,7 +11,7 @@
 #               to be order to be accepted.
 #   strict:   set to 1 to only accept replacements differing in parentheses, 0
 #               to accept all replacements. default 1.
-#   ui:       array of source group IDs whose meanings are to be ignored in
+#   grp:      array of source group IDs whose meanings are to be ignored in
 #               normalization; [] if none. default [].
 #   log:      set to 1 to log normalize scores to normalizedf.json, 0 otherwise.
 #               default 1.
@@ -41,7 +41,7 @@ sub normalizedf {
     my $uid     = $args->{uid};
     my $min     = $args->{min};
     my $mindeg  = $args->{mindeg};
-    my $ui      = $args->{ui} // $args->{ap} // [];
+    my $grp      = $args->{grp} // $args->{ui} // $args->{ap} // [];
     my $strict  = $args->{strict} // 1;
     my $log     = $args->{log} // 1;
     my $ignore  = $args->{ignore} // '';
@@ -108,7 +108,7 @@ sub normalizedf {
         }
     }
 
-    my $result = panlex_norm('ex', $uid, [keys %ex], 0, $ui);
+    my $result = panlex_norm('expr', $uid, [keys %ex], 0, $grp);
     # Identify a reference to a table whose keys are the proposed expression texts and whose
     # values are ex-type “norm” objects with “degrade” false, as defined by the PanLex API.
 
@@ -128,7 +128,7 @@ sub normalizedf {
 
     my %ttto;
 
-    $result = panlex_norm('df', $uid, [keys %ex], 1, $ui);
+    $result = panlex_norm('definition', $uid, [keys %ex], 1, $grp);
     # Identify a reference to a table whose keys are the proposed expression texts and whose
     # values are df-type “norm” objects with “degrade” true, as defined by the PanLex API. Each “norm”
     # object is an array of score-text pairs, ordered from highest to lowest score, containing the
@@ -148,11 +148,11 @@ sub normalizedf {
 
         # For each proposed expression that is a highest-scoring expression in the variety with
         # its degradation and whose score is sufficient for acceptance as an expression:
-        if ($norm->{score} >= $mindeg && defined $norm->{tt}) {
+        if ($norm->{score} >= $mindeg && defined $norm->{txt}) {
         # If score of the pair is at least equal to the minimum score required for acceptance and
         # the pair has a text:
 
-            if ($tt eq $norm->{tt}) {
+            if ($tt eq $norm->{txt}) {
             # If the pair’s text is identical to the text of the proposed expression:
 
                 $exok{$tt} = '';
@@ -161,12 +161,12 @@ sub normalizedf {
 
             }
 
-            elsif (!$strict || strict_match($tt, $norm->{tt})) {
+            elsif (!$strict || strict_match($tt, $norm->{txt})) {
             # Otherwise, if all definition texts with matching degradations are acceptable, or
             # if the pair’s text is identical to that of the proposed expression when parentheses
             # are removed from the pair’s text:
 
-                $ttto{$tt} = $norm->{tt};
+                $ttto{$tt} = $norm->{txt};
                 # Add the pair’s text to the table of replacements for the proposed expression text.
 
             }
