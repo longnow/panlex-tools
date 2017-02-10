@@ -449,24 +449,46 @@ zew	art-303:PartOfSpeechProperty:art-303:NumeralClassifier
 Zählwort	art-303:PartOfSpeechProperty:art-303:NumeralClassifier	
 ófn.	art-303:PartOfSpeechProperty:art-303:IndefinitePronoun	
 óákveðið fornafn	art-303:PartOfSpeechProperty:art-303:IndefinitePronoun	
+бран.	art-317:Usage:art-253:derogatory(icl>adj,equ>derogative)	
+вежл.	art-317:register:art-306:POL	
+вопр.	art-303:PartOfSpeechProperty:art-303:InterrogativeOperator	
+воскл.	art-303:PartOfSpeechProperty:art-306:EXCLAM	
+г.	art-303:PartOfSpeechProperty:art-317:placeName	
 глаг.	art-303:PartOfSpeechProperty:art-303:Verbal	
+груб.	art-317:register:art-317:informal	
+дет.	art-317:register:art-253:baby talk(icl>speech of a young child)	
+диал.	art-317:register:art-317:spokenLanguage	
+женск.	art-317:register:art-317:female	
+кн.	art-317:register:art-317:literaryStyle	
+межд.	art-303:PartOfSpeechProperty:art-303:Interjection	
 мест.	art-303:PartOfSpeechProperty:art-303:Pronominal	
 мест.вопр.	art-303:PartOfSpeechProperty:art-303:InterrogativeProform	
 мест.личн.	art-303:PartOfSpeechProperty:art-303:PersonalPronoun	
 мн.	art-303:NumberProperty:art-303:PluralNumber	
 нареч.	art-303:PartOfSpeechProperty:art-303:Adverbial	
 недостаточный глагол	art-303:LinguisticProperty:art-253:attributive(icl>adj,ant>predicative)‣art-303:PartOfSpeechProperty:art-303:Verbal	*
+неперех.	art-303:PartOfSpeechProperty:art-303:IntransitiveVerb	
 отрицание	art-303:PartOfSpeechProperty:art-303:NegationOperator	
+перех.	art-303:PartOfSpeechProperty:art-303:TransitiveVerb	
+погов.	art-303:SyntacticUnit:art-303:Phrase	
+посл.	art-303:SyntacticUnit:art-303:Phrase	
 послелог	art-303:PartOfSpeechProperty:art-303:Postposition	
+поэт.	art-317:register:art-317:poetry	
 презр.	art-317:register:art-317:vulgarRegister	
 презрение	art-317:register:art-317:vulgarRegister	
+пренебр.	art-317:register:art-317:vulgarRegister	
+преф.	art-303:Morpheme:art-303:Prefix	
 прил.	art-303:PartOfSpeechProperty:art-303:Adjectival	
 прилаг.	art-303:PartOfSpeechProperty:art-303:Adjectival	
+прост.	art-317:register:art-317:colloquialStyle	
 разг.	art-317:register:art-317:colloquialStyle	
 редко	art-303:LinguisticProperty:art-317:rarelyUsed	
 служебное слово	art-303:PartOfSpeechProperty:art-303:Particle	
+соед.	art-303:PartOfSpeechProperty:art-303:Conjunction	
+суф.	art-303:Morpheme:art-303:Suffix	
 сущ.	art-303:PartOfSpeechProperty:art-303:Noun	
 уст.	art-317:Usage:art-317:obsoleteTerm	
+част.	art-303:PartOfSpeechProperty:art-303:Particle	
 частица	art-303:PartOfSpeechProperty:art-303:Particle	
 частица модальная	art-303:PartOfSpeechProperty:art-303:Particle‣art-303:PartOfSpeechProperty:art-303:Modal	
 частица отриц.	art-303:PartOfSpeechProperty:art-303:Particle‣art-303:PolarityProperty:art-303:NegativePolarity	
@@ -474,7 +496,6 @@ Zählwort	art-303:PartOfSpeechProperty:art-303:NumeralClassifier
 частица усил.	art-303:PartOfSpeechProperty:art-303:Particle	*
 частица усилительная	art-303:PartOfSpeechProperty:art-303:Particle	*
 частица утв.	art-303:PartOfSpeechProperty:art-303:Particle	*
-част.	art-303:PartOfSpeechProperty:art-303:Particle	
 числ.	art-303:PartOfSpeechProperty:art-303:Numeral	
 числ.разд.	art-303:PartOfSpeechProperty:art-303:OrdinalNumeral	
 介詞	art-303:PartOfSpeechProperty:art-303:Preposition	

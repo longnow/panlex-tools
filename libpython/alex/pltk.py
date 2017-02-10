@@ -237,8 +237,8 @@ EXDFPREP_RULES = {
             # r'^(を)(\p{Han})' : (r'(\1)\2', r'', ''),
             r'^(を)' : (r'(\1)', r'', ''),
             r'(など)$' : (r'(\1)', '', ''),    # ... etc.
-            r'^([^…]{1,6})(くなる)$' : (r'\1\2', r'⫷mcs2:art-316⫸Inchoative_of⫷mcs⫸\1い', ''),    # to become ~ (keiyoshi, ''),
-            r'^([^…]{1,6})(になる)$' : (r'\1\2', r'⫷mcs2:art-316⫸Inchoative_of⫷mcs⫸\1', ''),    # to become ~
+            r'^([^…]{1,6})(くなる)$' : (r'\1\2', r'⫷mcs2:art-316⫸Inchoative_of⫷mcs⫸\1い', ''),    # to become ~ (keiyoshi),
+            r'^([^…]{1,6})(になる)$' : (r'\1\2', r'⫷mcs2:art-316⫸Inchoative_of⫷mcs⫸\1', ''),    # to become ~ (meishi/keiyodoshi)
             r'^[…\s]*(に)(なる)$' : (r'(\1)\2', '', ''),    # to become
             r'^([猫人]の名|童名)$' : (r'(\1)', '', ''),
             r'^(または?、)' : (r'(\1)', '', ''),
@@ -271,7 +271,7 @@ EXDFPREP_RULES = {
             r'^\(?([Ss]er|[Ee]star)\)?\s+([^\s\(])'    : (r'(\1) \2', '', ''),
             #r'\s+of(\s*(?:\([^\)]*\)\s*)*)$'                    : (r' (of)\1', '', ''),
             r'^\s*¡|!\s*$'    : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Interjection', ''),
-            r'[¿\?]' : ('', '⫷mcs2:art-303⫸ForceProperty⫷mcs:art-303⫸InterrogativeForce', ''),
+            # r'[¿\?]' : ('', '⫷mcs2:art-303⫸ForceProperty⫷mcs:art-303⫸InterrogativeForce', ''),
             r'[¡\!]' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Interjection', ''),
             r'^idioma ([^\s\(][^\s]*)$' : (r'(idioma) \1', '', ''),
             r'^(\(?(?:una?\s+)?(?:clase) de\)?)\s*([^\s]+ ?[^\s]+)$' : (r'(\1) \2', r'⫷mcs2:art-300⫸IsA⫷mcs:spa-000⫸\2', ''),
@@ -283,7 +283,7 @@ EXDFPREP_RULES = {
     },
     'cat-000' : {
         1 : {
-            r'[¿\?]' : ('', '⫷mcs2:art-303⫸ForceProperty⫷mcs:art-303⫸InterrogativeForce', ''),
+            # r'[¿\?]' : ('', '⫷mcs2:art-303⫸ForceProperty⫷mcs:art-303⫸InterrogativeForce', ''),
         },
     },
     'nld-000' : {
@@ -419,7 +419,7 @@ EXDFPREP_RULES = {
     'rus-000' : {
         1: {
             r'(^|[^ ] +)((?:что|чего|чему|ч[её]м|чьих|чей|кто|кого|кем|кому?)\-л(?:ибо|\.)?(?: в (?:что|чего|чему|ч[её]м|чьих|чей|кто|кого|кем|кому?)\-л(?:ибо|\.)?)?)( |$)' : (r'\1(\2)\3', '', ''),
-            r' (и т\.\s*п\.)' : (r' (\1)', '', ''),
+            r' (и т\.\s*п\.?)' : (r' (\1)', '', ''),
         
             # something:    что-л (n/a), чего (g), чему (d), чем (i), чём (p, ''),
             # someone:        кто-л (n), кого (g/a), кому (d), кем (i), ком (p, ''),
@@ -462,7 +462,7 @@ EXDFPREP_RULES = {
             # r'\(volg\.?\)' : ('', '⫷dcs:art-317⫸register⫷dcs:art-317⫸vulgarRegister', ''),
             # r'\(vulg\.?\)' : ('', '⫷dcs:art-317⫸register⫷dcs:art-317⫸vulgarRegister', ''),
             r'(.)[！!]$'    : (r'\1', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Interjection', ''),
-            r'(.)[？\?]((?:\s*'+DEFAULT_PR_NOCAP+r')*)$' : (r'\1\2', '⫷mcs2:art-303⫸ForceProperty⫷mcs:art-303⫸InterrogativeForce', ''),
+            # r'(.)[？\?]((?:\s*'+DEFAULT_PR_NOCAP+r')*)$' : (r'\1\2', '⫷mcs2:art-303⫸ForceProperty⫷mcs:art-303⫸InterrogativeForce', ''),
             r'^\?+$' : ('', '', ''),
             r'^[\-—]+$' : ('', '', ''),
             r'[„"“”]'    : ('', '', ''),
@@ -572,7 +572,7 @@ def exdfprep(entries, sourcecols, tocol=-1, lang='eng-000', pretag_special_lvs=T
                             # common han nums
                             int_h_m = re.match(r'^(?:⫷..⫸)?([〇零一二三四五六七八九十百千萬万億亿兆兩两]+|[〇零壹貳贰參叁肆伍陆柒捌玖拾佰仟]+)($|⫷)', syn.strip())
                             if int_h_m:
-                                if int_h_m.group(1) in ['〇']:
+                                if int_h_m.group(1) in ['〇','七五三']:
                                     print('WARNING: Did not pretag potentially special number:', int_h_m.group(1))
                                 else:
                                     syn = re.sub(r'^(?:⫷[^⫸]+⫸)?(.*)$', r'\1⫷ex:art-341⫸\1', unicodedata.normalize('NFKC', syn)).strip()
@@ -1174,8 +1174,8 @@ def __init_homoglyph_dicts():
         ('ə','','ә'),
         ('Þ','Ϸ',''),
         ('þ','ϸ',''),
-        ('Æ','Ӕ',''),
-        ('æ','ӕ',''),
+        ('Æ','','Ӕ'),
+        ('æ','','ӕ'),
         #('ß','β',''),
     ]
     TO_LATN, TO_CYRL, TO_GREK = {}, {}, {}
@@ -1228,10 +1228,10 @@ def synthesize_strings(s1, s2, max_overlap=4, vowels='AEIOUYaeiouy'):
 
     return s1+s2
 
-def insert_into_tilde(s1, s2, max_overlap=4, vowels='AEIOUYaeiouy'):
+def insert_into_tilde(s1, s2, max_overlap=4, vowels='AEIOUYaeiouy', tilde='~'):
     # choose how best to synthesize strings depending on context
     # first make sure a single tilde is in s2 in the first place
-    s2_separated = re.match(r'^([^~]*)~([^~]*)$', s2)
+    s2_separated = re.match(r'^([^'+tilde+r']*)'+tilde+r'([^'+tilde+r']*)$', s2)
     if not s2_separated:
         # print('tilde count != 1, returning string as is:', s2)
         return s2
@@ -1240,11 +1240,11 @@ def insert_into_tilde(s1, s2, max_overlap=4, vowels='AEIOUYaeiouy'):
 
     if s2_pre.endswith(' ') and s2_post.startswith(' '):
         # tilde surrounded by space, just put s1 in there
-        return s2.replace('~', s1)
-    elif s2_pre.endswith(' ') or s2_post.startswith('~'):
+        return s2.replace(tilde, s1)
+    elif s2_pre.endswith(' ') or s2_post.startswith(tilde):
         # tilde at beginning/after space
         return s2_pre + synthesize_strings(s1, s2_post)
-    elif s2_pre.endswith('~') or s2_post.startswith(' '):
+    elif s2_pre.endswith(tilde) or s2_post.startswith(' '):
         # tilde at end/before space
         return synthesize_strings(s2_pre, s1) + s2_post
     else:
