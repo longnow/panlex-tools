@@ -42,7 +42,7 @@ def show_scores(stage1:dict,stage2:dict, maxcount=50):
             continue
         
         if key in stage2:
-            norm_text = stage2[key]['tt']
+            norm_text = stage2[key]['txt']
             score2 = stage2[key]['score']
             
             if norm_text:
