@@ -21,7 +21,6 @@ sub import {
             ? 'https://api.panlex.org'
             : 'https://api.panlex.org/v2';
     }
-        print $API_URL, "\n";
 
     if (any { $_ eq ':limit' } @_) {
         require Sub::Throttler;
