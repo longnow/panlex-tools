@@ -3,22 +3,35 @@ use strict;
 use parent 'Exporter';
 use JSON::MaybeXS;
 use HTTP::Request;
+use List::Util 'any';
 use LWP::UserAgent;
 
 our @EXPORT = qw(panlex_query panlex_query_all panlex_query_map panlex_norm);
 
 $PanLex::Client::ARRAY_MAX = 10000;
 
-my $API_URL = $ENV{PANLEX_API} || "http://api.panlex.org/v2";
+my $API_URL = $ENV{PANLEX_API};
 
-if ($ENV{PANLEX_API_LIMIT}) {
-    require Sub::Throttler;
-    require Sub::Throttler::Rate::AnyEvent;
+sub import {
+    my $class = shift;
+    $class->export_to_level(1, $class, @EXPORT);
 
-    Sub::Throttler::throttle_it_sync('panlex_query');
-    Sub::Throttler::Rate::AnyEvent
-        ->new(period => 60, limit => 120)
-        ->apply_to_functions('panlex_query');
+    if (!defined $API_URL) {
+        $API_URL = (any { $_ eq ':v1' } @_)
+            ? 'https://api.panlex.org'
+            : 'https://api.panlex.org/v2';
+    }
+        print $API_URL, "\n";
+
+    if (any { $_ eq ':limit' } @_) {
+        require Sub::Throttler;
+        require Sub::Throttler::Rate::AnyEvent;
+
+        Sub::Throttler::throttle_it_sync('panlex_query');
+        Sub::Throttler::Rate::AnyEvent
+            ->new(period => 60, limit => 120)
+            ->apply_to_functions('panlex_query');
+    }
 }
 
 # Send a query to the PanLex API at $url, with request body in $body.
