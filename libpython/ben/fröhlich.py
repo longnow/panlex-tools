@@ -12,7 +12,7 @@ def most_common_script(string, skip=[], soft_skip=[]):
     soft_skip = set(soft_skip)
     if not string:
         raise ValueError('string is empty')
-    c = Counter(list(map(lambda x: iso15924.convert(unicode.get_property(x, 'Script'), 'code', 'pva', exact=True)[-1], string)))
+    c = Counter(list(map(lambda x: unicode.get_property(x, 'Script'), string)))
     most_common = [sc for sc in c.most_common() if sc[0] not in skip]
     try:
         if most_common[0][1] == most_common[1][1]:
