@@ -16,6 +16,7 @@ data_directory = os.path.dirname(__file__) + '/data/'
 
 file_list = [
     ('Scripts.txt', {}),
+    ('ScriptExtensions.txt', {}),
     ('DerivedGeneralCategory.txt', {}),
     ('Blocks.txt', {}),
     ('Unihan_Readings.txt', {'Unihan': True}),
@@ -26,11 +27,18 @@ file_list = [
     ('Unihan_DictionaryLikeData.txt', {'Unihan' : True}),
     ('DerivedNumericValues.txt', {'property_names': ['Numeric_Value', '', 'Numeric_Value_Rational']}),
     ('DerivedAge.txt', {}),
+    ('PropList.txt', {'boolean' : True}),
+    ('DerivedCoreProperties.txt', {'boolean' : True}),
+    ('HangulSyllableType.txt', {}),
+    ('LineBreak.txt', {'property_names': ['Line_Break']}),
     ]
 
 try:
     os.mkdir(data_directory)
 except FileExistsError: pass
+
+def clean(string):
+    return re.sub(r'[\s_-]', '', string.strip()).lower()
 
 def _get_unicode_data_file(file_name, version=None, force=False):
     if version:
@@ -80,32 +88,56 @@ def _code_point_range_to_range(cprange):
     return range(start, end + 1)
 
 def _extract_data(file_name, property_names=[]):
+    property_names = [_pa(p) for p in property_names]
     with open(data_directory + file_name, 'r') as data_file:
         output_list = [[]] * 0x110000
-        # property_name = ''
         for line in data_file:
             if not property_names:
                 if line.startswith('# Property:'):
-                    property_names = [line.replace('# Property:', '').strip()]
+                    property_names = [_pa(line.replace('# Property:', '').strip())]
             if line.startswith('# @missing: '):
                 data_line = line.replace('# @missing: ', '').strip().split(';')
                 missing_cpr = _code_point_range_to_range(data_line[0])
-                missing_data = [d.strip() for d in data_line[1:]]
-                for code_point in missing_cpr:
-                    output_list[code_point] = missing_data
+                missing_data = [_pva(p, d) for p, d in zip(property_names, data_line[1:])]
+                if file_name == 'ScriptExtensions.txt':
+                    for code_point in missing_cpr:
+                        output_list[code_point] = [(unicode_properties['sc'][code_point],)]
+                else:
+                    for code_point in missing_cpr:
+                        output_list[code_point] = missing_data
             line = line.partition('#')[0]
             if not line.strip(): continue
             data_line = line.split(';')
             cpr = _code_point_range_to_range(data_line[0])
-            data = [d.strip() for d in data_line[1:]]
+            if file_name == 'ScriptExtensions.txt':
+                data = [tuple(data_line[1].strip().split())]
+            else:
+                data = [_pva(p, d) for p, d in zip(property_names, data_line[1:])]
             for code_point in cpr:
                 output_list[code_point] = data
         output_dict = {property_name: [''] * 0x110000 for property_name in property_names if property_name}
-        # return output_list
         for i, property_name in enumerate(property_names):
             if property_name:
                 for j, data in enumerate(output_list):
                     if data: output_dict[property_name][j] = data[i]
+        return output_dict
+
+def _extract_boolean_data(file_name):
+    with open(data_directory + file_name, 'r') as data_file:
+        output_dict = {}
+        for line in data_file:
+            if line.startswith('#') or not line.strip(): continue
+            line = line.partition('#')[0]
+            if not line.strip(): continue
+            data_line = line.split(';')
+            cpr = _code_point_range_to_range(data_line[0])
+            property_name = _pa(data_line[1])
+            for code_point in cpr:
+                try:
+                    output_dict[property_name][code_point] = True
+                except KeyError:
+                    output_dict[property_name] = [False] * 0x110000
+                    output_dict[property_name][code_point] = True
         return output_dict
 
 def _extract_Unihan_data(file_name):
@@ -115,7 +147,7 @@ def _extract_Unihan_data(file_name):
             if line.startswith('#') or not line.strip(): continue
             data_line = line.split('\t')
             code_point = int(data_line[0].replace('U+', '').strip(), base=16)
-            property_name = data_line[1].strip()
+            property_name = _pa(data_line[1])
             data = data_line[2].strip()
             try:
                 output_dict[property_name][code_point] = data
@@ -124,33 +156,63 @@ def _extract_Unihan_data(file_name):
                 output_dict[property_name][code_point] = data
         return output_dict
 
-def _populate_properties(file_name, property_names=[], Unihan=False, force=False):
+def _populate_properties(file_name, property_names=[], Unihan=False, boolean=False, force=False):
     if force: _get_unicode_data_file(file_name, force=True)
     if os.path.exists(data_directory + file_name): pass
     else: _get_unicode_data_file(file_name)
-    if Unihan: data = _extract_Unihan_data(file_name)
+    if boolean: data = _extract_boolean_data(file_name)
+    elif Unihan: data = _extract_Unihan_data(file_name)
     else: data = _extract_data(file_name, property_names)
     unicode_properties.update(data)
+
+def _populate_aliases(force=False):
+    for file_name in ['PropertyAliases.txt', 'PropertyValueAliases.txt']:
+        if force: _get_unicode_data_file(file_name, force=True)
+        if os.path.exists(data_directory + file_name): pass
+        else: _get_unicode_data_file(file_name)
+        with open(data_directory + file_name, 'r') as data_file:
+            for line in data_file:
+                if line.startswith('#') or not line.strip(): continue
+                data_line = [s.strip() for s in line.split(';')]
+                if file_name == 'PropertyAliases.txt':
+                    for alias in data_line:
+                        property_aliases[alias] = data_line[0]
+                        property_aliases[clean(alias)] = data_line[0]
+                if file_name == 'PropertyValueAliases.txt':
+                    for alias in data_line[1:]:
+                        try:
+                            property_value_aliases[data_line[0]][alias] = data_line[1]
+                            property_value_aliases[data_line[0]][clean(alias)] = data_line[1]
+                        except KeyError:
+                            property_value_aliases[data_line[0]] = {}
+                            property_value_aliases[data_line[0]][alias] = data_line[1]
+                            property_value_aliases[data_line[0]][clean(alias)] = data_line[1]
+
+                
 
 try:
     with gzip.open(data_directory + 'unicode_properties.gz', 'rb') as gz_file:
         unicode_properties = pickle.load(gz_file)
 except FileNotFoundError:
     unicode_properties = {}
-
     for i in file_list:
         _populate_properties(i[0], **i[1])
-
     with gzip.open(data_directory + 'unicode_properties.gz', 'wb') as gz_file:
         pickle.dump(unicode_properties, gz_file, protocol=-1)
 
+property_aliases, property_value_aliases = {}, {}
+_populate_aliases()
+
 def force_update():
+    global unicode_properties
+    unicode_properties = {}
+    print("getting aliases")
+    _populate_aliases(force=True)
     for i in file_list:
-        print(i)
+        print("getting {}".format(i[0]))
         _populate_properties(i[0], force=True, **i[1])
     with gzip.open(data_directory + 'unicode_properties.gz', 'wb') as gz_file:
         pickle.dump(unicode_properties, gz_file, protocol=-1)
-
 
 def list_properties():
     return sorted(unicode_properties.keys())
@@ -158,7 +220,19 @@ def list_properties():
 def get_property(char, unicode_property):
     if len(char) != 1:
         raise TypeError('get_property() expected a character, but string of length {} found'.format(len(char)))
-    return unicode_properties[unicode_property][ord(char)]
+    return unicode_properties[_pa(unicode_property)][ord(char)]
+
+def _pa(prop):
+    try:
+        return property_aliases[clean(prop)]
+    except KeyError:
+        return prop.strip()
+
+def _pva(prop, val):
+    try:
+        return property_value_aliases[clean(prop)][clean(val)]
+    except KeyError:
+        return val.strip()
 
 def get_chars(unicode_property, value, max_chars=0, rx=False):
     if rx: rx = re.compile(value)
