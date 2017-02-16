@@ -187,6 +187,6 @@ def expand_macrolanguage(part3, include_self=False):
     """
     
     if not iso639_macro_dict: _initialize_ISO_639_macro()
-    output = iso639_macro_dict[part3]
+    output = iso639_macro_dict[part3][:]
     if include_self: output += [part3]
     return sorted(set(output))
