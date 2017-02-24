@@ -207,17 +207,17 @@ def filter_unique_synonyms(fields:list) -> list:
 
 
 def process_synonyms(proc):
-    # s = '‣'
+    # s = SYNDELIM
     def syn_wrapper(text):
         mn_fields = text.split('⁋')
 
         for i in range(len(mn_fields)):
-            syn_fields = mn_fields[i].split('‣')
+            syn_fields = mn_fields[i].split(SYNDELIM)
 
             for j in range(len(syn_fields)):
                 syn_fields[j] = proc(syn_fields[j])
 
-            mn_fields[i] = '‣'.join( filter_unique_synonyms( syn_fields))
+            mn_fields[i] = SYNDELIM.join( filter_unique_synonyms( syn_fields))
 
         mn_fields = filter_unique_meanings(mn_fields)
         return '⁋'.join(mn_fields)
@@ -236,7 +236,7 @@ def get_plx_fields(text):
 
 
 def process_plx_synonyms(proc):
-    # s = '‣'
+    # s = SYNDELIM
     def plx_wrapper(text):
         before = text
         text = delimToPanlex(text)
@@ -271,7 +271,7 @@ def process_plx_synonyms(proc):
 
 
 def process_plx_dual_synonyms(proc):
-    # s = '‣'
+    # s = SYNDELIM
     def plx_dual_wrapper(text,metadata):
         idx_list = [ex_match.start() for ex_match in re.finditer('⫷(?:ex|df)(?::\w{1,4}-\d{1,3})?⫸', text)]
 
@@ -299,24 +299,24 @@ def process_plx_dual_synonyms(proc):
 
 def process_method_synonyms(proc):
     def wrapper(text):
-        fields = text.split('‣')
+        fields = text.split(SYNDELIM)
         for i in range(len(fields)):
             fields[i] = proc(fields[i])
-        return '‣'.join( fields)
+        return SYNDELIM.join( fields)
     return wrapper
 
 
 
 def process_text_synonym_extract(proc):
     def wrapper(text1,text2):
-        fields1 = text1.split('‣')
+        fields1 = text1.split(SYNDELIM)
 
         for i in range(len(fields1)):
             fields1[i],new_text2 = proc(fields1[i],text2)
             text2 = append_synonym(text2, new_text2)
 
         fields1 = [f for f in fields1 if len(f) > 0]
-        text1 = '‣'.join( fields1)
+        text1 = SYNDELIM.join( fields1)
 
         return text1,text2
 
@@ -396,7 +396,7 @@ def append_meaning(text, elem):
 
 def join_synonyms(syn_ls):
     syn_ls = [syn for syn in syn_ls if syn != None and len(syn) > 0]
-    return '‣'.join(syn_ls)
+    return SYNDELIM.join(syn_ls)
 
 
 def pretag_df(text):
@@ -430,7 +430,7 @@ def pretag_ex(text, langid=None):
 # 2) lang given, lang in field -> update lang in field?
 # 3) no lang given -> no change
 def delimToPanlex(text, lang=None):
-    fields = text.split('‣')
+    fields = text.split(SYNDELIM)
     for i in range(len(fields)):
         plx_match = re.search('^⫷(?:ex|df)(:\w{2,}-\d{3,})?⫸', fields[i])
         if plx_match:
@@ -518,7 +518,7 @@ class DcsMapper(object):
 
     def __getitem__(self, key):
         results = set()
-        for k in key.split('‣'):
+        for k in key.split(SYNDELIM):
             if k not in self.mapping:
                 results.add('⫷dpp:art-303⫸LinguisticProperty⫷dpp⫸%s' % k)
             else:
@@ -531,7 +531,7 @@ class DcsMapper(object):
 
 
     def __standardize(self, text):
-        fields = text.split('‣')
+        fields = text.split(SYNDELIM)
         results = []
         
         for field in fields:
