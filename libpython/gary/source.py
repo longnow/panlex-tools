@@ -430,20 +430,23 @@ def pretag_ex(text, langid=None):
 # 2) lang given, lang in field -> update lang in field?
 # 3) no lang given -> no change
 def delimToPanlex(text, lang=None):
-    fields = text.split(SYNDELIM)
-    for i in range(len(fields)):
-        plx_match = re.search('^⫷(?:ex|df)(:\w{2,}-\d{3,})?⫸', fields[i])
-        if plx_match:
-            if lang != None:
-                if len(fields[i][plx_match.end():].strip()) > 0:
-                    fields[i] = '⫷ex:%s⫸%s' % (lang,fields[i][plx_match.end():])
-        else:
-            if lang != None and len(fields[i].strip()) > 0:
-                fields[i] = '⫷ex:%s⫸%s' % (lang,fields[i])
-            elif len(fields[i].strip()) > 0:
-                fields[i] = '⫷ex⫸%s' % (fields[i])
-
-    text = ''.join(fields)
+    meanings = re.split('(?:⫷mn⫸)|⁋', text)
+    for i in range(len(meanings)):
+        fields = meanings[i].split(SYNDELIM)
+        for j in range(len(fields)):
+            plx_match = re.search('^⫷(?:ex|df)(:\w{2,}-\d{3,})?⫸', fields[j])
+            if plx_match:
+                if lang != None:
+                    if len(fields[j][plx_match.end():].strip()) > 0:
+                        fields[j] = '⫷ex:%s⫸%s' % (lang,fields[j][plx_match.end():])
+            else:
+                if lang != None and len(fields[j].strip()) > 0:
+                    fields[j] = '⫷ex:%s⫸%s' % (lang,fields[j])
+                elif len(fields[j].strip()) > 0:
+                    fields[j] = '⫷ex⫸%s' % (fields[j])
+    
+        meanings[i] = ''.join(fields)
+    text = '⫷mn⫸'.join(meanings)
 
     return text
 
