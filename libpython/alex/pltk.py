@@ -3,7 +3,7 @@
 
 # PanLex ToolKit
 
-import time
+import os, time
 
 import unicodedata
 import regex as re
@@ -281,9 +281,14 @@ EXDFPREP_RULES = {
             r' \(f\.?\)$' : ('', '⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸FeminineGender', ''),
         }
     },
-    'cat-000' : {
+    'ita-000' : {
         1 : {
-            # r'[¿\?]' : ('', '⫷mcs2:art-303⫸ForceProperty⫷mcs:art-303⫸InterrogativeForce', ''),
+            r'^\(?((?:[Dd]el)?[Ll]o|[Ii]l|[Uu]no?|[Dd]el)\)?\s+([^\s\(])'    : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸MasculineGender', ''),
+            r'^\(?((?:[Dd]e)?(?:[Gg]li|[Ii]))\)?\s+([^\s\(])'    : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸MasculineGender⫷dcs2:art-303⫸NumberProperty⫷dcs:art-303⫸PluralNumber', ''),
+            r'^\(?(?:((?:[Dd]el)?[Ll]a)\)?\s+|(?:[Uu]n[\'’])\)?)([^\s\(])'    : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸FeminineGender', ''),
+            r'^\(?((?:[Dd]el)?[Ll][\'’])\)?([^\s\(])'    : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun', ''),
+            r'^\(?((?:[Dd]el)?[Ll]e)\)?\s+([^\s\(])'    : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸FeminineGender⫷dcs2:art-303⫸NumberProperty⫷dcs:art-303⫸PluralNumber', ''),
+            r'^\(?([Ee]ssere)\)?\s+([^\s\(])'    : (r'(\1) \2', '', ''),
         },
     },
     'nld-000' : {
@@ -335,7 +340,7 @@ EXDFPREP_RULES = {
         1 : {
             r'^(.+)\s+(quelqu[\'’]un|quelque chose)' : (r'\1 (\2)', '', ''),
             r'\(?(q\.?q\.?(?:ch|un?|n)\.?)\)?' : (r'(\1)', '', ''),
-            r'^([Ll][\'’])([^\s\(])' : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun', ''),
+            r'^([Ll][\'’`])([^\s\(])' : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun', ''),
             r'^([Ll]e)\s+([^\s\(])'         : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸MasculineGender', ''),
             r'^([Ll]a)\s+([^\s\(])'         : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸FeminineGender', ''),
             r'^([Ll]es)\s+([^\s\(])'        : (r'(\1) \2', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸NumberProperty⫷dcs:art-303⫸PluralNumber', ''),
@@ -402,7 +407,7 @@ EXDFPREP_RULES = {
     },
     'deu-000' : {
         1 : {
-            r'((?:etw(?:\.|as)|jemand(?:en)?)(?: oder etw(?:\.|as))?(?:,? (?:der|was))?)([^\'’]|$)' : (r'(\1)\2', '', ''),
+            r'^([^\(]*)((?:etw(?:\.|as)|jemand(?:e[mn])?|jmd\.?)(?: oder etw(?:\.|as))?(?:,? (?:der|was))?)([^\'’]|$)' : (r'\1(\2)\3', '', ''),
             r'\s+(d\.[ih]\..*)$' : (r' (\1)', '', ''),
             r'(^| )(o\.ä\.)( |$)' : (r'\1(\2)\3', '', ''),
             r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)?)(ein(?:e[mnrs]?)?|die|das|de[mnrs])\s+([^\(])'     : (r'\1(\2) \3', '', ''),
@@ -434,6 +439,7 @@ EXDFPREP_RULES = {
             # # r'^((?:[^\s][^\s]?\.)+)$' : (r'\1.', '', ''),
             r'\s+(\.(?:$|⫷))' : (r'\1', '', ''),
             r'\s*(\))\s*\.\s*($|⫷)' : (r'\1\2', '', ''),
+            r'\(\(+([^\)]+)\)\)+' : (r'(\1)', '', ''),
         },
         999 : {
             # r' ?\(n\.?\)$' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun', ''),
@@ -502,7 +508,7 @@ def exdfprep(entries, sourcecols, tocol=-1, lang='eng-000', pretag_special_lvs=T
         if len(lang) == 3: lang += '-000'
 
         if lang not in EXDFPREP_RULES:
-            print('WARNING: Language not supported by exdfprep:', lang)
+            print('WARNING: Language unsupported by exdfprep:', lang)
             print('Reverting to general rules')
             lang = 'general'
 
@@ -1354,10 +1360,17 @@ def classify_cmn(entries, col, delim='‣'):
 
 def has_unbalanced_parens(s):
     s = re.sub(make_paren_regex(), '', s)
-    allparens = set(p[0].replace('\\', '') for p in PARENS).union(set(p[1].replace('\\', '') for p in PARENS))
+    allparens = set(p[0].replace('\\', '') for p in PARENS) | set(p[1].replace('\\', '') for p in PARENS)
     return any(p in s for p in allparens)
 
 def tb_to_wn(tb):
     # Convert Penn Treebank to WordNet POS tags
     tb = tb[:2] if tb[:2] in ['NN','JJ','VB'] else 'RB'
     return {'NN':wn.NOUN,'JJ':wn.ADJ,'VB':wn.VERB,'RB':wn.ADV}[tb]
+
+
+def mappable_cspps():
+    # pull set of terms from first column of current csppmap.txt
+    with open(os.path.join(os.path.dirname(__file__).replace('/libpython/alex','/serialize/data'), 'csppmap.txt'), 'r') as inf:
+        mappables = [l.split('\t',1)[0] for l in inf.readlines() if l.strip()]
+    return set(mappables)
