@@ -77,7 +77,7 @@ sub panlex_query_all {
     my ($url, $body) = @_;
 
     # duplicate the body object so we can modify it.
-    $body = { %$body };
+    $body = { %{$body || {}} };
     delete $body->{limit};
     $body->{offset} = 0;
 
