@@ -53,7 +53,7 @@ class Lv(str):
         result = c.fetchall()
         # result = cls.panlex.query_all('/lv', {'lc': lc, 'include': include})['result']
         for r in result:
-            cls._cache[r[3]].update({col : value for col, value in zip(self._columns, r)})
-            output.append(Lv(r['uid']))
+            cls._cache[r[3]].update({col : value for col, value in zip(cls._columns, r)})
+            output.append(Lv(r[3]))
         return output
 

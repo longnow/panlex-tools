@@ -4,97 +4,38 @@
 import regex as re
 from collections import defaultdict
 from collections.abc import Iterable
-from tqdm import tqdm
-from ben.string_manipulation import *
-import ben.iso639 as iso639
+try:
+    from tqdm import tqdm
+except ImportError:
+    pass
+# from ben.string_manipulation import clean_str
 from os import environ
 from functools import partialmethod
 from types import FunctionType
-import ben.normalize as normalize
-from alex.pltk import preprocess, prepsyns
+try:
+    import ben.normalize as normalize
+except ImportError:
+    pass
 
-data_directory = os.path.dirname(__file__) + '/data/'
-
-class Lv(str):
-    import panlex
-    _cache = defaultdict(dict)
-    _include = {'cp', 'cu', 'dncount', 'excount', 'sctt'}
-
-    def __repr__(self):
-        return "{cls}({string})".format(cls=self.__class__.__name__, string=repr(str(self)))
-
-    def __getattr__(self, attr):
-        if attr in ['_ipython_canary_method_should_not_exist_', '_ipython_display_']:
-            return getattr(str(self), attr)
-        try:
-            return self._cache[self][attr]
-        except KeyError:
-            if attr == 'all_ex':
-                self._cache_all_ex()
-            else:
-                include = []
-                if attr in self._include:
-                    include.append(attr)
-                self._cache[self].update(self.panlex.query('/lv/{}'.format(self), {'include': include})['lv'])
-            try:
-                return self._cache[self][attr]
-            except KeyError:
-                raise AttributeError('"{attr}" is not a valid {cls} object'.format(attr=attr, cls=self.__class__.__name__))
-
-    @classmethod
-    def precache(cls, lv_list=[], include=[], all_lv=False):
-        if not (lv_list or all_lv):
-            raise TypeError('either lv_list or all_lv must be specified')
-        if isinstance(include, str):
-            include = [include]
-        all_ex = False
-        if 'all_ex' in include:
-            all_ex = True
-        include = list(set(include) & cls._include)
-        if all_lv:
-            result = cls.panlex.query_all('/lv', {'include': include})['result']
-        else:
-            result = cls.panlex.query_all('/lv', {'uid': lv_list, 'include': include})['result']
-        for r in result:
-            cls._cache[r['uid']].update(r)
-            if all_ex:
-                Lv(r['uid'])._cache_all_ex()
-
-    @classmethod
-    def from_lc(cls, lc, include=[]):
-        if isinstance(include, str):
-            include = [include]
-        all_ex = False
-        if 'all_ex' in include:
-            all_ex = True
-        include = list(set(include) & cls._include)
-        output = []
-        result = cls.panlex.query_all('/lv', {'lc': lc, 'include': include})['result']
-        for r in result:
-            cls._cache[r['uid']].update(r)
-            if all_ex:
-                Lv(r['uid'])._cache_all_ex()
-            output.append(Lv(r['uid']))
-        return output
-
-    @classmethod
-    def guess_uid(cls, code, script=''):
-        lc_list = iso639.expand_macrolanguage(code, include_self=True)
-        output = []
-        for lv in cls.from_lc(lc_list, ['excount', 'sctt']):
-            if script:
-                if lv.sctt == script:
-                    output.append((lv, lv.excount))
-            else:
-                output.append((lv, lv.excount))
-        return sorted(output, key=lambda x: x[1], reverse=True)
-
-    def _cache_all_ex(self):
-        import sqlite3
-        conn = sqlite3.connect(data_directory + 'db.sqlite')
-        c = conn.cursor()
-        c.execute("SELECT tt FROM ex WHERE lv=?", (self.lv,))
-        self._cache[self]['all_ex'] = tuple(e[0] for e in c.fetchall())
+prohibited_chars = [
+    chr(0x00ad),
+    chr(0x200b),
+    chr(0x200e),
+    chr(0x200f),
+    chr(0xfeff),
+    chr(0xfffe),
+]
+def clean_str(str):
+    output = re.sub(r'\s+', ' ', str)
+    output = re.sub(r'\s*‣+\s*', '‣', output)
+    for char in prohibited_chars:
+        output = output.replace(char, '')
+    output = output.strip('‣')
+    output = re.sub(r'\(\)', '', output)
+    output = re.sub(r'\( ', '(', output)
+    output = re.sub(r' \)', ')', output)
+    output = output.strip()
+    return output
 
 class Ex:
 
@@ -196,9 +137,10 @@ class Ex:
             return '-'.join((self.lc, str(self.vc).zfill(3)))
         except TypeError:
             return None
-
-    def example():
-        return Ex('cat', 'eng-000')
+    
+    @classmethod
+    def example(cls):
+        return cls('cat', 'eng-000')
 
     def pretty(self, indent=0):
         ind = '  ' * indent
@@ -227,7 +169,6 @@ class Ex:
         out_lvs += [out_lvs[-1]] * (len(split_list) - len(out_lvs))
         if dupe:
             split_list += [split_list[-1]] * (len(out_lvs) - len(split_list))
-        # return [self.copy(split_string) for split_string in split_list]
         return [Ex(split_string, lv) for split_string, lv in zip(split_list, out_lvs)]
 
     def score(self, as_lv=None, ui=[]):
@@ -235,12 +176,14 @@ class Ex:
         return normalize.get_scores([str(self)], as_lv, ui)[str(self)]
 
     def degraded_scores(self, as_lv=None, deg_func=None, include_std_deg=True, ui=[]):
-        import panlex
         if not as_lv: as_lv = self.lv
         if deg_func:
             return normalize.get_custom_deg_scores([str(self)], as_lv, deg_func, include_std_deg, ui)[str(self)]
         else:
             return normalize.get_degraded_scores([str(self)], as_lv, ui)[str(self)]
+
+    def dict(self):
+        return {'langvar' : self.lv, 'txt' : str(self)}
 
 for i in ['__getitem__', '__mul__', '__rmul__', '__mod__', '__rmod__']:
     setattr(Ex, i, partialmethod(Ex.__special_obj__, i))
@@ -258,8 +201,9 @@ class Df(Ex):
         out += ind + '  ' + self.text + '\n'
         return out
 
-    def example():
-        return Df('a feline animal', 'eng-000')
+    @classmethod
+    def example(cls):
+        return cls('a feline animal', 'eng-000')
 
 class Pp(str):
     def __new__(cls, value, attribute):
@@ -285,8 +229,9 @@ class Pp(str):
     def attribute(self, new_value):
         self._attribute = Ex(new_value)
 
-    def example():
-        return Pp('4', Ex('number of legs', 'eng-000'))
+    @classmethod
+    def example(cls):
+        return cls('4', Ex('number of legs', 'eng-000'))
 
     def pretty(self, indent=0):
         ind = '  ' * indent
@@ -294,6 +239,9 @@ class Pp(str):
         out += self.attribute.pretty(indent)
         out += ind + self + '\n'
         return out
+
+    def dict(self):
+        return {'expr': self.attribute.dict(), 'txt': str(self)}
 
 class Cs:
     def __init__(self, class_ex, superclass_ex=None):
@@ -340,15 +288,22 @@ class Cs:
         if new_value: self._superclass_ex = Ex(new_value)
         else: self._superclass_ex = None
 
-    def example(ub=2):
-        if ub == 1: return Cs(Ex('animal', 'eng-000'))
-        else: return Cs(Ex('Noun', 'art-303'), Ex('PartOfSpeechProperty', 'art-303'))
+    @classmethod
+    def example(cls, ub=2):
+        if ub == 1: return cls(Ex('animal', 'eng-000'))
+        else: return cls(Ex('Noun', 'art-303'), Ex('PartOfSpeechProperty', 'art-303'))
 
     def pretty(self, indent=0):
         out = ""
         if self.superclass_ex: out += self.superclass_ex.pretty(indent)
         out += self.class_ex.pretty(indent)
         return out
+
+    def dict(self):
+        if self.superclass_ex:
+            return {'expr1': self.superclass_ex.dict(), 'expr2': self.class_ex.dict()}
+        else:
+            return {'expr2': self.class_ex.dict()}
 
 class Dn:
     def __init__(self, ex, pp_list=[], cs_list=[]):
@@ -419,8 +374,9 @@ class Dn:
         self.cs_list = list(set([cs for cs in self.cs_list if cs]))
         self.pp_list = list(set([pp for pp in self.pp_list if pp]))
 
-    def example():
-        return Dn(Ex.example(), pp_list=[Pp.example()], cs_list=[Cs.example(1), Cs.example(2)])
+    @classmethod
+    def example(cls):
+        return cls(Ex.example(), pp_list=[Pp.example()], cs_list=[Cs.example(1), Cs.example(2)])
 
     def pretty(self, indent=0):
         ind = '  ' * indent
@@ -453,6 +409,13 @@ class Dn:
 
     def merge(self, dn):
         return Dn(dn.ex, pp_list=self.pp_list + dn.pp_list, cs_list=self.cs_list + dn.cs_list)
+
+    def dict(self):
+        return {
+            'expr': self.ex.dict(), 
+            'denotation_prop': [pp.dict() for pp in self.pp_list],
+            'denotation_class': [cs.dict() for cs in self.cs_list],
+            }
 
 class Mn:
     def __init__(self, dn_list=[], df_list=[], pp_list=[], cs_list=[]):
@@ -626,6 +589,7 @@ class Mn:
             cs_list=self.cs_list + mn.cs_list,)
 
     def alex_process(self, re_delim, lv_set=None):
+        from alex.pltk import preprocess, prepsyns
         if not lv_set: lv_set = self.lv_set()
         dn_list = []
         for i, dn in enumerate(self.dn_list):
@@ -688,8 +652,56 @@ class Mn:
         line = '\t'.join(mn_line)
         return line
 
+    def dict(self):
+        return {
+            'denotation': [dn.dict() for dn in self.dn_list],
+            'definition': [df.dict() for df in self.df_list],
+            'meaning_prop': [pp.dict() for pp in self.pp_list],
+            'meaning_class': [cs.dict() for cs in self.cs_list],
+            }
 
 class Ap(list):
+    
+    @classmethod
+    def parse(cls, file):
+        ap = cls()
+        linelist = list(file)
+        skip = 0
+        for i, line in enumerate(linelist):
+            if skip > 0:
+                skip -= 1
+                continue
+            line = line.strip()
+            if line == 'mn':
+                ap.append(Mn())
+            elif line in {'dn', 'df', 'mcs1', 'dcs1'}:
+                ex = Ex(linelist[i+2].strip(), linelist[i+1].strip())
+                skip = 2
+                if line == 'dn':
+                    ap[-1].dn_list.append(Dn(ex))
+                elif line == 'df':
+                    ap[-1].df_list.append(Df(ex))
+                elif line == 'mcs1':
+                    ap[-1].cs_list.append(Cs(ex))
+                elif line == 'dcs1':
+                    ap[-1].dn_list[-1].cs_list.append(Cs(ex))
+            elif line in {'mcs2', 'dcs2'}:
+                superclass_ex = Ex(linelist[i+2].strip(), linelist[i+1].strip())
+                class_ex = Ex(linelist[i+4].strip(), linelist[i+3].strip())
+                skip = 4
+                if line == 'mcs2':
+                    ap[-1].cs_list.append(Cs(class_ex, superclass_ex))
+                elif line == 'dcs2':
+                    ap[-1].dn_list[-1].cs_list.append(Cs(class_ex, superclass_ex))
+            elif line in {'mpp', 'dpp'}:
+                pp = Pp(linelist[i+3].strip(), Ex(linelist[i+2].strip(), linelist[i+1].strip()))
+                skip = 3
+                if line == 'mpp':
+                    ap[-1].pp_list.append(pp)
+                elif line == 'dpp':
+                    ap[-1].dn_list[-1].pp_list.append(pp)
+        return ap
+
     def tabularize(self, output_file, match_re_lv_list=None, lv_list=None, tagged=False, tag_types=set(), inc_df=False):
         if not lv_list:
             lv_list = sorted(set(flatten([mn.lv_list() for mn in self])))
@@ -697,7 +709,11 @@ class Ap(list):
             if isinstance(match_re_lv_list[0], str):
                 match_re_lv_list = [match_re_lv_list]
         except TypeError: pass
-        for mn in tqdm(self):
+        try:
+            l = tqdm(self)
+        except NameError:
+            l = self
+        for mn in l:
             line = mn.tag(lv_list, tagged, tag_types)
             if match_re_lv_list:
                 match = False
@@ -715,7 +731,11 @@ class Ap(list):
     def pretty(self, indent=0):
         ind = '  ' * indent
         out = ":\n0\n\n"
-        for mn in tqdm(self):
+        try:
+            l = tqdm(self)
+        except NameError:
+            l = self
+        for mn in l:
             out += mn.pretty(indent) + '\n'
         return out.strip()
 
@@ -786,6 +806,9 @@ class Ap(list):
             for lv in lv_set:
                 mn.sub(r"'", lv_apos[lv], dn_list=mn(lv))
 
+    def serial(self):
+        return [mn.dict() for mn in self]
+
 def untag(string, default_lv='und-000'):
     ap = Ap()
     string = string.replace('⁋⫷mn', '⫷mn')
@@ -843,7 +866,11 @@ def tabularize(source, output_file, match_re_lv_list=None, lv_list=None, tagged=
         if isinstance(match_re_lv_list[0], str):
             match_re_lv_list = [match_re_lv_list]
     except TypeError: pass
-    for mn in tqdm(source):
+    try:
+        l = tqdm(source)
+    except NameError:
+        l = self
+    for mn in l:
         line = tab_line(mn, lv_list, tagged, tag_types)
         if match_re_lv_list:
             match = False
@@ -950,17 +977,17 @@ def flatten(x):
             result.append(el)
     return result
 
-def parenthesizer(text, plist, parens="()"):
-    output = text
-    for p in list(sorted(plist, key=len, reverse=True)):
-        output = output.replace(p, parens[0] + p + parens[1])
-    return output
-
-def parenthesizer_re(text, plist, parens="()"):
-    output = text
-    for p in list(sorted(plist, key=len, reverse=True)):
-        output = re.sub(p, parens[0] + '\g<0>' + parens[1], text)
-    return output
+# def parenthesizer(text, plist, parens="()"):
+#     output = text
+#     for p in list(sorted(plist, key=len, reverse=True)):
+#         output = output.replace(p, parens[0] + p + parens[1])
+#     return output
+# 
+# def parenthesizer_re(text, plist, parens="()"):
+#     output = text
+#     for p in list(sorted(plist, key=len, reverse=True)):
+#         output = re.sub(p, parens[0] + '\g<0>' + parens[1], text)
+#     return output
 
 independants = [
     'Vowel_Independent',

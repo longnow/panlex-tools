@@ -2,7 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import regex as re
-import requests
+try:
+    import requests
+except ImportError:
+    pass
 import subprocess
 import atexit
 import os
