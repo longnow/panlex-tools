@@ -273,6 +273,7 @@ def process_plx_synonyms(proc):
 def process_plx_dual_synonyms(proc):
     # s = SYNDELIM
     def plx_dual_wrapper(text,metadata):
+        text = delimToPanlex(text)
         idx_list = [ex_match.start() for ex_match in re.finditer('⫷(?:ex|df)(?::\w{1,4}-\d{1,3})?⫸', text)]
 
         if len(idx_list) == 0:
