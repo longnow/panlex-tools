@@ -185,6 +185,10 @@ class Ex:
     def dict(self):
         return {'langvar' : self.lv, 'txt' : str(self)}
 
+    @classmethod
+    def undict(cls, d):
+        return cls(d['txt'], d['langvar'])
+
 for i in ['__getitem__', '__mul__', '__rmul__', '__mod__', '__rmod__']:
     setattr(Ex, i, partialmethod(Ex.__special_obj__, i))
 
@@ -242,6 +246,10 @@ class Pp(str):
 
     def dict(self):
         return {'expr': self.attribute.dict(), 'txt': str(self)}
+
+    @classmethod
+    def undict(cls, d):
+        return cls(d['txt'], Ex.undict(d['expr']))
 
 class Cs:
     def __init__(self, class_ex, superclass_ex=None):
@@ -304,6 +312,13 @@ class Cs:
             return {'expr1': self.superclass_ex.dict(), 'expr2': self.class_ex.dict()}
         else:
             return {'expr2': self.class_ex.dict()}
+
+    @classmethod
+    def undict(cls, d):
+        try:
+            return cls(Ex.undict(d['expr2']), Ex.undict(d['expr1']))
+        except KeyError:
+            return cls(Ex.undict(d['expr2']))
 
 class Dn:
     def __init__(self, ex, pp_list=[], cs_list=[]):
@@ -416,6 +431,14 @@ class Dn:
             'denotation_prop': [pp.dict() for pp in self.pp_list],
             'denotation_class': [cs.dict() for cs in self.cs_list],
             }
+
+    @classmethod
+    def undict(cls, d):
+        return cls(
+            Ex.undict(d['expr']),
+            [Pp.undict(pp) for pp in d['denotation_prop']],
+            [Cs.undict(cs) for cs in d['denotation_class']],
+            )
 
 class Mn:
     def __init__(self, dn_list=[], df_list=[], pp_list=[], cs_list=[]):
@@ -660,6 +683,15 @@ class Mn:
             'meaning_class': [cs.dict() for cs in self.cs_list],
             }
 
+    @classmethod
+    def undict(cls, d):
+        return cls(
+            [Dn.undict(dn) for dn in d['denotation']],
+            [Df.undict(df) for df in d['definition']],
+            [Pp.undict(pp) for pp in d['meaning_prop']],
+            [Cs.undict(cs) for cs in d['meaning_class']],
+            )
+    
 class Ap(list):
     
     @classmethod
@@ -701,6 +733,11 @@ class Ap(list):
                 elif line == 'dpp':
                     ap[-1].dn_list[-1].pp_list.append(pp)
         return ap
+
+    @classmethod
+    def parse_json(self, file):
+        ap = cls()
+        
 
     def tabularize(self, output_file, match_re_lv_list=None, lv_list=None, tagged=False, tag_types=set(), inc_df=False):
         if not lv_list:
@@ -808,6 +845,10 @@ class Ap(list):
 
     def serial(self):
         return [mn.dict() for mn in self]
+
+    @classmethod
+    def unserial(cls, s):
+        return [Mn.undict(mn) for mn in s]
 
 def untag(string, default_lv='und-000'):
     ap = Ap()
