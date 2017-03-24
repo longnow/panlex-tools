@@ -3,13 +3,14 @@ use strict;
 use warnings;
 use lib "$ENV{PANLEX_TOOLDIR}/lib";
 use PanLex::Client;
+use Data::Dumper;
 binmode STDOUT, ':encoding(utf-8)';
 binmode STDERR, ':encoding(utf-8)';
 
 my @ISO_UID = qw( art-001 art-002 art-003 art-005 art-015 );
 my $GLOTTO_UID = 'art-327';
 
-my (@langnames, %langname_td, %td);
+my (@langnames, %langname_td, %txt_degr);
 
 print STDERR "\n";
 
@@ -30,30 +31,32 @@ else {
 
 chomp @langnames;
 
-print STDERR "generating text degradations of languge names ...\n";
-my $data = panlex_query('/td', { tt => \@langnames });
+@langnames = grep { length $_ } @langnames;
 
-foreach my $langname (keys %{$data->{td}}) {
-    $langname_td{$langname} = $data->{td}{$langname};
+print STDERR "generating text degradations of languge names ...\n";
+my $data = panlex_query('/txt_degr', { txt => \@langnames });
+
+foreach my $langname (keys %{$data->{txt_degr}}) {
+    $langname_td{$langname} = $data->{txt_degr}{$langname};
 }
 
 print STDERR "looking up all PanLex language variety default names ...\n";
-$data = panlex_query_all('/lv', {});
+$data = panlex_query_all('/langvar', {});
 
-foreach my $lv (@{$data->{result}}) {
-    push @{$td{uid}{$lv->{td}}}, $lv->{uid};
+foreach my $langvar (@{$data->{result}}) {
+    push @{$txt_degr{uid}{$langvar->{name_expr_txt_degr}}}, $langvar->{uid};
 }
 
 print STDERR "looking up ISO 639 codes and Glottocodes corresponding to language names ...\n";
-$data = panlex_query_all('/ex', {
+$data = panlex_query_all('/expr', {
     uid => [ @ISO_UID, $GLOTTO_UID ],
-    trtd => \@langnames,
-    include => ['trtd','uid'],
+    trans_txt_degr => \@langnames,
+    include => ['trans_txt_degr','uid'],
 });
 
-foreach my $ex (@{$data->{result}}) {
-    my $type = $ex->{uid} eq $GLOTTO_UID ? 'glotto' : 'iso';
-    push @{$td{$type}{$ex->{trtd}}}, $ex->{tt};
+foreach my $expr (@{$data->{result}}) {
+    my $type = $expr->{uid} eq $GLOTTO_UID ? 'glotto' : 'iso';
+    push @{$txt_degr{$type}{$expr->{trans_txt_degr}}}, $expr->{txt};
 }
 
 print STDERR "done.\n\n";
@@ -61,13 +64,13 @@ print STDERR "done.\n\n";
 print join("\t", 'Name', 'PanLex UIDs', 'ISO 639 codes', 'Glottocodes'), "\n";
 
 foreach my $langname (@langnames) {
-    my $td = $langname_td{$langname};
+    my $txt_degr = $langname_td{$langname};
 
     print join("\t",
         $langname,
-        join('; ', sort { $a cmp $b } uniq(@{$td{uid}{$td} || []})),
-        join('; ', sort { $a cmp $b } uniq(@{$td{iso}{$td} || []})),
-        join('; ', sort { $a cmp $b } uniq(@{$td{glotto}{$td} || []})),
+        join('; ', sort { $a cmp $b } uniq(@{$txt_degr{uid}{$txt_degr} || []})),
+        join('; ', sort { $a cmp $b } uniq(@{$txt_degr{iso}{$txt_degr} || []})),
+        join('; ', sort { $a cmp $b } uniq(@{$txt_degr{glotto}{$txt_degr} || []})),
     ), "\n";
 }
 
