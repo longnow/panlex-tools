@@ -49,18 +49,18 @@ def char_counts(lv):
 
 def get_scores(str_list, lv, ui=[]):
     str_list = list(str_list)
-    result = panlex.queryNorm('/norm/ex/{}'.format(lv), {'tt' : str_list, 'ui' : ui})
+    result = panlex.query_norm('/norm/expr/{}'.format(lv), {'txt' : str_list, 'grp' : ui})
     return {string : result['norm'][string]['score'] for string in result['norm']}
 
 def get_degraded_scores(str_list, lv, ui=[]):
     str_list = list(str_list)
     output = {}
-    result = panlex.queryNorm('/norm/ex/{}'.format(lv), {'tt' : str_list, 'ui' : ui, 'degrade' : True})
+    result = panlex.query_norm('/norm/expr/{}'.format(lv), {'txt' : str_list, 'grp' : ui, 'degrade' : True})
     for string in result['norm']:
         output[string] = {}
         output[string][string] = 0
         for entry in result['norm'][string]:
-            if entry['tt']: output[string][entry['tt']] = entry['score']
+            if entry['txt']: output[string][entry['txt']] = entry['score']
     return output
 
 def perl_re(in_re, out=''):
@@ -74,12 +74,12 @@ def get_redeg_scores(str_list, lv, in_re, out, ui=[]):
     str_list = list(str_list)
     rx = perl_re(in_re, out)
     output = {}
-    result = panlex.queryNorm('/norm/ex/{}'.format(lv), {'tt' : str_list, 'ui' : ui, 'regex' : rx, 'degrade' : True})
+    result = panlex.query_norm('/norm/expr/{}'.format(lv), {'txt' : str_list, 'grp' : ui, 'regex' : rx, 'degrade' : True})
     for string in result['norm']:
         output[string] = {}
         output[string][string] = 0
         for entry in result['norm'][string]:
-            if entry['tt']: output[string][entry['tt']] = entry['score']
+            if entry['txt']: output[string][entry['txt']] = entry['score']
     return output
 
 def get_custom_deg_scores(str_list, lv, deg_func, include_std_deg=True, ui=[]):
@@ -108,7 +108,7 @@ def get_custom_deg_scores(str_list, lv, deg_func, include_std_deg=True, ui=[]):
     return output
 
 def get_cp(lv):
-    result = panlex.query('/lv/{}'.format(lv), {'include' : 'cp'})['lv']['cp']
+    result = panlex.query('/langvar/{}'.format(lv), {'include' : 'langvar_char'})['langvar']['langvar_char']
     cps = set()
     for r in result:
         cps.update(range(r[0], r[1] + 1))

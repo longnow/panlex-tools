@@ -179,16 +179,12 @@ def horz_table(a, lv_dict, ap, title_mn=None):
 
 def write_lvs(ap, base_file_name):
     import panlex, requests, os
-    lv_code_list = [l['lv'] for l in panlex.query_all('/lv', {'uid': sorted(ap.lv_set())})['result']]
-    ap_code = panlex.query('/ap/' + re.sub(r'^([a-z]{3}(?:-[a-z]{3})*)-(.+?)$', '\g<1>:\g<2>', base_file_name), {})['ap']['ap']
+    lv_code_list = [l['langvar'] for l in panlex.query_all('/langvar', {'uid': sorted(ap.lv_set())})['result']]
+    ap_code = panlex.query('/source/' + re.sub(r'^([a-z]{3}(?:-[a-z]{3})*)-(.+?)$', '\g<1>:\g<2>', base_file_name), {})['source']['id']
     r = requests.post('https://panlex.org/panlem/api', data = {
         'us': os.environ['PANLEX_PANLEM_USER'],
         'pwd': os.environ['PANLEX_PANLEM_PASSWORD'],
-        'lvstf': '',
-        'apviz1': 'apred',
-        'do': 'vs',
         'sr': 'apred4',
-        'rt': 'apnom',
         'ap': ap_code,
         'uslv': 187,
         'lvs': lv_code_list,

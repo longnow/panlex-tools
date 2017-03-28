@@ -27,7 +27,7 @@ class Lv(str):
                 include = []
                 if attr in self._include:
                     include.append(attr)
-                self._cache[self].update(panlex.query('/lv/{}'.format(self), {'include': include})['lv'])
+                self._cache[self].update(panlex.query('/langvar/{}'.format(self), {'include': include})['langvar'])
             try:
                 return self._cache[self][attr]
             except KeyError:
@@ -44,9 +44,9 @@ class Lv(str):
             all_ex = True
         include = list(set(include) & cls._include)
         if all_lv:
-            result = cls.panlex.query_all('/lv', {'include': include})['result']
+            result = cls.panlex.query_all('/langvar', {'include': include})['result']
         else:
-            result = cls.panlex.query_all('/lv', {'uid': lv_list, 'include': include})['result']
+            result = cls.panlex.query_all('/langvar', {'uid': lv_list, 'include': include})['result']
         for r in result:
             cls._cache[r['uid']].update(r)
             if all_ex:
@@ -61,7 +61,7 @@ class Lv(str):
             all_ex = True
         include = list(set(include) & cls._include)
         output = []
-        result = cls.panlex.query_all('/lv', {'lc': lc, 'include': include})['result']
+        result = cls.panlex.query_all('/langvar', {'lang_code': lc, 'include': include})['result']
         for r in result:
             cls._cache[r['uid']].update(r)
             if all_ex:
@@ -73,7 +73,7 @@ class Lv(str):
     def guess_uid(cls, code, script=''):
         lc_list = iso639.expand_macrolanguage(code, include_self=True)
         output = []
-        for lv in cls.from_lc(lc_list, ['excount', 'sctt']):
+        for lv in cls.from_lc(lc_list, ['expr_count', 'script_expr_txt']):
             if script:
                 if lv.sctt == script:
                     output.append((lv, lv.excount))
