@@ -43,8 +43,9 @@ foreach my $langname (keys %{$data->{txt_degr}}) {
 
 print STDERR "looking up all PanLex language variety names ...\n";
 $data = panlex_query_all('/expr', {
-    trans_uid => $PANLEX_UID,
-    include => 'trans_txt',
+    trans_uid   => $PANLEX_UID,
+    include     => 'trans_txt',
+    cache       => 0,
 });
 
 foreach my $expr (@{$data->{result}}) {
@@ -53,9 +54,10 @@ foreach my $expr (@{$data->{result}}) {
 
 print STDERR "looking up ISO 639 codes and Glottocodes corresponding to language names ...\n";
 $data = panlex_query_all('/expr', {
-    uid => [ @ISO_UID, $GLOTTO_UID ],
-    trans_txt_degr => \@langnames,
-    include => ['trans_txt_degr','uid'],
+    uid             => [ @ISO_UID, $GLOTTO_UID ],
+    trans_txt_degr  => \@langnames,
+    include         => ['trans_txt_degr','uid'],
+    cache           => 0,
 });
 
 foreach my $expr (@{$data->{result}}) {
