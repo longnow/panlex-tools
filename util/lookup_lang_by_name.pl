@@ -9,8 +9,9 @@ binmode STDERR, ':encoding(utf-8)';
 
 my @ISO_UID = qw( art-001 art-002 art-003 art-005 art-015 );
 my $GLOTTO_UID = 'art-327';
+my $PANLEX_UID = 'art-274';
 
-my (@langnames, %langname_td, %txt_degr);
+my (@langnames, %langname_txt_degr, %txt_degr);
 
 print STDERR "\n";
 
@@ -37,14 +38,17 @@ print STDERR "generating text degradations of languge names ...\n";
 my $data = panlex_query('/txt_degr', { txt => \@langnames });
 
 foreach my $langname (keys %{$data->{txt_degr}}) {
-    $langname_td{$langname} = $data->{txt_degr}{$langname};
+    $langname_txt_degr{$langname} = $data->{txt_degr}{$langname};
 }
 
-print STDERR "looking up all PanLex language variety default names ...\n";
-$data = panlex_query_all('/langvar', {});
+print STDERR "looking up all PanLex language variety names ...\n";
+$data = panlex_query_all('/expr', {
+    trans_uid => $PANLEX_UID,
+    include => 'trans_txt',
+});
 
-foreach my $langvar (@{$data->{result}}) {
-    push @{$txt_degr{uid}{$langvar->{name_expr_txt_degr}}}, $langvar->{uid};
+foreach my $expr (@{$data->{result}}) {
+    $txt_degr{uid}{$expr->{txt_degr}}{$expr->{trans_txt}} = undef;
 }
 
 print STDERR "looking up ISO 639 codes and Glottocodes corresponding to language names ...\n";
@@ -56,7 +60,7 @@ $data = panlex_query_all('/expr', {
 
 foreach my $expr (@{$data->{result}}) {
     my $type = $expr->{uid} eq $GLOTTO_UID ? 'glotto' : 'iso';
-    push @{$txt_degr{$type}{$expr->{trans_txt_degr}}}, $expr->{txt};
+    $txt_degr{$type}{$expr->{trans_txt_degr}}{$expr->{txt}} = undef;
 }
 
 print STDERR "done.\n\n";
@@ -64,18 +68,12 @@ print STDERR "done.\n\n";
 print join("\t", 'Name', 'PanLex UIDs', 'ISO 639 codes', 'Glottocodes'), "\n";
 
 foreach my $langname (@langnames) {
-    my $txt_degr = $langname_td{$langname};
+    my $txt_degr = $langname_txt_degr{$langname};
 
     print join("\t",
         $langname,
-        join('; ', sort { $a cmp $b } uniq(@{$txt_degr{uid}{$txt_degr} || []})),
-        join('; ', sort { $a cmp $b } uniq(@{$txt_degr{iso}{$txt_degr} || []})),
-        join('; ', sort { $a cmp $b } uniq(@{$txt_degr{glotto}{$txt_degr} || []})),
+        join('; ', sort { $a cmp $b } keys %{$txt_degr{uid}{$txt_degr} || {}}),
+        join('; ', sort { $a cmp $b } keys %{$txt_degr{iso}{$txt_degr} || {}}),
+        join('; ', sort { $a cmp $b } keys %{$txt_degr{glotto}{$txt_degr} || {}}),
     ), "\n";
-}
-
-sub uniq {
-    my %seen;
-    @seen{@_} = ();
-    return keys %seen;
 }
