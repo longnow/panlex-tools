@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
-# Yacc example
+
 import regex as re
-from time import sleep
 
 import ply.yacc as yacc
 
@@ -308,7 +307,6 @@ class TextHandler:
     def endSenseList(self):pass
 
 if __name__ == '__main__':
-    sleep(0.1)
     while True:
        try:
            s = input('text: ')
