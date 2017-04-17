@@ -16,8 +16,8 @@ use Unicode::Normalize;
 use lib "$ENV{PANLEX_TOOLDIR}/lib";
 use PanLex::Client;
 
-my $RESOURCE_ARCHIVE_URL = 'https://dev.panlex.org/resources';
-my $PANLEM_URL = 'https://panlex.org/panlem/api';
+my $RESOURCE_ARCHIVE_URL = 'https://resource-archive.panlex.org';
+my $PANLEM_URL = 'https://app.panlex.org/panlem/api';
 
 usage(), exit(0) unless @ARGV;
 
