@@ -19,7 +19,7 @@ def preprocess(entries):
         for col in entry:
 
             # nonstandard spaces/newlines/control characters
-            col = re.sub(r'[\x19\u001f\xa0\x7f\u200B\u200E\uFEFF\n]', ' ', col).strip()
+            col = re.sub(r'[\x19\u001f\xa0\xad\x7f\u200B\u200E\u200F\uFEFF\n]', ' ', col).strip()
             
             # PUA
             # col = re.sub(r'', '', col).strip()
@@ -38,9 +38,7 @@ def preprocess(entries):
             # "etc"
             col = re.sub(r'[\,、;]?\s*(etc| u\.ä\.?)\.?$', '', col).strip()
             # ellipses
-            col = re.sub(r'・・・', ' … ', col)
-            col = re.sub(r'__+', ' … ', col)
-            col = re.sub(r'[～〜]', ' … ', col)
+            col = re.sub(r'(・・・|__+|[～〜])', ' … ', col)
             col = re.sub(r'\.\s*\.(\s*\.)+', ' … ', col).strip()
             col = re.sub(r'\s*…\s*', ' … ', col).strip()
             col = re.sub(r'^\s*…', '', col).strip()
@@ -139,7 +137,7 @@ def split_outside_parens(entries, cols, delim=r',', parens=PARENS, max_wd_single
                 entry_split = re.split(not_in_parens_regex, entry[col])
 
                 # test for long single expressions; if so, ignore split entirely
-                if len(entry_split) > 1 and max(len(s.strip().split(' ')) for s in entry_split) >= max_wd_single_ex:
+                if len(entry_split) > 1 and max(len(re.split(r'[ ‣]', s.strip())) for s in entry_split) >= max_wd_single_ex:
                     # print([len(s.strip().split(' ')) for s in entry_split])
                     # print(entry_split)
                     entry_split = [entry[col]]
@@ -195,32 +193,33 @@ EXDFPREP_RULES = {
         },
         2: {
             r'([^\s])\s+(s(?:\-|o(?:me|em))?(?: other )?(?:body|one|thing)(?:(?: or |\s*/\s*)s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)([^\'’]|$)' : (r'\1 (\2)\3', '', ''),
-            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)?)(s(?:\-|o(?:me|em))?(?: other )?(?:body|one|thing)(?:(?: or |\s*/\s*)s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\s+([^\s])' : (r'\1(\2) \3', '', ''),
-            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)?)(s(?:\-|o(?:me|em))?(?: other )?(?:body|one|thing)[\'’]?s)\s+([^\s])' : (r'\1(\2) \3', '', ''),
-            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)?)((?:(?:for (?:something|s\.t\.?))?\(?\s*to\s*\)?\s+)?be)\s+([^\(])'    : (r'\1(\2) \3', '', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal'),
-            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)?)(\(?(?:a\s+)?(?:small |large |big )?(?:kind|variety|type|sort|species) of(?: an?(?= ))?\)?|k\.?o\.)\s*' : (r'\1(\2) ', r'', ''),
+            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)*)(s(?:\-|o(?:me|em))?(?: other )?(?:body|one|thing)(?:(?: or |\s*/\s*)s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\s+([^\s])' : (r'\1(\2) \3', '', ''),
+            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)*)(s(?:\-|o(?:me|em))?(?: other )?(?:body|one|thing)[\'’]?s)\s+([^\s])' : (r'\1(\2) \3', '', ''),
+            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)*)((?:(?:for (?:something|s\.t\.?))?\(?\s*to\s*\)?\s+)?be)\s+([^\(])'    : (r'\1(\2) \3', '', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal'),
+            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)*)(\(?(?:a\s+)?(?:small |large |big )?(?:kind|variety|type|sort|species) of(?: an?(?= ))?\)?|k\.?o\.)\s*' : (r'\1(\2) ', r'', ''),
         },
         3: {
-            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)?)([Tt]he|[Aa]n?)\s+((?:'+DEFAULT_PR_NOCAP+r'\s*)*\s*[^\(\)\[\]\s]+)$'     : (r'\1(\2) \3', '', ''),            # r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)?)(the)\s+([^\(])'     : (r'\1(\2) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun', ''),
-            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)?)\((s(?:\-|o(?:me|em))?(?: other )?(?:body|one|thing)(?:(?: or |\s*/\s*)s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)\s+(which|that|who|to)' : (r'\1\2 \3', '', ''),
+            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)*)(be)\s+([^\(])'    : (r'\1(\2) \3', '', ''),
+            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)*)([Tt]he|[Aa]n?)\s+((?:'+DEFAULT_PR_NOCAP+r'\s*)*\s*[^\(\)\[\]\s]+)$'     : (r'\1 \3', '', ''),            # r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)*)(the)\s+([^\(])'     : (r'\1(\2) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun', ''),
+            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)*)\((s(?:\-|o(?:me|em))?(?: other )?(?:body|one|thing)(?:(?: or |\s*/\s*)s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)\s+(which|that|who|to)' : (r'\1\2 \3', '', ''),
             r'\((s(?:\-|o(?:me|em))?(?: other )?(?:body|one|thing)(?:(?: or |\s*/\s*)s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)\s+(else(?:\'s)?)' : (r'(\1 \2)', '', ''),
             r'^\((s(?:\-|o(?:me|em))?(?: other )?(?:body|one|thing)(?:(?: or |\s*/\s*)s(?:\-|o(?:me|em))(?: other )?(?:one|body|thing))?|s\.[bot]\.?|o\.s\.?)\)\s+' : (r'\1 ', '', ''),
             r'^((?:[^\s\(\)\[\]]+\s)?)((?:'+DEFAULT_PR_NOCAP+r')?\s*)\(?((?:kind|variety|type|sort|species) of(?: an?)?|k\.?o\.)\)?\s*([^\s]+ ?[^\s]+)$' : (r'\2 (\3) \1\4', r'⫷mcs2:art-300⫸IsA⫷mcs:eng-000⫸\4', ''),
             r'^((?:'+DEFAULT_PR_NOCAP+r')?\s*)\(?((?:a\s+)?(?:kind|variety|type|sort|species) of(?: an?)?|k\.?o\.)\)?\s*([^\s]+ ?[^\s]+)$' : (r'\1 (\2) \3', r'⫷mcs2:art-300⫸IsA⫷mcs:eng-000⫸\3', ''),
         },
         4: {
-            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)?)((?:not )?)[Tt]o\s+(?!(?:'+DEFAULT_PR_NOCAP+r'$|the|you|us|him|her|them|me|[wt]?here|no|one[\'’]s|oneself|a[n])(?: |$))' : (r'\1\2(to) ', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal', ''),
+            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)*)((?:not )?)[Tt]o\s+(?!(?:'+DEFAULT_PR_NOCAP+r'$|the|you|us|him|her|them|me|[wt]?here|no|one[\'’]s|oneself|a[n])(?: |$))' : (r'\1\2(to) ', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal', ''),
             r'(^| )make to ' : (r'\1make (to) ', '', ''),
         },
         5: {
             r'(^|\s)\(a\) (lot|bit|posteriori|priori|fortiori|few|little|minute|same|while|propos|cappella)(\s|$)' : (r'\1a \2\3', r'', ''),
-            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)?)((?:\(to\) )?)(become)\s+([^\s\()][^\s]*)$' : (r'\1\2\3 \4', r'⫷mcs2:art-316⫸Inchoative_of⫷mcs⫸\4', ''),
-            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)?)((?:\(to\) )?)(make\s+)((?:\(to\)\s+)?)((?:'+DEFAULT_PR_NOCAP+r'\s*)?)(?!(?:[ei]nquiries|arrangements|preparations|confession|tributary|progress|oneself|profits|amends|again|entry|haste|merry|signs|also|even|sure|use|art|for|it|up|space|room|fence|out|love)(?: |$))([^\s\()][^\s]*)((?:\s*'+DEFAULT_PR_NOCAP+r')*)$'     : (r'\1\2\3\4\5\6\7', r'⫷mcs2:art-316⫸Causative_of⫷mcs⫸\6', ''),
-            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)?)((?:\(to\) )?)(cause to\s+)([^\s\()][^\s]*)$'     : (r'\1\2\3\4', r'⫷mcs2:art-316⫸Causative_of⫷mcs⫸\4', ''),
-            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)?)((?:\(to\) )?)(stay|remain)\s+([^\s\()][^\s]*)$'     : (r'\1\2 (\3) \4', '⫷mcs2:art-303⫸AspectProperty⫷mcs:art-303⫸DurativeAspect', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal'),
+            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)*)((?:\(to\) )?)(become)\s+([^\s\()][^\s]*)$' : (r'\1\2\3 \4', r'⫷mcs2:art-316⫸Inchoative_of⫷mcs⫸\4', ''),
+            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)*)((?:\(to\) )?)(make\s+)((?:\(to\)\s+)?)((?:'+DEFAULT_PR_NOCAP+r'\s*)*)(?!(?:[ei]nquiries|arrangements|preparations|confession|tributary|progress|oneself|profits|amends|again|entry|haste|merry|signs|also|even|sure|use|art|for|it|up|space|room|fence|out|love)(?: |$))([^\s\()][^\s]*)((?:\s*'+DEFAULT_PR_NOCAP+r')*)$'     : (r'\1\2\3\4\5\6\7', r'⫷mcs2:art-316⫸Causative_of⫷mcs⫸\6', ''),
+            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)*)((?:\(to\) )?)(cause to\s+)([^\s\()][^\s]*)$'     : (r'\1\2\3\4', r'⫷mcs2:art-316⫸Causative_of⫷mcs⫸\4', ''),
+            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)*)((?:\(to\) )?)(stay|remain)\s+([^\s\()][^\s]*)$'     : (r'\1\2 (\3) \4', '⫷mcs2:art-303⫸AspectProperty⫷mcs:art-303⫸DurativeAspect', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal'),
         },
         6: {
-            # r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)?)\(([Tt]he|[Aa]n?)\)\s+((?:(?:'+DEFAULT_PR[1:-1]+'|[^\(\)\[\]\s]+))(?: (?:'+DEFAULT_PR[1:-1]+'|[^\(\)\[\]\s]+))?)$'     : (r'\1(\2) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun', ''),
+            # r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)*)\(([Tt]he|[Aa]n?)\)\s+((?:(?:'+DEFAULT_PR[1:-1]+'|[^\(\)\[\]\s]+))(?: (?:'+DEFAULT_PR[1:-1]+'|[^\(\)\[\]\s]+))?)$'     : (r'\1(\2) \3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun', ''),
             r'^do it$' : ('⫷df⫸do it', '', ''),
             r'fæces' : ('faeces', '', ''),
             r'^to become$' : ('(to) become', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal', ''),
@@ -325,15 +324,17 @@ EXDFPREP_RULES = {
     },
     'nob-000' : {
         1 : {
-            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)?)((?:\(?\s*å\s*\)?\s+)?bli)\s+([^\(])'    : (r'\1(\2) \3', '', ''),
+            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)*)((?:\(?\s*å\s*\)?\s+)?bli)\s+([^\(])'    : (r'\1(\2) \3', '', ''),
         },
         2: {
-            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)?)å\s+' : (r'\1(å) ', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal', ''),
+            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)*)å\s+' : (r'\1(å) ', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal', ''),
         },
     },
     'dan-000' : {
         1: {
-            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)?)(e[nt])\s+' : (r'\1(\2) ', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun', ''),
+            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)*)(e[nt])\s+' : (r'\1(\2) ', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun', ''),
+            r'(^|\s)((?:at )?nog(?:le|e[nt]))(\s|$)' : (r'\1(\2)\3', '', ''),
+            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)*)(at)\s+([^\(])'    : (r'\1\3', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal', ''),
         },
     },
     'fra-000' : {
@@ -410,7 +411,7 @@ EXDFPREP_RULES = {
             r'^([^\(]*)((?:etw(?:\.|as)|jemand(?:e[mn])?|jmd\.?)(?: oder etw(?:\.|as))?(?:,? (?:der|was))?)([^\'’]|$)' : (r'\1(\2)\3', '', ''),
             r'\s+(d\.[ih]\..*)$' : (r' (\1)', '', ''),
             r'(^| )(o\.ä\.)( |$)' : (r'\1(\2)\3', '', ''),
-            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)?)(ein(?:e[mnrs]?)?|die|das|de[mnrs])\s+([^\(])'     : (r'\1(\2) \3', '', ''),
+            r'^((?:'+DEFAULT_PR_NOCAP+r'\s*)*)(ein(?:e[mnrs]?)?|die|das|de[mnrs])\s+([^\(])'     : (r'\1(\2) \3', '', ''),
         },
         2: {
             r' *\(m\.?(\s*sg\.?)?\)$' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun⫷dcs2:art-303⫸GenderProperty⫷dcs:art-303⫸MasculineGender⫷dcs2:art-303⫸NumberProperty⫷dcs:art-303⫸SingularNumber', ''),
@@ -443,12 +444,15 @@ EXDFPREP_RULES = {
         },
         999 : {
             # r' ?\(n\.?\)$' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun', ''),
-            r' ?\(adj\.?\)$' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Adjectival', ''),
-            r' ?\(v\.?\)$' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal', ''),
-            r' ?\(v\.?i\.?\)$' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸IntransitiveVerb', ''),
-            r' ?\(v\.?t\.?\)$' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸TransitiveVerb', ''),
+            r' ?\(a(?:dj(?:ective))?\.?\)$' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Adjectival', ''),
+            r' ?\(v(?:er)?b?\.?\)$' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal', ''),
+            r' vb$' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Verbal', ''),
+            r' ?\(vb?\.?i(?:ntr)?\.?\)$' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸IntransitiveVerb', ''),
+            r' ?\(vb?\.?tr?\.?\)$' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸TransitiveVerb', ''),
+            r' tr\.$' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸TransitiveVerb', ''),
             r' ?\(sg\.?\)$' : ('', '⫷dcs2:art-303⫸NumberProperty⫷dcs:art-303⫸SingularNumber', ''),
             r' ?\(sing(?:\.|ular)\)$' : ('', '⫷dcs2:art-303⫸NumberProperty⫷dcs:art-303⫸SingularNumber', ''),
+            r' ?\(n(?:oun)?\.?\)$' : ('', '⫷dcs2:art-303⫸PartOfSpeechProperty⫷dcs:art-303⫸Noun', ''),
             r' ?\([pP]l?\.?\)$' : ('', '⫷dcs2:art-303⫸NumberProperty⫷dcs:art-303⫸PluralNumber', ''),
             r' ?\(pl(?:\.|ural)\)$' : ('', '⫷dcs2:art-303⫸NumberProperty⫷dcs:art-303⫸PluralNumber', ''),
             r' ?\(excl?(\.|usive)?\)$' : ('', '⫷dcs2:art-303⫸PersonProperty⫷dcs:art-303⫸FirstPersonExclusive', ''),
@@ -586,13 +590,9 @@ def exdfprep(entries, sourcecols, tocol=-1, lang='eng-000', pretag_special_lvs=T
                             int_rh_m = re.match(r'^(?:⫷..⫸)?([〇零一二三四五六七八九十百千萬万億亿兆兩两兆京垓秭穰溝沟澗涧正載载廿卅卌皕]+|[〇零壹貳贰參叁肆伍陸陆柒捌玖拾佰仟兆京垓秭穰溝沟澗涧正載载廿卅卌皕]+)($|⫷)', syn.strip())
                             if int_rh_m and any(h in syn for h in '兆京垓秭穰溝沟澗涧正載载廿卅卌皕陸'):
                                 print('WARNING: Possible rare Han numeral, needs manual tag:', int_rh_m.group(1))
-                        
                         result1.append(syn)
-
                     entry[col] = result1
-
         result.append(entry)
-
     return result
 
 
@@ -788,6 +788,7 @@ def prepsyns(entries, cols, refrom, lng, delim='‣', pretag_special_lvs=True, o
     # split at given delimiter
     entries = split_outside_parens(entries, cols, refrom, max_wd_single_ex=max_wd_single_ex)
     # prepare as expression
+    
     entries = exdfprep(entries, cols, lang=lng, pretag_special_lvs=pretag_special_lvs, othercol=othercol)
     # join with consistent synonym delimiter
     for entry in entries:
@@ -795,7 +796,7 @@ def prepsyns(entries, cols, refrom, lng, delim='‣', pretag_special_lvs=True, o
             entry[col] = delim.join(nodupes(filter(None, entry[col])))
         result.append(entry)
     # remove nested parens
-    # result = remove_nested_parens(entries, cols)
+    result = remove_nested_parens(entries, cols)
     # detect taxa, report if extract_taxa is advised
     # detect_taxa(entries, cols, delim=delim)
     return result
@@ -876,7 +877,7 @@ def get_normalize_scores(exps, lang='eng-000'):
     except:
         import simplejson as json
 
-    url = 'http://api.panlex.org/norm/ex/' + lang
+    url = 'https://api.panlex.org/norm/ex/' + lang
 
     # build proper query string
     query  = '{ "tt" : ["'
@@ -951,7 +952,7 @@ def jpn_normalize(entries, col, delim='‣', maxlen=3, dftag='⫷df⫸', suppres
     return result
 
 
-def lemmatize_verb(text):
+def lemmatize_verb(text, pos_tag=True):
     try:
         TextBlob
     except:
@@ -982,11 +983,13 @@ def lemmatize_verb(text):
 
     to_blob = ' '.join([w[0] for w in text_annot if w[1]])
     to_blob = re.sub(r'\s+,', ',', to_blob).strip()
-    to_blob = re.sub(r' n\'t', 'n\'t', to_blob).strip()
+    to_blob = re.sub(r' (n\'t|\'s)', r'\1', to_blob).strip()
     to_blob = to_blob.split(' ')
 
     blob = TextBlob(' '.join(to_blob))
 
+    # print()
+    # print(blob, blob.words, to_blob)
     assert(len(blob.words) == len(to_blob))
 
     if ('it' in text and not text.startswith('it')) or 'him' in text:
@@ -1067,7 +1070,7 @@ def expsplit(entries, cols, splitdelim='/', expdelim='‣'):
         result.append(newentry)
     return result
 
-NO_DECAP = ["Africa","AIDS","Albania","America","American","Antarctica","April","Argentina","Asia","August","Australia","Austria","Belgium","Brazil","Buddhist","Bulgaria","Canada","Chanukah","China","Christmas","Colombia","Cuba","Czech Republic","December","Denmark","Easter","Egypt","English","Europe","European","February","Finland","France","French","Friday","Germany","Great Britain","Greece","Hindu","Hungary","I","I.D.","ID","India","Indian","Indonesia","Internet","Iran","Iraq","Ireland","Israel","Italian","Italy","January","Japan","Jewish","July","June","Jupiter","Mandarin","March","Mars","May","Mercury","Mexico","Monday","Mongolia","Ms.","Mr.","Neptune","Netherlands","North America","North Korea","Norway","November","October","Pakistan","Pluto","Poland","Pope","Portugal","Portuguese","Romania","Romanian","Romanova","Russia","Saturday","Saturn","Saudi Arabia","September","Slovak Republic","South Africa","South America","South Korea","Spain","Spanish","Sunday","Sweden","Switzerland","Thailand","Thursday","Tuesday","God","Turkey","Ukraine","United Kingdom","United States","Uranus","Venezuela","Venus","Vietnam","Wednesday","Yugoslavia","Ashavan","Asha","Zarathushtra","Ahura","Khwarrah","Fravashi","Fravashis","Mazda","Mithra"]
+NO_DECAP = ["Africa","AIDS","ASCII","ASP","Albania","America","American","Antarctica","April","Argentina","Asia","August","Australia","Austria","Belgium","Brazil","Buddhist","Bulgaria","Canada","Chanukah","China","Christmas","Colombia","Cuba","Czech Republic","December","Denmark","Easter","Egypt","English","Europe","European","February","Finland","France","French","Friday","Germany","Great Britain","Greece","Hindu","Hungary","I","I.D.","ID","India","Indian","Indonesia","Internet","Iran","Iraq","Ireland","Israel","Italian","Italy","January","Japan","Jewish","July","June","Jupiter","Mandarin","March","Mars","May","Mercury","Mexico","Monday","Mongolia","Ms.","Mr.","Neptune","Netherlands","North America","North Korea","Norway","November","October","Pakistan","Pluto","Poland","Pope","Portugal","Portuguese","Romania","Romanian","Romanova","Russia","Saturday","Saturn","Saudi Arabia","September","Slovak Republic","South Africa","South America","South Korea","Spain","Spanish","Sunday","Sweden","Switzerland","Thailand","Thursday","Tuesday","God","Turkey","Ukraine","United Kingdom","United States","Uranus","Venezuela","Venus","Vietnam","Wednesday","Yugoslavia","Ashavan","Asha","Zarathushtra","Ahura","Khwarrah","Fravashi","Fravashis","Mazda","Mithra"]
 
 def decap(entries, cols):
     # decapitalize the first (after parens) letter of each given column (except for some key words)
@@ -1374,3 +1377,13 @@ def mappable_cspps():
     with open(os.path.join(os.path.dirname(__file__).replace('/libpython/alex','/serialize/data'), 'csppmap.txt'), 'r') as inf:
         mappables = [l.split('\t',1)[0] for l in inf.readlines() if l.strip()]
     return set(mappables)
+
+
+# decorator func that prints length of function to complete (usually main)
+def timeit(func):
+    def timed(*args, **kw):
+        t0 = time.time()
+        result = func(*args, **kw)
+        print('time: {}s'.format(time.time() - t0))
+        return result
+    return timed
