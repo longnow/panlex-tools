@@ -10,11 +10,16 @@ import time
 SYNDELIM = '‣'
 MNDELIM = '⁋'
 
-log_file = 'filter.log'
+new_logger = logging.getLogger(__name__)
+new_logger.setLevel(logging.DEBUG)
+file_handler = logging.FileHandler('filter.log', 'w')
+formatter = logging.Formatter('%(message)s')
+new_logger.addHandler(file_handler)
+file_handler.setFormatter(formatter)
 
 def log_results(text, debug=False):
     if debug:
-        logging.debug(text)
+        new_logger.info(text)
 
 
 def join_synonyms_list(syn_list):
@@ -31,9 +36,6 @@ def default_str(text):
 
 def run_filters(filters, entry, is_logged=False, **kwargs):
     if is_logged:
-        # if os.path.exists(log_file):
-        #     os.remove(log_file)
-        logging.basicConfig(filename=log_file,level=logging.DEBUG)
         log_results('UNFILTERED:%s' % entry, debug=is_logged)
 
     # TODO: add preprocess filter for all language fields
