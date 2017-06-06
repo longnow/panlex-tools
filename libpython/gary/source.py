@@ -10,16 +10,16 @@ import time
 SYNDELIM = '‣'
 MNDELIM = '⁋'
 
-new_logger = logging.getLogger(__name__)
-new_logger.setLevel(logging.DEBUG)
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 file_handler = logging.FileHandler('filter.log', 'w')
 formatter = logging.Formatter('%(message)s')
-new_logger.addHandler(file_handler)
+logger.addHandler(file_handler)
 file_handler.setFormatter(formatter)
 
 def log_results(text, debug=False):
     if debug:
-        new_logger.info(text)
+        logger.info(text)
 
 
 def join_synonyms_list(syn_list):
