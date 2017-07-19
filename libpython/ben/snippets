@@ -132,7 +132,7 @@ with open(base_file_name + '-' + str(version + 1) + '.txt', 'w', encoding='utf-8
 
 # Serialized output:
 
-with open(base_file_name + '-' + str(version + 1) + '.txt', 'w', encoding='utf-8') as output_file:
+with open(base_file_name + '-final.txt', 'w', encoding='utf-8') as output_file:
     output_file.write(ap.pretty())
 
 # tab_log:

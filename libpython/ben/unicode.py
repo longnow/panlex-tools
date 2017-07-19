@@ -238,7 +238,7 @@ def get_chars(unicode_property, value, max_chars=0, rx=False):
     if rx: rx = re.compile(value)
     output = []
     for i in range(len(unicode_properties[unicode_property])):
-        if re:
+        if rx:
             if rx.search(unicode_properties[unicode_property][i]):
                 output.append((hex(i), chr(i), unicode_properties[unicode_property][i]))
         else:

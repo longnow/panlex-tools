@@ -87,3 +87,11 @@ class Lv(str):
         c = conn.cursor()
         c.execute("SELECT tt FROM ex WHERE lv=?", (self.lv,))
         self._cache[self]['all_ex'] = tuple(e[0] for e in c.fetchall())
+
+    @property
+    def lc(self):
+        return self[:3]
+    
+    @property
+    def vc(self):
+        return int(self[4:])

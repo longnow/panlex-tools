@@ -8,7 +8,7 @@ try:
     from tqdm import tqdm
 except ImportError:
     pass
-# from ben.string_manipulation import clean_str
+from ben.string_manipulation import normalize_list
 from os import environ
 from functools import partialmethod
 from types import FunctionType
@@ -181,6 +181,11 @@ class Ex:
             return normalize.get_custom_deg_scores([str(self)], as_lv, deg_func, include_std_deg, ui)[str(self)]
         else:
             return normalize.get_degraded_scores([str(self)], as_lv, ui)[str(self)]
+
+    def apostrophe(self, as_lv=None):
+        if not as_lv: as_lv = self.lv
+        apos_char = normalize.apostrophe(as_lv)
+        return self.sub(r"'", apos_char)
 
     def dict(self):
         return {'langvar' : self.lv, 'txt' : str(self)}
