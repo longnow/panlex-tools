@@ -398,7 +398,7 @@ def append_meaning(text, elem):
             return text
 
 def join_synonyms(syn_ls):
-    syn_ls = [syn for syn in syn_ls if syn != None and len(syn) > 0]
+    syn_ls = [syn for syn in syn_ls if syn is not None and len(syn) > 0]
     return SYNDELIM.join(syn_ls)
 
 
@@ -420,7 +420,7 @@ def pretag_ex(text, langid=None):
 
     if langid and re.search('^\w{3}-\d{3}$', langid):
         text = '⫷ex:%s⫸%s' % (langid,match[2])
-    elif langid == None and match[1] != None:
+    elif langid is None and match[1] is not None:
         text = '⫷ex%s⫸%s' % (match[1],match[2])
     else:
         text = '⫷ex⫸%s' % match[2]
@@ -439,11 +439,11 @@ def delimToPanlex(text, lang=None):
         for j in range(len(fields)):
             plx_match = re.search('^⫷(?:ex|df)(:\w{2,}-\d{3,})?⫸', fields[j])
             if plx_match:
-                if lang != None:
+                if lang is not None:
                     if len(fields[j][plx_match.end():].strip()) > 0:
                         fields[j] = '⫷ex:%s⫸%s' % (lang,fields[j][plx_match.end():])
             else:
-                if lang != None and len(fields[j].strip()) > 0:
+                if lang is not None and len(fields[j].strip()) > 0:
                     fields[j] = '⫷ex:%s⫸%s' % (lang,fields[j])
                 elif len(fields[j].strip()) > 0:
                     fields[j] = '⫷ex⫸%s' % (fields[j])
