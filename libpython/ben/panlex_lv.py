@@ -83,7 +83,7 @@ class Lv(str):
 
     def _cache_all_ex(self):
         import sqlite3
-        conn = sqlite3.connect(data_directory + 'db.sqlite')
+        conn = sqlite3.connect(data_directory + 'panlex_lite/db.sqlite')
         c = conn.cursor()
         c.execute("SELECT tt FROM ex WHERE lv=?", (self.lv,))
         self._cache[self]['all_ex'] = tuple(e[0] for e in c.fetchall())

@@ -6,7 +6,7 @@ from collections import defaultdict
 import os
 
 data_directory = os.path.dirname(__file__) + '/data/'
-conn = sqlite3.connect(data_directory + 'db.sqlite')
+conn = sqlite3.connect(data_directory + 'panlex_lite/db.sqlite')
 c = conn.cursor()
 
 class Lv(str):

@@ -26,7 +26,7 @@ def get_lv_code(lv):
         lc = lv[:3]
         vc = int(lv[4:])
     else: raise ValueError("lv must be in the format xxx-000")
-    conn = sqlite3.connect(data_directory + 'db.sqlite')
+    conn = sqlite3.connect(data_directory + 'panlex_lite/db.sqlite')
     c = conn.cursor()
     c.execute("SELECT lv FROM lv WHERE lc=? AND vc=?", (lc, vc))
     try:
@@ -35,7 +35,7 @@ def get_lv_code(lv):
         return None
 
 def all_ex(lv):
-    conn = sqlite3.connect(data_directory + 'db.sqlite')
+    conn = sqlite3.connect(data_directory + 'panlex_lite/db.sqlite')
     c = conn.cursor()
     lv_code = get_lv_code(lv)
     c.execute("SELECT tt FROM ex WHERE lv=?", (lv_code,))
