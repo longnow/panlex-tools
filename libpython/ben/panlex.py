@@ -737,6 +737,16 @@ class Ap(list):
                     ap[-1].pp_list.append(pp)
                 elif line == 'dpp':
                     ap[-1].dn_list[-1].pp_list.append(pp)
+            # elif obsolete:
+            #     if line == 'mi':
+            #         pp = Pp(linelist[i+1].strip(), Ex('identifier', 'art-301'))
+            #         skip = 1
+            #         ap[-1].pp_list.append(pp)
+            #     elif line == 'dm':
+            #         class_ex = Ex(linelist[i+2].strip(), linelist[i+1].strip())
+            #         skip = 2
+            #         ap[-1].cs_list.append(Cs(class_ex, Ex('HasContext', 'art-300')))
+                
         return ap
 
     @classmethod
@@ -1022,18 +1032,6 @@ def flatten(x):
         else:
             result.append(el)
     return result
-
-# def parenthesizer(text, plist, parens="()"):
-#     output = text
-#     for p in list(sorted(plist, key=len, reverse=True)):
-#         output = output.replace(p, parens[0] + p + parens[1])
-#     return output
-# 
-# def parenthesizer_re(text, plist, parens="()"):
-#     output = text
-#     for p in list(sorted(plist, key=len, reverse=True)):
-#         output = re.sub(p, parens[0] + '\g<0>' + parens[1], text)
-#     return output
 
 independants = [
     'Vowel_Independent',
