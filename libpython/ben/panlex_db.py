@@ -185,11 +185,11 @@ class Ex(ben.panlex.Ex):
             raise TypeError("id_list or str_list must be provided")
         if id_list:
             id_list = tuple(id_list)
-            for r in query(f"SELECT * FROM {cls._TABLE} WHERE id IN %s", (id_list, )):
+            for r in query("SELECT * FROM {} WHERE id IN %s".format(cls._TABLE), (id_list, )):
                 cls._cache[r.id] = r
         else:
             str_list = tuple(map(str, str_list))
-            for r in query(f"SELECT * FROM {cls._TABLE} WHERE txt IN %s", (str_list, )):
+            for r in query("SELECT * FROM {} WHERE txt IN %s".format(cls._TABLE), (str_list, )):
                 cls._cache[r.id] = r
 
     @property
@@ -197,7 +197,7 @@ class Ex(ben.panlex.Ex):
         try:
             return self._id
         except AttributeError:
-            result = query(f"SELECT * FROM {self._TABLE} WHERE txt = %s AND langvar = uid_langvar(%s)",
+            result = query("SELECT * FROM {} WHERE txt = %s AND langvar = uid_langvar(%s)".format(self._TABLE),
                             (str(self), self.lv))
             id = result[0].id
             self._cache[id] = result[0]
@@ -233,7 +233,7 @@ class Ex(ben.panlex.Ex):
         try:
             data = cls._cache[id]
         except KeyError:
-            result = query(f"SELECT * FROM {cls._TABLE} WHERE id = %s", (id, ))
+            result = query("SELECT * FROM {} WHERE id = %s".format(cls._TABLE), (id, ))
             cls._cache[id] = result[0]
             data = cls._cache[id]
         output = cls(data.txt, Lv.from_id(data.langvar))
@@ -248,7 +248,7 @@ class Ex(ben.panlex.Ex):
             for id in ids:
                 output.append(cls.from_id(id))
         else:
-            for r in query(f"SELECT * FROM {cls._TABLE} WHERE id IN %s", (ids, )):
+            for r in query("SELECT * FROM {} WHERE id IN %s".format(cls._TABLE), (ids, )):
                 cls._cache[r.id] = r
                 output.append(cls.from_id(r.id))
         return output
@@ -284,7 +284,7 @@ class Ex(ben.panlex.Ex):
                     GROUP BY expr.id
                     """
             else:
-                query_string = f"SELECT * FROM {cls._TABLE} WHERE langvar in %s"
+                query_string = "SELECT * FROM {} WHERE langvar in %s".format(cls._TABLE)
             for r in query(query_string, (lv_ids_remaining, )):
                 cls._cache[r.id] = r
                 cls._langvar_cache[r.langvar].add(r.id)
