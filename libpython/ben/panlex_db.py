@@ -33,7 +33,10 @@ APOS_CANDIDATES = [
 
 def db_connect():
     global conn, cur
-    subprocess.run(['autossh', '-M 20000', '-f', '-NT', '-L 5432:localhost:5432', 'db.panlex.org'])
+    try:
+        subprocess.run(['autossh', '-M 20000', '-f', '-NT', '-L 5432:localhost:5432', 'db.panlex.org'])
+    except FileNotFoundError:
+        pass
     try:
         conn = psycopg2.connect(
             dbname='plx',
