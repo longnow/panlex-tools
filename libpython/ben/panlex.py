@@ -37,6 +37,32 @@ def clean_str(str):
     output = output.strip()
     return output
 
+class Lv(str):
+    def __init__(self, uid=None, lc=None, vc=None):
+        if isinstance(uid, Lv):
+            self = uid
+        elif uid:
+            self.lc = uid[:3]
+            self.vc = int(uid[4:])
+        else:
+            self.lc = lc
+            self.vc = vc
+
+    def __repr__(self):
+        return "{cls}({string})".format(cls=self.__class__.__name__, string=repr(str(self)))
+
+    @property
+    def uid(self):
+        try:
+            return '-'.join((self.lc, str(self.vc).zfill(3)))
+        except TypeError:
+            return None
+        
+    @classmethod
+    def from_IETF(self, tag):
+        import panlex
+        return [Lv(_['txt']) for _ in panlex.get_translations(tag, 'art-420', 'art-274')]
+
 class Ex:
 
     def __init__(self, text, lv=None, lc=None, vc=None):

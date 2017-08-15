@@ -106,6 +106,14 @@ class Lv(str):
         return Lv(uid)
     
     @property
+    def lc(self):
+        return self.lang_code
+
+    @property
+    def vc(self):
+        return self.var_code
+    
+    @property
     def name(self):
         return Ex.from_id(self.name_expr)
 
