@@ -1,16 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import json
+from collections import defaultdict
+import os
 from bs4 import BeautifulSoup
 from ben.panlex import *
 from ben.IETF_to_panlex import from_IETF
-import json
-from collections import defaultdict
 import regex as re
 from langcodes import Language
 from tqdm import tqdm
 
-lang_list = json.load(open('lang_list.json'))
+lang_list = json.load(open(os.path.dirname(__file__) + 'lang_list.json'))
 lang_dict = defaultdict(lambda: defaultdict(lambda: defaultdict(defaultdict)))
 
 for lang in lang_list:
