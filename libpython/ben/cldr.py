@@ -11,7 +11,7 @@ import regex as re
 from langcodes import Language
 from tqdm import tqdm
 
-lang_list = json.load(open(os.path.dirname(__file__) + 'lang_list.json'))
+lang_list = json.load(open(os.path.dirname(__file__) + '/lang_list.json'))
 lang_dict = defaultdict(lambda: defaultdict(lambda: defaultdict(defaultdict)))
 
 for lang in lang_list:
