@@ -43,20 +43,21 @@ def _initialize_ISO_639():
 
     with open(iso639_data_directory + 'iso-639-3.tab', 'r') as data_file:
         for line in data_file:
+            line = line.strip('\ufeff\uffef')
             if line.startswith('Id') or not line.strip(): continue
             for i, attr in enumerate(iso_639_files['iso-639-3.tab']):
                 splitline = [s.strip() for s in line.split('\t')]
-                iso639_dict[splitline[0]][attr] = splitline[i]
+                if len(splitline[0]) == 3:
+                    iso639_dict[splitline[0]][attr] = splitline[i]
 
     with open(iso639_data_directory + 'iso-639-3_Name_Index.tab', 'r') as data_file:
         for line in data_file:
+            line = line.strip('\ufeff\uffef')
             if line.startswith('Id') or not line.strip(): continue
             for i, attr in enumerate(iso_639_files['iso-639-3_Name_Index.tab'][1:], start=1):
                 splitline = [s.strip() for s in line.split('\t')]
-                iso639_dict[splitline[0]][attr].append(splitline[i])
-
-
-
+                if len(splitline[0]) == 3:
+                    iso639_dict[splitline[0]][attr].append(splitline[i])
 
 iso639_macro_dict = defaultdict(list)
 
@@ -67,8 +68,11 @@ def _initialize_ISO_639_macro():
 
     with open(iso639_data_directory + 'iso-639-3-macrolanguages.tab', 'r') as data_file:
         for line in data_file:
+            line = line.strip('\ufeff\uffef')
             if line.startswith('M_Id') or not line.strip(): continue
-            iso639_macro_dict[line.split('\t')[0]].append(line.split('\t')[1])
+            splitline = [s.strip() for s in line.split('\t')]
+            if len(splitline[0]) == 3:
+                iso639_macro_dict[splitline[0]].append(splitline[1])
 
 def convert(string, outtype='part3', intype='print_name', exact=False):
     """Takes an input string and returns a list of matching ISO 639 codes or 
@@ -190,3 +194,14 @@ def expand_macrolanguage(part3, include_self=False):
     output = iso639_macro_dict[part3][:]
     if include_self: output += [part3]
     return sorted(set(output))
+
+def get_macrolanguage(code):
+    if not iso639_macro_dict: _initialize_ISO_639_macro()
+    if len(code) == 2:
+        part3 = convert(code, outtype='part3', intype='part1')[0]
+    else:
+        part3 = code
+    for macro_code, part3_list in iso639_macro_dict.items():
+        if part3 in part3_list:
+            return(macro_code)
+    return('')

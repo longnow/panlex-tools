@@ -1,0 +1,8 @@
+select expr.id, expr.langvar, expr.txt, expr.txt_degr, denotationsrc.expr as trans_expr, exprsrc.txt as trans_txt 
+from expr
+inner join denotationx as denotation on denotation.expr = expr.id
+inner join denotationx as denotationsrc on denotationsrc.meaning = denotation.meaning and denotationsrc.expr != denotation.expr
+inner join expr as exprsrc on exprsrc.id = denotationsrc.expr
+where expr.langvar = uid_langvar('art-420') and denotationsrc.langvar = uid_langvar('art-274')
+group by expr.id, denotationsrc.expr, exprsrc.txt 
+;

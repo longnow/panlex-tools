@@ -1,0 +1,2508 @@
+[
+ {
+  "_uid": "",
+  "language": "en",
+  "script": "",
+  "territory": "ZZ",
+  "variant": ""
+ },
+ {
+  "_uid": "",
+  "language": "und",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "",
+  "language": "und",
+  "script": "",
+  "territory": "ZZ",
+  "variant": ""
+ },
+ {
+  "_uid": "aar-000",
+  "language": "aa",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "afr-000",
+  "language": "af",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "afr-001",
+  "language": "af",
+  "script": "",
+  "territory": "NA",
+  "variant": ""
+ },
+ {
+  "_uid": "afr-002",
+  "language": "af",
+  "script": "",
+  "territory": "ZA",
+  "variant": ""
+ },
+ {
+  "_uid": "agq-000",
+  "language": "agq",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "agq-001",
+  "language": "agq",
+  "script": "",
+  "territory": "CM",
+  "variant": ""
+ },
+ {
+  "_uid": "aka-000",
+  "language": "ak",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "aka-001",
+  "language": "ak",
+  "script": "",
+  "territory": "GH",
+  "variant": ""
+ },
+ {
+  "_uid": "als-000",
+  "language": "sq",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "amh-000",
+  "language": "am",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "amh-003",
+  "language": "am",
+  "script": "",
+  "territory": "ET",
+  "variant": ""
+ },
+ {
+  "_uid": "arb-000",
+  "language": "ar",
+  "script": "",
+  "territory": "001",
+  "variant": ""
+ },
+ {
+  "_uid": "arb-000",
+  "language": "ar",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "arb-004",
+  "language": "ar",
+  "script": "",
+  "territory": "AE",
+  "variant": ""
+ },
+ {
+  "_uid": "arb-005",
+  "language": "ar",
+  "script": "",
+  "territory": "BH",
+  "variant": ""
+ },
+ {
+  "_uid": "arb-006",
+  "language": "ar",
+  "script": "",
+  "territory": "DJ",
+  "variant": ""
+ },
+ {
+  "_uid": "arb-007",
+  "language": "ar",
+  "script": "",
+  "territory": "DZ",
+  "variant": ""
+ },
+ {
+  "_uid": "arb-008",
+  "language": "ar",
+  "script": "",
+  "territory": "EG",
+  "variant": ""
+ },
+ {
+  "_uid": "arb-009",
+  "language": "ar",
+  "script": "",
+  "territory": "EH",
+  "variant": ""
+ },
+ {
+  "_uid": "arb-010",
+  "language": "ar",
+  "script": "",
+  "territory": "ER",
+  "variant": ""
+ },
+ {
+  "_uid": "arb-011",
+  "language": "ar",
+  "script": "",
+  "territory": "IL",
+  "variant": ""
+ },
+ {
+  "_uid": "arb-012",
+  "language": "ar",
+  "script": "",
+  "territory": "IQ",
+  "variant": ""
+ },
+ {
+  "_uid": "arb-013",
+  "language": "ar",
+  "script": "",
+  "territory": "JO",
+  "variant": ""
+ },
+ {
+  "_uid": "arb-014",
+  "language": "ar",
+  "script": "",
+  "territory": "KM",
+  "variant": ""
+ },
+ {
+  "_uid": "arb-015",
+  "language": "ar",
+  "script": "",
+  "territory": "KW",
+  "variant": ""
+ },
+ {
+  "_uid": "arb-016",
+  "language": "ar",
+  "script": "",
+  "territory": "LB",
+  "variant": ""
+ },
+ {
+  "_uid": "arb-017",
+  "language": "ar",
+  "script": "",
+  "territory": "LY",
+  "variant": ""
+ },
+ {
+  "_uid": "arb-018",
+  "language": "ar",
+  "script": "",
+  "territory": "MA",
+  "variant": ""
+ },
+ {
+  "_uid": "arb-019",
+  "language": "ar",
+  "script": "",
+  "territory": "MR",
+  "variant": ""
+ },
+ {
+  "_uid": "arb-020",
+  "language": "ar",
+  "script": "",
+  "territory": "OM",
+  "variant": ""
+ },
+ {
+  "_uid": "arb-021",
+  "language": "ar",
+  "script": "",
+  "territory": "PS",
+  "variant": ""
+ },
+ {
+  "_uid": "arb-022",
+  "language": "ar",
+  "script": "",
+  "territory": "QA",
+  "variant": ""
+ },
+ {
+  "_uid": "arb-023",
+  "language": "ar",
+  "script": "",
+  "territory": "SA",
+  "variant": ""
+ },
+ {
+  "_uid": "arb-024",
+  "language": "ar",
+  "script": "",
+  "territory": "SD",
+  "variant": ""
+ },
+ {
+  "_uid": "arb-025",
+  "language": "ar",
+  "script": "",
+  "territory": "SO",
+  "variant": ""
+ },
+ {
+  "_uid": "arb-026",
+  "language": "ar",
+  "script": "",
+  "territory": "SS",
+  "variant": ""
+ },
+ {
+  "_uid": "arb-027",
+  "language": "ar",
+  "script": "",
+  "territory": "SY",
+  "variant": ""
+ },
+ {
+  "_uid": "arb-028",
+  "language": "ar",
+  "script": "",
+  "territory": "TD",
+  "variant": ""
+ },
+ {
+  "_uid": "arb-029",
+  "language": "ar",
+  "script": "",
+  "territory": "TN",
+  "variant": ""
+ },
+ {
+  "_uid": "arb-030",
+  "language": "ar",
+  "script": "",
+  "territory": "YE",
+  "variant": ""
+ },
+ {
+  "_uid": "arn-000",
+  "language": "arn",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "asa-000",
+  "language": "asa",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "asa-003",
+  "language": "asa",
+  "script": "",
+  "territory": "TZ",
+  "variant": ""
+ },
+ {
+  "_uid": "asm-000",
+  "language": "as",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "asm-005",
+  "language": "as",
+  "script": "",
+  "territory": "IN",
+  "variant": ""
+ },
+ {
+  "_uid": "ast-000",
+  "language": "ast",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "ast-001",
+  "language": "ast",
+  "script": "",
+  "territory": "ES",
+  "variant": ""
+ },
+ {
+  "_uid": "azb-000",
+  "language": "az",
+  "script": "Arab",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "azj-000",
+  "language": "az",
+  "script": "Latn",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "azj-000",
+  "language": "az",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "azj-001",
+  "language": "az",
+  "script": "Cyrl",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "azj-005",
+  "language": "az",
+  "script": "Cyrl",
+  "territory": "AZ",
+  "variant": ""
+ },
+ {
+  "_uid": "azj-006",
+  "language": "az",
+  "script": "Latn",
+  "territory": "AZ",
+  "variant": ""
+ },
+ {
+  "_uid": "bam-000",
+  "language": "bm",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "bam-001",
+  "language": "bm",
+  "script": "",
+  "territory": "ML",
+  "variant": ""
+ },
+ {
+  "_uid": "bas-000",
+  "language": "bas",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "bas-001",
+  "language": "bas",
+  "script": "",
+  "territory": "CM",
+  "variant": ""
+ },
+ {
+  "_uid": "bel-000",
+  "language": "be",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "bel-003",
+  "language": "be",
+  "script": "",
+  "territory": "BY",
+  "variant": ""
+ },
+ {
+  "_uid": "bem-000",
+  "language": "bem",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "ben-000",
+  "language": "bn",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "ben-002",
+  "language": "bn",
+  "script": "",
+  "territory": "IN",
+  "variant": ""
+ },
+ {
+  "_uid": "ben-003",
+  "language": "bn",
+  "script": "",
+  "territory": "BD",
+  "variant": ""
+ },
+ {
+  "_uid": "bez-000",
+  "language": "bez",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "bgn-003",
+  "language": "bgn",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "blt-001",
+  "language": "blt",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "bod-000",
+  "language": "bo",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "bod-004",
+  "language": "bo",
+  "script": "",
+  "territory": "IN",
+  "variant": ""
+ },
+ {
+  "_uid": "bod-006",
+  "language": "bo",
+  "script": "",
+  "territory": "CN",
+  "variant": ""
+ },
+ {
+  "_uid": "bos-000",
+  "language": "bs",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "bos-000",
+  "language": "bs",
+  "script": "Latn",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "bos-001",
+  "language": "bs",
+  "script": "Cyrl",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "bre-000",
+  "language": "br",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "bre-002",
+  "language": "br",
+  "script": "",
+  "territory": "FR",
+  "variant": ""
+ },
+ {
+  "_uid": "brx-000",
+  "language": "brx",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "bss-000",
+  "language": "bss",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "bul-000",
+  "language": "bg",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "byn-000",
+  "language": "byn",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "cat-000",
+  "language": "ca",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "cat-001",
+  "language": "ca",
+  "script": "",
+  "territory": "ES",
+  "variant": "VALENCIA"
+ },
+ {
+  "_uid": "ccp-001",
+  "language": "ccp",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "ces-000",
+  "language": "cs",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "cgg-000",
+  "language": "cgg",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "che-000",
+  "language": "ce",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "chr-000",
+  "language": "chr",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "chu-000",
+  "language": "cu",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "chv-000",
+  "language": "cv",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "ckb-000",
+  "language": "ckb",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "cmn-000",
+  "language": "zh",
+  "script": "Hans",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "cmn-000",
+  "language": "zh",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "cmn-001",
+  "language": "zh",
+  "script": "Hant",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "cmn-021",
+  "language": "zh",
+  "script": "Hant",
+  "territory": "HK",
+  "variant": ""
+ },
+ {
+  "_uid": "cor-000",
+  "language": "kw",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "cym-000",
+  "language": "cy",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "dan-000",
+  "language": "da",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "dav-000",
+  "language": "dav",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "deu-000",
+  "language": "de",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "deu-004",
+  "language": "de",
+  "script": "",
+  "territory": "AT",
+  "variant": ""
+ },
+ {
+  "_uid": "deu-006",
+  "language": "de",
+  "script": "",
+  "territory": "CH",
+  "variant": ""
+ },
+ {
+  "_uid": "deu-008",
+  "language": "de",
+  "script": "",
+  "territory": "LU",
+  "variant": ""
+ },
+ {
+  "_uid": "div-000",
+  "language": "dv",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "dje-000",
+  "language": "dje",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "dsb-000",
+  "language": "dsb",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "dua-000",
+  "language": "dua",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "dyo-000",
+  "language": "dyo",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "dzo-000",
+  "language": "dz",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "ebu-000",
+  "language": "ebu",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "ekk-000",
+  "language": "et",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "ell-000",
+  "language": "el",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "ell-008",
+  "language": "el",
+  "script": "",
+  "territory": "",
+  "variant": "POLYTON"
+ },
+ {
+  "_uid": "eng-000",
+  "language": "en",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "eng-000",
+  "language": "en",
+  "script": "",
+  "territory": "001",
+  "variant": ""
+ },
+ {
+  "_uid": "eng-004",
+  "language": "en",
+  "script": "",
+  "territory": "US",
+  "variant": ""
+ },
+ {
+  "_uid": "eng-004",
+  "language": "en",
+  "script": "",
+  "territory": "US",
+  "variant": "POSIX"
+ },
+ {
+  "_uid": "eng-005",
+  "language": "en",
+  "script": "",
+  "territory": "GB",
+  "variant": ""
+ },
+ {
+  "_uid": "eng-006",
+  "language": "en",
+  "script": "Dsrt",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "eng-008",
+  "language": "en",
+  "script": "",
+  "territory": "CA",
+  "variant": ""
+ },
+ {
+  "_uid": "eng-009",
+  "language": "en",
+  "script": "",
+  "territory": "AU",
+  "variant": ""
+ },
+ {
+  "_uid": "eng-010",
+  "language": "en",
+  "script": "",
+  "territory": "NZ",
+  "variant": ""
+ },
+ {
+  "_uid": "eng-041",
+  "language": "en",
+  "script": "",
+  "territory": "IN",
+  "variant": ""
+ },
+ {
+  "_uid": "epo-000",
+  "language": "eo",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "eus-000",
+  "language": "eu",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "ewe-000",
+  "language": "ee",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "ewo-000",
+  "language": "ewo",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "fao-000",
+  "language": "fo",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "fil-000",
+  "language": "fil",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "fin-000",
+  "language": "fi",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "fra-000",
+  "language": "fr",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "fra-003",
+  "language": "fr",
+  "script": "",
+  "territory": "BE",
+  "variant": ""
+ },
+ {
+  "_uid": "fra-012",
+  "language": "fr",
+  "script": "",
+  "territory": "CA",
+  "variant": ""
+ },
+ {
+  "_uid": "fra-016",
+  "language": "fr",
+  "script": "",
+  "territory": "CH",
+  "variant": ""
+ },
+ {
+  "_uid": "fry-000",
+  "language": "fy",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "fuc-000",
+  "language": "ff",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "fur-000",
+  "language": "fur",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "gaz-000",
+  "language": "om",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "gez-000",
+  "language": "gez",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "gla-000",
+  "language": "gd",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "gle-000",
+  "language": "ga",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "glg-000",
+  "language": "gl",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "glv-000",
+  "language": "gv",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "gsw-000",
+  "language": "gsw",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "guj-000",
+  "language": "gu",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "guz-000",
+  "language": "guz",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "hau-000",
+  "language": "ha",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "haw-000",
+  "language": "haw",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "heb-000",
+  "language": "he",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "hin-000",
+  "language": "hi",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "hrv-000",
+  "language": "hr",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "hsb-000",
+  "language": "hsb",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "hun-000",
+  "language": "hu",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "hye-000",
+  "language": "hy",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "ibo-000",
+  "language": "ig",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "iii-000",
+  "language": "ii",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "ike-000",
+  "language": "iu",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "ina-000",
+  "language": "ia",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "ind-000",
+  "language": "id",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "isl-000",
+  "language": "is",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "ita-000",
+  "language": "it",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "jav-000",
+  "language": "jv",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "jgo-000",
+  "language": "jgo",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "jmc-000",
+  "language": "jmc",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "jpn-000",
+  "language": "ja",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "kab-000",
+  "language": "kab",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "kal-000",
+  "language": "kl",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "kam-000",
+  "language": "kam",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "kan-000",
+  "language": "kn",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "kas-000",
+  "language": "ks",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "kat-000",
+  "language": "ka",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "kaz-000",
+  "language": "kk",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "kde-000",
+  "language": "kde",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "kea-000",
+  "language": "kea",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "khk-000",
+  "language": "mn",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "khk-002",
+  "language": "mn",
+  "script": "Mong",
+  "territory": "MN",
+  "variant": ""
+ },
+ {
+  "_uid": "khm-000",
+  "language": "km",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "khq-000",
+  "language": "khq",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "kik-000",
+  "language": "ki",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "kin-000",
+  "language": "rw",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "kir-000",
+  "language": "ky",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "kkj-000",
+  "language": "kkj",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "kln-000",
+  "language": "kln",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "kmr-000",
+  "language": "ku",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "kok-000",
+  "language": "kok",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "kor-000",
+  "language": "ko",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "kor-003",
+  "language": "ko",
+  "script": "",
+  "territory": "KP",
+  "variant": ""
+ },
+ {
+  "_uid": "ksb-000",
+  "language": "ksb",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "ksf-000",
+  "language": "ksf",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "ksh-000",
+  "language": "ksh",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "lag-000",
+  "language": "lag",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "lao-000",
+  "language": "lo",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "lin-000",
+  "language": "ln",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "lit-000",
+  "language": "lt",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "lkt-000",
+  "language": "lkt",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "lrc-000",
+  "language": "lrc",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "ltz-000",
+  "language": "lb",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "lub-000",
+  "language": "lu",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "lug-000",
+  "language": "lg",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "luo-000",
+  "language": "luo",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "luy-000",
+  "language": "luy",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "lvs-000",
+  "language": "lv",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "mal-000",
+  "language": "ml",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "mar-000",
+  "language": "mr",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "mas-000",
+  "language": "mas",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "mer-000",
+  "language": "mer",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "mfe-000",
+  "language": "mfe",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "mgh-000",
+  "language": "mgh",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "mgo-000",
+  "language": "mgo",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "mkd-000",
+  "language": "mk",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "mlt-000",
+  "language": "mt",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "mni-000",
+  "language": "mni",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "moh-000",
+  "language": "moh",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "mua-000",
+  "language": "mua",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "mya-000",
+  "language": "my",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "mzn-000",
+  "language": "mzn",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "naq-000",
+  "language": "naq",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "nbl-000",
+  "language": "nr",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "nde-000",
+  "language": "nd",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "nds-000",
+  "language": "nds",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "nld-000",
+  "language": "nl",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "nld-003",
+  "language": "nl",
+  "script": "",
+  "territory": "BE",
+  "variant": ""
+ },
+ {
+  "_uid": "nmg-000",
+  "language": "nmg",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "nnh-000",
+  "language": "nnh",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "nno-000",
+  "language": "nn",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "nob-000",
+  "language": "nb",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "npi-000",
+  "language": "ne",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "nso-000",
+  "language": "nso",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "nus-000",
+  "language": "nus",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "nyn-000",
+  "language": "nyn",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "oci-000",
+  "language": "oc",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "ory-000",
+  "language": "or",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "oss-000",
+  "language": "os",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "pan-000",
+  "language": "pa",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "pbu-000",
+  "language": "ps",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "pes-000",
+  "language": "fa",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "plt-000",
+  "language": "mg",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "pnb-000",
+  "language": "pa",
+  "script": "Arab",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "pol-000",
+  "language": "pl",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "por-000",
+  "language": "pt",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "por-002",
+  "language": "pt",
+  "script": "",
+  "territory": "PT",
+  "variant": ""
+ },
+ {
+  "_uid": "prg-000",
+  "language": "prg",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "prs-000",
+  "language": "fa",
+  "script": "",
+  "territory": "AF",
+  "variant": ""
+ },
+ {
+  "_uid": "quc-000",
+  "language": "quc",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "que-000",
+  "language": "qu",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "rof-000",
+  "language": "rof",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "roh-000",
+  "language": "rm",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "ron-000",
+  "language": "ro",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "ron-002",
+  "language": "ro",
+  "script": "",
+  "territory": "MD",
+  "variant": ""
+ },
+ {
+  "_uid": "run-000",
+  "language": "rn",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "rus-000",
+  "language": "ru",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "rus-008",
+  "language": "ru",
+  "script": "",
+  "territory": "UA",
+  "variant": ""
+ },
+ {
+  "_uid": "rwk-000",
+  "language": "rwk",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "sag-000",
+  "language": "sg",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "sah-000",
+  "language": "sah",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "san-000",
+  "language": "sa",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "saq-000",
+  "language": "saq",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "sbp-000",
+  "language": "sbp",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "sdh-000",
+  "language": "sdh",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "seh-000",
+  "language": "seh",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "ses-000",
+  "language": "ses",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "shi-001",
+  "language": "shi",
+  "script": "Latn",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "shi-003",
+  "language": "shi",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "sid-000",
+  "language": "sid",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "sin-000",
+  "language": "si",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "slk-000",
+  "language": "sk",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "slv-000",
+  "language": "sl",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "sma-000",
+  "language": "sma",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "sme-000",
+  "language": "se",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "sme-001",
+  "language": "se",
+  "script": "",
+  "territory": "FI",
+  "variant": ""
+ },
+ {
+  "_uid": "smj-000",
+  "language": "smj",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "smn-000",
+  "language": "smn",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "sna-000",
+  "language": "sn",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "snd-000",
+  "language": "sd",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "som-000",
+  "language": "so",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "sot-000",
+  "language": "st",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "spa-000",
+  "language": "es",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "spa-003",
+  "language": "es",
+  "script": "",
+  "territory": "CR",
+  "variant": ""
+ },
+ {
+  "_uid": "spa-005",
+  "language": "es",
+  "script": "",
+  "territory": "AR",
+  "variant": ""
+ },
+ {
+  "_uid": "spa-006",
+  "language": "es",
+  "script": "",
+  "territory": "BO",
+  "variant": ""
+ },
+ {
+  "_uid": "spa-008",
+  "language": "es",
+  "script": "",
+  "territory": "CL",
+  "variant": ""
+ },
+ {
+  "_uid": "spa-009",
+  "language": "es",
+  "script": "",
+  "territory": "CO",
+  "variant": ""
+ },
+ {
+  "_uid": "spa-011",
+  "language": "es",
+  "script": "",
+  "territory": "DO",
+  "variant": ""
+ },
+ {
+  "_uid": "spa-012",
+  "language": "es",
+  "script": "",
+  "territory": "EC",
+  "variant": ""
+ },
+ {
+  "_uid": "spa-014",
+  "language": "es",
+  "script": "",
+  "territory": "GT",
+  "variant": ""
+ },
+ {
+  "_uid": "spa-015",
+  "language": "es",
+  "script": "",
+  "territory": "HN",
+  "variant": ""
+ },
+ {
+  "_uid": "spa-016",
+  "language": "es",
+  "script": "",
+  "territory": "MX",
+  "variant": ""
+ },
+ {
+  "_uid": "spa-017",
+  "language": "es",
+  "script": "",
+  "territory": "NI",
+  "variant": ""
+ },
+ {
+  "_uid": "spa-018",
+  "language": "es",
+  "script": "",
+  "territory": "PA",
+  "variant": ""
+ },
+ {
+  "_uid": "spa-019",
+  "language": "es",
+  "script": "",
+  "territory": "PY",
+  "variant": ""
+ },
+ {
+  "_uid": "spa-020",
+  "language": "es",
+  "script": "",
+  "territory": "PE",
+  "variant": ""
+ },
+ {
+  "_uid": "spa-021",
+  "language": "es",
+  "script": "",
+  "territory": "PR",
+  "variant": ""
+ },
+ {
+  "_uid": "spa-022",
+  "language": "es",
+  "script": "",
+  "territory": "SV",
+  "variant": ""
+ },
+ {
+  "_uid": "spa-024",
+  "language": "es",
+  "script": "",
+  "territory": "US",
+  "variant": ""
+ },
+ {
+  "_uid": "spa-025",
+  "language": "es",
+  "script": "",
+  "territory": "VE",
+  "variant": ""
+ },
+ {
+  "_uid": "spa-036",
+  "language": "es",
+  "script": "",
+  "territory": "419",
+  "variant": ""
+ },
+ {
+  "_uid": "srp-000",
+  "language": "sr",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "srp-001",
+  "language": "sr",
+  "script": "Latn",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "srp-002",
+  "language": "sr",
+  "script": "Cyrl",
+  "territory": "BA",
+  "variant": ""
+ },
+ {
+  "_uid": "srp-003",
+  "language": "sr",
+  "script": "Cyrl",
+  "territory": "ME",
+  "variant": ""
+ },
+ {
+  "_uid": "srp-004",
+  "language": "sr",
+  "script": "Cyrl",
+  "territory": "XK",
+  "variant": ""
+ },
+ {
+  "_uid": "srp-005",
+  "language": "sr",
+  "script": "Latn",
+  "territory": "BA",
+  "variant": ""
+ },
+ {
+  "_uid": "srp-006",
+  "language": "sr",
+  "script": "Latn",
+  "territory": "ME",
+  "variant": ""
+ },
+ {
+  "_uid": "srp-007",
+  "language": "sr",
+  "script": "Latn",
+  "territory": "XK",
+  "variant": ""
+ },
+ {
+  "_uid": "ssw-000",
+  "language": "ss",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "ssy-000",
+  "language": "ssy",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "swc-000",
+  "language": "sw",
+  "script": "",
+  "territory": "CD",
+  "variant": ""
+ },
+ {
+  "_uid": "swe-000",
+  "language": "sv",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "swe-003",
+  "language": "sv",
+  "script": "",
+  "territory": "FI",
+  "variant": ""
+ },
+ {
+  "_uid": "swh-000",
+  "language": "sw",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "swh-010",
+  "language": "sw",
+  "script": "",
+  "territory": "KE",
+  "variant": ""
+ },
+ {
+  "_uid": "syc-000",
+  "language": "syr",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "tam-000",
+  "language": "ta",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "tat-000",
+  "language": "tt",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "tel-000",
+  "language": "te",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "teo-000",
+  "language": "teo",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "tgk-000",
+  "language": "tg",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "tha-000",
+  "language": "th",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "tig-000",
+  "language": "tig",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "tir-000",
+  "language": "ti",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "ton-000",
+  "language": "to",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "trv-000",
+  "language": "trv",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "tsn-000",
+  "language": "tn",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "tso-000",
+  "language": "ts",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "tuk-000",
+  "language": "tk",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "tur-000",
+  "language": "tr",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "twq-000",
+  "language": "twq",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "tzm-001",
+  "language": "tzm",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "uig-000",
+  "language": "ug",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "ukr-000",
+  "language": "uk",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "urd-000",
+  "language": "ur",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "urd-003",
+  "language": "ur",
+  "script": "",
+  "territory": "IN",
+  "variant": ""
+ },
+ {
+  "_uid": "uzn-000",
+  "language": "uz",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "uzn-001",
+  "language": "uz",
+  "script": "Cyrl",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "uzs-000",
+  "language": "uz",
+  "script": "Arab",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "vai-000",
+  "language": "vai",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "vai-001",
+  "language": "vai",
+  "script": "Latn",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "ven-000",
+  "language": "ve",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "vie-000",
+  "language": "vi",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "vol-000",
+  "language": "vo",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "vun-000",
+  "language": "vun",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "wae-000",
+  "language": "wae",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "wal-000",
+  "language": "wal",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "wbp-000",
+  "language": "wbp",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "wol-000",
+  "language": "wo",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "xho-000",
+  "language": "xh",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "xog-000",
+  "language": "xog",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "yav-000",
+  "language": "yav",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "ydd-000",
+  "language": "yi",
+  "script": "",
+  "territory": "001",
+  "variant": ""
+ },
+ {
+  "_uid": "ydd-000",
+  "language": "yi",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "yor-000",
+  "language": "yo",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "yor-011",
+  "language": "yo",
+  "script": "",
+  "territory": "BJ",
+  "variant": ""
+ },
+ {
+  "_uid": "yue-000",
+  "language": "yue",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "yue-004",
+  "language": "yue",
+  "script": "Hans",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "zgh-000",
+  "language": "zgh",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "zsm-000",
+  "language": "ms",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "zsm-001",
+  "language": "ms",
+  "script": "Arab",
+  "territory": "",
+  "variant": ""
+ },
+ {
+  "_uid": "zul-000",
+  "language": "zu",
+  "script": "",
+  "territory": "",
+  "variant": ""
+ }
+]
