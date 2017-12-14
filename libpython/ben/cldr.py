@@ -53,7 +53,7 @@ def extract(file_list, xpath, mn_dict, langs_not_found):
                 text = element.text
                 if text:
                     mn_dict[element_path].dn_list.append(Dn(Ex(text, uid)))
-        else:
+        elif tree.xpath(xpath):
             lang['_uid'] = ''
             langs_not_found.append(lang)
 
