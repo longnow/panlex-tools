@@ -47,7 +47,7 @@ def extract(file_list, xpath, mn_dict, langs_not_found):
         uid = get_uid(lang, lang_dict)
         if uid:
             for element in tree.xpath(xpath):
-                element_path = "{}[type='{}'".format(xpath, element.get("type"))
+                element_path = "{}[type='{}']".format(xpath, element.get("type"))
                 if element_path not in mn_dict:
                     mn_dict[element_path] = Mn()
                 text = element.text
