@@ -10,6 +10,8 @@ import subprocess
 import atexit
 import os
 from time import sleep
+from collections import OrderedDict
+
 spacy_parser = None
 frogclient = None
 supported_langs = ['eng', 'nld']

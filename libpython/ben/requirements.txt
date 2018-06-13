@@ -1,0 +1,7 @@
+ipython
+regex
+unicodedata2
+bs4
+lxml
+tqdm
+requests

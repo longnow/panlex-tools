@@ -11,7 +11,7 @@ import ben.panlex
 from collections import namedtuple
 from tqdm import tqdm
 
-DEBUG = True
+DEBUG = False
 USERNAME = getpass.getuser()
 TABLES = {
     'Lv': 'langvar',
@@ -57,7 +57,11 @@ db_connect()
 def query(query_string, args):
     if DEBUG:
         print(cur.mogrify(query_string, args).decode())
-    cur.execute(query_string, args)
+    try:
+        cur.execute(query_string, args)
+    except psycopg2.OperationalError:
+        db_connect()
+        cur.execute(query_string, args)
     return cur.fetchall()
 
 class Lv(str):
@@ -179,7 +183,7 @@ class Lv(str):
         except ValueError:
             return APOS_CANDIDATES[-1]
 
-Lv._precache(langvar_char=True)
+# Lv._precache(langvar_char=True)
 
 class Ex(ben.panlex.Ex):
     _cache = {}
@@ -262,7 +266,7 @@ class Ex(ben.panlex.Ex):
         return output
 
     @classmethod
-    def from_lv(cls, lv, score=False):
+    def from_lv(cls, lv, score=False, score_cache=True):
         if isinstance(lv, str):
             lv_ids = {Lv(lv).id}
         else:
@@ -281,16 +285,23 @@ class Ex(ben.panlex.Ex):
             for lv_id in lv_ids_remaining:
                 cls._langvar_cache[lv_id] = set()
             if score:
-                query_string = """
-                    SELECT expr.*,
-                           grp_quality_score(array_agg(denotationx.grp),
-                                             array_agg(denotationx.quality))
-                                             AS score
-                    FROM expr
-                    JOIN denotationx ON (denotationx.expr = expr.id)
-                    WHERE expr.langvar in %s
-                    GROUP BY expr.id
-                    """
+                if score_cache:
+                    query_string = """
+                        SELECT *
+                        FROM exprx
+                        WHERE langvar in %s
+                        """
+                else:
+                    query_string = """
+                        SELECT expr.*,
+                            grp_quality_score(array_agg(denotationx.grp),
+                                                array_agg(denotationx.quality))
+                                                AS score
+                        FROM expr
+                        JOIN denotationx ON (denotationx.expr = expr.id)
+                        WHERE expr.langvar in %s
+                        GROUP BY expr.id
+                        """
             else:
                 query_string = "SELECT * FROM {} WHERE langvar in %s".format(cls._TABLE)
             for r in query(query_string, (lv_ids_remaining, )):
