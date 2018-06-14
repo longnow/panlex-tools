@@ -457,8 +457,8 @@ fetch <resource_dir>|<source_label>|<source_id>
     fetch PanLex resource from archive into the current directory and unzip it
 submit (<file>) (<source_id>|<source_label>) (primary|metadata|check)
     submit final source file to PanLem
-upload (-r) (<dir>) <note>
-    upload source (default) or resource (-r) directory to archive with note
+upload (<dir>) <note>
+    upload resource directory to archive with note
 server <port>
     run HTTP server (experimental)
 
