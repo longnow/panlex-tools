@@ -30,6 +30,27 @@ APOS_CANDIDATES = [
     '\u02bc',  # MODIFIER LETTER APOSTROPHE
 ]
 
+POS_QUERY = """
+select expr.txt, uid(langvar.lang_code, langvar.var_code), c.pos
+from expr
+join langvar on (langvar.id = expr.langvar)
+join lateral (
+  select coalesce(json_agg(b.pos), '[]'::json) as pos
+  from (
+    select json_build_object('txt', pos_expr.txt, 'score', grp_quality_score(array_agg(a.grp),array_agg(a.quality))) as pos
+    from (
+      select denotation_class.expr2 as pos_expr_id, denotationx.grp, denotationx.quality
+      from denotationx
+      join denotation_class on (denotation_class.denotation = denotationx.id)
+      where denotationx.expr = expr.id and denotation_class.expr1 = 22080019
+    ) a
+    join expr pos_expr on (pos_expr.id = a.pos_expr_id)
+    group by pos_expr.txt
+    order by grp_quality_score(array_agg(a.grp),array_agg(a.quality)) desc, pos_expr.txt
+ ) b
+) c on true
+where expr.langvar = uid_langvar(%s) and expr.txt = %s
+"""
 
 def db_connect():
     global conn, cur
@@ -314,6 +335,9 @@ class Ex(ben.panlex.Ex):
                 ex._id = data.id
                 output.append(ex)
         return output
+
+    def pos(self):
+        return query(POS_QUERY, (self.lv, str(self)))[0].pos
 
     def apostrophe(self, as_lv=None):
         if as_lv:

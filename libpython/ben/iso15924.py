@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import os
-from collections import defaultdict
 import zipfile
 import io
 import requests
@@ -31,73 +30,7 @@ def update():
     """Updates ISO 15924 data files to latest version from Unicode"""
     _get_ISO_15924()
 
-iso15924_dict = defaultdict(lambda : defaultdict(list))
-
-# def _initialize_ISO_15924_old():
-#     columns = ['code', 'number', 'en', 'fr', 'pva', 'date']
-#     to_split = [
-#         'Ahom',
-#         'Cham',
-#         'Deva',
-#         'Dupl',
-#         'Ethi',
-#         'Geor',
-#         'Gujr',
-#         'Hang',
-#         'Hani',
-#         'Hano',
-#         'Hluw',
-#         'Hung',
-#         'Inds',
-#         'Ital',
-#         'Knda',
-#         'Lana',
-#         'Lepc',
-#         'Lisu',
-#         'Mand',
-#         'Modi',
-#         'Moon',
-#         'Mroo',
-#         'Mtei',
-#         'Mymr',
-#         'Narb',
-#         'Newa',
-#         'Nkgb',
-#         'Olck',
-#         'Orkh',
-#         'Plrd',
-#         'Piqd',
-#         'Rjng',
-#         'Sarb',
-#         'Sgnw',
-#         'Shaw',
-#         'Shrd',
-#         'Sidd',
-#         'Sind',
-#         'Takr',
-#         'Tfng',
-#         'Tglg',
-#         'Wara',
-#         'Xsux',
-#     ]
-#         
-#     if os.path.exists(iso15924_data_directory + 'iso15924.txt'): pass
-#     else: _get_ISO_15924()
-#     with open(iso15924_data_directory + 'iso15924.txt', 'r') as data_file:
-#         for line in data_file:
-#             if line.startswith('#') or not line.strip(): continue
-#             for i, column in enumerate(columns):
-#                 splitline = [s.strip() for s in line.split(';')]
-#                 if column in ['en', 'fr']:
-#                     if splitline[0] in to_split:
-#                         entry = splitline[i].replace(')', '')
-#                         entry = entry.replace(' (', ', ')
-#                         entry = entry.replace(', etc.', '')
-#                         iso15924_dict[splitline[0]][column].extend(entry.split(', '))
-#                     else:
-#                         iso15924_dict[splitline[0]][column].append(splitline[i])
-#                 else:
-#                     iso15924_dict[splitline[0]][column] = splitline[i]
+iso15924_dict = {}
 
 def _initialize_ISO_15924():
     columns = ['code', 'number', 'en', 'fr', 'pva', 'date']
@@ -107,84 +40,9 @@ def _initialize_ISO_15924():
         for line in data_file:
             if line.startswith('#') or not line.strip(): continue
             code = line.split(';')[0]
+            iso15924_dict[code] = {}
             for entry, column in zip(line.strip().split(';'), columns):
                 iso15924_dict[code][column] = entry
-
-# def convert_old(string, outtype='code', intype='en', exact=False):
-#     """Takes an input string and returns a list of matching ISO 15924 codes or 
-#     language/variety names.
-# 
-#     Args:
-#         string: string to convert.
-# 
-#         outtype: output format. defaults to 'code'. can be:
-#                 'code' : ISO 15924 code (four letter)
-#                 'number' : ISO 15924 number (three digit number)
-#                 'en' : English Name
-#                 'fr' : French Name
-#                 'pva' : Property Value Alias (PVA)
-#                     (name used internally by Unicode)
-# 
-#         intype: input format (same possibilities as outtype).
-#             defaults to 'en'.
-#         
-#         exact: if True, will only return matches matching input string exactly. 
-#             if False, will search within strings to find matches.
-#             defaults to False.
-#         
-#     Returns:
-#         returns a list of matches (as strings) found within the ISO 15924
-#         database. if no matches are found, returns an empty list.
-#         
-#     Examples:
-#         >>> convert('Cyrillic')
-#         ['Cyrl', 'Cyrs']
-# 
-#         >>> convert('Armenian', 'number')
-#         ['230']
-# 
-#         >>> convert('Hira')
-#         ['Hira', 'Hrkt', 'Jpan']
-#         
-#         >>> convert('Armn', 'fr', 'code')
-#         ['arménien']
-# 
-#         >>> convert('Cyrillic', exact=True)
-#         ['Cyrl']
-# 
-#     """
-#     if not iso15924_dict: _initialize_ISO_15924_old()
-#     output = []
-#     if exact:
-#         for code in iso15924_dict:
-#             if intype in ['en', 'fr']:
-#                 if string in iso15924_dict[code][intype]:
-#                     if outtype in ['en', 'fr']:
-#                         output.extend(iso15924_dict[code][outtype])
-#                     else:
-#                         output.append(iso15924_dict[code][outtype])
-#             else:
-#                 if string == iso15924_dict[code][intype]:
-#                     if outtype in ['en', 'fr']:
-#                         output.extend(iso15924_dict[code][outtype])
-#                     else:
-#                         output.append(iso15924_dict[code][outtype])
-#     else:
-#         for code in iso15924_dict:
-#             if intype in ['en', 'fr']:
-#                 for name in iso15924_dict[code][intype]:
-#                     if string in name:
-#                         if outtype in ['en', 'fr']:
-#                             output.extend(iso15924_dict[code][outtype])
-#                         else:
-#                             output.append(iso15924_dict[code][outtype])
-#             else:    
-#                 if string in iso15924_dict[code][intype]:
-#                     if outtype in ['en', 'fr']:
-#                         output.extend(iso15924_dict[code][outtype])
-#                     else:
-#                         output.append(iso15924_dict[code][outtype])
-#     return [out for out in sorted(set(output)) if out]
 
 def convert(string, outtype='code', intype='en', exact=False, match_case=True):
     """Takes an input string and returns a list of matching ISO 15924 codes or 
@@ -229,7 +87,6 @@ def convert(string, outtype='code', intype='en', exact=False, match_case=True):
         ['Cyrl']
 
     """
-    if not iso15924_dict: _initialize_ISO_15924()
     outtype, intype = outtype.lower(), intype.lower()
     if not match_case: string = string.lower()
     output = []
@@ -290,3 +147,5 @@ def convertir(chaîne, type_sortie='code', type_entrée='fr', exact=False):
     if type_sortie == 'numéro': type_sortie = 'number'
     if type_entrée == 'numéro': type_entrée = 'number'
     return convert(chaîne, type_sortie, type_entrée, exact)
+
+_initialize_ISO_15924()
