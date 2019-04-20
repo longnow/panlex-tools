@@ -4,8 +4,7 @@ from glob import glob
 import os
 import requests
 
-def postagain(url, data, timeout=30, time_between_retries=60, max_retries=5):
-    global s
+def postagain(url, data, timeout=60, time_between_retries=60, max_retries=5):
     if max_retries < 0:
         raise requests.Timeout
     try:
