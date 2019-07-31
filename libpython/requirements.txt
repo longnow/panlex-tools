@@ -16,7 +16,6 @@ marisa-trie==0.7.5
 nltk==3.4.4
 num2words==0.5.10
 panlex-API==1.2.0
-pkg-resources==0.0.0
 ply==3.11
 psycopg2==2.8.3
 pycparser==2.19
