@@ -13,7 +13,7 @@ keyring==19.0.2
 langcodes==1.4.1
 lxml==4.4.0
 marisa-trie==0.7.5
-nltk==3.4.4
+nltk==3.4.5
 num2words==0.5.10
 panlex-API==1.2.0
 ply==3.11
