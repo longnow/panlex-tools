@@ -11,7 +11,7 @@ idna==2.8
 jeepney==0.4
 keyring==19.0.2
 langcodes==1.4.1
-lxml==4.4.0
+lxml==4.6.2
 marisa-trie==0.7.5
 nltk==3.4.4
 num2words==0.5.10
